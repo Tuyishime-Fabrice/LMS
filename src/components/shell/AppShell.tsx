@@ -8,6 +8,7 @@ import { AccountMenu } from "@/components/AccountMenu";
 import { useAppAuth } from "@/contexts/AuthContext";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
 import { RoleSidebar } from "./RoleSidebar";
+import { TeacherCourseList } from "./TeacherCourseList";
 import { studentTabBar, type AppRole } from "./navigation";
 import { cn } from "@/lib/utils";
 
@@ -79,6 +80,7 @@ export function AppShell({
   topBar?: ReactNode;
   children: ReactNode;
   width?: "default" | "wide" | "full";
+  /** Extra sidebar section. Instructors get their course list by default. */
   sidebarExtra?: ReactNode;
   badges?: React.ComponentProps<typeof RoleSidebar>["badges"];
 }) {
@@ -86,7 +88,9 @@ export function AppShell({
   useActivityTracker();
   return (
     <SidebarProvider>
-      <RoleSidebar role={role} badges={badges}>{sidebarExtra}</RoleSidebar>
+      <RoleSidebar role={role} badges={badges}>
+        {sidebarExtra ?? (role === "teacher" ? <TeacherCourseList /> : null)}
+      </RoleSidebar>
       <SidebarInset className="min-w-0 bg-background">
         <AppTopBar>{topBar}</AppTopBar>
         <main

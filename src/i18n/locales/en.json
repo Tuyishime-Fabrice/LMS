@@ -1190,7 +1190,8 @@
       "people": "People",
       "review": "Review",
       "system": "System",
-      "website": "Website"
+      "website": "Website",
+      "account": "Account"
     },
     "language": "Language",
     "nav": {
@@ -1253,5 +1254,186 @@
     "submit": "Verify",
     "title": "Verify a certificate",
     "valid": "This certificate is valid"
+  },
+  "payments": {
+    "pendingTitle": "Instalments due",
+    "instalmentNumber": "Instalment {{number}}",
+    "payNow": "Pay now",
+    "method": {
+      "momo": "Mobile Money",
+      "card": "Card"
+    },
+    "title": "Payments",
+    "description": "Instalments that are due and a record of everything you have paid.",
+    "history": "Payment history",
+    "loadError": "Your payments could not be loaded",
+    "emptyTitle": "No payments yet",
+    "emptyBody": "When you pay for a course, the receipt details are kept here.",
+    "untitled": "Course payment",
+    "instalment": "Instalment",
+    "reference": "Ref. {{ref}}",
+    "status": {
+      "success": "Paid",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "work": {
+    "due": "Due {{date}}",
+    "status": {
+      "overdue": "Overdue",
+      "graded": "Graded",
+      "submitted": "Awaiting grade"
+    },
+    "submit": {
+      "fileRejected": "This file can't be uploaded. Use a document up to {{size}} MB (PDF, Word, Excel, PowerPoint, ZIP). Media and program files are not accepted.",
+      "done": "Submitted. Your instructor has been notified.",
+      "failed": "Your work could not be uploaded. Check your connection and try again.",
+      "replaceTitle": "Replace your submission",
+      "title": "Submit your work",
+      "file": "File",
+      "choose": "Choose a file",
+      "hint": "One document, up to {{size}} MB",
+      "note": "Note for your instructor (optional)",
+      "uploading": "Uploading…",
+      "action": "Submit"
+    },
+    "kind": {
+      "capstone": "Capstone",
+      "assignment": "Assignment"
+    },
+    "submittedOn": "Submitted {{date}}",
+    "replace": "Replace file",
+    "openLesson": "Open lesson",
+    "feedback": "Instructor feedback",
+    "empty": {
+      "todoTitle": "Nothing to hand in",
+      "todoBody": "New assignments and your capstone appear here as your courses reach them.",
+      "submittedTitle": "Nothing waiting for a grade",
+      "submittedBody": "Work you submit stays here until your instructor grades it.",
+      "gradedTitle": "No graded work yet",
+      "gradedBody": "Grades and feedback from your instructor will show up here."
+    },
+    "title": "Assignments",
+    "description": "Assignments and capstone projects from all your courses, with deadlines and feedback.",
+    "loadError": "Your assignments could not be loaded",
+    "loadErrorBody": "Check your connection and try again.",
+    "filter": {
+      "todo": "To do",
+      "submitted": "Submitted",
+      "graded": "Graded"
+    }
+  },
+  "settingsPage": {
+    "profile": {
+      "nameRequired": "Please enter your name.",
+      "saveFailed": "We couldn't save your profile. Please try again.",
+      "saved": "Profile saved",
+      "title": "Profile",
+      "body": "Your name appears on your certificates, so write it the way you want it printed.",
+      "name": "Full name",
+      "phone": "Phone number",
+      "email": "Email",
+      "emailHint": "Your email is your sign-in. Contact the Academy to change it.",
+      "save": "Save profile"
+    },
+    "saving": "Saving…",
+    "language": {
+      "title": "Language",
+      "body": "The language of menus, buttons and messages. Course content stays in the language it was written in."
+    },
+    "notify": {
+      "saveFailed": "We couldn't save that preference. Please try again.",
+      "title": "Notifications",
+      "body": "Choose what appears under the bell. Announcements from the Academy are always shown.",
+      "sessions": "Live sessions",
+      "sessionsBody": "New sessions, time changes and cancellations.",
+      "feedback": "Submissions and grades",
+      "feedbackBody": "Receipts for your work and the result when it is graded.",
+      "submissions": "New submissions",
+      "submissionsBody": "When a learner hands in an assignment or capstone.",
+      "applications": "Applications",
+      "applicationsBody": "Cohort and scholarship requests and their decisions.",
+      "certificates": "Certificates",
+      "certificatesBody": "When a certificate is issued to you."
+    },
+    "security": {
+      "failed": "We couldn't send the email. Please try again in a minute.",
+      "sent": "Check your inbox for the reset link.",
+      "title": "Password",
+      "body": "We email you a link to choose a new password. The link goes to {{email}}.",
+      "sentShort": "Link sent",
+      "send": "Email me a reset link"
+    },
+    "sending": "Sending…",
+    "signOut": {
+      "title": "Sign out",
+      "body": "Sign out of DataPlus Academy on this device.",
+      "action": "Sign out",
+      "confirmTitle": "Sign out?",
+      "confirmBody": "Your progress is saved. You can sign back in at any time.",
+      "done": "You are signed out"
+    },
+    "title": "Settings",
+    "description": "Your profile, language, notifications and password.",
+    "legal": {
+      "title": "Privacy and terms",
+      "privacy": "Privacy policy",
+      "terms": "Terms of service"
+    }
+  },
+  "messages": {
+    "instructor": "Instructor",
+    "learner": "Learner",
+    "sendFailed": "Your message was not sent. Check your connection and try again.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "back": "Back to conversations",
+    "emptyThreadTitle": "No messages yet",
+    "emptyThreadStudent": "Ask a question about the course, a deadline or your work.",
+    "emptyThreadTeacher": "Write the first message to this learner.",
+    "placeholder": "Write a message",
+    "send": "Send",
+    "title": "Messages",
+    "searchStudent": "Search instructors",
+    "searchTeacher": "Search learners",
+    "loadError": "Your messages could not be loaded",
+    "noPeopleStudent": "When you enrol in a course, its instructor appears here.",
+    "noPeopleTeacher": "Learners appear here once they enrol in one of your courses.",
+    "noMatch": "No one matches that search.",
+    "you": "You",
+    "startHint": "Start a conversation",
+    "unread": "{{count}} unread",
+    "unread_one": "{{count}} unread",
+    "groups": "Course WhatsApp groups",
+    "pickTitle": "Choose a conversation",
+    "pickStudent": "Select an instructor on the left to read or write messages.",
+    "pickTeacher": "Select a learner on the left to read or write messages."
+  },
+  "gradesPage": {
+    "explore": "Explore courses",
+    "title": "Grades",
+    "description": "Your quiz results and graded work, course by course.",
+    "course": "Course",
+    "loadError": "Your grades could not be loaded",
+    "noCoursesTitle": "No grades yet",
+    "noCoursesBody": "Enrol in a course and your quiz results and graded work will appear here.",
+    "overall": "Overall",
+    "overallHint": "Quizzes and graded work, weighted equally",
+    "quizAverage": "Quiz average",
+    "quizCount": "{{count}} quizzes taken",
+    "quizCount_one": "{{count}} quiz taken",
+    "workAverage": "Assignments and capstone",
+    "workCount": "{{count}} graded",
+    "workCount_one": "{{count}} graded",
+    "quizzes": "Quizzes",
+    "noQuizzes": "You have not taken a quiz in this course yet.",
+    "attempts": "{{count}} attempts",
+    "attempts_one": "{{count}} attempt",
+    "passed": "Passed",
+    "notPassed": "Not passed yet",
+    "work": "Assignments and capstone",
+    "allWork": "All assignments",
+    "noWork": "You have not submitted any work in this course yet."
   }
 }

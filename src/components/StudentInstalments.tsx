@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { StatusPill } from "@/components/shell/page";
+import { useDateLocale } from "@/features/learning/hooks";
 import { Calendar, CreditCard } from "lucide-react";
 import { formatPrice } from "@/services/paymentService";
 import { PurchaseDialog } from "@/components/PurchaseDialog";
@@ -20,6 +22,8 @@ interface PendingInstalment {
 }
 
 export function StudentInstalments() {
+    const { t } = useTranslation();
+    const locale = useDateLocale();
     const [items, setItems] = useState<PendingInstalment[]>([]);
     const [loading, setLoading] = useState(true);
     const [payTarget, setPayTarget] = useState<PendingInstalment | null>(null);
@@ -46,45 +50,36 @@ export function StudentInstalments() {
 
     return (
         <>
-            <Card className="mb-6 border-amber-200 bg-amber-50/50">
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                        <CreditCard className="h-5 w-5 text-amber-600" />
-                        Pending instalments
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+            <section className="mb-8 rounded-xl border border-warning/30 bg-warning-surface p-5">
+                <h2 className="flex items-center gap-2 text-section-title">
+                    <CreditCard className="h-5 w-5 text-warning" />
+                    {t("payments.pendingTitle", "Instalments due")}
+                </h2>
+                <ul className="mt-4 space-y-2">
                     {items.map((item) => (
-                        <div
+                        <li
                             key={item.schedule_id}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-lg border"
+                            className="flex flex-col justify-between gap-3 rounded-lg border bg-card p-4 sm:flex-row sm:items-center"
                         >
-                            <div>
-                                <p className="font-medium">{item.course_title}</p>
-                                <p className="text-sm text-gray-600">
-                                    Instalment {item.instalment_number} ·{" "}
-                                    {formatPrice(Number(item.amount), item.currency)}
+                            <div className="min-w-0">
+                                <p className="truncate font-medium text-forest">{item.course_title}</p>
+                                <p className="text-sm text-foreground/80">
+                                    {t("payments.instalmentNumber", "Instalment {{number}}", { number: item.instalment_number })} ·{" "}
+                                    <span className="tabular font-medium">{formatPrice(Number(item.amount), item.currency)}</span>
                                 </p>
-                                <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                                    <Calendar className="h-3 w-3" />
-                                    Due {new Date(item.due_date).toLocaleDateString()}
-                                    {item.status === "overdue" && (
-                                        <Badge variant="destructive" className="text-[10px]">
-                                            Overdue
-                                        </Badge>
-                                    )}
-                                </div>
+                                <p className="mt-1 flex flex-wrap items-center gap-2 text-meta">
+                                    <Calendar className="h-3.5 w-3.5" />
+                                    {t("work.due", "Due {{date}}", { date: format(new Date(item.due_date), "d MMM yyyy", { locale }) })}
+                                    {item.status === "overdue" && <StatusPill tone="red">{t("work.status.overdue", "Overdue")}</StatusPill>}
+                                </p>
                             </div>
-                            <Button
-                                className="bg-[#006d2c] hover:bg-[#005523] shrink-0"
-                                onClick={() => setPayTarget(item)}
-                            >
-                                Pay now
+                            <Button className="shrink-0" onClick={() => setPayTarget(item)}>
+                                {t("payments.payNow", "Pay now")}
                             </Button>
-                        </div>
+                        </li>
                     ))}
-                </CardContent>
-            </Card>
+                </ul>
+            </section>
 
             {payTarget && (
                 <PurchaseDialog

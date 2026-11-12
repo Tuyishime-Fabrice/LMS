@@ -39,6 +39,14 @@ export const navigation: Record<AppRole, NavGroup[]> = {
       label: "Discover",
       items: [{ key: "shell.nav.explore", label: "Explore courses", to: "/courses", icon: Compass }],
     },
+    {
+      key: "account",
+      label: "Account",
+      items: [
+        { key: "shell.nav.payments", label: "Payments", to: "/student/payments", icon: CreditCard },
+        { key: "shell.nav.settings", label: "Settings", to: "/student/settings", icon: Settings },
+      ],
+    },
   ],
   teacher: [
     {
@@ -65,6 +73,11 @@ export const navigation: Record<AppRole, NavGroup[]> = {
         { key: "shell.nav.messages", label: "Messages", to: "/teacher/chat", icon: MessageSquare },
         { key: "shell.nav.announcements", label: "Announcements", to: "/teacher/announcements", icon: Megaphone },
       ],
+    },
+    {
+      key: "account",
+      label: "Account",
+      items: [{ key: "shell.nav.settings", label: "Settings", to: "/teacher/settings", icon: Settings }],
     },
   ],
   admin: [

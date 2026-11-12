@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import "./i18n/config";
 import { SuspensionDialog } from "@/components/SuspensionDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -35,7 +35,7 @@ const MyCourses = lazy(() => import("./pages/MyCourses"));
 const StudentSettings = lazy(() => import("./pages/StudentSettings"));
 const StudentAssignments = lazy(() => import("./pages/StudentAssignments"));
 const StudentScores = lazy(() => import("./pages/StudentScores"));
-const StudentSubscription = lazy(() => import("./pages/StudentSubscription"));
+const StudentPayments = lazy(() => import("./pages/StudentPayments"));
 const TeacherSettings = lazy(() => import("./pages/TeacherSettings"));
 const TeacherAnnouncements = lazy(() => import("./pages/TeacherAnnouncements"));
 const TeacherAssignments = lazy(() => import("./pages/TeacherAssignments"));
@@ -108,7 +108,8 @@ const App = () => (
             <Route path="/student/assignments" element={student(<StudentAssignments />)} />
             <Route path="/student/scores" element={student(<StudentScores />)} />
             <Route path="/student/settings" element={student(<StudentSettings />)} />
-            <Route path="/student/subscription" element={student(<StudentSubscription />)} />
+            <Route path="/student/payments" element={student(<StudentPayments />)} />
+            <Route path="/student/subscription" element={<Navigate to="/student/payments" replace />} />
             <Route path="/teacher/dashboard" element={teacher(<TeacherDashboard />)} />
             <Route path="/teacher/schedule" element={teacher(<TeacherSchedule />)} />
             <Route path="/teacher/chat" element={teacher(<TeacherChat />)} />

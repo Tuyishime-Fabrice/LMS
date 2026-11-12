@@ -1190,7 +1190,8 @@
       "people": "Utilisateurs",
       "review": "Évaluer",
       "system": "Système",
-      "website": "Site web"
+      "website": "Site web",
+      "account": "Compte"
     },
     "language": "Langue",
     "nav": {
@@ -1253,5 +1254,186 @@
     "submit": "Vérifier",
     "title": "Vérifier un certificat",
     "valid": "Ce certificat est valide"
+  },
+  "payments": {
+    "pendingTitle": "Échéances à payer",
+    "instalmentNumber": "Échéance {{number}}",
+    "payNow": "Payer maintenant",
+    "method": {
+      "momo": "Mobile Money",
+      "card": "Carte"
+    },
+    "title": "Paiements",
+    "description": "Les échéances à régler et l'historique de tous vos paiements.",
+    "history": "Historique des paiements",
+    "loadError": "Impossible de charger vos paiements",
+    "emptyTitle": "Aucun paiement pour l'instant",
+    "emptyBody": "Lorsque vous payez un cours, les détails du reçu sont conservés ici.",
+    "untitled": "Paiement de cours",
+    "instalment": "Échéance",
+    "reference": "Réf. {{ref}}",
+    "status": {
+      "success": "Payé",
+      "pending": "En attente",
+      "failed": "Échoué"
+    }
+  },
+  "work": {
+    "due": "À rendre le {{date}}",
+    "status": {
+      "overdue": "En retard",
+      "graded": "Noté",
+      "submitted": "En attente de note"
+    },
+    "submit": {
+      "fileRejected": "Ce fichier ne peut pas être envoyé. Utilisez un document de {{size}} Mo maximum (PDF, Word, Excel, PowerPoint, ZIP). Les fichiers multimédias et les programmes ne sont pas acceptés.",
+      "done": "Travail remis. Votre formateur a été prévenu.",
+      "failed": "Votre travail n'a pas pu être envoyé. Vérifiez votre connexion et réessayez.",
+      "replaceTitle": "Remplacer votre rendu",
+      "title": "Remettre votre travail",
+      "file": "Fichier",
+      "choose": "Choisir un fichier",
+      "hint": "Un seul document, {{size}} Mo maximum",
+      "note": "Note pour votre formateur (facultatif)",
+      "uploading": "Envoi en cours…",
+      "action": "Remettre"
+    },
+    "kind": {
+      "capstone": "Projet de fin de parcours",
+      "assignment": "Devoir"
+    },
+    "submittedOn": "Remis le {{date}}",
+    "replace": "Remplacer le fichier",
+    "openLesson": "Ouvrir la leçon",
+    "feedback": "Commentaire du formateur",
+    "empty": {
+      "todoTitle": "Rien à remettre",
+      "todoBody": "Les nouveaux devoirs et votre projet de fin de parcours apparaissent ici au fil de vos cours.",
+      "submittedTitle": "Aucun travail en attente de note",
+      "submittedBody": "Les travaux remis restent ici jusqu'à ce que votre formateur les note.",
+      "gradedTitle": "Aucun travail noté pour l'instant",
+      "gradedBody": "Les notes et les commentaires de votre formateur s'afficheront ici."
+    },
+    "title": "Devoirs",
+    "description": "Les devoirs et projets de fin de parcours de tous vos cours, avec leurs échéances et les commentaires.",
+    "loadError": "Impossible de charger vos devoirs",
+    "loadErrorBody": "Vérifiez votre connexion et réessayez.",
+    "filter": {
+      "todo": "À faire",
+      "submitted": "Remis",
+      "graded": "Notés"
+    }
+  },
+  "settingsPage": {
+    "profile": {
+      "nameRequired": "Veuillez saisir votre nom.",
+      "saveFailed": "Impossible d'enregistrer votre profil. Veuillez réessayer.",
+      "saved": "Profil enregistré",
+      "title": "Profil",
+      "body": "Votre nom figure sur vos certificats : écrivez-le tel que vous souhaitez le voir imprimé.",
+      "name": "Nom complet",
+      "phone": "Numéro de téléphone",
+      "email": "E-mail",
+      "emailHint": "Votre e-mail est votre identifiant de connexion. Contactez l'Académie pour le modifier.",
+      "save": "Enregistrer le profil"
+    },
+    "saving": "Enregistrement…",
+    "language": {
+      "title": "Langue",
+      "body": "La langue des menus, des boutons et des messages. Le contenu des cours reste dans sa langue d'origine."
+    },
+    "notify": {
+      "saveFailed": "Impossible d'enregistrer cette préférence. Veuillez réessayer.",
+      "title": "Notifications",
+      "body": "Choisissez ce qui s'affiche sous la cloche. Les annonces de l'Académie sont toujours affichées.",
+      "sessions": "Sessions en direct",
+      "sessionsBody": "Nouvelles sessions, changements d'horaire et annulations.",
+      "feedback": "Rendus et notes",
+      "feedbackBody": "Accusés de réception de vos travaux et résultat une fois notés.",
+      "submissions": "Nouveaux rendus",
+      "submissionsBody": "Lorsqu'un apprenant remet un devoir ou un projet de fin de parcours.",
+      "applications": "Candidatures",
+      "applicationsBody": "Demandes de cohorte et de bourse, et leurs décisions.",
+      "certificates": "Certificats",
+      "certificatesBody": "Lorsqu'un certificat vous est délivré."
+    },
+    "security": {
+      "failed": "Impossible d'envoyer l'e-mail. Veuillez réessayer dans une minute.",
+      "sent": "Consultez votre boîte de réception pour trouver le lien de réinitialisation.",
+      "title": "Mot de passe",
+      "body": "Nous vous envoyons par e-mail un lien pour choisir un nouveau mot de passe. Le lien est envoyé à {{email}}.",
+      "sentShort": "Lien envoyé",
+      "send": "M'envoyer un lien de réinitialisation"
+    },
+    "sending": "Envoi…",
+    "signOut": {
+      "title": "Déconnexion",
+      "body": "Se déconnecter de DataPlus Academy sur cet appareil.",
+      "action": "Se déconnecter",
+      "confirmTitle": "Se déconnecter ?",
+      "confirmBody": "Votre progression est enregistrée. Vous pouvez vous reconnecter à tout moment.",
+      "done": "Vous êtes déconnecté"
+    },
+    "title": "Paramètres",
+    "description": "Votre profil, la langue, les notifications et le mot de passe.",
+    "legal": {
+      "title": "Confidentialité et conditions",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation"
+    }
+  },
+  "messages": {
+    "instructor": "Formateur",
+    "learner": "Apprenant",
+    "sendFailed": "Votre message n'a pas été envoyé. Vérifiez votre connexion et réessayez.",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "back": "Retour aux conversations",
+    "emptyThreadTitle": "Aucun message pour l'instant",
+    "emptyThreadStudent": "Posez une question sur le cours, une échéance ou votre travail.",
+    "emptyThreadTeacher": "Écrivez le premier message à cet apprenant.",
+    "placeholder": "Écrire un message",
+    "send": "Envoyer",
+    "title": "Messages",
+    "searchStudent": "Rechercher un formateur",
+    "searchTeacher": "Rechercher un apprenant",
+    "loadError": "Impossible de charger vos messages",
+    "noPeopleStudent": "Lorsque vous vous inscrivez à un cours, son formateur apparaît ici.",
+    "noPeopleTeacher": "Les apprenants apparaissent ici dès qu'ils s'inscrivent à l'un de vos cours.",
+    "noMatch": "Personne ne correspond à cette recherche.",
+    "you": "Vous",
+    "startHint": "Démarrer une conversation",
+    "unread": "{{count}} non lus",
+    "unread_one": "{{count}} non lu",
+    "groups": "Groupes WhatsApp des cours",
+    "pickTitle": "Choisissez une conversation",
+    "pickStudent": "Sélectionnez un formateur à gauche pour lire ou écrire des messages.",
+    "pickTeacher": "Sélectionnez un apprenant à gauche pour lire ou écrire des messages."
+  },
+  "gradesPage": {
+    "explore": "Découvrir les cours",
+    "title": "Notes",
+    "description": "Vos résultats aux quiz et vos travaux notés, cours par cours.",
+    "course": "Cours",
+    "loadError": "Impossible de charger vos notes",
+    "noCoursesTitle": "Aucune note pour l'instant",
+    "noCoursesBody": "Inscrivez-vous à un cours : vos résultats aux quiz et vos travaux notés apparaîtront ici.",
+    "overall": "Moyenne générale",
+    "overallHint": "Quiz et travaux notés, à parts égales",
+    "quizAverage": "Moyenne des quiz",
+    "quizCount": "{{count}} quiz passés",
+    "quizCount_one": "{{count}} quiz passé",
+    "workAverage": "Devoirs et projet de fin de parcours",
+    "workCount": "{{count}} notés",
+    "workCount_one": "{{count}} noté",
+    "quizzes": "Quiz",
+    "noQuizzes": "Vous n'avez pas encore passé de quiz dans ce cours.",
+    "attempts": "{{count}} tentatives",
+    "attempts_one": "{{count}} tentative",
+    "passed": "Réussi",
+    "notPassed": "Pas encore réussi",
+    "work": "Devoirs et projet de fin de parcours",
+    "allWork": "Tous les devoirs",
+    "noWork": "Vous n'avez pas encore remis de travail dans ce cours."
   }
 }

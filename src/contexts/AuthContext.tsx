@@ -19,6 +19,7 @@ import type { User } from "@supabase/supabase-js";
 import type { Tables } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import i18n from "@/i18n/config";
 
 export type AppProfile = Tables<"profiles">;
 
@@ -124,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.error(error.message);
       return;
     }
-    toast.success("Signed out successfully");
+    toast.success(i18n.t("settingsPage.signOut.done", "You are signed out"));
   }, []);
 
   return (
