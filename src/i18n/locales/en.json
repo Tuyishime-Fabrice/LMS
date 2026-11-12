@@ -2187,5 +2187,30 @@
     "bundlePrice2": "Bundle price:",
     "savings": "Savings:",
     "updateBundle": "Update Bundle"
+  },
+  "tutor": {
+    "remaining_one": "{{count}} question left today.",
+    "suggest": {
+      "explain": "Explain this lesson in simple words",
+      "hint": "Give me a hint, not the answer",
+      "example": "Show me a worked example",
+      "practice": "Ask me 3 practice questions"
+    },
+    "error": {
+      "limit": "You have used today's {{limit}} questions. The tutor is available again tomorrow, and your instructor can still help.",
+      "offline": "No connection. Check your internet and try again.",
+      "busy": "The tutor is busy right now. Try again in a minute.",
+      "forbidden": "The tutor is available for lessons in courses you are enrolled in.",
+      "generic": "The tutor could not answer. Try again."
+    },
+    "title": "AI tutor",
+    "introGraded": "This is graded work. The tutor explains the ideas and gives hints, but the answer has to be yours.",
+    "intro": "Ask about anything in this lesson, in English or French. You get an answer straight away.",
+    "thinking": "Thinking…",
+    "placeholder": "Ask the tutor a question",
+    "send": "Send to the tutor",
+    "noneLeft": "You have used today's questions. The tutor is available again tomorrow.",
+    "remaining": "{{count}} questions left today.",
+    "disclaimer": "AI answers can contain mistakes. For grades and deadlines, ask your instructor."
   }
 }

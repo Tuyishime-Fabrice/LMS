@@ -37,6 +37,8 @@ const routes = {
     'GET /api/payment-callback': () => import('../api/payment-callback.js'),
     'POST /api/xentripay-webhook': () => import('../api/xentripay-webhook.js'),
     'POST /api/webhooks/xentripay': () => import('../api/webhooks/xentripay.js'),
+    'GET /api/tutor': () => import('../api/tutor.js'),
+    'POST /api/tutor': () => import('../api/tutor.js'),
 };
 
 function parseQuery(url) {
@@ -98,11 +100,23 @@ const server = http.createServer(async (req, res) => {
             setHeader(k, v) {
                 this.headers[k] = v;
             },
-            end(data) {
-                for (const [k, v] of Object.entries(this.headers)) {
-                    res.setHeader(k, v);
+            // Streaming responses (the AI tutor) send headers on the first chunk.
+            write(chunk) {
+                if (!res.headersSent) {
+                    for (const [k, v] of Object.entries(this.headers)) {
+                        res.setHeader(k, v);
+                    }
+                    res.writeHead(this.statusCode);
                 }
-                res.writeHead(this.statusCode);
+                res.write(chunk);
+            },
+            end(data) {
+                if (!res.headersSent) {
+                    for (const [k, v] of Object.entries(this.headers)) {
+                        res.setHeader(k, v);
+                    }
+                    res.writeHead(this.statusCode);
+                }
                 res.end(data);
             },
             json(obj) {
@@ -134,5 +148,8 @@ server.listen(PORT, () => {
     }
     if (!process.env.XENTRIPAY_API_KEY) {
         console.warn('[local-api] WARNING: XENTRIPAY_API_KEY is missing');
+    }
+    if (!process.env.ANTHROPIC_API_KEY) {
+        console.warn('[local-api] ANTHROPIC_API_KEY is missing — the AI tutor is switched off');
     }
 });

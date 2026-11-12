@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppAuth } from "@/contexts/AuthContext";
+import { TutorPanel } from "@/features/tutor/TutorPanel";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -217,6 +218,10 @@ function HelpPanel({ outline, lesson, fileUrl, canAsk }: {
 
   return (
     <div className="space-y-6 p-5">
+      {lesson && user && (
+        <TutorPanel lessonId={lesson.id} graded={lesson.type === "quiz" || lesson.type === "assignment"} />
+      )}
+
       {teacher && (
         <section>
           <h3 className="text-xs font-medium text-muted-foreground">{t("room.help.instructor", "Your instructor")}</h3>
@@ -551,6 +556,7 @@ export default function LearningRoom() {
           variant={helpOpen ? "secondary" : "ghost"} size="sm" className="h-9 gap-1.5 px-2.5"
           onClick={() => setHelpOpen((value) => !value)}
           aria-pressed={helpOpen}
+          aria-label={t("room.help.toggle", "Help")}
         >
           <CircleHelp />
           <span className="hidden sm:inline">{t("room.help.toggle", "Help")}</span>

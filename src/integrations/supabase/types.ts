@@ -2061,6 +2061,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      tutor_messages: {
+        Row: {
+          content: string;
+          course_id: string;
+          created_at: string;
+          id: string;
+          input_tokens: number | null;
+          lesson_id: string | null;
+          model: string | null;
+          output_tokens: number | null;
+          role: "user" | "assistant";
+          user_id: string;
+        };
+        Insert: {
+          content: string;
+          course_id: string;
+          created_at?: string;
+          id?: string;
+          input_tokens?: number | null;
+          lesson_id?: string | null;
+          model?: string | null;
+          output_tokens?: number | null;
+          role: "user" | "assistant";
+          user_id: string;
+        };
+        Update: {
+          content?: string;
+          course_id?: string;
+          created_at?: string;
+          id?: string;
+          input_tokens?: number | null;
+          lesson_id?: string | null;
+          model?: string | null;
+          output_tokens?: number | null;
+          role?: "user" | "assistant";
+          user_id?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: {

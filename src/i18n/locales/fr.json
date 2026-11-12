@@ -2187,5 +2187,30 @@
     "bundlePrice2": "Prix de l'offre groupée :",
     "savings": "Économie :",
     "updateBundle": "Mettre à jour l'offre groupée"
+  },
+  "tutor": {
+    "remaining_one": "Il vous reste {{count}} question aujourd'hui.",
+    "suggest": {
+      "explain": "Explique-moi cette leçon avec des mots simples",
+      "hint": "Donne-moi un indice, pas la réponse",
+      "example": "Montre-moi un exemple détaillé",
+      "practice": "Pose-moi 3 questions d'entraînement"
+    },
+    "error": {
+      "limit": "Vous avez utilisé vos {{limit}} questions du jour. Le tuteur sera de nouveau disponible demain, et votre formateur peut toujours vous aider.",
+      "offline": "Pas de connexion. Vérifiez votre accès à Internet et réessayez.",
+      "busy": "Le tuteur est très sollicité en ce moment. Réessayez dans une minute.",
+      "forbidden": "Le tuteur est disponible pour les leçons des cours auxquels vous êtes inscrit.",
+      "generic": "Le tuteur n'a pas pu répondre. Réessayez."
+    },
+    "title": "Tuteur IA",
+    "introGraded": "Ce travail est noté. Le tuteur explique les notions et donne des indices, mais la réponse doit venir de vous.",
+    "intro": "Posez vos questions sur cette leçon, en français ou en anglais. Vous obtenez une réponse tout de suite.",
+    "thinking": "Réflexion…",
+    "placeholder": "Posez une question au tuteur",
+    "send": "Envoyer au tuteur",
+    "noneLeft": "Vous avez utilisé vos questions du jour. Le tuteur sera de nouveau disponible demain.",
+    "remaining": "Il vous reste {{count}} questions aujourd'hui.",
+    "disclaimer": "Les réponses de l'IA peuvent contenir des erreurs. Pour les notes et les échéances, adressez-vous à votre formateur."
   }
 }
