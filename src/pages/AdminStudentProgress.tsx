@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ interface CourseProgress {
 interface Course { id: string; title: string; }
 
 export default function AdminStudentProgress() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<StudentProgress[]>([]);
@@ -60,7 +62,7 @@ export default function AdminStudentProgress() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/auth"); return; }
       const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-      if (profile?.role !== "admin") { toast.error("Access denied"); navigate("/"); return; }
+      if (profile?.role !== "admin") { toast.error(t("adminStudentProgress.accessDenied", "Access denied")); navigate("/"); return; }
       await fetchData();
     } catch (error) { console.error("Error:", error); navigate("/"); }
   };
@@ -113,7 +115,7 @@ export default function AdminStudentProgress() {
       }));
 
       setStudents(students);
-    } catch (error) { console.error("Error:", error); toast.error("Failed to load data"); }
+    } catch (error) { console.error("Error:", error); toast.error(t("adminStudentProgress.failedToLoadData", "Failed to load data")); }
     finally { setLoading(false); }
   };
 
@@ -159,12 +161,12 @@ export default function AdminStudentProgress() {
 
       setSelectedStudent({ student, courses: courseProgress });
       setShowDetailDialog(true);
-    } catch (error) { console.error("Error:", error); toast.error("Failed to load details"); }
+    } catch (error) { console.error("Error:", error); toast.error(t("adminStudentProgress.failedToLoadDetails", "Failed to load details")); }
     finally { setLoadingDetail(false); }
   };
 
-  const getProgressColor = (p: number) => p >= 80 ? "text-green-600" : p >= 50 ? "text-yellow-600" : "text-red-600";
-  const getProgressBg = (p: number) => p >= 80 ? "bg-green-100 text-green-800" : p >= 50 ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800";
+  const getProgressColor = (p: number) => p >= 80 ? "text-primary" : p >= 50 ? "text-warning" : "text-destructive";
+  const getProgressBg = (p: number) => p >= 80 ? "bg-leaf text-leaf-foreground" : p >= 50 ? "bg-warning-surface text-warning" : "bg-destructive-surface text-destructive";
 
   if (loading) return <LoadingSpinner />;
 
@@ -172,37 +174,29 @@ export default function AdminStudentProgress() {
   const completedStudents = students.filter(s => s.progress_percentage === 100).length;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col p-4">
-          <header className="bg-white rounded-2xl shadow mb-6">
-            <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-2xl">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="text-white" />
-                  <div className="text-white"><h1 className="text-2xl font-bold">Student Progress</h1><p className="text-sm opacity-90">Track every student's course progress</p></div>
-                </div>
-                <Badge variant="secondary" className="text-lg px-4 py-2">{filteredStudents.length} Students</Badge>
-              </div>
-            </div>
-          </header>
+    <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminStudentProgress.studentProgress", "Student Progress")}
+        actions={<>
+          <p className="text-sm opacity-90">{t("adminStudentProgress.trackEveryStudentSCourseProgress", "Track every student's course progress")}</p>
+          <Badge variant="secondary" className="text-lg px-4 py-2">{t("adminStudentProgress.students", "{{count}} Students", { count: filteredStudents.length })}</Badge>
+        </>}
+      />
 
-          <main className="flex-1 overflow-auto">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-gray-600">Total Students</p><p className="text-3xl font-bold text-blue-600">{students.length}</p></div><GraduationCap className="h-10 w-10 text-blue-500" /></CardContent></Card>
-                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-gray-600">Avg Progress</p><p className="text-3xl font-bold text-purple-600">{avgProgress}%</p></div><BookOpen className="h-10 w-10 text-purple-500" /></CardContent></Card>
-                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-gray-600">Completed</p><p className="text-3xl font-bold text-green-600">{completedStudents}</p></div><CheckCircle className="h-10 w-10 text-green-500" /></CardContent></Card>
-                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-gray-600">In Progress</p><p className="text-3xl font-bold text-orange-600">{students.length - completedStudents}</p></div><Clock className="h-10 w-10 text-orange-500" /></CardContent></Card>
+                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminStudentProgress.totalStudents", "Total Students")}</p><p className="text-3xl font-bold text-info">{students.length}</p></div><GraduationCap className="h-10 w-10 text-info" /></CardContent></Card>
+                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminStudentProgress.avgProgress", "Avg Progress")}</p><p className="text-3xl font-bold text-forest">{avgProgress}%</p></div><BookOpen className="h-10 w-10 text-forest" /></CardContent></Card>
+                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminStudentProgress.completed", "Completed")}</p><p className="text-3xl font-bold text-primary">{completedStudents}</p></div><CheckCircle className="h-10 w-10 text-primary" /></CardContent></Card>
+                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminStudentProgress.inProgress", "In Progress")}</p><p className="text-3xl font-bold text-warning">{students.length - completedStudents}</p></div><Clock className="h-10 w-10 text-warning" /></CardContent></Card>
               </div>
 
               {/* Filters */}
               <Card><CardContent className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" /><Input placeholder="Search students..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" /></div>
-                  <Select value={selectedCourse} onValueChange={setSelectedCourse}><SelectTrigger><SelectValue placeholder="Filter by course" /></SelectTrigger><SelectContent><SelectItem value="all">All Courses</SelectItem>{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent></Select>
+                  <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" /><Input placeholder={t("adminStudentProgress.searchStudents", "Search students...")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" /></div>
+                  <Select value={selectedCourse} onValueChange={setSelectedCourse}><SelectTrigger><SelectValue placeholder={t("adminStudentProgress.filterByCourse", "Filter by course")} /></SelectTrigger><SelectContent><SelectItem value="all">{t("adminStudentProgress.allCourses", "All Courses")}</SelectItem>{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent></Select>
                 </div>
               </CardContent></Card>
 
@@ -210,16 +204,16 @@ export default function AdminStudentProgress() {
               {/* Students Table */}
               <Card><CardContent className="p-0">
                 <Table>
-                  <TableHeader><TableRow><TableHead>Student</TableHead><TableHead>Courses</TableHead><TableHead>Lessons</TableHead><TableHead>Progress</TableHead><TableHead>Last Activity</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                  <TableHeader><TableRow><TableHead>{t("adminStudentProgress.student", "Student")}</TableHead><TableHead>{t("adminStudentProgress.courses", "Courses")}</TableHead><TableHead>{t("adminStudentProgress.lessons", "Lessons")}</TableHead><TableHead>{t("adminStudentProgress.progress", "Progress")}</TableHead><TableHead>{t("adminStudentProgress.lastActivity", "Last Activity")}</TableHead><TableHead>{t("adminStudentProgress.actions", "Actions")}</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {filteredStudents.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-gray-500">No students found</TableCell></TableRow> : filteredStudents.map(student => (
+                    {filteredStudents.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">{t("adminStudentProgress.noStudentsFound", "No students found")}</TableCell></TableRow> : filteredStudents.map(student => (
                       <TableRow key={student.id}>
                         <TableCell>
                           <p className="font-medium">{student.full_name}</p>
-                          <p className="text-sm text-gray-500">{student.email}</p>
-                          {student.phone && <p className="text-sm text-blue-600">{student.phone}</p>}
+                          <p className="text-sm text-muted-foreground">{student.email}</p>
+                          {student.phone && <p className="text-sm text-info">{student.phone}</p>}
                         </TableCell>
-                        <TableCell><div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-blue-600" /><span>{student.total_courses}</span></div></TableCell>
+                        <TableCell><div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-info" /><span>{student.total_courses}</span></div></TableCell>
                         <TableCell><span className="text-sm">{student.completed_lessons}/{student.total_lessons}</span></TableCell>
                         <TableCell>
                           <div className="space-y-1 w-32">
@@ -227,53 +221,49 @@ export default function AdminStudentProgress() {
                             <Progress value={student.progress_percentage} className="h-2" />
                           </div>
                         </TableCell>
-                        <TableCell className="text-sm text-gray-500">{student.last_activity ? new Date(student.last_activity).toLocaleDateString() : "Never"}</TableCell>
-                        <TableCell><Button size="sm" variant="outline" onClick={() => fetchStudentDetail(student)} disabled={loadingDetail}><Eye className="h-4 w-4 mr-1" />Details</Button></TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{student.last_activity ? new Date(student.last_activity).toLocaleDateString() : t("adminStudentProgress.never", "Never")}</TableCell>
+                        <TableCell><Button size="sm" variant="outline" onClick={() => fetchStudentDetail(student)} disabled={loadingDetail}><Eye className="h-4 w-4 mr-1" />{t("adminStudentProgress.details", "Details")}</Button></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </CardContent></Card>
             </div>
-          </main>
-        </div>
-      </div>
-
       {/* Detail Dialog */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Progress Details</DialogTitle>
+            <DialogTitle>{t("adminStudentProgress.progressDetails", "Progress Details")}</DialogTitle>
             <DialogDescription>
               <span className="block">{selectedStudent?.student.full_name} - {selectedStudent?.student.email}</span>
-              {selectedStudent?.student.phone && <span className="block text-blue-600">{selectedStudent?.student.phone}</span>}
+              {selectedStudent?.student.phone && <span className="block text-info">{selectedStudent?.student.phone}</span>}
             </DialogDescription>
           </DialogHeader>
           {selectedStudent && (
             <div className="space-y-4">
               {/* Overall Stats */}
               <div className="grid grid-cols-3 gap-4">
-                <Card><CardContent className="p-4 text-center"><p className="text-sm text-gray-600">Courses</p><p className="text-2xl font-bold">{selectedStudent.courses.length}</p></CardContent></Card>
-                <Card><CardContent className="p-4 text-center"><p className="text-sm text-gray-600">Lessons Done</p><p className="text-2xl font-bold">{selectedStudent.courses.reduce((a, c) => a + c.completed_lessons, 0)}/{selectedStudent.courses.reduce((a, c) => a + c.total_lessons, 0)}</p></CardContent></Card>
-                <Card><CardContent className="p-4 text-center"><p className="text-sm text-gray-600">Overall</p><p className="text-2xl font-bold">{selectedStudent.student.progress_percentage}%</p></CardContent></Card>
+                <Card><CardContent className="p-4 text-center"><p className="text-sm text-muted-foreground">{t("adminStudentProgress.courses", "Courses")}</p><p className="text-2xl font-bold">{selectedStudent.courses.length}</p></CardContent></Card>
+                <Card><CardContent className="p-4 text-center"><p className="text-sm text-muted-foreground">{t("adminStudentProgress.lessonsDone", "Lessons Done")}</p><p className="text-2xl font-bold">{selectedStudent.courses.reduce((a, c) => a + c.completed_lessons, 0)}/{selectedStudent.courses.reduce((a, c) => a + c.total_lessons, 0)}</p></CardContent></Card>
+                <Card><CardContent className="p-4 text-center"><p className="text-sm text-muted-foreground">{t("adminStudentProgress.overall", "Overall")}</p><p className="text-2xl font-bold">{selectedStudent.student.progress_percentage}%</p></CardContent></Card>
               </div>
 
               {/* Course Breakdown */}
-              <h3 className="font-semibold text-lg mt-4">Course Progress</h3>
-              {selectedStudent.courses.length === 0 ? <p className="text-gray-500">No courses enrolled</p> : (
+              <h3 className="font-semibold text-lg mt-4">{t("adminStudentProgress.courseProgress", "Course Progress")}</h3>
+              {selectedStudent.courses.length === 0 ? <p className="text-muted-foreground">{t("adminStudentProgress.noCoursesEnrolled", "No courses enrolled")}</p> : (
                 <div className="space-y-3">
                   {selectedStudent.courses.map(course => (
                     <Card key={course.course_id}>
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-2">
-                          <div><p className="font-medium">{course.course_title}</p><p className="text-sm text-gray-500">by {course.teacher_name}</p></div>
+                          <div><p className="font-medium">{course.course_title}</p><p className="text-sm text-muted-foreground">{t("adminStudentProgress.by", "by {{teacherName}}", { teacherName: course.teacher_name })}</p></div>
                           <Badge className={getProgressBg(course.progress_percentage)}>{course.progress_percentage}%</Badge>
                         </div>
                         <Progress value={course.progress_percentage} className="h-2 mb-2" />
-                        <div className="flex justify-between text-sm text-gray-600">
-                          <span>Lessons: {course.completed_lessons}/{course.total_lessons}</span>
-                          <span>Enrolled: {new Date(course.enrolled_at).toLocaleDateString()}</span>
-                          {course.last_lesson_completed && <span>Last: {new Date(course.last_lesson_completed).toLocaleDateString()}</span>}
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>{t("adminStudentProgress.lessons2", "Lessons: {{completedLessons}}/{{totalLessons}}", { completedLessons: course.completed_lessons, totalLessons: course.total_lessons })}</span>
+                          <span>{t("adminStudentProgress.enrolled", "Enrolled: {{toLocaleDateString}}", { toLocaleDateString: new Date(course.enrolled_at).toLocaleDateString() })}</span>
+                          {course.last_lesson_completed && <span>{t("adminStudentProgress.last", "Last: {{toLocaleDateString}}", { toLocaleDateString: new Date(course.last_lesson_completed).toLocaleDateString() })}</span>}
                         </div>
                       </CardContent>
                     </Card>
@@ -284,6 +274,6 @@ export default function AdminStudentProgress() {
           )}
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </AppShell>
   );
 }

@@ -1,29 +1,17 @@
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CheckCircle, XCircle } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { toast } from "sonner";
 
 interface Application {
@@ -42,6 +30,7 @@ interface Application {
 }
 
 export default function AdminScholarships() {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [accessChecked, setAccessChecked] = useState(false);
@@ -61,7 +50,7 @@ export default function AdminScholarships() {
         }
         const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
         if (profile?.role !== "admin") {
-            toast.error("Access denied");
+            toast.error(t("adminScholarships.accessDenied", "Access denied"));
             navigate("/");
             return;
         }
@@ -147,7 +136,7 @@ export default function AdminScholarships() {
             if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Invalid rejection response");
             if (!data.success) throw new Error(String(data.error || "Rejection failed"));
 
-            toast.success("Application rejected");
+            toast.success(t("adminScholarships.applicationRejected", "Application rejected"));
             fetchApplications();
         } catch (error: any) {
             toast.error(error.message);
@@ -159,59 +148,49 @@ export default function AdminScholarships() {
     if (!accessChecked) return <LoadingSpinner />;
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col overflow-hidden p-4">
-                    <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-                        <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <SidebarTrigger className="text-white" />
-                                    <div className="text-white">
-                                        <h1 className="text-3xl font-bold mb-1">Scholarship Applications</h1>
-                                        <p className="text-white/90 text-sm">Review applications and issue scholarship codes</p>
-                                    </div>
-                                </div>
-                                <Select value={filter} onValueChange={setFilter}>
-                                    <SelectTrigger className="w-40 bg-white">
+        <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminScholarships.scholarshipApplications", "Scholarship Applications")}
+        description={t("adminScholarships.reviewApplicationsAndIssueScholarshipCodes", "Review applications and issue scholarship codes")}
+        actions={<>
+          <Select value={filter} onValueChange={setFilter}>
+                                    <SelectTrigger className="w-40 bg-card">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                        <SelectItem value="approved">Approved</SelectItem>
-                                        <SelectItem value="redeemed">Redeemed</SelectItem>
-                                        <SelectItem value="rejected">Rejected</SelectItem>
-                                        <SelectItem value="all">All</SelectItem>
+                                        <SelectItem value="pending">{t("adminScholarships.pending", "Pending")}</SelectItem>
+                                        <SelectItem value="approved">{t("adminScholarships.approved", "Approved")}</SelectItem>
+                                        <SelectItem value="redeemed">{t("adminScholarships.redeemed", "Redeemed")}</SelectItem>
+                                        <SelectItem value="rejected">{t("adminScholarships.rejected", "Rejected")}</SelectItem>
+                                        <SelectItem value="all">{t("adminScholarships.all", "All")}</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto px-2">
-                        <div className="max-w-7xl mx-auto space-y-6">
+        </>}
+      />
+
+                        <div className="space-y-6">
 
             <Card>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Applicant</TableHead>
-                                <TableHead>Course</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Code</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead>{t("adminScholarships.applicant", "Applicant")}</TableHead>
+                                <TableHead>{t("adminScholarships.course", "Course")}</TableHead>
+                                <TableHead>{t("adminScholarships.status", "Status")}</TableHead>
+                                <TableHead>{t("adminScholarships.code", "Code")}</TableHead>
+                                <TableHead>{t("adminScholarships.actions", "Actions")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8">Loading...</TableCell>
+                                    <TableCell colSpan={5} className="text-center py-8">{t("adminScholarships.loading", "Loading...")}</TableCell>
                                 </TableRow>
                             ) : applications.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                                        No applications found
+                                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                        {t("adminScholarships.noApplicationsFound", "No applications found")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -219,7 +198,7 @@ export default function AdminScholarships() {
                                     <TableRow key={app.id}>
                                         <TableCell>
                                             <div className="font-medium">{app.full_name}</div>
-                                            <div className="text-xs text-gray-500">{app.email}</div>
+                                            <div className="text-xs text-muted-foreground">{app.email}</div>
                                         </TableCell>
                                         <TableCell className="text-sm">{app.course_title}</TableCell>
                                         <TableCell>
@@ -229,7 +208,7 @@ export default function AdminScholarships() {
                                         </TableCell>
                                         <TableCell>
                                             {app.generated_code ? (
-                                                <code className="text-xs bg-emerald-50 px-2 py-1 rounded">{app.generated_code}</code>
+                                                <code className="text-xs bg-leaf px-2 py-1 rounded">{app.generated_code}</code>
                                             ) : "—"}
                                         </TableCell>
                                         <TableCell>
@@ -257,7 +236,7 @@ export default function AdminScholarships() {
                                                         disabled={processingId === app.id}
                                                         onClick={() => reject(app)}
                                                     >
-                                                        <XCircle className="h-3 w-3 mr-1" /> Reject
+                                                        <XCircle className="h-3 w-3 mr-1" />{" "}{t("adminScholarships.reject", "Reject")}
                                                     </Button>
                                                 </div>
                                             )}
@@ -270,9 +249,6 @@ export default function AdminScholarships() {
                 </CardContent>
             </Card>
                         </div>
-                    </main>
-                </div>
-            </div>
-        </SidebarProvider>
+    </AppShell>
     );
 }

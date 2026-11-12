@@ -1,38 +1,20 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Package, Plus, Pencil, Trash2, BookOpen, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Pencil, Trash2, BookOpen } from "lucide-react";
 import { formatPrice } from "@/services/paymentService";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { useToast } from "@/hooks/use-toast";
 
 interface Course {
@@ -56,6 +38,7 @@ interface Bundle {
 }
 
 export default function AdminBundles() {
+  const { t } = useTranslation();
     const { toast } = useToast();
     const [bundles, setBundles] = useState<Bundle[]>([]);
     const [allCourses, setAllCourses] = useState<Course[]>([]);
@@ -139,7 +122,7 @@ export default function AdminBundles() {
 
     const handleSaveBundle = async () => {
         if (!title || selectedCourseIds.length < 2 || !bundlePrice) {
-            toast({ title: "Error", description: "Title, at least 2 courses, and price are required", variant: "destructive" });
+            toast({ title: t("adminBundles.error", "Error"), description: t("adminBundles.titleAtLeast2CoursesAnd", "Title, at least 2 courses, and price are required"), variant: "destructive" });
             return;
         }
 
@@ -174,7 +157,7 @@ export default function AdminBundles() {
 
                 if (insertError) throw insertError;
 
-                toast({ title: "Success", description: "Bundle updated!" });
+                toast({ title: t("adminBundles.success", "Success"), description: t("adminBundles.bundleUpdated", "Bundle updated!") });
             } else {
                 // Create bundle
                 const { data: newBundle, error: createError } = await supabase
@@ -201,14 +184,14 @@ export default function AdminBundles() {
 
                 if (insertError) throw insertError;
 
-                toast({ title: "Success", description: "Bundle created!" });
+                toast({ title: t("adminBundles.success", "Success"), description: t("adminBundles.bundleCreated", "Bundle created!") });
             }
 
             setDialogOpen(false);
             fetchData();
         } catch (error: any) {
             console.error("Error saving bundle:", error);
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminBundles.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -222,7 +205,7 @@ export default function AdminBundles() {
             if (error) throw error;
             fetchData();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminBundles.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -231,10 +214,10 @@ export default function AdminBundles() {
         try {
             const { error } = await supabase.from("course_bundles").delete().eq("id", bundleId);
             if (error) throw error;
-            toast({ title: "Success", description: "Bundle deleted" });
+            toast({ title: t("adminBundles.success", "Success"), description: t("adminBundles.bundleDeleted", "Bundle deleted") });
             fetchData();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminBundles.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -245,29 +228,19 @@ export default function AdminBundles() {
     };
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col overflow-hidden p-4">
-                    <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-                        <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <SidebarTrigger className="text-white" />
-                                    <div className="text-white">
-                                        <h1 className="text-3xl font-bold mb-1">Course Bundles</h1>
-                                        <p className="text-white/90 text-sm">Create and manage course bundle offers</p>
-                                    </div>
-                                </div>
-                                <Button onClick={openCreateDialog} variant="secondary" size="sm">
+        <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminBundles.courseBundles", "Course Bundles")}
+        description={t("adminBundles.createAndManageCourseBundleOffers", "Create and manage course bundle offers")}
+        actions={<>
+          <Button onClick={openCreateDialog} variant="secondary" size="sm">
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Create Bundle
+                                    {t("adminBundles.createBundle", "Create Bundle")}
                                 </Button>
-                            </div>
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto px-2">
-                        <div className="max-w-7xl mx-auto space-y-6">
+        </>}
+      />
+
+                        <div className="space-y-6">
 
             {/* Bundles Table */}
             <Card>
@@ -275,26 +248,26 @@ export default function AdminBundles() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Bundle</TableHead>
-                                <TableHead>Courses</TableHead>
-                                <TableHead>Original Price</TableHead>
-                                <TableHead>Bundle Price</TableHead>
-                                <TableHead>Discount</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead>{t("adminBundles.bundle", "Bundle")}</TableHead>
+                                <TableHead>{t("adminBundles.courses", "Courses")}</TableHead>
+                                <TableHead>{t("adminBundles.originalPrice", "Original Price")}</TableHead>
+                                <TableHead>{t("adminBundles.bundlePrice", "Bundle Price")}</TableHead>
+                                <TableHead>{t("adminBundles.discount", "Discount")}</TableHead>
+                                <TableHead>{t("adminBundles.status", "Status")}</TableHead>
+                                <TableHead>{t("adminBundles.actions", "Actions")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                        Loading bundles...
+                                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                                        {t("adminBundles.loadingBundles", "Loading bundles...")}
                                     </TableCell>
                                 </TableRow>
                             ) : bundles.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                        No bundles created yet
+                                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                                        {t("adminBundles.noBundlesCreatedYet", "No bundles created yet")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -308,7 +281,7 @@ export default function AdminBundles() {
                                                 <div>
                                                     <p className="font-medium">{bundle.title}</p>
                                                     {bundle.description && (
-                                                        <p className="text-xs text-gray-400 truncate max-w-[200px]">{bundle.description}</p>
+                                                        <p className="text-xs text-muted-foreground/60 truncate max-w-[200px]">{bundle.description}</p>
                                                     )}
                                                 </div>
                                             </TableCell>
@@ -316,20 +289,20 @@ export default function AdminBundles() {
                                                 <div className="space-y-1">
                                                     {bundle.courses.map((c) => (
                                                         <div key={c.id} className="flex items-center gap-1 text-xs">
-                                                            <BookOpen className="h-3 w-3 text-gray-400" />
+                                                            <BookOpen className="h-3 w-3 text-muted-foreground/60" />
                                                             <span className="truncate max-w-[150px]">{c.title}</span>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-sm text-gray-500 line-through">
+                                            <TableCell className="text-sm text-muted-foreground line-through">
                                                 {formatPrice(bundle.original_price, bundle.currency)}
                                             </TableCell>
-                                            <TableCell className="font-bold text-[#006d2c]">
+                                            <TableCell className="font-bold text-primary">
                                                 {formatPrice(bundle.bundle_price, bundle.currency)}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge className="bg-amber-100 text-amber-800">{discount}% OFF</Badge>
+                                                <Badge className="bg-warning-surface text-warning">{t("adminBundles.off", "{{count}}% OFF", { count: discount })}</Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <Switch
@@ -342,7 +315,7 @@ export default function AdminBundles() {
                                                     <Button size="sm" variant="ghost" onClick={() => openEditDialog(bundle)}>
                                                         <Pencil className="h-4 w-4" />
                                                     </Button>
-                                                    <Button size="sm" variant="ghost" className="text-red-500" onClick={() => deleteBundle(bundle.id)}>
+                                                    <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteBundle(bundle.id)}>
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -356,37 +329,33 @@ export default function AdminBundles() {
                 </CardContent>
             </Card>
                         </div>
-                    </main>
-                </div>
-            </div>
-
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{editingBundle ? "Edit Bundle" : "Create Bundle"}</DialogTitle>
+                        <DialogTitle>{editingBundle ? t("adminBundles.editBundle", "Edit Bundle") : t("adminBundles.createBundle", "Create Bundle")}</DialogTitle>
                         <DialogDescription>
-                            {editingBundle ? "Update bundle details" : "Combine courses into a discounted bundle"}
+                            {editingBundle ? t("adminBundles.updateBundleDetails", "Update bundle details") : t("adminBundles.combineCoursesIntoADiscountedBundle", "Combine courses into a discounted bundle")}
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="space-y-4">
                         <div>
-                            <Label>Bundle Title</Label>
-                            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Data Science Starter Pack" />
+                            <Label>{t("adminBundles.bundleTitle", "Bundle Title")}</Label>
+                            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("adminBundles.eGDataScienceStarterPack", "e.g. Data Science Starter Pack")} />
                         </div>
 
                         <div>
-                            <Label>Description (optional)</Label>
-                            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe what's included..." rows={2} />
+                            <Label>{t("adminBundles.descriptionOptional", "Description (optional)")}</Label>
+                            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("adminBundles.describeWhatSIncluded", "Describe what's included...")} rows={2} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <Label>Bundle Price</Label>
+                                <Label>{t("adminBundles.bundlePrice", "Bundle Price")}</Label>
                                 <Input type="number" value={bundlePrice} onChange={(e) => setBundlePrice(e.target.value)} placeholder="0" />
                             </div>
                             <div>
-                                <Label>Currency</Label>
+                                <Label>{t("adminBundles.currency", "Currency")}</Label>
                                 <Select value={currency} onValueChange={setCurrency}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -399,12 +368,12 @@ export default function AdminBundles() {
 
                         {/* Course selector */}
                         <div>
-                            <Label>Select Courses (min. 2)</Label>
+                            <Label>{t("adminBundles.selectCoursesMin2", "Select Courses (min. 2)")}</Label>
                             <div className="border rounded-lg mt-1 max-h-48 overflow-y-auto">
                                 {allCourses.map((course) => (
                                     <label
                                         key={course.id}
-                                        className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-gray-50 border-b last:border-0 ${selectedCourseIds.includes(course.id) ? "bg-green-50" : ""
+                                        className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-muted border-b last:border-0 ${selectedCourseIds.includes(course.id) ? "bg-leaf" : ""
                                             }`}
                                     >
                                         <input
@@ -414,8 +383,8 @@ export default function AdminBundles() {
                                             className="rounded"
                                         />
                                         <span className="flex-1 text-sm">{course.title}</span>
-                                        <span className="text-xs text-gray-400">
-                                            {course.is_free ? "Free" : formatPrice(course.price, course.currency)}
+                                        <span className="text-xs text-muted-foreground/60">
+                                            {course.is_free ? t("adminBundles.free", "Free") : formatPrice(course.price, course.currency)}
                                         </span>
                                     </label>
                                 ))}
@@ -424,17 +393,17 @@ export default function AdminBundles() {
 
                         {/* Price summary */}
                         {selectedCourseIds.length >= 2 && bundlePrice && (
-                            <div className="bg-green-50 p-3 rounded-lg text-sm space-y-1">
+                            <div className="bg-leaf p-3 rounded-lg text-sm space-y-1">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Original total:</span>
-                                    <span className="line-through text-gray-400">{formatPrice(calculateOriginalPrice(), currency)}</span>
+                                    <span className="text-muted-foreground">{t("adminBundles.originalTotal", "Original total:")}</span>
+                                    <span className="line-through text-muted-foreground/60">{formatPrice(calculateOriginalPrice(), currency)}</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-[#006d2c]">
-                                    <span>Bundle price:</span>
+                                <div className="flex justify-between font-bold text-primary">
+                                    <span>{t("adminBundles.bundlePrice2", "Bundle price:")}</span>
                                     <span>{formatPrice(Number(bundlePrice), currency)}</span>
                                 </div>
-                                <div className="flex justify-between text-amber-600 font-medium">
-                                    <span>Savings:</span>
+                                <div className="flex justify-between text-warning font-medium">
+                                    <span>{t("adminBundles.savings", "Savings:")}</span>
                                     <span>
                                         {calculateOriginalPrice() > 0
                                             ? `${Math.round(((calculateOriginalPrice() - Number(bundlePrice)) / calculateOriginalPrice()) * 100)}% OFF`
@@ -444,12 +413,12 @@ export default function AdminBundles() {
                             </div>
                         )}
 
-                        <Button onClick={handleSaveBundle} className="w-full bg-[#006d2c] hover:bg-[#005523]">
-                            {editingBundle ? "Update Bundle" : "Create Bundle"}
+                        <Button onClick={handleSaveBundle} className="w-full bg-primary hover:bg-primary-hover">
+                            {editingBundle ? t("adminBundles.updateBundle", "Update Bundle") : t("adminBundles.createBundle", "Create Bundle")}
                         </Button>
                     </div>
                 </DialogContent>
             </Dialog>
-        </SidebarProvider>
+    </AppShell>
     );
 }

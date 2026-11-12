@@ -1,38 +1,15 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
-import {
-  Users,
-  GraduationCap,
-  BookOpen,
-  TrendingUp,
-  UserCheck,
-  AlertCircle,
-  Activity,
-  DollarSign,
-  Pencil,
-  ClipboardList,
-  Award,
-  ArrowRight
-} from "lucide-react";
+import { Users, GraduationCap, BookOpen, TrendingUp, UserCheck, AlertCircle, Activity, Pencil, ClipboardList, Award, ArrowRight } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 type TimePeriod = "week" | "month" | "year";
 
@@ -52,6 +29,7 @@ interface Stats {
 }
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
@@ -97,7 +75,7 @@ const AdminDashboard = () => {
         .single();
 
       if (profile?.role !== "admin") {
-        toast.error("Access denied. Admin privileges required.");
+        toast.error(t("adminDashboard.accessDeniedAdminPrivilegesRequired", "Access denied. Admin privileges required."));
         navigate("/");
         return;
       }
@@ -105,7 +83,7 @@ const AdminDashboard = () => {
       await fetchStats();
     } catch (error: any) {
       console.error("Error checking admin access:", error);
-      toast.error("Failed to verify admin access");
+      toast.error(t("adminDashboard.failedToVerifyAdminAccess", "Failed to verify admin access"));
       navigate("/");
     }
   };
@@ -201,7 +179,7 @@ const AdminDashboard = () => {
       await fetchCourseStats();
     } catch (error: any) {
       console.error("Error fetching stats:", error);
-      toast.error("Failed to load dashboard stats");
+      toast.error(t("adminDashboard.failedToLoadDashboardStats", "Failed to load dashboard stats"));
     } finally {
       setLoading(false);
     }
@@ -309,113 +287,95 @@ const AdminDashboard = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <AdminSidebar 
-          pendingTeachers={stats.pendingTeachers}
-          pendingCourses={stats.pendingCourses}
-        />
+    <AppShell role="admin" width="wide" badges={{ pendingTeachers: stats.pendingTeachers, pendingCourses: stats.pendingCourses }}>
+      <PageHeader
+        title={t("adminDashboard.adminDashboard", "Admin Dashboard")}
+        description={t("adminDashboard.platformOverviewManagement", "Platform Overview & Management")}
+      />
 
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          {/* Header */}
-          <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6 overflow-hidden">
-            <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="text-white" />
-                  <div className="text-white">
-                    <h1 className="text-3xl font-bold mb-1">Admin Dashboard</h1>
-                    <p className="text-white/90 text-sm">Platform Overview & Management</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <main className="flex-1 overflow-y-auto px-2">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Stats Grid - Row 1 */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
+                <Card className="border-info/30">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                    <Users className="h-4 w-4 text-blue-500" />
+                    <CardTitle className="text-sm font-medium">{t("adminDashboard.totalUsers", "Total Users")}</CardTitle>
+                    <Users className="h-4 w-4 text-info" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{stats.totalUsers}</div>
                     <p className="text-xs text-muted-foreground">
-                      {stats.activeThisWeek} active this week
+                      {t("adminDashboard.activeThisWeek", "{{activeThisWeek}} active this week", { activeThisWeek: stats.activeThisWeek })}
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
+                <Card className="border-primary/30">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Students</CardTitle>
-                    <GraduationCap className="h-4 w-4 text-green-500" />
+                    <CardTitle className="text-sm font-medium">{t("adminDashboard.students", "Students")}</CardTitle>
+                    <GraduationCap className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{stats.totalStudents}</div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      {stats.onlineStudents} online now
+                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                      {stats.onlineStudents}{" "}{t("adminDashboard.onlineNow", "online now")}
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
+                <Card className="border-border">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Teachers</CardTitle>
-                    <UserCheck className="h-4 w-4 text-purple-500" />
+                    <CardTitle className="text-sm font-medium">{t("adminDashboard.teachers", "Teachers")}</CardTitle>
+                    <UserCheck className="h-4 w-4 text-forest" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{stats.totalTeachers}</div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                      {stats.onlineTeachers} online now
+                      <span className="w-2 h-2 rounded-full bg-forest animate-pulse" />
+                      {stats.onlineTeachers}{" "}{t("adminDashboard.onlineNow", "online now")}
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 border-orange-500/20">
+                <Card className="border-warning/30">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">Courses</CardTitle>
-                    <BookOpen className="h-4 w-4 text-orange-500" />
+                    <CardTitle className="text-sm font-medium">{t("adminDashboard.courses", "Courses")}</CardTitle>
+                    <BookOpen className="h-4 w-4 text-warning" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{stats.totalCourses}</div>
                     <p className="text-xs text-muted-foreground">
-                      {stats.pendingCourses} pending review
+                      {t("adminDashboard.pendingReview", "{{pendingCourses}} pending review", { pendingCourses: stats.pendingCourses })}
                     </p>
                   </CardContent>
                 </Card>
               </div>
 
               {/* Online Status Card */}
-              <Card className="bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border-emerald-500/20">
+              <Card className="border-primary/30">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-emerald-500" />
-                    Currently Online
+                    <Activity className="h-4 w-4 text-primary" />
+                    {t("adminDashboard.currentlyOnline", "Currently Online")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center p-3 bg-white/50 rounded-lg">
-                      <div className="text-2xl font-bold text-emerald-600">{stats.onlineUsers}</div>
-                      <p className="text-xs text-muted-foreground">Total Online</p>
+                    <div className="text-center p-3 bg-card rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{stats.onlineUsers}</div>
+                      <p className="text-xs text-muted-foreground">{t("adminDashboard.totalOnline", "Total Online")}</p>
                     </div>
-                    <div className="text-center p-3 bg-white/50 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">{stats.onlineStudents}</div>
-                      <p className="text-xs text-muted-foreground">Students</p>
+                    <div className="text-center p-3 bg-card rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{stats.onlineStudents}</div>
+                      <p className="text-xs text-muted-foreground">{t("adminDashboard.students", "Students")}</p>
                     </div>
-                    <div className="text-center p-3 bg-white/50 rounded-lg">
-                      <div className="text-2xl font-bold text-purple-600">{stats.onlineTeachers}</div>
-                      <p className="text-xs text-muted-foreground">Teachers</p>
+                    <div className="text-center p-3 bg-card rounded-lg">
+                      <div className="text-2xl font-bold text-forest">{stats.onlineTeachers}</div>
+                      <p className="text-xs text-muted-foreground">{t("adminDashboard.teachers", "Teachers")}</p>
                     </div>
                   </div>
                   <p className="text-xs text-center text-muted-foreground mt-3">
-                    Active in the last 15 minutes
+                    {t("adminDashboard.activeInTheLast15Minutes", "Active in the last 15 minutes")}
                   </p>
                 </CardContent>
               </Card>
@@ -426,31 +386,31 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>User Growth</CardTitle>
+                      <CardTitle>{t("adminDashboard.userGrowth", "User Growth")}</CardTitle>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
                           variant={timePeriod === "week" ? "default" : "outline"}
                           onClick={() => setTimePeriod("week")}
-                          className={timePeriod === "week" ? "bg-[#006d2c] hover:bg-[#005a24]" : ""}
+                          className={timePeriod === "week" ? "bg-primary hover:bg-primary-hover" : ""}
                         >
-                          Week
+                          {t("adminDashboard.week", "Week")}
                         </Button>
                         <Button
                           size="sm"
                           variant={timePeriod === "month" ? "default" : "outline"}
                           onClick={() => setTimePeriod("month")}
-                          className={timePeriod === "month" ? "bg-[#006d2c] hover:bg-[#005a24]" : ""}
+                          className={timePeriod === "month" ? "bg-primary hover:bg-primary-hover" : ""}
                         >
-                          Month
+                          {t("adminDashboard.month", "Month")}
                         </Button>
                         <Button
                           size="sm"
                           variant={timePeriod === "year" ? "default" : "outline"}
                           onClick={() => setTimePeriod("year")}
-                          className={timePeriod === "year" ? "bg-[#006d2c] hover:bg-[#005a24]" : ""}
+                          className={timePeriod === "year" ? "bg-primary hover:bg-primary-hover" : ""}
                         >
-                          Year
+                          {t("adminDashboard.year", "Year")}
                         </Button>
                       </div>
                     </div>
@@ -485,60 +445,60 @@ const AdminDashboard = () => {
                 {/* Quick Actions */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Quick Actions</CardTitle>
+                    <CardTitle>{t("adminDashboard.quickActions", "Quick Actions")}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {stats.pendingTeachers > 0 && (
                       <div 
-                        className="flex items-center justify-between p-4 bg-purple-50 border border-purple-200 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
+                        className="flex items-center justify-between p-4 bg-leaf border border-border rounded-lg cursor-pointer hover:bg-leaf transition-colors"
                         onClick={() => navigate("/admin/teacher-approvals")}
                       >
                         <div className="flex items-center gap-3">
-                          <UserCheck className="h-5 w-5 text-purple-600" />
+                          <UserCheck className="h-5 w-5 text-forest" />
                           <div>
-                            <p className="font-semibold text-sm">Pending Teacher Approvals</p>
-                            <p className="text-xs text-gray-600">{stats.pendingTeachers} waiting for review</p>
+                            <p className="font-semibold text-sm">{t("adminDashboard.pendingTeacherApprovals", "Pending Teacher Approvals")}</p>
+                            <p className="text-xs text-muted-foreground">{t("adminDashboard.waitingForReview", "{{pendingTeachers}} waiting for review", { pendingTeachers: stats.pendingTeachers })}</p>
                           </div>
                         </div>
-                        <AlertCircle className="h-5 w-5 text-purple-600" />
+                        <AlertCircle className="h-5 w-5 text-forest" />
                       </div>
                     )}
 
                     {stats.pendingCourses > 0 && (
                       <div 
-                        className="flex items-center justify-between p-4 bg-orange-50 border border-orange-200 rounded-lg cursor-pointer hover:bg-orange-100 transition-colors"
+                        className="flex items-center justify-between p-4 bg-warning-surface border border-warning/30 rounded-lg cursor-pointer hover:bg-warning-surface transition-colors"
                         onClick={() => navigate("/admin/courses")}
                       >
                         <div className="flex items-center gap-3">
-                          <BookOpen className="h-5 w-5 text-orange-600" />
+                          <BookOpen className="h-5 w-5 text-warning" />
                           <div>
-                            <p className="font-semibold text-sm">Pending Course Reviews</p>
-                            <p className="text-xs text-gray-600">{stats.pendingCourses} courses to review</p>
+                            <p className="font-semibold text-sm">{t("adminDashboard.pendingCourseReviews", "Pending Course Reviews")}</p>
+                            <p className="text-xs text-muted-foreground">{t("adminDashboard.coursesToReview", "{{pendingCourses}} courses to review", { pendingCourses: stats.pendingCourses })}</p>
                           </div>
                         </div>
-                        <AlertCircle className="h-5 w-5 text-orange-600" />
+                        <AlertCircle className="h-5 w-5 text-warning" />
                       </div>
                     )}
 
                     {stats.suspendedUsers > 0 && (
                       <div 
-                        className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
+                        className="flex items-center justify-between p-4 bg-destructive-surface border border-destructive/30 rounded-lg cursor-pointer hover:bg-destructive-surface transition-colors"
                         onClick={() => navigate("/admin/users")}
                       >
                         <div className="flex items-center gap-3">
-                          <AlertCircle className="h-5 w-5 text-red-600" />
+                          <AlertCircle className="h-5 w-5 text-destructive" />
                           <div>
-                            <p className="font-semibold text-sm">Suspended Users</p>
-                            <p className="text-xs text-gray-600">{stats.suspendedUsers} accounts suspended</p>
+                            <p className="font-semibold text-sm">{t("adminDashboard.suspendedUsers", "Suspended Users")}</p>
+                            <p className="text-xs text-muted-foreground">{t("adminDashboard.accountsSuspended", "{{suspendedUsers}} accounts suspended", { suspendedUsers: stats.suspendedUsers })}</p>
                           </div>
                         </div>
                       </div>
                     )}
 
                     {stats.pendingTeachers === 0 && stats.pendingCourses === 0 && stats.suspendedUsers === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        <Activity className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                        <p className="text-sm">No pending actions</p>
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Activity className="h-12 w-12 mx-auto mb-2 text-muted-foreground/60" />
+                        <p className="text-sm">{t("adminDashboard.noPendingActions", "No pending actions")}</p>
                       </div>
                     )}
                   </CardContent>
@@ -548,64 +508,64 @@ const AdminDashboard = () => {
               {/* Course Management */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Course Management</CardTitle>
+                  <CardTitle>{t("adminDashboard.courseManagement", "Course Management")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div
                       onClick={() => navigate("/admin/courses")}
-                      className="group cursor-pointer p-4 rounded-lg border border-gray-200 hover:border-[#006d2c] hover:bg-green-50/50 transition-all"
+                      className="group cursor-pointer p-4 rounded-lg border border-border hover:border-primary hover:bg-leaf transition-all"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-[#006d2c]/10 flex items-center justify-center">
-                          <BookOpen className="h-5 w-5 text-[#006d2c]" />
+                        <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
+                          <BookOpen className="h-5 w-5 text-primary" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-[#006d2c] group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-[#006d2c] group-hover:translate-x-1 transition-all" />
                       </div>
-                      <p className="font-semibold text-sm text-gray-900">All Courses</p>
-                      <p className="text-xs text-gray-600 mt-0.5">View, approve, manage</p>
+                      <p className="font-semibold text-sm text-forest">{t("adminDashboard.allCourses", "All Courses")}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.viewApproveManage", "View, approve, manage")}</p>
                     </div>
 
                     <div
                       onClick={() => navigate("/create-course")}
-                      className="group cursor-pointer p-4 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50/50 transition-all"
+                      className="group cursor-pointer p-4 rounded-lg border border-border hover:border-info/30 hover:bg-info-surface transition-all"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                          <Pencil className="h-5 w-5 text-blue-600" />
+                        <div className="w-10 h-10 rounded-lg bg-info-surface flex items-center justify-center">
+                          <Pencil className="h-5 w-5 text-info" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-info group-hover:translate-x-1 transition-all" />
                       </div>
-                      <p className="font-semibold text-sm text-gray-900">Create / Edit Course</p>
-                      <p className="text-xs text-gray-600 mt-0.5">Build or update content</p>
+                      <p className="font-semibold text-sm text-forest">{t("adminDashboard.createEditCourse", "Create / Edit Course")}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.buildOrUpdateContent", "Build or update content")}</p>
                     </div>
 
                     <div
                       onClick={() => navigate("/admin/grades")}
-                      className="group cursor-pointer p-4 rounded-lg border border-gray-200 hover:border-purple-500 hover:bg-purple-50/50 transition-all"
+                      className="group cursor-pointer p-4 rounded-lg border border-border hover:border-border hover:bg-leaf transition-all"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                          <ClipboardList className="h-5 w-5 text-purple-600" />
+                        <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
+                          <ClipboardList className="h-5 w-5 text-forest" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-forest group-hover:translate-x-1 transition-all" />
                       </div>
-                      <p className="font-semibold text-sm text-gray-900">Grades & Quizzes</p>
-                      <p className="text-xs text-gray-600 mt-0.5">Quiz, assignment, capstone</p>
+                      <p className="font-semibold text-sm text-forest">{t("adminDashboard.gradesQuizzes", "Grades & Quizzes")}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.quizAssignmentCapstone", "Quiz, assignment, capstone")}</p>
                     </div>
 
                     <div
                       onClick={() => navigate("/admin/certificates")}
-                      className="group cursor-pointer p-4 rounded-lg border border-gray-200 hover:border-orange-500 hover:bg-orange-50/50 transition-all"
+                      className="group cursor-pointer p-4 rounded-lg border border-border hover:border-warning/30 hover:bg-warning-surface transition-all"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                          <Award className="h-5 w-5 text-orange-600" />
+                        <div className="w-10 h-10 rounded-lg bg-warning-surface flex items-center justify-center">
+                          <Award className="h-5 w-5 text-warning" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-warning group-hover:translate-x-1 transition-all" />
                       </div>
-                      <p className="font-semibold text-sm text-gray-900">Certificates</p>
-                      <p className="text-xs text-gray-600 mt-0.5">Issue & manage</p>
+                      <p className="font-semibold text-sm text-forest">{t("adminDashboard.certificates", "Certificates")}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.issueManage", "Issue & manage")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -614,46 +574,44 @@ const AdminDashboard = () => {
               {/* System Health */}
               <Card>
                 <CardHeader>
-                  <CardTitle>System Health</CardTitle>
+                  <CardTitle>{t("adminDashboard.systemHealth", "System Health")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <div className="flex items-center gap-3 p-4 bg-leaf rounded-lg">
+                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                       <div>
-                        <p className="text-sm font-semibold">System Status</p>
-                        <p className="text-xs text-gray-600">All systems operational</p>
+                        <p className="text-sm font-semibold">{t("adminDashboard.systemStatus", "System Status")}</p>
+                        <p className="text-xs text-muted-foreground">{t("adminDashboard.allSystemsOperational", "All systems operational")}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                      <TrendingUp className="h-5 w-5 text-blue-600" />
+                    <div className="flex items-center gap-3 p-4 bg-info-surface rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-info" />
                       <div>
-                        <p className="text-sm font-semibold">Active This Week</p>
-                        <p className="text-xs text-gray-600">{stats.activeThisWeek} users</p>
+                        <p className="text-sm font-semibold">{t("adminDashboard.activeThisWeek2", "Active This Week")}</p>
+                        <p className="text-xs text-muted-foreground">{t("adminDashboard.users", "{{activeThisWeek}} users", { activeThisWeek: stats.activeThisWeek })}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg">
-                      <Activity className="h-5 w-5 text-emerald-600" />
+                    <div className="flex items-center gap-3 p-4 bg-leaf rounded-lg">
+                      <Activity className="h-5 w-5 text-primary" />
                       <div>
-                        <p className="text-sm font-semibold">Online Now</p>
-                        <p className="text-xs text-gray-600">{stats.onlineUsers} users</p>
+                        <p className="text-sm font-semibold">{t("adminDashboard.onlineNow2", "Online Now")}</p>
+                        <p className="text-xs text-muted-foreground">{t("adminDashboard.users2", "{{onlineUsers}} users", { onlineUsers: stats.onlineUsers })}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-red-600" />
+                    <div className="flex items-center gap-3 p-4 bg-destructive-surface rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-destructive" />
                       <div>
-                        <p className="text-sm font-semibold">Suspended</p>
-                        <p className="text-xs text-gray-600">{stats.suspendedUsers} accounts</p>
+                        <p className="text-sm font-semibold">{t("adminDashboard.suspended", "Suspended")}</p>
+                        <p className="text-xs text-muted-foreground">{t("adminDashboard.accounts", "{{suspendedUsers}} accounts", { suspendedUsers: stats.suspendedUsers })}</p>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+      {/* Header */}
+    </AppShell>
   );
 };
 

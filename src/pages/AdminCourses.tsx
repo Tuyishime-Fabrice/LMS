@@ -1,49 +1,21 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
-import { Search, BookOpen, Star, Check, X, Trash2, Eye, DollarSign, Lock, Unlock, Pencil } from "lucide-react";
+import { Search, Star, Check, Trash2, Eye, Lock, Unlock, Pencil } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
-import { formatPrice } from "@/services/paymentService";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface Course {
   id: string;
@@ -73,6 +45,7 @@ interface Course {
 }
 
 const AdminCourses = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -111,7 +84,7 @@ const AdminCourses = () => {
         .single();
 
       if (profile?.role !== "admin") {
-        toast.error("Access denied");
+        toast.error(t("adminCourses.accessDenied", "Access denied"));
         navigate("/");
         return;
       }
@@ -146,7 +119,7 @@ const AdminCourses = () => {
       setInstalmentCourses(new Set((plans || []).map((p) => p.course_id)));
     } catch (error: any) {
       console.error("Error fetching courses:", error);
-      toast.error("Failed to load courses");
+      toast.error(t("adminCourses.failedToLoadCourses", "Failed to load courses"));
     } finally {
       setLoading(false);
     }
@@ -184,7 +157,7 @@ const AdminCourses = () => {
       fetchCourses();
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error("Failed to update course");
+      toast.error(t("adminCourses.failedToUpdateCourse", "Failed to update course"));
     } finally {
       setProcessing(false);
     }
@@ -200,11 +173,11 @@ const AdminCourses = () => {
 
       if (error) throw error;
 
-      toast.success("Course approved");
+      toast.success(t("adminCourses.courseApproved", "Course approved"));
       fetchCourses();
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error("Failed to approve course");
+      toast.error(t("adminCourses.failedToApproveCourse", "Failed to approve course"));
     } finally {
       setProcessing(false);
     }
@@ -232,7 +205,7 @@ const AdminCourses = () => {
       fetchCourses();
     } catch (error: any) {
       console.error("Error deleting course:", error);
-      toast.error(error.message || "Failed to delete course");
+      toast.error(error.message || t("adminCourses.failedToDeleteCourse", "Failed to delete course"));
     } finally {
       setProcessing(false);
     }
@@ -262,14 +235,14 @@ const AdminCourses = () => {
 
       if (error) throw error;
       if (!data || data.length === 0) {
-        toast.error("Update blocked — check admin permissions (RLS policy may be missing)");
+        toast.error(t("adminCourses.updateBlockedCheckAdminPermissionsRls", "Update blocked — check admin permissions (RLS policy may be missing)"));
         return;
       }
-      toast.success("Pricing updated");
+      toast.success(t("adminCourses.pricingUpdated", "Pricing updated"));
       fetchCourses();
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error("Failed to update pricing");
+      toast.error(t("adminCourses.failedToUpdatePricing", "Failed to update pricing"));
     } finally {
       setProcessing(false);
     }
@@ -299,7 +272,7 @@ const AdminCourses = () => {
       toast.success(enabled ? "Instalment plan enabled" : "Instalment plan disabled");
       fetchCourses();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update instalment plan");
+      toast.error(error.message || t("adminCourses.failedToUpdateInstalmentPlan", "Failed to update instalment plan"));
     } finally {
       setProcessing(false);
     }
@@ -317,7 +290,7 @@ const AdminCourses = () => {
       .order('order_index');
 
     if (error) {
-      toast.error('Failed to load chapters');
+      toast.error(t("adminCourses.failedToLoadChapters", "Failed to load chapters"));
       setChaptersLoading(false);
       return;
     }
@@ -340,12 +313,12 @@ const AdminCourses = () => {
       .select('id');
 
     if (error) {
-      toast.error('Failed to update chapter');
+      toast.error(t("adminCourses.failedToUpdateChapter", "Failed to update chapter"));
       return;
     }
 
     if (!data || data.length === 0) {
-      toast.error('Update blocked — run the admin RLS fix migration in Supabase SQL Editor');
+      toast.error(t("adminCourses.updateBlockedRunTheAdminRls", "Update blocked — run the admin RLS fix migration in Supabase SQL Editor"));
       return;
     }
 
@@ -362,37 +335,25 @@ const AdminCourses = () => {
   const pendingCount = courses.filter((c) => c.approval_status === "pending").length;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <AdminSidebar pendingCourses={pendingCount} />
-
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-            <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="text-white" />
-                  <div className="text-white">
-                    <h1 className="text-3xl font-bold mb-1">Course Management</h1>
-                    <p className="text-white/90 text-sm">Manage and approve courses</p>
-                  </div>
-                </div>
-                <Badge variant="secondary" className="text-lg px-4 py-2">
-                  {filteredCourses.length} Courses
+    <AppShell role="admin" width="wide" badges={{ pendingCourses: pendingCount }}>
+      <PageHeader
+        title={t("adminCourses.courseManagement", "Course Management")}
+        description={t("adminCourses.manageAndApproveCourses", "Manage and approve courses")}
+        actions={<>
+          <Badge variant="secondary" className="text-lg px-4 py-2">
+                  {t("adminCourses.courses", "{{count}} Courses", { count: filteredCourses.length })}
                 </Badge>
-              </div>
-            </div>
-          </header>
+        </>}
+      />
 
-          <main className="flex-1 overflow-y-auto px-2">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                       <Input
-                        placeholder="Search courses..."
+                        placeholder={t("adminCourses.searchCourses", "Search courses...")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-10"
@@ -400,13 +361,13 @@ const AdminCourses = () => {
                     </div>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Filter by status" />
+                        <SelectValue placeholder={t("adminCourses.filterByStatus", "Filter by status")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="approved">Approved</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="rejected">Rejected</SelectItem>
+                        <SelectItem value="all">{t("adminCourses.allStatus", "All Status")}</SelectItem>
+                        <SelectItem value="approved">{t("adminCourses.approved", "Approved")}</SelectItem>
+                        <SelectItem value="pending">{t("adminCourses.pending", "Pending")}</SelectItem>
+                        <SelectItem value="rejected">{t("adminCourses.rejected", "Rejected")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -418,13 +379,13 @@ const AdminCourses = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Teacher</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Featured</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>{t("adminCourses.course", "Course")}</TableHead>
+                        <TableHead>{t("adminCourses.teacher", "Teacher")}</TableHead>
+                        <TableHead>{t("adminCourses.price", "Price")}</TableHead>
+                        <TableHead>{t("adminCourses.status", "Status")}</TableHead>
+                        <TableHead>{t("adminCourses.featured", "Featured")}</TableHead>
+                        <TableHead>{t("adminCourses.created", "Created")}</TableHead>
+                        <TableHead>{t("adminCourses.actions", "Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -433,7 +394,7 @@ const AdminCourses = () => {
                           <TableCell>
                             <div>
                               <p className="font-medium">{course.title}</p>
-                              <p className="text-sm text-gray-600 line-clamp-1">
+                              <p className="text-sm text-muted-foreground line-clamp-1">
                                 {course.description}
                               </p>
                             </div>
@@ -441,7 +402,7 @@ const AdminCourses = () => {
                           <TableCell>
                             <div>
                               <p className="font-medium">{course.profiles?.full_name}</p>
-                              <p className="text-sm text-gray-600">{course.profiles?.email}</p>
+                              <p className="text-sm text-muted-foreground">{course.profiles?.email}</p>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -452,8 +413,8 @@ const AdminCourses = () => {
                                   onCheckedChange={(checked) => updatePricing(course.id, { is_free: !checked })}
                                   disabled={processing}
                                 />
-                                <span className="text-xs text-gray-500">
-                                  {course.is_free ? "Free" : "Paid"}
+                                <span className="text-xs text-muted-foreground">
+                                  {course.is_free ? t("adminCourses.free", "Free") : t("adminCourses.paid", "Paid")}
                                 </span>
                               </div>
                               {!course.is_free && (
@@ -488,13 +449,13 @@ const AdminCourses = () => {
                                       }
                                       disabled={processing}
                                     />
-                                    <span className="text-xs text-gray-500">Scholarships open</span>
+                                    <span className="text-xs text-muted-foreground">{t("adminCourses.scholarshipsOpen", "Scholarships open")}</span>
                                   </div>
                                   {course.scholarship_open && (
                                     <Input
                                       type="number"
                                       className="h-7 w-20 text-xs"
-                                      placeholder="Max slots"
+                                      placeholder={t("adminCourses.maxSlots", "Max slots")}
                                       defaultValue={course.scholarship_slots_max ?? ""}
                                       onBlur={(e) =>
                                         updatePricing(course.id, {
@@ -509,11 +470,11 @@ const AdminCourses = () => {
                               )}
                               {!course.is_free && (
                                 <div className="flex flex-col gap-1 mt-2 border-t pt-2">
-                                  <span className="text-[10px] font-semibold text-gray-500 uppercase">Early bird</span>
+                                  <span className="text-[10px] font-semibold text-muted-foreground uppercase">{t("adminCourses.earlyBird", "Early bird")}</span>
                                   <Input
                                     type="number"
                                     className="h-7 w-20 text-xs"
-                                    placeholder="Price"
+                                    placeholder={t("adminCourses.price", "Price")}
                                     defaultValue={course.early_bird_price ?? ""}
                                     onBlur={(e) =>
                                       updatePricing(course.id, {
@@ -554,7 +515,7 @@ const AdminCourses = () => {
                                   <Input
                                     type="number"
                                     className="h-7 w-20 text-xs"
-                                    placeholder="Max seats"
+                                    placeholder={t("adminCourses.maxSeats", "Max seats")}
                                     defaultValue={course.early_bird_max_seats ?? ""}
                                     onBlur={(e) =>
                                       updatePricing(course.id, {
@@ -572,7 +533,7 @@ const AdminCourses = () => {
                                       }
                                       disabled={processing}
                                     />
-                                    <span className="text-xs text-gray-500">Instalments</span>
+                                    <span className="text-xs text-muted-foreground">{t("adminCourses.instalments", "Instalments")}</span>
                                   </div>
                                 </div>
                               )}
@@ -582,10 +543,10 @@ const AdminCourses = () => {
                             <Badge
                               className={
                                 course.approval_status === "approved"
-                                  ? "bg-green-100 text-green-800"
+                                  ? "bg-leaf text-leaf-foreground"
                                   : course.approval_status === "pending"
-                                    ? "bg-orange-100 text-orange-800"
-                                    : "bg-red-100 text-red-800"
+                                    ? "bg-warning-surface text-warning"
+                                    : "bg-destructive-surface text-destructive"
                               }
                             >
                               {course.approval_status}
@@ -604,7 +565,7 @@ const AdminCourses = () => {
                               />
                             </Button>
                           </TableCell>
-                          <TableCell className="text-sm text-gray-600">
+                          <TableCell className="text-sm text-muted-foreground">
                             {new Date(course.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -614,10 +575,10 @@ const AdminCourses = () => {
                                   size="sm"
                                   onClick={() => approveCourse(course.id)}
                                   disabled={processing}
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-primary hover:bg-primary-hover"
                                 >
                                   <Check className="h-4 w-4 mr-1" />
-                                  Approve
+                                  {t("adminCourses.approve", "Approve")}
                                 </Button>
                               )}
                               {!course.is_free && (
@@ -625,10 +586,10 @@ const AdminCourses = () => {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => openChapterPreviewDialog(course)}
-                                  className="border-orange-300 text-orange-700 hover:bg-orange-50"
+                                  className="border-warning/30 text-warning hover:bg-warning-surface"
                                 >
                                   <Lock className="h-4 w-4 mr-1" />
-                                  Access
+                                  {t("adminCourses.access", "Access")}
                                 </Button>
                               )}
                               <Button
@@ -637,16 +598,16 @@ const AdminCourses = () => {
                                 onClick={() => navigate(`/course/${course.id}`)}
                               >
                                 <Eye className="h-4 w-4 mr-1" />
-                                View
+                                {t("adminCourses.view", "View")}
                               </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => navigate(`/create-course?edit=${course.id}`)}
-                                className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                                className="border-info/30 text-info hover:bg-info-surface"
                               >
                                 <Pencil className="h-4 w-4 mr-1" />
-                                Edit
+                                {t("adminCourses.edit", "Edit")}
                               </Button>
                               <Button
                                 size="sm"
@@ -655,7 +616,7 @@ const AdminCourses = () => {
                                 disabled={processing}
                               >
                                 <Trash2 className="h-4 w-4 mr-1" />
-                                Delete
+                                {t("adminCourses.delete", "Delete")}
                               </Button>
                             </div>
                           </TableCell>
@@ -666,65 +627,59 @@ const AdminCourses = () => {
                 </CardContent>
               </Card>
             </div>
-          </main>
-        </div>
-      </div>
-
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Course</AlertDialogTitle>
+            <AlertDialogTitle>{t("adminCourses.deleteCourse", "Delete Course")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{courseToDelete?.title}"? This action cannot be undone.
-              All course content, enrollments, and related data will be permanently deleted.
+              {t("adminCourses.areYouSureYouWantTo", "Are you sure you want to delete \"{{title}}\"? This action cannot be undone. All course content, enrollments, and related data will be permanently deleted.", { title: courseToDelete?.title })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={processing}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={processing}>{t("adminCourses.cancel", "Cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               disabled={processing}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90"
             >
-              {processing ? "Deleting..." : "Delete Course"}
+              {processing ? t("adminCourses.deleting", "Deleting...") : t("adminCourses.deleteCourse", "Delete Course")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
       {/* Chapter Preview Dialog */}
       <Dialog open={showChapterDialog} onOpenChange={setShowChapterDialog}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Manage Chapter Access</DialogTitle>
+            <DialogTitle>{t("adminCourses.manageChapterAccess", "Manage Chapter Access")}</DialogTitle>
             <DialogDescription>
-              {selectedCourseForChapters?.title} — Toggle which chapters are free to preview
+              {t("adminCourses.toggleWhichChaptersAreFreeTo", "{{title}} — Toggle which chapters are free to preview", { title: selectedCourseForChapters?.title })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {chaptersLoading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto" />
-                <p className="text-sm text-gray-500 mt-2">Loading chapters...</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary/30 mx-auto" />
+                <p className="text-sm text-muted-foreground mt-2">{t("adminCourses.loadingChapters", "Loading chapters...")}</p>
               </div>
             ) : chaptersList.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">No chapters found for this course</p>
+              <p className="text-center text-muted-foreground py-8">{t("adminCourses.noChaptersFoundForThisCourse", "No chapters found for this course")}</p>
             ) : (
               chaptersList.map((chapter, index) => (
-                <div key={chapter.id} className="flex items-center gap-3 p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-600">
+                <div key={chapter.id} className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-sm font-bold text-muted-foreground">
                     {index + 1}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{chapter.title}</p>
-                    <p className="text-xs text-gray-500">{chapter.lesson_count} lesson{chapter.lesson_count !== 1 ? 's' : ''}</p>
+                    <p className="text-xs text-muted-foreground">{chapter.lesson_count} lesson{chapter.lesson_count !== 1 ? 's' : ''}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     {chapter.is_preview ? (
-                      <Badge className="bg-blue-100 text-blue-700 text-[10px] px-1.5"><Unlock className="h-3 w-3 mr-0.5" />Free</Badge>
+                      <Badge className="bg-info-surface text-info text-[10px] px-1.5"><Unlock className="h-3 w-3 mr-0.5" />{t("adminCourses.free", "Free")}</Badge>
                     ) : (
-                      <Badge className="bg-gray-100 text-gray-500 text-[10px] px-1.5"><Lock className="h-3 w-3 mr-0.5" />Locked</Badge>
+                      <Badge className="bg-muted text-muted-foreground text-[10px] px-1.5"><Lock className="h-3 w-3 mr-0.5" />{t("adminCourses.locked", "Locked")}</Badge>
                     )}
                     <Switch
                       checked={chapter.is_preview}
@@ -735,12 +690,12 @@ const AdminCourses = () => {
               ))
             )}
           </div>
-          <p className="text-xs text-gray-400 mt-2">
-            Free preview chapters can be accessed by anyone. Locked chapters require purchase.
+          <p className="text-xs text-muted-foreground/60 mt-2">
+            {t("adminCourses.freePreviewChaptersCanBeAccessed", "Free preview chapters can be accessed by anyone. Locked chapters require purchase.")}
           </p>
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,34 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { formatPrice } from "@/services/paymentService";
 import { useToast } from "@/hooks/use-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { toast as sonnerToast } from "sonner";
 
 interface CourseOption {
@@ -70,6 +52,7 @@ interface Coupon {
 }
 
 export default function AdminCoupons() {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const { toast } = useToast();
     const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -195,28 +178,28 @@ export default function AdminCoupons() {
     const handleSave = async () => {
         const trimmedCode = code.trim().toUpperCase();
         if (!trimmedCode) {
-            toast({ title: "Error", description: "Coupon code is required", variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: t("adminCoupons.couponCodeIsRequired", "Coupon code is required"), variant: "destructive" });
             return;
         }
 
         const value = Number(discountValue);
         if (!Number.isFinite(value) || value <= 0) {
-            toast({ title: "Error", description: "Enter a valid discount value", variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: t("adminCoupons.enterAValidDiscountValue", "Enter a valid discount value"), variant: "destructive" });
             return;
         }
 
         if (discountType === "percent" && value > 100) {
-            toast({ title: "Error", description: "Percent discount cannot exceed 100", variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: t("adminCoupons.percentDiscountCannotExceed100", "Percent discount cannot exceed 100"), variant: "destructive" });
             return;
         }
 
         if (appliesTo === "course" && !courseId) {
-            toast({ title: "Error", description: "Select a course for this coupon", variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: t("adminCoupons.selectACourseForThisCoupon", "Select a course for this coupon"), variant: "destructive" });
             return;
         }
 
         if (appliesTo === "bundle" && !bundleId) {
-            toast({ title: "Error", description: "Select a bundle for this coupon", variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: t("adminCoupons.selectABundleForThisCoupon", "Select a bundle for this coupon"), variant: "destructive" });
             return;
         }
 
@@ -242,17 +225,17 @@ export default function AdminCoupons() {
             if (editingCoupon) {
                 const { error } = await supabase.from("coupons").update(payload).eq("id", editingCoupon.id);
                 if (error) throw error;
-                toast({ title: "Success", description: "Coupon updated" });
+                toast({ title: t("adminCoupons.success", "Success"), description: t("adminCoupons.couponUpdated", "Coupon updated") });
             } else {
                 const { error } = await supabase.from("coupons").insert(payload);
                 if (error) throw error;
-                toast({ title: "Success", description: "Coupon created" });
+                toast({ title: t("adminCoupons.success", "Success"), description: t("adminCoupons.couponCreated", "Coupon created") });
             }
 
             setDialogOpen(false);
             fetchData();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -265,7 +248,7 @@ export default function AdminCoupons() {
             if (error) throw error;
             fetchData();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -274,10 +257,10 @@ export default function AdminCoupons() {
         try {
             const { error } = await supabase.from("coupons").delete().eq("id", couponId);
             if (error) throw error;
-            toast({ title: "Success", description: "Coupon deleted" });
+            toast({ title: t("adminCoupons.success", "Success"), description: t("adminCoupons.couponDeleted", "Coupon deleted") });
             fetchData();
         } catch (error: any) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            toast({ title: t("adminCoupons.error", "Error"), description: error.message, variant: "destructive" });
         }
     };
 
@@ -316,67 +299,57 @@ export default function AdminCoupons() {
     }
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col overflow-hidden p-4">
-                    <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-                        <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <SidebarTrigger className="text-white" />
-                                    <div className="text-white">
-                                        <h1 className="text-3xl font-bold mb-1">Coupon Codes</h1>
-                                        <p className="text-white/90 text-sm">Create discount codes for courses and bundles</p>
-                                    </div>
-                                </div>
-                                <Button onClick={openCreateDialog} variant="secondary" size="sm">
+        <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminCoupons.couponCodes", "Coupon Codes")}
+        description={t("adminCoupons.createDiscountCodesForCoursesAnd", "Create discount codes for courses and bundles")}
+        actions={<>
+          <Button onClick={openCreateDialog} variant="secondary" size="sm">
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Create Coupon
+                                    {t("adminCoupons.createCoupon", "Create Coupon")}
                                 </Button>
-                            </div>
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto px-2">
-                        <div className="max-w-7xl mx-auto space-y-6">
+        </>}
+      />
+
+                        <div className="space-y-6">
 
             <Card>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Code</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Discount</TableHead>
-                                <TableHead>Scope</TableHead>
-                                <TableHead>Usage</TableHead>
-                                <TableHead>Valid Until</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead>{t("adminCoupons.code", "Code")}</TableHead>
+                                <TableHead>{t("adminCoupons.type", "Type")}</TableHead>
+                                <TableHead>{t("adminCoupons.discount", "Discount")}</TableHead>
+                                <TableHead>{t("adminCoupons.scope", "Scope")}</TableHead>
+                                <TableHead>{t("adminCoupons.usage", "Usage")}</TableHead>
+                                <TableHead>{t("adminCoupons.validUntil", "Valid Until")}</TableHead>
+                                <TableHead>{t("adminCoupons.status", "Status")}</TableHead>
+                                <TableHead>{t("adminCoupons.actions", "Actions")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                                        Loading coupons...
+                                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                                        {t("adminCoupons.loadingCoupons", "Loading coupons...")}
                                     </TableCell>
                                 </TableRow>
                             ) : coupons.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                                        No coupons yet. Create your first discount code.
+                                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                                        {t("adminCoupons.noCouponsYetCreateYourFirst", "No coupons yet. Create your first discount code.")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 coupons.map((coupon) => (
                                     <TableRow key={coupon.id}>
                                         <TableCell>
-                                            <code className="font-semibold bg-gray-100 px-2 py-1 rounded">
+                                            <code className="font-semibold bg-muted px-2 py-1 rounded">
                                                 {coupon.code}
                                             </code>
                                             {coupon.description && (
-                                                <p className="text-xs text-gray-500 mt-1">{coupon.description}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{coupon.description}</p>
                                             )}
                                         </TableCell>
                                         <TableCell>
@@ -386,16 +359,16 @@ export default function AdminCoupons() {
                                         <TableCell className="text-sm">{scopeLabel(coupon)}</TableCell>
                                         <TableCell className="text-sm">
                                             {coupon.uses_count}
-                                            {coupon.max_uses != null ? ` / ${coupon.max_uses}` : " uses"}
+                                            {coupon.max_uses != null ? ` / ${coupon.max_uses}` : t("adminCoupons.uses", "uses")}
                                         </TableCell>
-                                        <TableCell className="text-sm text-gray-500">
+                                        <TableCell className="text-sm text-muted-foreground">
                                             {coupon.valid_until
                                                 ? new Date(coupon.valid_until).toLocaleDateString()
-                                                : "No expiry"}
+                                                : t("adminCoupons.noExpiry", "No expiry")}
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant={coupon.is_active ? "default" : "secondary"}>
-                                                {coupon.is_active ? "Active" : "Inactive"}
+                                                {coupon.is_active ? t("adminCoupons.active", "Active") : t("adminCoupons.inactive", "Inactive")}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
@@ -416,7 +389,7 @@ export default function AdminCoupons() {
                                                     size="icon"
                                                     onClick={() => deleteCoupon(coupon.id)}
                                                 >
-                                                    <Trash2 className="h-4 w-4 text-red-500" />
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
                                                 </Button>
                                             </div>
                                         </TableCell>
@@ -428,42 +401,38 @@ export default function AdminCoupons() {
                 </CardContent>
             </Card>
                         </div>
-                    </main>
-                </div>
-            </div>
-
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{editingCoupon ? "Edit Coupon" : "Create Coupon"}</DialogTitle>
+                        <DialogTitle>{editingCoupon ? t("adminCoupons.editCoupon", "Edit Coupon") : t("adminCoupons.createCoupon", "Create Coupon")}</DialogTitle>
                         <DialogDescription>
-                            Students enter this code at checkout. Discount is applied server-side.
+                            {t("adminCoupons.studentsEnterThisCodeAtCheckout", "Students enter this code at checkout. Discount is applied server-side.")}
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label>Code</Label>
+                            <Label>{t("adminCoupons.code", "Code")}</Label>
                             <Input
                                 value={code}
                                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                                placeholder="SUMMER20"
+                                placeholder={t("adminCoupons.summer20", "SUMMER20")}
                                 className="uppercase"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Description (optional)</Label>
+                            <Label>{t("adminCoupons.descriptionOptional", "Description (optional)")}</Label>
                             <Textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Summer promotion"
+                                placeholder={t("adminCoupons.summerPromotion", "Summer promotion")}
                                 rows={2}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Coupon type</Label>
+                            <Label>{t("adminCoupons.couponType", "Coupon type")}</Label>
                             <Select
                                 value={couponType}
                                 onValueChange={(v) => setCouponType(v as Coupon["coupon_type"])}
@@ -472,18 +441,18 @@ export default function AdminCoupons() {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="promo">Promo</SelectItem>
-                                    <SelectItem value="scholarship">Scholarship</SelectItem>
-                                    <SelectItem value="early_bird">Early bird</SelectItem>
-                                    <SelectItem value="staff">Staff</SelectItem>
-                                    <SelectItem value="referral">Referral</SelectItem>
+                                    <SelectItem value="promo">{t("adminCoupons.promo", "Promo")}</SelectItem>
+                                    <SelectItem value="scholarship">{t("adminCoupons.scholarship", "Scholarship")}</SelectItem>
+                                    <SelectItem value="early_bird">{t("adminCoupons.earlyBird", "Early bird")}</SelectItem>
+                                    <SelectItem value="staff">{t("adminCoupons.staff", "Staff")}</SelectItem>
+                                    <SelectItem value="referral">{t("adminCoupons.referral", "Referral")}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label>Discount Type</Label>
+                                <Label>{t("adminCoupons.discountType", "Discount Type")}</Label>
                                 <Select
                                     value={discountType}
                                     onValueChange={(v) => setDiscountType(v as "percent" | "fixed")}
@@ -492,13 +461,13 @@ export default function AdminCoupons() {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="percent">Percent (%)</SelectItem>
-                                        <SelectItem value="fixed">Fixed amount</SelectItem>
+                                        <SelectItem value="percent">{t("adminCoupons.percent", "Percent (%)")}</SelectItem>
+                                        <SelectItem value="fixed">{t("adminCoupons.fixedAmount", "Fixed amount")}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label>Value</Label>
+                                <Label>{t("adminCoupons.value", "Value")}</Label>
                                 <Input
                                     type="number"
                                     min="0"
@@ -512,7 +481,7 @@ export default function AdminCoupons() {
 
                         {discountType === "fixed" && (
                             <div className="space-y-2">
-                                <Label>Currency</Label>
+                                <Label>{t("adminCoupons.currency", "Currency")}</Label>
                                 <Select value={currency} onValueChange={setCurrency}>
                                     <SelectTrigger>
                                         <SelectValue />
@@ -527,17 +496,17 @@ export default function AdminCoupons() {
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label>Max total uses</Label>
+                                <Label>{t("adminCoupons.maxTotalUses", "Max total uses")}</Label>
                                 <Input
                                     type="number"
                                     min="1"
                                     value={maxUses}
                                     onChange={(e) => setMaxUses(e.target.value)}
-                                    placeholder="Unlimited"
+                                    placeholder={t("adminCoupons.unlimited", "Unlimited")}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>Max uses per student</Label>
+                                <Label>{t("adminCoupons.maxUsesPerStudent", "Max uses per student")}</Label>
                                 <Input
                                     type="number"
                                     min="1"
@@ -548,7 +517,7 @@ export default function AdminCoupons() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Applies to</Label>
+                            <Label>{t("adminCoupons.appliesTo", "Applies to")}</Label>
                             <Select
                                 value={appliesTo}
                                 onValueChange={(v) => setAppliesTo(v as "all" | "course" | "bundle")}
@@ -557,19 +526,19 @@ export default function AdminCoupons() {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All purchases</SelectItem>
-                                    <SelectItem value="course">Specific course</SelectItem>
-                                    <SelectItem value="bundle">Specific bundle</SelectItem>
+                                    <SelectItem value="all">{t("adminCoupons.allPurchases", "All purchases")}</SelectItem>
+                                    <SelectItem value="course">{t("adminCoupons.specificCourse", "Specific course")}</SelectItem>
+                                    <SelectItem value="bundle">{t("adminCoupons.specificBundle", "Specific bundle")}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         {appliesTo === "course" && (
                             <div className="space-y-2">
-                                <Label>Course</Label>
+                                <Label>{t("adminCoupons.course", "Course")}</Label>
                                 <Select value={courseId} onValueChange={setCourseId}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select course" />
+                                        <SelectValue placeholder={t("adminCoupons.selectCourse", "Select course")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {courses.map((course) => (
@@ -584,10 +553,10 @@ export default function AdminCoupons() {
 
                         {appliesTo === "bundle" && (
                             <div className="space-y-2">
-                                <Label>Bundle</Label>
+                                <Label>{t("adminCoupons.bundle", "Bundle")}</Label>
                                 <Select value={bundleId} onValueChange={setBundleId}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select bundle" />
+                                        <SelectValue placeholder={t("adminCoupons.selectBundle", "Select bundle")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {bundles.map((bundle) => (
@@ -601,19 +570,19 @@ export default function AdminCoupons() {
                         )}
 
                         <div className="space-y-2">
-                            <Label>Minimum purchase (optional)</Label>
+                            <Label>{t("adminCoupons.minimumPurchaseOptional", "Minimum purchase (optional)")}</Label>
                             <Input
                                 type="number"
                                 min="0"
                                 value={minPurchase}
                                 onChange={(e) => setMinPurchase(e.target.value)}
-                                placeholder="No minimum"
+                                placeholder={t("adminCoupons.noMinimum", "No minimum")}
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label>Valid from</Label>
+                                <Label>{t("adminCoupons.validFrom", "Valid from")}</Label>
                                 <Input
                                     type="datetime-local"
                                     value={validFrom}
@@ -621,7 +590,7 @@ export default function AdminCoupons() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>Valid until</Label>
+                                <Label>{t("adminCoupons.validUntil2", "Valid until")}</Label>
                                 <Input
                                     type="datetime-local"
                                     value={validUntil}
@@ -631,21 +600,21 @@ export default function AdminCoupons() {
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <Label>Active</Label>
+                            <Label>{t("adminCoupons.active", "Active")}</Label>
                             <Switch checked={isActive} onCheckedChange={setIsActive} />
                         </div>
 
                         <div className="flex gap-2 pt-2">
                             <Button variant="outline" className="flex-1" onClick={() => setDialogOpen(false)}>
-                                Cancel
+                                {t("adminCoupons.cancel", "Cancel")}
                             </Button>
-                            <Button className="flex-1 bg-[#006d2c] hover:bg-[#005523]" onClick={handleSave}>
-                                {editingCoupon ? "Save Changes" : "Create Coupon"}
+                            <Button className="flex-1 bg-primary hover:bg-primary-hover" onClick={handleSave}>
+                                {editingCoupon ? t("adminCoupons.saveChanges", "Save Changes") : t("adminCoupons.createCoupon", "Create Coupon")}
                             </Button>
                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
-        </SidebarProvider>
+    </AppShell>
     );
 }

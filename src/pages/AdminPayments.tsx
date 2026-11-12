@@ -1,30 +1,18 @@
 import { useEffect, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DollarSign, Search, Filter, CheckCircle, XCircle, Clock, CreditCard, Smartphone, Tag } from "lucide-react";
 import { formatPrice } from "@/services/paymentService";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { toast } from "sonner";
 
 interface Payment {
@@ -75,6 +63,7 @@ interface CouponStat {
 }
 
 export default function AdminPayments() {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState(true);
@@ -104,7 +93,7 @@ export default function AdminPayments() {
                 .single();
 
             if (profile?.role !== "admin") {
-                toast.error("Access denied. Admin privileges required.");
+                toast.error(t("adminPayments.accessDeniedAdminPrivilegesRequired", "Access denied. Admin privileges required."));
                 navigate("/");
                 return;
             }
@@ -113,7 +102,7 @@ export default function AdminPayments() {
             await Promise.all([fetchPayments(), fetchInstalments(), fetchCouponStats()]);
         } catch (error) {
             console.error("Error checking admin access:", error);
-            toast.error("Failed to verify admin access");
+            toast.error(t("adminPayments.failedToVerifyAdminAccess", "Failed to verify admin access"));
             navigate("/");
         }
     };
@@ -249,19 +238,19 @@ export default function AdminPayments() {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case "success":
-                return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Success</Badge>;
+                return <Badge className="bg-leaf text-leaf-foreground"><CheckCircle className="h-3 w-3 mr-1" />{t("adminPayments.success", "Success")}</Badge>;
             case "pending":
-                return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+                return <Badge className="bg-warning-surface text-warning"><Clock className="h-3 w-3 mr-1" />{t("adminPayments.pending", "Pending")}</Badge>;
             case "failed":
-                return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Failed</Badge>;
+                return <Badge className="bg-destructive-surface text-destructive"><XCircle className="h-3 w-3 mr-1" />{t("adminPayments.failed", "Failed")}</Badge>;
             default:
                 return <Badge variant="outline">{status}</Badge>;
         }
     };
 
     const getMethodIcon = (method: string | null) => {
-        if (method === "MTN_MOMO_RWA") return <Smartphone className="h-4 w-4 text-yellow-600" />;
-        if (method === "card") return <CreditCard className="h-4 w-4 text-blue-600" />;
+        if (method === "MTN_MOMO_RWA") return <Smartphone className="h-4 w-4 text-warning" />;
+        if (method === "card") return <CreditCard className="h-4 w-4 text-info" />;
         return null;
     };
 
@@ -270,21 +259,12 @@ export default function AdminPayments() {
     }
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col overflow-hidden p-4">
-                    <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-                        <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <SidebarTrigger className="text-white" />
-                                    <div className="text-white">
-                                        <h1 className="text-3xl font-bold mb-1">Payments</h1>
-                                        <p className="text-white/90 text-sm">Track all course and bundle purchases</p>
-                                    </div>
-                                </div>
-                                <Button
+        <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminPayments.payments", "Payments")}
+        description={t("adminPayments.trackAllCourseAndBundlePurchases", "Track all course and bundle purchases")}
+        actions={<>
+          <Button
                                     onClick={() => {
                                         fetchPayments();
                                         fetchInstalments();
@@ -293,13 +273,12 @@ export default function AdminPayments() {
                                     variant="secondary"
                                     size="sm"
                                 >
-                                    Refresh
+                                    {t("adminPayments.refresh", "Refresh")}
                                 </Button>
-                            </div>
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto px-2">
-                        <div className="max-w-7xl mx-auto space-y-6">
+        </>}
+      />
+
+                        <div className="space-y-6">
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -307,10 +286,10 @@ export default function AdminPayments() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Total Revenue</p>
-                                <p className="text-2xl font-bold text-green-700">{formatPrice(stats.revenue, "RWF")}</p>
+                                <p className="text-sm text-muted-foreground">{t("adminPayments.totalRevenue", "Total Revenue")}</p>
+                                <p className="text-2xl font-bold text-primary">{formatPrice(stats.revenue, "RWF")}</p>
                             </div>
-                            <DollarSign className="h-8 w-8 text-green-500 opacity-50" />
+                            <DollarSign className="h-8 w-8 text-primary opacity-50" />
                         </div>
                     </CardContent>
                 </Card>
@@ -318,10 +297,10 @@ export default function AdminPayments() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Successful</p>
-                                <p className="text-2xl font-bold text-green-600">{stats.success}</p>
+                                <p className="text-sm text-muted-foreground">{t("adminPayments.successful", "Successful")}</p>
+                                <p className="text-2xl font-bold text-primary">{stats.success}</p>
                             </div>
-                            <CheckCircle className="h-8 w-8 text-green-400 opacity-50" />
+                            <CheckCircle className="h-8 w-8 text-primary opacity-50" />
                         </div>
                     </CardContent>
                 </Card>
@@ -329,10 +308,10 @@ export default function AdminPayments() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Pending</p>
-                                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                                <p className="text-sm text-muted-foreground">{t("adminPayments.pending", "Pending")}</p>
+                                <p className="text-2xl font-bold text-warning">{stats.pending}</p>
                             </div>
-                            <Clock className="h-8 w-8 text-yellow-400 opacity-50" />
+                            <Clock className="h-8 w-8 text-warning opacity-50" />
                         </div>
                     </CardContent>
                 </Card>
@@ -340,10 +319,10 @@ export default function AdminPayments() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Failed</p>
-                                <p className="text-2xl font-bold text-red-600">{stats.failed}</p>
+                                <p className="text-sm text-muted-foreground">{t("adminPayments.failed", "Failed")}</p>
+                                <p className="text-2xl font-bold text-destructive">{stats.failed}</p>
                             </div>
-                            <XCircle className="h-8 w-8 text-red-400 opacity-50" />
+                            <XCircle className="h-8 w-8 text-destructive opacity-50" />
                         </div>
                     </CardContent>
                 </Card>
@@ -352,13 +331,13 @@ export default function AdminPayments() {
             <div className="flex flex-col sm:flex-row gap-3">
                 <Select value={period} onValueChange={setPeriod}>
                     <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Period" />
+                        <SelectValue placeholder={t("adminPayments.period", "Period")} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="7d">Last 7 days</SelectItem>
-                        <SelectItem value="30d">Last 30 days</SelectItem>
-                        <SelectItem value="90d">Last 90 days</SelectItem>
-                        <SelectItem value="all">All time</SelectItem>
+                        <SelectItem value="7d">{t("adminPayments.last7Days", "Last 7 days")}</SelectItem>
+                        <SelectItem value="30d">{t("adminPayments.last30Days", "Last 30 days")}</SelectItem>
+                        <SelectItem value="90d">{t("adminPayments.last90Days", "Last 90 days")}</SelectItem>
+                        <SelectItem value="all">{t("adminPayments.allTime", "All time")}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -367,12 +346,12 @@ export default function AdminPayments() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">Revenue by payment track</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("adminPayments.revenueByPaymentTrack", "Revenue by payment track")}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {Object.entries(trackStats).map(([track, amount]) => (
                                 <div key={track} className="flex justify-between text-sm">
-                                    <span className="capitalize text-gray-600">{track.replace("_", " ")}</span>
+                                    <span className="capitalize text-muted-foreground">{track.replace("_", " ")}</span>
                                     <span className="font-semibold">{formatPrice(amount, "RWF")}</span>
                                 </div>
                             ))}
@@ -380,11 +359,11 @@ export default function AdminPayments() {
                     </Card>
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">Top courses by revenue</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("adminPayments.topCoursesByRevenue", "Top courses by revenue")}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {topCourses.length === 0 ? (
-                                <p className="text-sm text-gray-500">No course revenue in this period</p>
+                                <p className="text-sm text-muted-foreground">{t("adminPayments.noCourseRevenueInThisPeriod", "No course revenue in this period")}</p>
                             ) : (
                                 topCourses.map((c) => (
                                     <div key={c.title} className="flex justify-between text-sm">
@@ -401,9 +380,9 @@ export default function AdminPayments() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                     <Input
-                        placeholder="Search by student, course, or reference ID..."
+                        placeholder={t("adminPayments.searchByStudentCourseOrReference", "Search by student, course, or reference ID...")}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="pl-10"
@@ -415,10 +394,10 @@ export default function AdminPayments() {
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="success">Success</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="failed">Failed</SelectItem>
+                        <SelectItem value="all">{t("adminPayments.allStatus", "All Status")}</SelectItem>
+                        <SelectItem value="success">{t("adminPayments.success", "Success")}</SelectItem>
+                        <SelectItem value="pending">{t("adminPayments.pending", "Pending")}</SelectItem>
+                        <SelectItem value="failed">{t("adminPayments.failed", "Failed")}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -429,27 +408,27 @@ export default function AdminPayments() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Student</TableHead>
-                                <TableHead>Course / Bundle</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Track</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Reference</TableHead>
-                                <TableHead>Date</TableHead>
+                                <TableHead>{t("adminPayments.student", "Student")}</TableHead>
+                                <TableHead>{t("adminPayments.courseBundle", "Course / Bundle")}</TableHead>
+                                <TableHead>{t("adminPayments.amount", "Amount")}</TableHead>
+                                <TableHead>{t("adminPayments.track", "Track")}</TableHead>
+                                <TableHead>{t("adminPayments.method", "Method")}</TableHead>
+                                <TableHead>{t("adminPayments.status", "Status")}</TableHead>
+                                <TableHead>{t("adminPayments.reference", "Reference")}</TableHead>
+                                <TableHead>{t("adminPayments.date", "Date")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                                        Loading payments...
+                                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                                        {t("adminPayments.loadingPayments", "Loading payments...")}
                                     </TableCell>
                                 </TableRow>
                             ) : filteredPayments.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                                        No payments found
+                                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                                        {t("adminPayments.noPaymentsFound", "No payments found")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -458,13 +437,13 @@ export default function AdminPayments() {
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium text-sm">{payment.student_name}</p>
-                                                <p className="text-xs text-gray-400">{payment.payer_email}</p>
+                                                <p className="text-xs text-muted-foreground/60">{payment.payer_email}</p>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-1">
                                                 {payment.bundle_id ? (
-                                                    <Badge variant="outline" className="text-xs">Bundle</Badge>
+                                                    <Badge variant="outline" className="text-xs">{t("adminPayments.bundle", "Bundle")}</Badge>
                                                 ) : null}
                                                 <span className="text-sm truncate max-w-[200px]">
                                                     {payment.course_title || payment.bundle_title || "—"}
@@ -483,12 +462,12 @@ export default function AdminPayments() {
                                             <div className="flex flex-col gap-0.5">
                                                 <div className="flex items-center gap-1.5">
                                                     {getMethodIcon(payment.payment_method)}
-                                                    <span className="text-xs text-gray-500">
-                                                        {payment.payment_method === "MTN_MOMO_RWA" ? "MoMo" : payment.payment_method || "—"}
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {payment.payment_method === "MTN_MOMO_RWA" ? t("adminPayments.momo", "MoMo") : payment.payment_method || "—"}
                                                     </span>
                                                 </div>
                                                 {payment.payment_provider && (
-                                                    <span className="text-[10px] text-gray-400 capitalize">
+                                                    <span className="text-[10px] text-muted-foreground/60 capitalize">
                                                         {payment.payment_provider}
                                                     </span>
                                                 )}
@@ -496,11 +475,11 @@ export default function AdminPayments() {
                                         </TableCell>
                                         <TableCell>{getStatusBadge(payment.status)}</TableCell>
                                         <TableCell>
-                                            <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">
+                                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
                                                 {payment.reference_id}
                                             </code>
                                         </TableCell>
-                                        <TableCell className="text-xs text-gray-500">
+                                        <TableCell className="text-xs text-muted-foreground">
                                             {new Date(payment.created_at).toLocaleDateString("en-US", {
                                                 month: "short",
                                                 day: "numeric",
@@ -520,34 +499,34 @@ export default function AdminPayments() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <Tag className="h-5 w-5 text-[#006d2c]" />
-                        Coupon redemption stats
+                        <Tag className="h-5 w-5 text-primary" />
+                        {t("adminPayments.couponRedemptionStats", "Coupon redemption stats")}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Code</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Uses</TableHead>
-                                <TableHead>Redemptions</TableHead>
-                                <TableHead>Total discount</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>{t("adminPayments.code", "Code")}</TableHead>
+                                <TableHead>{t("adminPayments.type", "Type")}</TableHead>
+                                <TableHead>{t("adminPayments.uses", "Uses")}</TableHead>
+                                <TableHead>{t("adminPayments.redemptions", "Redemptions")}</TableHead>
+                                <TableHead>{t("adminPayments.totalDiscount", "Total discount")}</TableHead>
+                                <TableHead>{t("adminPayments.status", "Status")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {couponStats.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                                        No coupon data yet
+                                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                                        {t("adminPayments.noCouponDataYet", "No coupon data yet")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 couponStats.slice(0, 15).map((row) => (
                                     <TableRow key={row.coupon_id}>
                                         <TableCell>
-                                            <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">
+                                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
                                                 {row.code}
                                             </code>
                                         </TableCell>
@@ -562,7 +541,7 @@ export default function AdminPayments() {
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant={row.is_active ? "default" : "secondary"}>
-                                                {row.is_active ? "Active" : "Inactive"}
+                                                {row.is_active ? t("adminPayments.active", "Active") : t("adminPayments.inactive", "Inactive")}
                                             </Badge>
                                         </TableCell>
                                     </TableRow>
@@ -575,26 +554,26 @@ export default function AdminPayments() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg">Instalment tracker</CardTitle>
+                    <CardTitle className="text-lg">{t("adminPayments.instalmentTracker", "Instalment tracker")}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Student</TableHead>
-                                <TableHead>Course</TableHead>
-                                <TableHead>Total</TableHead>
-                                <TableHead>Paid</TableHead>
-                                <TableHead>Pending</TableHead>
-                                <TableHead>Next due</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>{t("adminPayments.student", "Student")}</TableHead>
+                                <TableHead>{t("adminPayments.course", "Course")}</TableHead>
+                                <TableHead>{t("adminPayments.total", "Total")}</TableHead>
+                                <TableHead>{t("adminPayments.paid", "Paid")}</TableHead>
+                                <TableHead>{t("adminPayments.pending", "Pending")}</TableHead>
+                                <TableHead>{t("adminPayments.nextDue", "Next due")}</TableHead>
+                                <TableHead>{t("adminPayments.status", "Status")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {instalments.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                        No active instalment plans
+                                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                                        {t("adminPayments.noActiveInstalmentPlans", "No active instalment plans")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -605,7 +584,7 @@ export default function AdminPayments() {
                                         <TableCell>{formatPrice(Number(row.total_amount), row.currency)}</TableCell>
                                         <TableCell>{row.paid_count}</TableCell>
                                         <TableCell>{row.pending_count}</TableCell>
-                                        <TableCell className="text-sm text-gray-500">
+                                        <TableCell className="text-sm text-muted-foreground">
                                             {row.next_due_date
                                                 ? new Date(row.next_due_date).toLocaleDateString()
                                                 : "—"}
@@ -623,9 +602,6 @@ export default function AdminPayments() {
                 </CardContent>
             </Card>
                         </div>
-                    </main>
-                </div>
-            </div>
-        </SidebarProvider>
+    </AppShell>
     );
 }

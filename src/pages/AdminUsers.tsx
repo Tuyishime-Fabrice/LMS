@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,34 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
-import { Search, Ban, CheckCircle, Shield, User } from "lucide-react";
+import { Search, Ban, CheckCircle, User } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -52,6 +33,7 @@ interface UserProfile {
 }
 
 const AdminUsers = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -87,7 +69,7 @@ const AdminUsers = () => {
         .single();
 
       if (profile?.role !== "admin") {
-        toast.error("Access denied");
+        toast.error(t("adminUsers.accessDenied", "Access denied"));
         navigate("/");
         return;
       }
@@ -107,7 +89,7 @@ const AdminUsers = () => {
       setUsers(data || []);
     } catch (error: any) {
       console.error("Error fetching users:", error);
-      toast.error("Failed to load users");
+      toast.error(t("adminUsers.failedToLoadUsers", "Failed to load users"));
     } finally {
       setLoading(false);
     }
@@ -142,7 +124,7 @@ const AdminUsers = () => {
 
   const handleSuspend = async () => {
     if (!selectedUser || !suspensionReason.trim()) {
-      toast.error("Please provide a reason for suspension");
+      toast.error(t("adminUsers.pleaseProvideAReasonForSuspension", "Please provide a reason for suspension"));
       return;
     }
 
@@ -162,7 +144,7 @@ const AdminUsers = () => {
       fetchUsers();
     } catch (error: any) {
       console.error("Error suspending user:", error);
-      toast.error(error.message || "Failed to suspend user");
+      toast.error(error.message || t("adminUsers.failedToSuspendUser", "Failed to suspend user"));
     } finally {
       setProcessing(false);
     }
@@ -181,7 +163,7 @@ const AdminUsers = () => {
       fetchUsers();
     } catch (error: any) {
       console.error("Error unsuspending user:", error);
-      toast.error(error.message || "Failed to unsuspend user");
+      toast.error(error.message || t("adminUsers.failedToUnsuspendUser", "Failed to unsuspend user"));
     } finally {
       setProcessing(false);
     }
@@ -199,10 +181,10 @@ const AdminUsers = () => {
       if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Invalid update response");
       if (!data.success) throw new Error(String(data.error || "Update failed"));
 
-      toast.success("Pricing tier updated");
+      toast.success(t("adminUsers.pricingTierUpdated", "Pricing tier updated"));
       fetchUsers();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update pricing tier");
+      toast.error(error.message || t("adminUsers.failedToUpdatePricingTier", "Failed to update pricing tier"));
     } finally {
       setProcessing(false);
     }
@@ -210,11 +192,11 @@ const AdminUsers = () => {
 
   const getRoleBadge = (role: string) => {
     const colors = {
-      admin: "bg-purple-100 text-purple-800",
-      teacher: "bg-blue-100 text-blue-800",
-      student: "bg-green-100 text-green-800",
+      admin: "bg-leaf text-forest",
+      teacher: "bg-info-surface text-info",
+      student: "bg-leaf text-leaf-foreground",
     };
-    return colors[role as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[role as keyof typeof colors] || "bg-muted text-forest";
   };
 
   if (loading) {
@@ -222,38 +204,26 @@ const AdminUsers = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <AdminSidebar />
-
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-            <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="text-white" />
-                  <div className="text-white">
-                    <h1 className="text-3xl font-bold mb-1">User Management</h1>
-                    <p className="text-white/90 text-sm">Manage all platform users</p>
-                  </div>
-                </div>
-                <Badge variant="secondary" className="text-lg px-4 py-2">
-                  {filteredUsers.length} Users
+    <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminUsers.userManagement", "User Management")}
+        description={t("adminUsers.manageAllPlatformUsers", "Manage all platform users")}
+        actions={<>
+          <Badge variant="secondary" className="text-lg px-4 py-2">
+                  {t("adminUsers.users", "{{count}} Users", { count: filteredUsers.length })}
                 </Badge>
-              </div>
-            </div>
-          </header>
+        </>}
+      />
 
-          <main className="flex-1 overflow-y-auto px-2">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Filters */}
               <Card>
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                       <Input
-                        placeholder="Search users..."
+                        placeholder={t("adminUsers.searchUsers", "Search users...")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-10"
@@ -261,23 +231,23 @@ const AdminUsers = () => {
                     </div>
                     <Select value={roleFilter} onValueChange={setRoleFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Filter by role" />
+                        <SelectValue placeholder={t("adminUsers.filterByRole", "Filter by role")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Roles</SelectItem>
-                        <SelectItem value="student">Students</SelectItem>
-                        <SelectItem value="teacher">Teachers</SelectItem>
-                        <SelectItem value="admin">Admins</SelectItem>
+                        <SelectItem value="all">{t("adminUsers.allRoles", "All Roles")}</SelectItem>
+                        <SelectItem value="student">{t("adminUsers.students", "Students")}</SelectItem>
+                        <SelectItem value="teacher">{t("adminUsers.teachers", "Teachers")}</SelectItem>
+                        <SelectItem value="admin">{t("adminUsers.admins", "Admins")}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Filter by status" />
+                        <SelectValue placeholder={t("adminUsers.filterByStatus", "Filter by status")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="suspended">Suspended</SelectItem>
+                        <SelectItem value="all">{t("adminUsers.allStatus", "All Status")}</SelectItem>
+                        <SelectItem value="active">{t("adminUsers.active", "Active")}</SelectItem>
+                        <SelectItem value="suspended">{t("adminUsers.suspended", "Suspended")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -290,12 +260,12 @@ const AdminUsers = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>User</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Pricing tier</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Joined</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>{t("adminUsers.user", "User")}</TableHead>
+                        <TableHead>{t("adminUsers.role", "Role")}</TableHead>
+                        <TableHead>{t("adminUsers.pricingTier", "Pricing tier")}</TableHead>
+                        <TableHead>{t("adminUsers.status", "Status")}</TableHead>
+                        <TableHead>{t("adminUsers.joined", "Joined")}</TableHead>
+                        <TableHead>{t("adminUsers.actions", "Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -307,14 +277,14 @@ const AdminUsers = () => {
                                 {user.avatar_url ? (
                                   <img src={user.avatar_url} alt={user.full_name} />
                                 ) : (
-                                  <AvatarFallback className="bg-purple-600 text-white">
+                                  <AvatarFallback className="bg-forest text-white">
                                     {user.full_name?.substring(0, 2).toUpperCase() || "U"}
                                   </AvatarFallback>
                                 )}
                               </Avatar>
                               <div>
-                                <p className="font-medium">{user.full_name || "Unknown"}</p>
-                                <p className="text-sm text-gray-600">{user.email}</p>
+                                <p className="font-medium">{user.full_name || t("adminUsers.unknown", "Unknown")}</p>
+                                <p className="text-sm text-muted-foreground">{user.email}</p>
                               </div>
                             </div>
                           </TableCell>
@@ -334,25 +304,25 @@ const AdminUsers = () => {
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="standard">Standard</SelectItem>
-                                  <SelectItem value="student">Student</SelectItem>
+                                  <SelectItem value="standard">{t("adminUsers.standard", "Standard")}</SelectItem>
+                                  <SelectItem value="student">{t("adminUsers.student", "Student")}</SelectItem>
                                   <SelectItem value="ngo">NGO</SelectItem>
-                                  <SelectItem value="corporate">Corporate</SelectItem>
-                                  <SelectItem value="partner">Partner</SelectItem>
+                                  <SelectItem value="corporate">{t("adminUsers.corporate", "Corporate")}</SelectItem>
+                                  <SelectItem value="partner">{t("adminUsers.partner", "Partner")}</SelectItem>
                                 </SelectContent>
                               </Select>
                             ) : (
-                              <span className="text-xs text-gray-400">—</span>
+                              <span className="text-xs text-muted-foreground/60">—</span>
                             )}
                           </TableCell>
                           <TableCell>
                             {user.is_suspended ? (
-                              <Badge variant="destructive">Suspended</Badge>
+                              <Badge variant="destructive">{t("adminUsers.suspended", "Suspended")}</Badge>
                             ) : (
-                              <Badge className="bg-green-100 text-green-800">Active</Badge>
+                              <Badge className="bg-leaf text-leaf-foreground">{t("adminUsers.active", "Active")}</Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-sm text-gray-600">
+                          <TableCell className="text-sm text-muted-foreground">
                             {new Date(user.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -364,7 +334,7 @@ const AdminUsers = () => {
                                 disabled={processing}
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
-                                Unsuspend
+                                {t("adminUsers.unsuspend", "Unsuspend")}
                               </Button>
                             ) : (
                               <Button
@@ -377,7 +347,7 @@ const AdminUsers = () => {
                                 disabled={processing || user.role === "admin"}
                               >
                                 <Ban className="h-4 w-4 mr-1" />
-                                Suspend
+                                {t("adminUsers.suspend", "Suspend")}
                               </Button>
                             )}
                           </TableCell>
@@ -388,24 +358,20 @@ const AdminUsers = () => {
                 </CardContent>
               </Card>
             </div>
-          </main>
-        </div>
-      </div>
-
       {/* Suspend Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Suspend User</DialogTitle>
+            <DialogTitle>{t("adminUsers.suspendUser", "Suspend User")}</DialogTitle>
             <DialogDescription>
-              Suspend {selectedUser?.full_name}'s account
+              {t("adminUsers.suspendSAccount", "Suspend {{fullName}}'s account", { fullName: selectedUser?.full_name })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Suspension Reason</Label>
+              <Label>{t("adminUsers.suspensionReason", "Suspension Reason")}</Label>
               <Textarea
-                placeholder="Explain why this user is being suspended..."
+                placeholder={t("adminUsers.explainWhyThisUserIsBeing", "Explain why this user is being suspended...")}
                 value={suspensionReason}
                 onChange={(e) => setSuspensionReason(e.target.value)}
                 rows={4}
@@ -414,19 +380,19 @@ const AdminUsers = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowSuspendDialog(false)}>
-              Cancel
+              {t("adminUsers.cancel", "Cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={handleSuspend}
               disabled={processing || !suspensionReason.trim()}
             >
-              Suspend User
+              {t("adminUsers.suspendUser", "Suspend User")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

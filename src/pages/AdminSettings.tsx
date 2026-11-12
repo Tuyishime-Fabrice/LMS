@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,13 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { Settings, Save } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
 
 const AdminSettings = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,7 +44,7 @@ const AdminSettings = () => {
         .single();
 
       if (profile?.role !== "admin") {
-        toast.error("Access denied");
+        toast.error(t("adminSettings.accessDenied", "Access denied"));
         navigate("/");
         return;
       }
@@ -96,10 +98,10 @@ const AdminSettings = () => {
           .upsert({ key: update.key, value: JSON.stringify(update.value) });
       }
 
-      toast.success("Settings saved successfully");
+      toast.success(t("adminSettings.settingsSavedSuccessfully", "Settings saved successfully"));
     } catch (error: any) {
       console.error("Error saving settings:", error);
-      toast.error("Failed to save settings");
+      toast.error(t("adminSettings.failedToSaveSettings", "Failed to save settings"));
     } finally {
       setSaving(false);
     }
@@ -110,33 +112,21 @@ const AdminSettings = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <AdminSidebar />
+    <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminSettings.systemSettings", "System Settings")}
+        description={t("adminSettings.configurePlatformSettings", "Configure platform settings")}
+      />
 
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-            <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="text-white" />
-                <div className="text-white">
-                  <h1 className="text-3xl font-bold mb-1">System Settings</h1>
-                  <p className="text-white/90 text-sm">Configure platform settings</p>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <main className="flex-1 overflow-y-auto px-2">
             <div className="max-w-4xl mx-auto space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>General Settings</CardTitle>
-                  <CardDescription>Basic platform configuration</CardDescription>
+                  <CardTitle>{t("adminSettings.generalSettings", "General Settings")}</CardTitle>
+                  <CardDescription>{t("adminSettings.basicPlatformConfiguration", "Basic platform configuration")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Site Name</Label>
+                    <Label>{t("adminSettings.siteName", "Site Name")}</Label>
                     <Input
                       value={settings.siteName}
                       onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
@@ -147,14 +137,14 @@ const AdminSettings = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Approval Settings</CardTitle>
-                  <CardDescription>Control what requires admin approval</CardDescription>
+                  <CardTitle>{t("adminSettings.approvalSettings", "Approval Settings")}</CardTitle>
+                  <CardDescription>{t("adminSettings.controlWhatRequiresAdminApproval", "Control what requires admin approval")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label>Require Teacher Approval</Label>
-                      <p className="text-sm text-gray-600">New teachers need admin approval</p>
+                      <Label>{t("adminSettings.requireTeacherApproval", "Require Teacher Approval")}</Label>
+                      <p className="text-sm text-muted-foreground">{t("adminSettings.newTeachersNeedAdminApproval", "New teachers need admin approval")}</p>
                     </div>
                     <Switch
                       checked={settings.requireTeacherApproval}
@@ -166,8 +156,8 @@ const AdminSettings = () => {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label>Require Course Approval</Label>
-                      <p className="text-sm text-gray-600">New courses need admin approval</p>
+                      <Label>{t("adminSettings.requireCourseApproval", "Require Course Approval")}</Label>
+                      <p className="text-sm text-muted-foreground">{t("adminSettings.newCoursesNeedAdminApproval", "New courses need admin approval")}</p>
                     </div>
                     <Switch
                       checked={settings.requireCourseApproval}
@@ -181,14 +171,14 @@ const AdminSettings = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Maintenance</CardTitle>
-                  <CardDescription>Platform maintenance mode</CardDescription>
+                  <CardTitle>{t("adminSettings.maintenance", "Maintenance")}</CardTitle>
+                  <CardDescription>{t("adminSettings.platformMaintenanceMode", "Platform maintenance mode")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label>Maintenance Mode</Label>
-                      <p className="text-sm text-gray-600">Disable public access</p>
+                      <Label>{t("adminSettings.maintenanceMode", "Maintenance Mode")}</Label>
+                      <p className="text-sm text-muted-foreground">{t("adminSettings.disablePublicAccess", "Disable public access")}</p>
                     </div>
                     <Switch
                       checked={settings.maintenanceMode}
@@ -203,17 +193,14 @@ const AdminSettings = () => {
               <Button
                 onClick={saveSettings}
                 disabled={saving}
-                className="w-full bg-purple-600 hover:bg-purple-700"
+                className="w-full bg-forest hover:bg-forest/90"
                 size="lg"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {saving ? "Saving..." : "Save Settings"}
+                {saving ? t("adminSettings.saving", "Saving...") : t("adminSettings.saveSettings", "Save Settings")}
               </Button>
             </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

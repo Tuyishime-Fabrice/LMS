@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Trash2 } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import { formatPrice } from "@/services/paymentService";
 import { toast } from "sonner";
 
@@ -51,6 +39,7 @@ interface TierRow {
 }
 
 export default function AdminPricing() {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [accessChecked, setAccessChecked] = useState(false);
@@ -72,7 +61,7 @@ export default function AdminPricing() {
         }
         const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
         if (profile?.role !== "admin") {
-            toast.error("Access denied");
+            toast.error(t("adminPricing.accessDenied", "Access denied"));
             navigate("/");
             return;
         }
@@ -122,7 +111,7 @@ export default function AdminPricing() {
             toast.error(error.message);
             return;
         }
-        toast.success("Tier price added");
+        toast.success(t("adminPricing.tierPriceAdded", "Tier price added"));
         setNewPrice("");
         fetchTiers(selectedCourseId);
     };
@@ -138,38 +127,26 @@ export default function AdminPricing() {
     const selectedCourse = courses.find((c) => c.id === selectedCourseId);
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 via-white to-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col overflow-hidden p-4">
-                    <header className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 mb-6">
-                        <div className="bg-gradient-to-r from-[#006d2c] to-[#008000] p-6 rounded-t-3xl">
-                            <div className="flex items-center gap-4">
-                                <SidebarTrigger className="text-white" />
-                                <div className="text-white">
-                                    <h1 className="text-3xl font-bold mb-1">Audience Pricing Tiers</h1>
-                                    <p className="text-white/90 text-sm">
-                                        Set different prices per learner category. Assign users a tier in their profile.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto px-2">
-                        <div className="max-w-7xl mx-auto space-y-6">
+        <AppShell role="admin" width="wide">
+      <PageHeader
+        title={t("adminPricing.audiencePricingTiers", "Audience Pricing Tiers")}
+        description={t("adminPricing.setDifferentPricesPerLearnerCategory", "Set different prices per learner category. Assign users a tier in their profile.")}
+      />
+
+                        <div className="space-y-6">
 
             <Card>
                 <CardContent className="p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label>Paid course</Label>
+                        <Label>{t("adminPricing.paidCourse", "Paid course")}</Label>
                         <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select course" />
+                                <SelectValue placeholder={t("adminPricing.selectCourse", "Select course")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {courses.map((c) => (
                                     <SelectItem key={c.id} value={c.id}>
-                                        {c.title} — {formatPrice(c.price, c.currency)} (standard)
+                                        {t("adminPricing.standard", "{{title}} — {{formatPrice}} (standard)", { title: c.title, formatPrice: formatPrice(c.price, c.currency) })}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -180,7 +157,7 @@ export default function AdminPricing() {
                         <>
                             <div className="flex flex-wrap gap-2 items-end">
                                 <div className="space-y-1">
-                                    <Label>Tier</Label>
+                                    <Label>{t("adminPricing.tier", "Tier")}</Label>
                                     <Select value={newTier} onValueChange={setNewTier}>
                                         <SelectTrigger className="w-44">
                                             <SelectValue />
@@ -193,7 +170,7 @@ export default function AdminPricing() {
                                     </Select>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label>Price ({selectedCourse.currency})</Label>
+                                    <Label>{t("adminPricing.price", "Price ({{currency}})", { currency: selectedCourse.currency })}</Label>
                                     <Input
                                         type="number"
                                         className="w-32"
@@ -201,24 +178,24 @@ export default function AdminPricing() {
                                         onChange={(e) => setNewPrice(e.target.value)}
                                     />
                                 </div>
-                                <Button onClick={addTier} className="bg-[#006d2c] hover:bg-[#005523]">
-                                    <Plus className="h-4 w-4 mr-1" /> Add tier price
+                                <Button onClick={addTier} className="bg-primary hover:bg-primary-hover">
+                                    <Plus className="h-4 w-4 mr-1" />{" "}{t("adminPricing.addTierPrice", "Add tier price")}
                                 </Button>
                             </div>
 
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Tier</TableHead>
-                                        <TableHead>Price</TableHead>
+                                        <TableHead>{t("adminPricing.tier", "Tier")}</TableHead>
+                                        <TableHead>{t("adminPricing.price2", "Price")}</TableHead>
                                         <TableHead></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {tiers.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center text-gray-500 py-6">
-                                                No tier prices — standard price applies to all users
+                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
+                                                {t("adminPricing.noTierPricesStandardPriceApplies", "No tier prices — standard price applies to all users")}
                                             </TableCell>
                                         </TableRow>
                                     ) : (
@@ -228,7 +205,7 @@ export default function AdminPricing() {
                                                 <TableCell>{formatPrice(tier.price, tier.currency)}</TableCell>
                                                 <TableCell>
                                                     <Button size="icon" variant="ghost" onClick={() => deleteTier(tier.id)}>
-                                                        <Trash2 className="h-4 w-4 text-red-500" />
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
@@ -241,9 +218,6 @@ export default function AdminPricing() {
                 </CardContent>
             </Card>
                         </div>
-                    </main>
-                </div>
-            </div>
-        </SidebarProvider>
+    </AppShell>
     );
 }

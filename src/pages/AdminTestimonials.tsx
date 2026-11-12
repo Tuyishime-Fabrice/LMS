@@ -1,37 +1,16 @@
 import { useState, useEffect } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
+import { useTranslation } from "react-i18next";
+import { AppShell } from "@/components/shell/AppShell";
+import { PageHeader } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Star, Upload, X, MessageSquare, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -52,6 +31,7 @@ type Testimonial = {
 };
 
 const AdminTestimonials = () => {
+  const { t } = useTranslation();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -86,7 +66,7 @@ const AdminTestimonials = () => {
       setTestimonials(data || []);
     } catch (error) {
       console.error("Error fetching testimonials:", error);
-      toast.error("Failed to load testimonials");
+      toast.error(t("adminTestimonials.failedToLoadTestimonials", "Failed to load testimonials"));
     } finally {
       setLoading(false);
     }
@@ -97,7 +77,7 @@ const AdminTestimonials = () => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file");
+      toast.error(t("adminTestimonials.pleaseUploadAnImageFile", "Please upload an image file"));
       return;
     }
 
@@ -118,10 +98,10 @@ const AdminTestimonials = () => {
         .getPublicUrl(filePath);
 
       setFormData({ ...formData, student_image_url: publicUrl });
-      toast.success("Image uploaded successfully");
+      toast.success(t("adminTestimonials.imageUploadedSuccessfully", "Image uploaded successfully"));
     } catch (error) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("adminTestimonials.failedToUploadImage", "Failed to upload image"));
     } finally {
       setUploading(false);
     }
@@ -131,7 +111,7 @@ const AdminTestimonials = () => {
     e.preventDefault();
 
     if (!formData.student_name || !formData.testimonial_text) {
-      toast.error("Please fill in all required fields");
+      toast.error(t("adminTestimonials.pleaseFillInAllRequiredFields", "Please fill in all required fields"));
       return;
     }
 
@@ -154,7 +134,7 @@ const AdminTestimonials = () => {
           .eq("id", selectedTestimonial.id);
 
         if (error) throw error;
-        toast.success("Testimonial updated successfully");
+        toast.success(t("adminTestimonials.testimonialUpdatedSuccessfully", "Testimonial updated successfully"));
       } else {
         const { error } = await supabase
           .from("testimonials")
@@ -172,7 +152,7 @@ const AdminTestimonials = () => {
           });
 
         if (error) throw error;
-        toast.success("Testimonial added successfully");
+        toast.success(t("adminTestimonials.testimonialAddedSuccessfully", "Testimonial added successfully"));
       }
 
       setDialogOpen(false);
@@ -180,7 +160,7 @@ const AdminTestimonials = () => {
       fetchTestimonials();
     } catch (error) {
       console.error("Error saving testimonial:", error);
-      toast.error("Failed to save testimonial");
+      toast.error(t("adminTestimonials.failedToSaveTestimonial", "Failed to save testimonial"));
     }
   };
 
@@ -194,13 +174,13 @@ const AdminTestimonials = () => {
         .eq("id", selectedTestimonial.id);
 
       if (error) throw error;
-      toast.success("Testimonial deleted successfully");
+      toast.success(t("adminTestimonials.testimonialDeletedSuccessfully", "Testimonial deleted successfully"));
       setDeleteDialogOpen(false);
       setSelectedTestimonial(null);
       fetchTestimonials();
     } catch (error) {
       console.error("Error deleting testimonial:", error);
-      toast.error("Failed to delete testimonial");
+      toast.error(t("adminTestimonials.failedToDeleteTestimonial", "Failed to delete testimonial"));
     }
   };
 
@@ -215,7 +195,7 @@ const AdminTestimonials = () => {
       toast.success(testimonial.is_featured ? "Hidden from landing page" : "Shown on landing page");
       fetchTestimonials();
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error(t("adminTestimonials.failedToUpdateStatus", "Failed to update status"));
     }
   };
 
@@ -254,40 +234,38 @@ const AdminTestimonials = () => {
 
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <AdminSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Testimonials Management</h1>
-                <p className="text-gray-600 mt-1">Manage student testimonials displayed on the landing page</p>
-              </div>
-              <Button
+    <AppShell role="admin" width="wide">
+      
+
+          <div>
+      <PageHeader
+        title={t("adminTestimonials.testimonialsManagement", "Testimonials Management")}
+        description={t("adminTestimonials.manageStudentTestimonialsDisplayedOnThe", "Manage student testimonials displayed on the landing page")}
+        actions={<>
+          <Button
                 onClick={() => {
                   resetForm();
                   setDialogOpen(true);
                 }}
-                className="bg-[#006d2c] hover:bg-[#005523]"
+                className="bg-primary hover:bg-primary-hover"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Testimonial
+                {t("adminTestimonials.addTestimonial", "Add Testimonial")}
               </Button>
-            </div>
+        </>}
+      />
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-100 rounded-xl">
-                      <MessageSquare className="w-6 h-6 text-[#006d2c]" />
+                    <div className="p-3 bg-leaf rounded-xl">
+                      <MessageSquare className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{testimonials.length}</p>
-                      <p className="text-sm text-gray-600">Total Testimonials</p>
+                      <p className="text-sm text-muted-foreground">{t("adminTestimonials.totalTestimonials", "Total Testimonials")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -295,12 +273,12 @@ const AdminTestimonials = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-yellow-100 rounded-xl">
-                      <Star className="w-6 h-6 text-yellow-600" />
+                    <div className="p-3 bg-warning-surface rounded-xl">
+                      <Star className="w-6 h-6 text-warning" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{testimonials.filter(t => t.is_featured).length}</p>
-                      <p className="text-sm text-gray-600">Featured on Landing</p>
+                      <p className="text-sm text-muted-foreground">{t("adminTestimonials.featuredOnLanding", "Featured on Landing")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -308,12 +286,12 @@ const AdminTestimonials = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 rounded-xl">
-                      <Image className="w-6 h-6 text-blue-600" />
+                    <div className="p-3 bg-info-surface rounded-xl">
+                      <Image className="w-6 h-6 text-info" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{testimonials.filter(t => t.student_image_url).length}</p>
-                      <p className="text-sm text-gray-600">With Photos</p>
+                      <p className="text-sm text-muted-foreground">{t("adminTestimonials.withPhotos", "With Photos")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -323,41 +301,41 @@ const AdminTestimonials = () => {
             {/* Testimonials Table */}
             <Card>
               <CardHeader>
-                <CardTitle>All Testimonials</CardTitle>
+                <CardTitle>{t("adminTestimonials.allTestimonials", "All Testimonials")}</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse flex items-center gap-4 p-4 bg-gray-100 rounded-lg">
-                        <div className="w-12 h-12 bg-gray-300 rounded-full" />
+                      <div key={i} className="animate-pulse flex items-center gap-4 p-4 bg-muted rounded-lg">
+                        <div className="w-12 h-12 bg-border rounded-full" />
                         <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-300 rounded w-1/4" />
-                          <div className="h-3 bg-gray-300 rounded w-3/4" />
+                          <div className="h-4 bg-border rounded w-1/4" />
+                          <div className="h-3 bg-border rounded w-3/4" />
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : testimonials.length === 0 ? (
                   <div className="text-center py-12">
-                    <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No testimonials yet</h3>
-                    <p className="text-gray-600 mb-4">Add your first testimonial to showcase on the landing page</p>
-                    <Button onClick={() => setDialogOpen(true)} className="bg-[#006d2c] hover:bg-[#005523]">
+                    <MessageSquare className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-forest mb-2">{t("adminTestimonials.noTestimonialsYet", "No testimonials yet")}</h3>
+                    <p className="text-muted-foreground mb-4">{t("adminTestimonials.addYourFirstTestimonialToShowcase", "Add your first testimonial to showcase on the landing page")}</p>
+                    <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Testimonial
+                      {t("adminTestimonials.addTestimonial", "Add Testimonial")}
                     </Button>
                   </div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Student</TableHead>
-                        <TableHead>Profession</TableHead>
-                        <TableHead>Programs</TableHead>
-                        <TableHead>Rating</TableHead>
-                        <TableHead>Featured</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead>{t("adminTestimonials.student", "Student")}</TableHead>
+                        <TableHead>{t("adminTestimonials.profession", "Profession")}</TableHead>
+                        <TableHead>{t("adminTestimonials.programs", "Programs")}</TableHead>
+                        <TableHead>{t("adminTestimonials.rating", "Rating")}</TableHead>
+                        <TableHead>{t("adminTestimonials.featured", "Featured")}</TableHead>
+                        <TableHead className="text-right">{t("adminTestimonials.actions", "Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -372,25 +350,25 @@ const AdminTestimonials = () => {
                                   className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full bg-[#006d2c] flex items-center justify-center text-white font-bold">
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                                   {testimonial.student_name.charAt(0)}
                                 </div>
                               )}
                               <div>
                                 <p className="font-medium">{testimonial.student_name}</p>
                                 {testimonial.course_name && (
-                                  <p className="text-xs text-gray-500">{testimonial.course_name}</p>
+                                  <p className="text-xs text-muted-foreground">{testimonial.course_name}</p>
                                 )}
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm text-gray-600 truncate max-w-[150px]">
+                            <p className="text-sm text-muted-foreground truncate max-w-[150px]">
                               {testimonial.profession || "—"}
                             </p>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm text-gray-600 truncate max-w-[150px]">
+                            <p className="text-sm text-muted-foreground truncate max-w-[150px]">
                               {testimonial.programs_participated || "—"}
                             </p>
                           </TableCell>
@@ -399,7 +377,7 @@ const AdminTestimonials = () => {
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`w-4 h-4 ${i < testimonial.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                                  className={`w-4 h-4 ${i < testimonial.rating ? 'fill-yellow-400 text-warning' : 'text-muted-foreground/60'}`}
                                 />
                               ))}
                             </div>
@@ -422,7 +400,7 @@ const AdminTestimonials = () => {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-red-600 hover:text-red-700"
+                                className="text-destructive hover:text-destructive"
                                 onClick={() => {
                                   setSelectedTestimonial(testimonial);
                                   setDeleteDialogOpen(true);
@@ -440,41 +418,38 @@ const AdminTestimonials = () => {
               </CardContent>
             </Card>
           </div>
-        </main>
-      </div>
-
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{selectedTestimonial ? "Edit Testimonial" : "Add New Testimonial"}</DialogTitle>
+            <DialogTitle>{selectedTestimonial ? t("adminTestimonials.editTestimonial", "Edit Testimonial") : t("adminTestimonials.addNewTestimonial", "Add New Testimonial")}</DialogTitle>
             <DialogDescription>
-              {selectedTestimonial ? "Update the testimonial details" : "Add a new student testimonial"}
+              {selectedTestimonial ? t("adminTestimonials.updateTheTestimonialDetails", "Update the testimonial details") : t("adminTestimonials.addANewStudentTestimonial", "Add a new student testimonial")}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Student Image Upload */}
             <div className="space-y-2">
-              <Label>Student Photo</Label>
+              <Label>{t("adminTestimonials.studentPhoto", "Student Photo")}</Label>
               <div className="flex items-center gap-4">
                 {formData.student_image_url ? (
                   <div className="relative">
                     <img
                       src={formData.student_image_url}
-                      alt="Student"
+                      alt={t("adminTestimonials.student", "Student")}
                       className="w-16 h-16 rounded-full object-cover"
                     />
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, student_image_url: "" })}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                      className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Image className="w-6 h-6 text-gray-400" />
+                  <div className="w-16 h-16 rounded-full bg-border flex items-center justify-center">
+                    <Image className="w-6 h-6 text-muted-foreground/60" />
                   </div>
                 )}
                 <div>
@@ -488,81 +463,81 @@ const AdminTestimonials = () => {
                   />
                   <Label
                     htmlFor="testimonial-image-upload"
-                    className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                    className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-muted hover:bg-muted rounded-lg text-sm transition-colors"
                   >
                     <Upload className="w-4 h-4" />
-                    {uploading ? "Uploading..." : "Upload"}
+                    {uploading ? t("adminTestimonials.uploading", "Uploading...") : t("adminTestimonials.upload", "Upload")}
                   </Label>
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="student_name">Student Name *</Label>
+              <Label htmlFor="student_name">{t("adminTestimonials.studentName", "Student Name *")}</Label>
               <Input
                 id="student_name"
                 value={formData.student_name}
                 onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
-                placeholder="Enter student name"
+                placeholder={t("adminTestimonials.enterStudentName", "Enter student name")}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="course_name">Course Name (Optional)</Label>
+              <Label htmlFor="course_name">{t("adminTestimonials.courseNameOptional", "Course Name (Optional)")}</Label>
               <Input
                 id="course_name"
                 value={formData.course_name}
                 onChange={(e) => setFormData({ ...formData, course_name: e.target.value })}
-                placeholder="e.g., Data Analytics"
+                placeholder={t("adminTestimonials.eGDataAnalytics", "e.g., Data Analytics")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="profession">Profession & Position</Label>
+              <Label htmlFor="profession">{t("adminTestimonials.professionPosition", "Profession & Position")}</Label>
               <Input
                 id="profession"
                 value={formData.profession}
                 onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                placeholder="e.g., Data Analyst at Bank of Kigali"
+                placeholder={t("adminTestimonials.eGDataAnalystAtBank", "e.g., Data Analyst at Bank of Kigali")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="programs_participated">Programs Participated In</Label>
+              <Label htmlFor="programs_participated">{t("adminTestimonials.programsParticipatedIn", "Programs Participated In")}</Label>
               <Input
                 id="programs_participated"
                 value={formData.programs_participated}
                 onChange={(e) => setFormData({ ...formData, programs_participated: e.target.value })}
-                placeholder="e.g., Data Analytics Cohort 3, AI Bootcamp"
+                placeholder={t("adminTestimonials.eGDataAnalyticsCohort3", "e.g., Data Analytics Cohort 3, AI Bootcamp")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="career_impact">Career Impact *</Label>
+              <Label htmlFor="career_impact">{t("adminTestimonials.careerImpact", "Career Impact *")}</Label>
               <Textarea
                 id="career_impact"
                 value={formData.career_impact}
                 onChange={(e) => setFormData({ ...formData, career_impact: e.target.value })}
-                placeholder="How did the program impact their career or profession?"
+                placeholder={t("adminTestimonials.howDidTheProgramImpactTheir", "How did the program impact their career or profession?")}
                 rows={3}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="testimonial_text">Testimonial Quote *</Label>
+              <Label htmlFor="testimonial_text">{t("adminTestimonials.testimonialQuote", "Testimonial Quote *")}</Label>
               <Textarea
                 id="testimonial_text"
                 value={formData.testimonial_text}
                 onChange={(e) => setFormData({ ...formData, testimonial_text: e.target.value })}
-                placeholder="What did the student say about their experience?"
+                placeholder={t("adminTestimonials.whatDidTheStudentSayAbout", "What did the student say about their experience?")}
                 rows={3}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Rating</Label>
+              <Label>{t("adminTestimonials.rating", "Rating")}</Label>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -572,7 +547,7 @@ const AdminTestimonials = () => {
                     className="p-1"
                   >
                     <Star
-                      className={`w-6 h-6 transition-colors ${star <= formData.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-300'
+                      className={`w-6 h-6 transition-colors ${star <= formData.rating ? 'fill-yellow-400 text-warning' : 'text-muted-foreground/60 hover:text-warning'
                         }`}
                     />
                   </button>
@@ -587,10 +562,10 @@ const AdminTestimonials = () => {
                   checked={formData.is_featured}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                 />
-                <Label htmlFor="is_featured">Show on Landing Page</Label>
+                <Label htmlFor="is_featured">{t("adminTestimonials.showOnLandingPage", "Show on Landing Page")}</Label>
               </div>
               <div className="flex items-center gap-2">
-                <Label htmlFor="display_order">Order:</Label>
+                <Label htmlFor="display_order">{t("adminTestimonials.order", "Order:")}</Label>
                 <Input
                   id="display_order"
                   type="number"
@@ -604,34 +579,33 @@ const AdminTestimonials = () => {
 
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+                {t("adminTestimonials.cancel", "Cancel")}
               </Button>
-              <Button type="submit" className="bg-[#006d2c] hover:bg-[#005523]">
-                {selectedTestimonial ? "Update" : "Add"} Testimonial
+              <Button type="submit" className="bg-primary hover:bg-primary-hover">
+                {selectedTestimonial ? t("adminTestimonials.update", "Update") : t("adminTestimonials.add", "Add")}{" "}{t("adminTestimonials.testimonial", "Testimonial")}
               </Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
-
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Testimonial</AlertDialogTitle>
+            <AlertDialogTitle>{t("adminTestimonials.deleteTestimonial", "Delete Testimonial")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this testimonial from {selectedTestimonial?.student_name}? This action cannot be undone.
+              {t("adminTestimonials.areYouSureYouWantTo", "Are you sure you want to delete this testimonial from {{studentName}}? This action cannot be undone.", { studentName: selectedTestimonial?.student_name })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-              Delete
+            <AlertDialogCancel>{t("adminTestimonials.cancel", "Cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+              {t("adminTestimonials.delete", "Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

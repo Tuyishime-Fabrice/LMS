@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
+import { useTranslation } from "react-i18next";
+import { AppShell } from "@/components/shell/AppShell";
+import { PageHeader } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,31 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Star, Upload, X, Trophy, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -60,6 +39,7 @@ type ExhibitionProject = {
 };
 
 const AdminExhibition = () => {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<ExhibitionProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -104,7 +84,7 @@ const AdminExhibition = () => {
       setProjects(data || []);
     } catch (error: any) {
       console.error("Error fetching projects:", error);
-      toast.error("Failed to load exhibition projects");
+      toast.error(t("adminExhibition.failedToLoadExhibitionProjects", "Failed to load exhibition projects"));
     } finally {
       setLoading(false);
     }
@@ -115,7 +95,7 @@ const AdminExhibition = () => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file");
+      toast.error(t("adminExhibition.pleaseUploadAnImageFile", "Please upload an image file"));
       return;
     }
 
@@ -136,10 +116,10 @@ const AdminExhibition = () => {
         .getPublicUrl(filePath);
 
       setFormData({ ...formData, student_image_url: publicUrl });
-      toast.success("Image uploaded successfully");
+      toast.success(t("adminExhibition.imageUploadedSuccessfully", "Image uploaded successfully"));
     } catch (error: any) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error(t("adminExhibition.failedToUploadImage", "Failed to upload image"));
     } finally {
       setUploading(false);
     }
@@ -149,7 +129,7 @@ const AdminExhibition = () => {
     e.preventDefault();
 
     if (!formData.student_name || !formData.project_title || !formData.course_name) {
-      toast.error("Please fill in all required fields");
+      toast.error(t("adminExhibition.pleaseFillInAllRequiredFields", "Please fill in all required fields"));
       return;
     }
 
@@ -173,7 +153,7 @@ const AdminExhibition = () => {
           .eq("id", selectedProject.id);
 
         if (error) throw error;
-        toast.success("Project updated successfully");
+        toast.success(t("adminExhibition.projectUpdatedSuccessfully", "Project updated successfully"));
       } else {
         const { error } = await supabase
           .from("exhibition_projects")
@@ -197,7 +177,7 @@ const AdminExhibition = () => {
           });
 
         if (error) throw error;
-        toast.success("Project added successfully");
+        toast.success(t("adminExhibition.projectAddedSuccessfully", "Project added successfully"));
       }
 
       setDialogOpen(false);
@@ -205,7 +185,7 @@ const AdminExhibition = () => {
       fetchProjects();
     } catch (error: any) {
       console.error("Error saving project:", error);
-      toast.error("Failed to save project");
+      toast.error(t("adminExhibition.failedToSaveProject", "Failed to save project"));
     }
   };
 
@@ -219,13 +199,13 @@ const AdminExhibition = () => {
         .eq("id", selectedProject.id);
 
       if (error) throw error;
-      toast.success("Project deleted successfully");
+      toast.success(t("adminExhibition.projectDeletedSuccessfully", "Project deleted successfully"));
       setDeleteDialogOpen(false);
       setSelectedProject(null);
       fetchProjects();
     } catch (error: any) {
       console.error("Error deleting project:", error);
-      toast.error("Failed to delete project");
+      toast.error(t("adminExhibition.failedToDeleteProject", "Failed to delete project"));
     }
   };
 
@@ -240,7 +220,7 @@ const AdminExhibition = () => {
       toast.success(project.is_featured ? "Removed from landing page" : "Added to landing page");
       fetchProjects();
     } catch (error: any) {
-      toast.error("Failed to update featured status");
+      toast.error(t("adminExhibition.failedToUpdateFeaturedStatus", "Failed to update featured status"));
     }
   };
 
@@ -327,40 +307,38 @@ const AdminExhibition = () => {
 
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <AdminSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Exhibition Management</h1>
-                <p className="text-gray-600 mt-1">Manage student projects displayed on the landing page and exhibition</p>
-              </div>
-              <Button
+    <AppShell role="admin" width="wide">
+      
+
+          <div>
+      <PageHeader
+        title={t("adminExhibition.exhibitionManagement", "Exhibition Management")}
+        description={t("adminExhibition.manageStudentProjectsDisplayedOnThe", "Manage student projects displayed on the landing page and exhibition")}
+        actions={<>
+          <Button
                 onClick={() => {
                   resetForm();
                   setDialogOpen(true);
                 }}
-                className="bg-[#006d2c] hover:bg-[#005523]"
+                className="bg-primary hover:bg-primary-hover"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Project
+                {t("adminExhibition.addProject", "Add Project")}
               </Button>
-            </div>
+        </>}
+      />
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-100 rounded-xl">
-                      <Trophy className="w-6 h-6 text-[#006d2c]" />
+                    <div className="p-3 bg-leaf rounded-xl">
+                      <Trophy className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{projects.length}</p>
-                      <p className="text-sm text-gray-600">Total Projects</p>
+                      <p className="text-sm text-muted-foreground">{t("adminExhibition.totalProjects", "Total Projects")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -368,12 +346,12 @@ const AdminExhibition = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-yellow-100 rounded-xl">
-                      <Star className="w-6 h-6 text-yellow-600" />
+                    <div className="p-3 bg-warning-surface rounded-xl">
+                      <Star className="w-6 h-6 text-warning" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{projects.filter(p => p.is_featured).length}</p>
-                      <p className="text-sm text-gray-600">Featured on Landing</p>
+                      <p className="text-sm text-muted-foreground">{t("adminExhibition.featuredOnLanding", "Featured on Landing")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -381,12 +359,12 @@ const AdminExhibition = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 rounded-xl">
-                      <Image className="w-6 h-6 text-blue-600" />
+                    <div className="p-3 bg-info-surface rounded-xl">
+                      <Image className="w-6 h-6 text-info" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold">{projects.filter(p => p.student_image_url).length}</p>
-                      <p className="text-sm text-gray-600">With Images</p>
+                      <p className="text-sm text-muted-foreground">{t("adminExhibition.withImages", "With Images")}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -396,41 +374,41 @@ const AdminExhibition = () => {
             {/* Projects Table */}
             <Card>
               <CardHeader>
-                <CardTitle>All Exhibition Projects</CardTitle>
+                <CardTitle>{t("adminExhibition.allExhibitionProjects", "All Exhibition Projects")}</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse flex items-center gap-4 p-4 bg-gray-100 rounded-lg">
-                        <div className="w-12 h-12 bg-gray-300 rounded-full" />
+                      <div key={i} className="animate-pulse flex items-center gap-4 p-4 bg-muted rounded-lg">
+                        <div className="w-12 h-12 bg-border rounded-full" />
                         <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-300 rounded w-1/4" />
-                          <div className="h-3 bg-gray-300 rounded w-1/2" />
+                          <div className="h-4 bg-border rounded w-1/4" />
+                          <div className="h-3 bg-border rounded w-1/2" />
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : projects.length === 0 ? (
                   <div className="text-center py-12">
-                    <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
-                    <p className="text-gray-600 mb-4">Add your first exhibition project to showcase on the landing page</p>
-                    <Button onClick={() => setDialogOpen(true)} className="bg-[#006d2c] hover:bg-[#005523]">
+                    <Trophy className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-forest mb-2">{t("adminExhibition.noProjectsYet", "No projects yet")}</h3>
+                    <p className="text-muted-foreground mb-4">{t("adminExhibition.addYourFirstExhibitionProjectTo", "Add your first exhibition project to showcase on the landing page")}</p>
+                    <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Project
+                      {t("adminExhibition.addProject", "Add Project")}
                     </Button>
                   </div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Student</TableHead>
-                        <TableHead>Project</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Score</TableHead>
-                        <TableHead>Featured</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead>{t("adminExhibition.student", "Student")}</TableHead>
+                        <TableHead>{t("adminExhibition.project", "Project")}</TableHead>
+                        <TableHead>{t("adminExhibition.course", "Course")}</TableHead>
+                        <TableHead>{t("adminExhibition.score", "Score")}</TableHead>
+                        <TableHead>{t("adminExhibition.featured", "Featured")}</TableHead>
+                        <TableHead className="text-right">{t("adminExhibition.actions", "Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -445,7 +423,7 @@ const AdminExhibition = () => {
                                   className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full bg-[#006d2c] flex items-center justify-center text-white font-bold">
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                                   {project.student_name.charAt(0)}
                                 </div>
                               )}
@@ -455,7 +433,7 @@ const AdminExhibition = () => {
                           <TableCell>
                             <div>
                               <p className="font-medium">{project.project_title}</p>
-                              <p className="text-sm text-gray-500 truncate max-w-xs">
+                              <p className="text-sm text-muted-foreground truncate max-w-xs">
                                 {project.project_description}
                               </p>
                             </div>
@@ -482,7 +460,7 @@ const AdminExhibition = () => {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-red-600 hover:text-red-700"
+                                className="text-destructive hover:text-destructive"
                                 onClick={() => {
                                   setSelectedProject(project);
                                   setDeleteDialogOpen(true);
@@ -500,41 +478,38 @@ const AdminExhibition = () => {
               </CardContent>
             </Card>
           </div>
-        </main>
-      </div>
-
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedProject ? "Edit Project" : "Add New Project"}</DialogTitle>
+            <DialogTitle>{selectedProject ? t("adminExhibition.editProject", "Edit Project") : t("adminExhibition.addNewProject", "Add New Project")}</DialogTitle>
             <DialogDescription>
-              {selectedProject ? "Update the exhibition project details" : "Add a new student project to showcase"}
+              {selectedProject ? t("adminExhibition.updateTheExhibitionProjectDetails", "Update the exhibition project details") : t("adminExhibition.addANewStudentProjectTo", "Add a new student project to showcase")}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Student Image Upload */}
             <div className="space-y-2">
-              <Label>Student Image</Label>
+              <Label>{t("adminExhibition.studentImage", "Student Image")}</Label>
               <div className="flex items-center gap-4">
                 {formData.student_image_url ? (
                   <div className="relative">
                     <img
                       src={formData.student_image_url}
-                      alt="Student"
+                      alt={t("adminExhibition.student", "Student")}
                       className="w-20 h-20 rounded-full object-cover"
                     />
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, student_image_url: "" })}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                      className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
                 ) : (
-                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Image className="w-8 h-8 text-gray-400" />
+                  <div className="w-20 h-20 rounded-full bg-border flex items-center justify-center">
+                    <Image className="w-8 h-8 text-muted-foreground/60" />
                   </div>
                 )}
                 <div>
@@ -548,10 +523,10 @@ const AdminExhibition = () => {
                   />
                   <Label
                     htmlFor="image-upload"
-                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted rounded-lg transition-colors"
                   >
                     <Upload className="w-4 h-4" />
-                    {uploading ? "Uploading..." : "Upload Image"}
+                    {uploading ? t("adminExhibition.uploading", "Uploading...") : t("adminExhibition.uploadImage", "Upload Image")}
                   </Label>
                 </div>
               </div>
@@ -559,45 +534,45 @@ const AdminExhibition = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="student_name">Student Name *</Label>
+                <Label htmlFor="student_name">{t("adminExhibition.studentName", "Student Name *")}</Label>
                 <Input
                   id="student_name"
                   value={formData.student_name}
                   onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
-                  placeholder="Enter student name"
+                  placeholder={t("adminExhibition.enterStudentName", "Enter student name")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="course_name">Course Name *</Label>
+                <Label htmlFor="course_name">{t("adminExhibition.courseName", "Course Name *")}</Label>
                 <Input
                   id="course_name"
                   value={formData.course_name}
                   onChange={(e) => setFormData({ ...formData, course_name: e.target.value })}
-                  placeholder="Enter course name"
+                  placeholder={t("adminExhibition.enterCourseName", "Enter course name")}
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="project_title">Project Title *</Label>
+              <Label htmlFor="project_title">{t("adminExhibition.projectTitle", "Project Title *")}</Label>
               <Input
                 id="project_title"
                 value={formData.project_title}
                 onChange={(e) => setFormData({ ...formData, project_title: e.target.value })}
-                placeholder="Enter project title"
+                placeholder={t("adminExhibition.enterProjectTitle", "Enter project title")}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="project_description">Project Description *</Label>
+              <Label htmlFor="project_description">{t("adminExhibition.projectDescription", "Project Description *")}</Label>
               <Textarea
                 id="project_description"
                 value={formData.project_description}
                 onChange={(e) => setFormData({ ...formData, project_description: e.target.value })}
-                placeholder="Describe the project..."
+                placeholder={t("adminExhibition.describeTheProject", "Describe the project...")}
                 rows={4}
                 required
               />
@@ -605,7 +580,7 @@ const AdminExhibition = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="course_score">Course Score (%)</Label>
+                <Label htmlFor="course_score">{t("adminExhibition.courseScore", "Course Score (%)")}</Label>
                 <Input
                   id="course_score"
                   type="number"
@@ -616,7 +591,7 @@ const AdminExhibition = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="project_link">Project Link</Label>
+                <Label htmlFor="project_link">{t("adminExhibition.projectLink", "Project Link")}</Label>
                 <Input
                   id="project_link"
                   value={formData.project_link}
@@ -628,12 +603,12 @@ const AdminExhibition = () => {
 
             {/* Technologies */}
             <div className="space-y-2">
-              <Label>Technologies</Label>
+              <Label>{t("adminExhibition.technologies", "Technologies")}</Label>
               <div className="flex gap-2">
                 <Input
                   value={newTechnology}
                   onChange={(e) => setNewTechnology(e.target.value)}
-                  placeholder="Add technology"
+                  placeholder={t("adminExhibition.addTechnology", "Add technology")}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTechnology())}
                 />
                 <Button type="button" onClick={addTechnology} variant="outline">
@@ -654,12 +629,12 @@ const AdminExhibition = () => {
 
             {/* Achievements */}
             <div className="space-y-2">
-              <Label>Achievements</Label>
+              <Label>{t("adminExhibition.achievements", "Achievements")}</Label>
               <div className="flex gap-2">
                 <Input
                   value={newAchievement}
                   onChange={(e) => setNewAchievement(e.target.value)}
-                  placeholder="Add achievement"
+                  placeholder={t("adminExhibition.addAchievement", "Add achievement")}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addAchievement())}
                 />
                 <Button type="button" onClick={addAchievement} variant="outline">
@@ -680,60 +655,60 @@ const AdminExhibition = () => {
 
             {/* Capstone Framework Section */}
             <div className="border-t pt-6 space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Capstone Project Framework</h3>
-              <p className="text-sm text-gray-600">Structure the project using the 5-step framework methodology</p>
+              <h3 className="text-lg font-semibold text-forest">{t("adminExhibition.capstoneProjectFramework", "Capstone Project Framework")}</h3>
+              <p className="text-sm text-muted-foreground">{t("adminExhibition.structureTheProjectUsingThe5", "Structure the project using the 5-step framework methodology")}</p>
 
               <div className="space-y-2">
-                <Label htmlFor="problem_definition">1. Problem Definition</Label>
+                <Label htmlFor="problem_definition">{t("adminExhibition.n1ProblemDefinition", "1. Problem Definition")}</Label>
                 <Textarea
                   id="problem_definition"
                   value={formData.problem_definition}
                   onChange={(e) => setFormData({ ...formData, problem_definition: e.target.value })}
-                  placeholder="What problem does this project address?"
+                  placeholder={t("adminExhibition.whatProblemDoesThisProjectAddress", "What problem does this project address?")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="data_evidence">2. Data / Evidence</Label>
+                <Label htmlFor="data_evidence">{t("adminExhibition.n2DataEvidence", "2. Data / Evidence")}</Label>
                 <Textarea
                   id="data_evidence"
                   value={formData.data_evidence}
                   onChange={(e) => setFormData({ ...formData, data_evidence: e.target.value })}
-                  placeholder="What data was collected and how?"
+                  placeholder={t("adminExhibition.whatDataWasCollectedAndHow", "What data was collected and how?")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tools_methods">3. Tools & Methods</Label>
+                <Label htmlFor="tools_methods">{t("adminExhibition.n3ToolsMethods", "3. Tools & Methods")}</Label>
                 <Textarea
                   id="tools_methods"
                   value={formData.tools_methods}
                   onChange={(e) => setFormData({ ...formData, tools_methods: e.target.value })}
-                  placeholder="What tools and methodologies were applied?"
+                  placeholder={t("adminExhibition.whatToolsAndMethodologiesWereApplied", "What tools and methodologies were applied?")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="analysis">4. Analysis</Label>
+                <Label htmlFor="analysis">{t("adminExhibition.n4Analysis", "4. Analysis")}</Label>
                 <Textarea
                   id="analysis"
                   value={formData.analysis}
                   onChange={(e) => setFormData({ ...formData, analysis: e.target.value })}
-                  placeholder="What insights were discovered?"
+                  placeholder={t("adminExhibition.whatInsightsWereDiscovered", "What insights were discovered?")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="recommendations">5. Recommendations</Label>
+                <Label htmlFor="recommendations">{t("adminExhibition.n5Recommendations", "5. Recommendations")}</Label>
                 <Textarea
                   id="recommendations"
                   value={formData.recommendations}
                   onChange={(e) => setFormData({ ...formData, recommendations: e.target.value })}
-                  placeholder="What actionable recommendations were made?"
+                  placeholder={t("adminExhibition.whatActionableRecommendationsWereMade", "What actionable recommendations were made?")}
                   rows={3}
                 />
               </div>
@@ -746,10 +721,10 @@ const AdminExhibition = () => {
                   checked={formData.is_featured}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                 />
-                <Label htmlFor="is_featured">Feature on Landing Page</Label>
+                <Label htmlFor="is_featured">{t("adminExhibition.featureOnLandingPage", "Feature on Landing Page")}</Label>
               </div>
               <div className="flex items-center gap-2">
-                <Label htmlFor="display_order">Order:</Label>
+                <Label htmlFor="display_order">{t("adminExhibition.order", "Order:")}</Label>
                 <Input
                   id="display_order"
                   type="number"
@@ -763,34 +738,33 @@ const AdminExhibition = () => {
 
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+                {t("adminExhibition.cancel", "Cancel")}
               </Button>
-              <Button type="submit" className="bg-[#006d2c] hover:bg-[#005523]">
-                {selectedProject ? "Update Project" : "Add Project"}
+              <Button type="submit" className="bg-primary hover:bg-primary-hover">
+                {selectedProject ? t("adminExhibition.updateProject", "Update Project") : t("adminExhibition.addProject", "Add Project")}
               </Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
-
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+            <AlertDialogTitle>{t("adminExhibition.deleteProject", "Delete Project")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{selectedProject?.project_title}"? This action cannot be undone.
+              {t("adminExhibition.areYouSureYouWantTo", "Are you sure you want to delete \"{{projectTitle}}\"? This action cannot be undone.", { projectTitle: selectedProject?.project_title })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-              Delete
+            <AlertDialogCancel>{t("adminExhibition.cancel", "Cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+              {t("adminExhibition.delete", "Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SidebarProvider >
+    </AppShell>
   );
 };
 
