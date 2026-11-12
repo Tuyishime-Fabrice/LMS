@@ -1,0 +1,12 @@
+# DataPlus Learning Platform - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /teacher/
+Disallow: /student/
+Disallow: /auth
+Disallow: /signup
+Disallow: /debug
+
+# Sitemap
+Sitemap: https://dataplusacademy.com/sitemap.xml
