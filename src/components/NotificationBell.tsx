@@ -40,8 +40,7 @@ const iconFor: Record<string, LucideIcon> = {
 
 // The notifications table arrives with the 2026-11-12 migration. Until it is
 // applied the query fails; the bell then shows Academy announcements only.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as any;
+const db = supabase;
 
 async function loadFeed(userId: string, role: string): Promise<FeedItem[]> {
   const audience = role === "student" ? "students" : role === "teacher" ? "teachers" : "all";

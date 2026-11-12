@@ -24,9 +24,10 @@ export function formatCode(code: string) {
 }
 
 export async function fetchMyCertificates(userId: string, holderName: string): Promise<Certificate[]> {
-  // New columns are read through the loose handle so the page still works
-  // (showing uploaded certificates) before the migration is applied.
-  let result = await db.from("certificates")
+  // If the 2026-11-12 migration is not applied yet the first query fails; the
+  // page then still shows certificates uploaded by an admin.
+  type Rows = { data: Array<Record<string, unknown>> | null; error: { message: string } | null };
+  let result: Rows = await db.from("certificates")
     .select("id, course_id, status, certificate_url, completion_date, approved_at, certificate_number, verification_code, issued_at, issue_source, courses ( title )")
     .eq("student_id", userId).in("status", ["approved", "revoked"]).order("completion_date", { ascending: false });
   if (result.error) {

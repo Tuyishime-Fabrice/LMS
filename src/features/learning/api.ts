@@ -1,10 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Columns and functions added by the 2026-11-12 migrations are not in the
-// generated types yet; they are read through this loosely typed handle and
-// every such read tolerates the column being absent.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const db = supabase as any;
+// Reads of columns and functions added by the 2026-11-12 migrations go through
+// this handle, and every such read tolerates the column being absent on a
+// database where the migration has not been applied yet.
+export const db = supabase;
 
 export type LessonType = "video" | "pdf" | "document" | "url" | "quiz" | "assignment";
 

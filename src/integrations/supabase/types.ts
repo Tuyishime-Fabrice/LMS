@@ -271,44 +271,68 @@ export type Database = {
         Row: {
           approved_at: string | null;
           approved_by: string | null;
+          capstone_grade: number | null;
+          certificate_number: string | null;
           certificate_url: string | null;
           completion_date: string;
           course_id: string;
           created_at: string;
           grade: string | null;
           id: string;
+          issue_source: "manual" | "auto";
+          issued_at: string | null;
           notes: string | null;
-          status: "pending" | "approved" | "rejected";
+          revoked_at: string | null;
+          revoked_by: string | null;
+          revoked_reason: string | null;
+          status: "pending" | "approved" | "rejected" | "revoked";
           student_id: string;
           updated_at: string;
+          verification_code: string | null;
         };
         Insert: {
           approved_at?: string | null;
           approved_by?: string | null;
+          capstone_grade?: number | null;
+          certificate_number?: string | null;
           certificate_url?: string | null;
           completion_date?: string;
           course_id: string;
           created_at?: string;
           grade?: string | null;
           id?: string;
+          issue_source?: "manual" | "auto";
+          issued_at?: string | null;
           notes?: string | null;
-          status?: "pending" | "approved" | "rejected";
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          revoked_reason?: string | null;
+          status?: "pending" | "approved" | "rejected" | "revoked";
           student_id: string;
           updated_at?: string;
+          verification_code?: string | null;
         };
         Update: {
           approved_at?: string | null;
           approved_by?: string | null;
+          capstone_grade?: number | null;
+          certificate_number?: string | null;
           certificate_url?: string | null;
           completion_date?: string;
           course_id?: string;
           created_at?: string;
           grade?: string | null;
           id?: string;
+          issue_source?: "manual" | "auto";
+          issued_at?: string | null;
           notes?: string | null;
-          status?: "pending" | "approved" | "rejected";
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          revoked_reason?: string | null;
+          status?: "pending" | "approved" | "rejected" | "revoked";
           student_id?: string;
           updated_at?: string;
+          verification_code?: string | null;
         };
         Relationships: [{"foreignKeyName":"certificates_course_id_fkey","columns":["course_id"],"isOneToOne":false,"referencedRelation":"courses","referencedColumns":["id"]}];
       };
@@ -651,6 +675,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      course_certificate_rules: {
+        Row: {
+          auto_issue: boolean;
+          course_id: string;
+          min_capstone_grade: number;
+          require_all_lessons: boolean;
+          signatory_name: string | null;
+          signatory_title: string | null;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          auto_issue?: boolean;
+          course_id: string;
+          min_capstone_grade?: number;
+          require_all_lessons?: boolean;
+          signatory_name?: string | null;
+          signatory_title?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          auto_issue?: boolean;
+          course_id?: string;
+          min_capstone_grade?: number;
+          require_all_lessons?: boolean;
+          signatory_name?: string | null;
+          signatory_title?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [{"foreignKeyName":"course_certificate_rules_course_id_fkey","columns":["course_id"],"isOneToOne":true,"referencedRelation":"courses","referencedColumns":["id"]}];
+      };
       course_chapters: {
         Row: {
           course_id: string;
@@ -686,6 +743,7 @@ export type Database = {
       };
       course_enrollments: {
         Row: {
+          cohort_id: string | null;
           cohort_name: string | null;
           completed: boolean | null;
           completion_date: string | null;
@@ -693,10 +751,13 @@ export type Database = {
           enrolled_at: string;
           final_grade: string | null;
           id: string;
+          last_activity_at: string | null;
+          last_lesson_id: string | null;
           progress_percentage: number | null;
           student_id: string;
         };
         Insert: {
+          cohort_id?: string | null;
           cohort_name?: string | null;
           completed?: boolean | null;
           completion_date?: string | null;
@@ -704,10 +765,13 @@ export type Database = {
           enrolled_at?: string;
           final_grade?: string | null;
           id?: string;
+          last_activity_at?: string | null;
+          last_lesson_id?: string | null;
           progress_percentage?: number | null;
           student_id: string;
         };
         Update: {
+          cohort_id?: string | null;
           cohort_name?: string | null;
           completed?: boolean | null;
           completion_date?: string | null;
@@ -715,6 +779,8 @@ export type Database = {
           enrolled_at?: string;
           final_grade?: string | null;
           id?: string;
+          last_activity_at?: string | null;
+          last_lesson_id?: string | null;
           progress_percentage?: number | null;
           student_id?: string;
         };
@@ -760,11 +826,13 @@ export type Database = {
           content_url: string;
           created_at: string | null;
           description: string | null;
+          due_date: string | null;
           duration: number | null;
           file_url: string | null;
           id: string;
           is_mandatory: boolean | null;
           is_preview: boolean | null;
+          learning_objectives: string[] | null;
           order_index: number;
           title: string;
           updated_at: string | null;
@@ -775,11 +843,13 @@ export type Database = {
           content_url: string;
           created_at?: string | null;
           description?: string | null;
+          due_date?: string | null;
           duration?: number | null;
           file_url?: string | null;
           id?: string;
           is_mandatory?: boolean | null;
           is_preview?: boolean | null;
+          learning_objectives?: string[] | null;
           order_index?: number;
           title: string;
           updated_at?: string | null;
@@ -790,11 +860,13 @@ export type Database = {
           content_url?: string;
           created_at?: string | null;
           description?: string | null;
+          due_date?: string | null;
           duration?: number | null;
           file_url?: string | null;
           id?: string;
           is_mandatory?: boolean | null;
           is_preview?: boolean | null;
+          learning_objectives?: string[] | null;
           order_index?: number;
           title?: string;
           updated_at?: string | null;
@@ -924,6 +996,7 @@ export type Database = {
           is_free: boolean | null;
           language: string | null;
           last_approved_at: string | null;
+          learning_outcomes: string[] | null;
           level: "beginner" | "intermediate" | "advanced" | null;
           mode: string | null;
           pending_update: boolean | null;
@@ -960,6 +1033,7 @@ export type Database = {
           is_free?: boolean | null;
           language?: string | null;
           last_approved_at?: string | null;
+          learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
           mode?: string | null;
           pending_update?: boolean | null;
@@ -996,6 +1070,7 @@ export type Database = {
           is_free?: boolean | null;
           language?: string | null;
           last_approved_at?: string | null;
+          learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
           mode?: string | null;
           pending_update?: boolean | null;
@@ -1289,6 +1364,66 @@ export type Database = {
           user_id?: string;
         };
         Relationships: [{"foreignKeyName":"message_read_receipts_message_id_fkey","columns":["message_id"],"isOneToOne":false,"referencedRelation":"chat_messages","referencedColumns":["id"]},{"foreignKeyName":"message_read_receipts_user_id_fkey","columns":["user_id"],"isOneToOne":false,"referencedRelation":"profiles","referencedColumns":["id"]}];
+      };
+      notification_preferences: {
+        Row: {
+          muted_types: string[];
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          muted_types?: string[];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          muted_types?: string[];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          body: string | null;
+          created_at: string;
+          data: Json;
+          email_sent_at: string | null;
+          email_status: "pending" | "sent" | "failed" | "skipped" | null;
+          id: string;
+          link: string | null;
+          read_at: string | null;
+          title: string;
+          type: string;
+          user_id: string;
+        };
+        Insert: {
+          body?: string | null;
+          created_at?: string;
+          data?: Json;
+          email_sent_at?: string | null;
+          email_status?: "pending" | "sent" | "failed" | "skipped" | null;
+          id?: string;
+          link?: string | null;
+          read_at?: string | null;
+          title: string;
+          type: string;
+          user_id: string;
+        };
+        Update: {
+          body?: string | null;
+          created_at?: string;
+          data?: Json;
+          email_sent_at?: string | null;
+          email_status?: "pending" | "sent" | "failed" | "skipped" | null;
+          id?: string;
+          link?: string | null;
+          read_at?: string | null;
+          title?: string;
+          type?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       partner_requests: {
         Row: {
@@ -1589,34 +1724,49 @@ export type Database = {
       };
       scheduled_classes: {
         Row: {
+          cohort_id: string | null;
           course_id: string;
           created_at: string;
           description: string | null;
+          end_time: string | null;
           id: string;
-          meet_link: string;
+          location: string | null;
+          meet_link: string | null;
+          modality: "online" | "in_person" | "hybrid";
           scheduled_time: string;
+          status: "scheduled" | "cancelled";
           teacher_id: string;
           title: string;
           updated_at: string;
         };
         Insert: {
+          cohort_id?: string | null;
           course_id: string;
           created_at?: string;
           description?: string | null;
+          end_time?: string | null;
           id?: string;
-          meet_link: string;
+          location?: string | null;
+          meet_link?: string | null;
+          modality?: "online" | "in_person" | "hybrid";
           scheduled_time: string;
+          status?: "scheduled" | "cancelled";
           teacher_id: string;
           title: string;
           updated_at?: string;
         };
         Update: {
+          cohort_id?: string | null;
           course_id?: string;
           created_at?: string;
           description?: string | null;
+          end_time?: string | null;
           id?: string;
-          meet_link?: string;
+          location?: string | null;
+          meet_link?: string | null;
+          modality?: "online" | "in_person" | "hybrid";
           scheduled_time?: string;
+          status?: "scheduled" | "cancelled";
           teacher_id?: string;
           title?: string;
           updated_at?: string;
@@ -1921,6 +2071,7 @@ export type Database = {
       approve_teacher: { Args: { p_teacher_id: string }; Returns: boolean };
       calculate_chapter_progress: { Args: { p_student_id: string; p_chapter_id: string }; Returns: { total_lessons: number; completed_lessons: number; progress_percentage: number; all_completed: boolean }[] };
       calculate_course_progress: { Args: { p_student_id: string; p_course_id: string }; Returns: { total_lessons: number; completed_lessons: number; progress_percentage: number }[] };
+      can_access_lesson: { Args: { p_lesson_id: string }; Returns: boolean };
       can_create_course: { Args: Record<PropertyKey, never>; Returns: boolean };
       can_enroll_in_course: { Args: Record<PropertyKey, never>; Returns: boolean };
       check_course_access: { Args: { p_user_id: string; p_course_id: string }; Returns: boolean };
@@ -1934,19 +2085,30 @@ export type Database = {
       get_course_approvals: { Args: Record<PropertyKey, never>; Returns: { id: string; course_id: string; status: string; reviewed_by: string; review_notes: string; created_at: string; reviewed_at: string }[] };
       get_course_completions: { Args: { p_course_id?: string }; Returns: { enrollment_id: string; student_id: string; student_name: string; student_email: string; course_id: string; course_title: string; teacher_name: string; completed: boolean; completion_date: string; final_grade: string; progress_percentage: number; certificate_id: string; certificate_status: string; certificate_url: string; certificate_approved_at: string }[] };
       get_instalment_tracker: { Args: Record<PropertyKey, never>; Returns: { enrollment_id: string; student_id: string; student_name: string; student_email: string; course_id: string; course_title: string; total_amount: number; currency: string; status: string; paid_count: number; pending_count: number; overdue_count: number; next_due_date: string; created_at: string }[] };
+      get_lesson_quiz: { Args: { p_lesson_id: string }; Returns: { id: string; question_text: string; options: Json; points: number; order_index: number }[] };
+      get_lesson_quiz_review: { Args: { p_lesson_id: string }; Returns: Json };
       get_pending_course_updates: { Args: Record<PropertyKey, never>; Returns: { course_id: string; course_title: string; teacher_id: string; teacher_name: string; update_submitted_at: string; update_notes: string; thumbnail_url: string }[] };
       get_student_pending_instalments: { Args: { p_student_id?: string }; Returns: { schedule_id: string; enrollment_id: string; course_id: string; course_title: string; instalment_number: number; amount: number; currency: string; due_date: string; status: string }[] };
       get_system_settings: { Args: Record<PropertyKey, never>; Returns: { id: string; key: string; value: Json; description: string; updated_by: string; updated_at: string }[] };
       get_unread_announcements_count: { Args: Record<PropertyKey, never>; Returns: number };
       get_user_role: { Args: { user_id: string }; Returns: string };
       is_admin: { Args: { user_id: string }; Returns: boolean };
+      issue_certificate_if_eligible: { Args: { p_student_id: string; p_course_id: string }; Returns: string };
+      issue_pending_certificates: { Args: Record<PropertyKey, never>; Returns: number };
       log_activity: { Args: { p_user_id: string; p_action: string; p_entity_type?: string; p_entity_id?: string; p_details?: Json }; Returns: string };
+      mark_conversation_read: { Args: { p_conversation_id: string }; Returns: number };
       mark_course_completed: { Args: { p_student_id: string; p_course_id: string; p_final_grade?: string }; Returns: boolean };
+      mark_notifications_read: { Args: { p_ids?: string[] | null }; Returns: number };
+      record_lesson_visit: { Args: { p_lesson_id: string; p_position?: number | null }; Returns: undefined };
       redeem_coupon_for_payment: { Args: { p_payment_id: string }; Returns: Json };
+      refresh_enrollment_progress: { Args: { p_student_id: string; p_course_id: string }; Returns: undefined };
+      reinstate_certificate: { Args: { p_certificate_id: string }; Returns: undefined };
       reject_course_update: { Args: { p_course_id: string; p_review_notes: string }; Returns: boolean };
       reject_scholarship_application: { Args: { p_application_id: string; p_admin_id: string; p_admin_notes?: string }; Returns: Json };
       reject_teacher: { Args: { p_teacher_id: string; p_rejection_reason: string }; Returns: boolean };
+      revoke_certificate: { Args: { p_certificate_id: string; p_reason: string }; Returns: undefined };
       submit_course_update: { Args: { p_course_id: string; p_update_notes?: string }; Returns: boolean };
+      submit_lesson_quiz: { Args: { p_lesson_id: string; p_answers: Json }; Returns: Json };
       suspend_user: { Args: { p_user_id: string; p_suspension_reason: string }; Returns: boolean };
       unsuspend_user: { Args: { p_user_id: string }; Returns: boolean };
       update_payment_status: { Args: { p_reference_id: string; p_status: string; p_transaction_id?: string; p_callback_data?: Json }; Returns: Json };
@@ -1954,6 +2116,7 @@ export type Database = {
       update_user_activity: { Args: Record<PropertyKey, never>; Returns: string };
       update_user_pricing_tier: { Args: { p_user_id: string; p_pricing_tier: string }; Returns: Json };
       validate_coupon: { Args: { p_code: string; p_student_id: string; p_course_id?: string; p_bundle_id?: string; p_original_amount?: number; p_currency?: string }; Returns: Json };
+      verify_certificate: { Args: { p_code: string }; Returns: { certificate_number: string; holder_name: string; course_title: string; issued_at: string; completion_date: string; is_valid: boolean; status: string }[] };
     };
     Enums: { user_role: "student" | "teacher" | "admin" };
     CompositeTypes: Record<never, never>;
