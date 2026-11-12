@@ -209,9 +209,6 @@ export const CourseCard = ({ course, onClick, gradient = "from-blue-500 to-purpl
 
               {/* Badges */}
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge className="bg-green-100 text-green-800">
-                  {t('courseCard.bestseller')}
-                </Badge>
                 {course.level && (
                   <Badge variant="outline">
                     {course.level}

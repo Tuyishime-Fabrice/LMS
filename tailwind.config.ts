@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        body: ['Arial', 'sans-serif'],
+        sans: ['Arial', '"Helvetica Neue"', 'Helvetica', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'Arial', 'system-ui', 'sans-serif'],
+        body: ['Arial', '"Helvetica Neue"', 'Helvetica', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -26,6 +27,24 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        forest: {
+          DEFAULT: "hsl(var(--forest))",
+          foreground: "hsl(var(--forest-foreground))",
+        },
+        leaf: {
+          DEFAULT: "hsl(var(--leaf))",
+          foreground: "hsl(var(--leaf-foreground))",
+        },
+        success: "hsl(var(--success))",
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          surface: "hsl(var(--warning-surface))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          surface: "hsl(var(--info-surface))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -34,6 +53,7 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+          surface: "hsl(var(--destructive-surface))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -63,6 +83,7 @@ export default {
         },
       },
       borderRadius: {
+        xl: "calc(var(--radius) + 2px)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",

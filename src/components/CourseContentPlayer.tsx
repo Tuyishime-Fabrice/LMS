@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import PdfJsInlineViewer from "@/components/PdfJsInlineViewer";
 import { cn } from "@/lib/utils";
+import { recordLessonVisit } from "@/features/learning/api";
 
 interface CourseContentPlayerProps {
   lesson: {
@@ -126,8 +127,10 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
   useEffect(() => {
     // Only track progress for students, not teachers in preview mode
-    if (lesson && studentId && lesson.content_type === "video" && !isPreviewMode) {
-      markLessonProgress(false);
+    // Remember the visit without touching completion (opening a finished
+    // lesson used to write it back as unfinished).
+    if (lesson && studentId && !isPreviewMode) {
+      void recordLessonVisit(lesson.id);
     }
     const resolve = async () => {
       if (!lesson) return setResolvedUrl(null);

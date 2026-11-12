@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Clock, BookOpen, Globe, Award, FileText, ClipboardList, Play, Users, Star, CheckCircle2, GraduationCap, Target, Zap, Lock, ShoppingCart } from "lucide-react";
 import { CourseCurriculum } from "@/components/CourseCurriculum";
 import { CourseContentPlayer } from "@/components/CourseContentPlayer";
-import { QuizTaker } from "@/components/QuizTaker";
+import { QuizPanel } from "@/features/learning/QuizPanel";
 import { CapstoneSubmission } from "@/components/CapstoneSubmission";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
@@ -115,6 +115,17 @@ export default function CourseDetail() {
   // Check if user is a student (not teacher/admin)
   const isStudent = userRole === 'student';
 
+  // An enrolled learner belongs in the learning room, not on the sales page.
+  useEffect(() => {
+    if (!id || !authUser?.id || authProfile?.role !== "student") return;
+    if (searchParams.get("view") === "overview" || searchParams.get("paymentStep")) return;
+    let active = true;
+    void supabase.from("course_enrollments").select("id").eq("student_id", authUser.id).eq("course_id", id).maybeSingle()
+      .then(({ data }) => { if (active && data) navigate(`/learn/${id}`, { replace: true }); });
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, authUser?.id, authProfile?.role]);
+
   useEffect(() => {
     setUserId(authUser?.id || null);
     setUserRole(authProfile?.role || null);
@@ -155,12 +166,8 @@ export default function CourseDetail() {
     const checkAccess = async () => {
       if (!course || course.id !== id) return;
 
-      // Debug: log course access state
-      console.log('[Access Check] course.is_free:', course.is_free, '| course.price:', course.price);
-
       // Free courses = everyone has access
       if (course.is_free !== false) {
-        console.log('[Access Check] Course is free → granting access');
         setHasAccess(true);
         return;
       }
@@ -169,7 +176,6 @@ export default function CourseDetail() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        console.log('[Access Check] No user → denying access');
         setHasAccess(false);
         return;
       }
@@ -183,7 +189,6 @@ export default function CourseDetail() {
         .maybeSingle();
 
       if (enrollment) {
-        console.log('[Access Check] User is enrolled → granting access');
         setHasAccess(true);
         return;
       }
@@ -195,22 +200,17 @@ export default function CourseDetail() {
         .eq('id', user.id)
         .single();
 
-      console.log('[Access Check] User role:', profile?.role, '| teacher_id:', course.teacher_id, '| user.id:', user.id);
-
       if (profile?.role === 'admin') {
-        console.log('[Access Check] User is admin → granting access');
         setHasAccess(true);
         return;
       }
 
       if (course.teacher_id === user.id) {
-        console.log('[Access Check] User is course teacher → granting access');
         setHasAccess(true);
         return;
       }
 
       // No access
-      console.log('[Access Check] No access → denying');
       setHasAccess(false);
     };
 
@@ -355,11 +355,12 @@ export default function CourseDetail() {
 
     // OPTIMIZED: Single query for ALL lesson progress instead of N queries
     let progressMap = new Map<string, boolean>();
-    if (userId && allLessonIds.length > 0) {
+    const progressUserId = userId || authUser?.id || (await supabase.auth.getUser()).data.user?.id;
+    if (progressUserId && allLessonIds.length > 0) {
       const { data: progressData } = await supabase
         .from("student_lesson_progress")
         .select("lesson_id, is_completed")
-        .eq("student_id", userId)
+        .eq("student_id", progressUserId)
         .in("lesson_id", allLessonIds);
 
       if (progressData) {
@@ -524,9 +525,6 @@ export default function CourseDetail() {
   const canManageCapstone = Boolean(capstoneProjects.length > 0 && userId && isStudent);
   const capstoneLocked = Boolean(capstoneProjects.length > 0 && isPaidCourse && hasAccess === false);
 
-  // Debug logging
-  console.log('[CourseDetail] isPaidCourse:', isPaidCourse, '| hasAccess:', hasAccess, '| course.is_free:', course?.is_free);
-
   // Helper: check if a specific lesson is locked
   const isLessonLocked = (lessonId: string): boolean => {
     if (!isPaidCourse || hasAccess) return false;
@@ -634,6 +632,10 @@ export default function CourseDetail() {
   };
 
   const handleStartLearning = () => {
+    if (isStudent && id) {
+      navigate(`/learn/${id}`);
+      return;
+    }
     const firstLesson = getFirstLesson();
     if (!firstLesson) {
       toast({
@@ -689,6 +691,9 @@ export default function CourseDetail() {
     );
   }
 
+  const learningOutcomes: string[] = Array.isArray((course as { learning_outcomes?: unknown }).learning_outcomes)
+    ? ((course as { learning_outcomes?: string[] }).learning_outcomes || []).filter(Boolean)
+    : [];
   const counts = getCounts();
   const progressPercent = getProgressPercent();
   const totalDuration = getTotalDuration();
@@ -734,10 +739,6 @@ export default function CourseDetail() {
                     {course.language}
                   </Badge>
                 )}
-                <Badge className="bg-yellow-500/90 text-white border-0 px-3 py-1">
-                  <Star className="h-3 w-3 mr-1.5 fill-current" />
-                  Bestseller
-                </Badge>
                 {capstoneProjects.length > 0 && (
                   <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1">
                     <Award className="h-3 w-3 mr-1.5" />
@@ -935,29 +936,26 @@ export default function CourseDetail() {
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="grid lg:grid-cols-3 gap-5">
-            {/* What You'll Learn */}
+            {/* What you'll learn: shown only when the teacher has written outcomes */}
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-lg bg-[#0A400C]/10 flex items-center justify-center">
-                  <CheckCircle2 className="h-4 w-4 text-[#0A400C]" />
-                </div>
-                <h2 className="text-lg font-bold text-gray-900">What You'll Learn</h2>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-2">
-                {[
-                  "Master core concepts and fundamentals",
-                  "Build real-world projects and applications",
-                  "Learn industry best practices",
-                  "Gain practical hands-on experience",
-                  "Prepare for professional certification",
-                  "Access lifetime course materials"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100">
-                    <CheckCircle2 className="h-4 w-4 text-[#0A400C] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">{item}</span>
+              {learningOutcomes.length > 0 && (
+                <>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-7 h-7 rounded-lg bg-[#0A400C]/10 flex items-center justify-center">
+                      <CheckCircle2 className="h-4 w-4 text-[#0A400C]" />
+                    </div>
+                    <h2 className="text-lg font-bold text-gray-900">What you'll learn</h2>
                   </div>
-                ))}
-              </div>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {learningOutcomes.map((item, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100">
+                        <CheckCircle2 className="h-4 w-4 text-[#0A400C] flex-shrink-0" />
+                        <span className="text-gray-700 text-sm">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Requirements */}
@@ -1053,11 +1051,10 @@ export default function CourseDetail() {
             ) : showQuiz && currentLesson && userId ? (
               <Card>
                 <CardContent className="p-6">
-                  <QuizTaker
+                  <QuizPanel
                     lessonId={currentLesson.id}
-                    studentId={userId}
-                    onComplete={handleQuizComplete}
-                    isPreviewMode={!isStudent}
+                    preview={!isStudent}
+                    onPassed={handleQuizComplete}
                   />
                 </CardContent>
               </Card>

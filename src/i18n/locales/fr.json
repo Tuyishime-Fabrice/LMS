@@ -25,7 +25,8 @@
     "view": "Voir",
     "actions": "Actions",
     "or": "ou",
-    "sending": "Envoi en cours..."
+    "sending": "Envoi en cours...",
+    "tryAgain": "Réessayer"
   },
   "nav": {
     "home": "Accueil",
@@ -107,7 +108,9 @@
     "tutoring": "Tutorat",
     "enrolled": "Inscrit",
     "myQuizScores": "Mes résultats de quiz",
-    "trackQuizPerformance": "Suivez vos performances et notes de quiz"
+    "trackQuizPerformance": "Suivez vos performances et notes de quiz",
+    "allCourses": "Tous les cours",
+    "latestFromTeachers": "Dernières nouvelles de vos formateurs"
   },
   "courses": {
     "courses": "Cours",
@@ -403,7 +406,16 @@
     "sendRequest": "Envoyer la demande",
     "alreadyInCohort": "Déjà dans la cohorte",
     "members": "membres",
-    "studentsEnrolled": "étudiants inscrits"
+    "studentsEnrolled": "étudiants inscrits",
+    "approve": "Approuver",
+    "joinRequests": "Demandes d'adhésion",
+    "manageStudentRequests": "Examinez les demandes des étudiants qui souhaitent rejoindre vos cohortes.",
+    "messageFrom": "Message de",
+    "noMessage": "Aucun message",
+    "reject": "Refuser",
+    "requestApproved": "Demande approuvée",
+    "requestRejected": "Demande refusée",
+    "studentMessage": "Message de l'étudiant"
   },
   "studentAssignments": {
     "uploadAssignment": "Télécharger un devoir",
@@ -893,5 +905,353 @@
       "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette cohorte ?",
       "noCourseLinked": "Cette cohorte n'a pas de cours lié. Veuillez lier un cours pour inscrire des étudiants."
     }
+  },
+  "calendar2": {
+    "adminDescription": "Toutes les séances, échéances et dates de cohorte de l'Académie. Les séances qui se chevauchent pour le même formateur ou la même salle sont signalées.",
+    "adminTitle": "Calendrier de l'Académie",
+    "allDay": "Toute la journée",
+    "cancelled": "Annulée",
+    "conflict": "Cette séance chevauche une autre séance du même formateur ou de la même salle.",
+    "conflictCount": "{{count}} séances se chevauchent pour le même formateur ou la même salle.",
+    "conflictShort": "Conflit",
+    "dayEmpty": "Rien de prévu le {{date}}.",
+    "empty": {
+      "body": "Les séances et les échéances de vos cours apparaîtront ici.",
+      "title": "Rien de prévu",
+      "week": "Rien de prévu cette semaine"
+    },
+    "error": "Le calendrier n'a pas pu être chargé",
+    "from": "À partir du {{date}}",
+    "hybrid": "En présentiel et en ligne",
+    "inPerson": "En présentiel",
+    "join": "Rejoindre la séance",
+    "kind": {
+      "assignment": "Devoir à rendre",
+      "capstone": "Projet final à rendre",
+      "cohortEnd": "Fin de la cohorte",
+      "cohortStart": "Début de la cohorte",
+      "session": "Séance en direct"
+    },
+    "more": "+{{count}} de plus",
+    "next": "Suivant",
+    "noCourse": "DataPlus Academy",
+    "online": "En ligne",
+    "open": "Ouvrir",
+    "openAssignment": "Ouvrir le devoir",
+    "openCapstone": "Ouvrir le projet final",
+    "openCourse": "Ouvrir le cours",
+    "previous": "Précédent",
+    "studentDescription": "Séances en direct, échéances et dates de cohorte des cours auxquels vous êtes inscrit.",
+    "title": "Calendrier",
+    "view": {
+      "agenda": "Agenda",
+      "month": "Mois",
+      "week": "Semaine"
+    },
+    "viewLabel": "Affichage du calendrier",
+    "when": "Quand",
+    "where": "Où",
+    "zone": "Les heures sont affichées dans votre fuseau horaire : {{zone}}",
+    "due": "Échéance"
+  },
+  "certificate": {
+    "authority": "Autorité de délivrance",
+    "awardedTo": "Ce certificat est décerné à",
+    "date": "Date de délivrance",
+    "for": "pour avoir terminé avec succès le programme",
+    "number": "Certificat n°",
+    "revoked": "Révoqué",
+    "scan": "Scannez pour vérifier",
+    "title": "Certificat de réussite"
+  },
+  "certificates2": {
+    "codeLine": "Code de vérification {{code}}",
+    "copied": "Lien copié",
+    "copy": "Copier le lien de vérification",
+    "description": "Un certificat est délivré automatiquement lorsque votre projet final obtient {{mark}} % ou plus. Chaque certificat peut être vérifié en ligne.",
+    "download": "Télécharger le PDF",
+    "downloadError": "Le certificat n'a pas pu être créé. Réessayez.",
+    "empty": {
+      "body": "Terminez le projet final d'un cours avec {{mark}} % ou plus et votre certificat apparaîtra ici, prêt à être téléchargé et partagé.",
+      "cta": "Aller à mes cours",
+      "title": "Pas encore de certificat"
+    },
+    "error": "Vos certificats n'ont pas pu être chargés",
+    "issued": "Délivré le {{date}}",
+    "noCode": "Ce certificat a été importé avant la mise en place de la vérification en ligne.",
+    "openVerify": "Ouvrir la page de vérification",
+    "original": "Fichier d'origine",
+    "preparing": "Préparation…",
+    "progress": {
+      "graded": "Projet final noté {{grade}} %. Il faut {{mark}} % : révisez-le et soumettez-le à nouveau.",
+      "noCapstone": "Ce cours n'a pas encore de projet final. Votre formateur vous indiquera comment il est certifié.",
+      "submitted": "Projet final soumis, en attente de notation.",
+      "title": "À obtenir",
+      "todo": "Soumettez votre projet final et obtenez {{mark}} % ou plus.",
+      "waiting": "En attente de note"
+    },
+    "title": "Certificats",
+    "valid": "Valide",
+    "view": "Voir le certificat de {{course}}"
+  },
+  "home": {
+    "allDone": {
+      "body": "Vos certificats sont prêts, et d'autres cours vous attendent quand vous le souhaitez.",
+      "title": "Vous avez terminé tous vos cours"
+    },
+    "announcements": {
+      "title": "Annonces"
+    },
+    "continue": {
+      "cta": "Continuer",
+      "label": "Reprendre l'apprentissage",
+      "lessons": "{{done}} leçons sur {{total}}",
+      "progressLabel": "Progression du cours",
+      "startCta": "Commencer le cours",
+      "startLabel": "Commencer à apprendre"
+    },
+    "courses": {
+      "completed": "Terminé",
+      "empty": "Les cours auxquels vous vous inscrivez apparaissent ici avec votre progression.",
+      "next": "Ensuite : {{lesson}}",
+      "title": "Mes cours",
+      "viewAll": "Tout voir"
+    },
+    "empty": {
+      "body": "Une fois inscrit, votre prochaine leçon vous attendra toujours ici.",
+      "title": "Choisissez votre premier cours"
+    },
+    "error": {
+      "body": "Vérifiez votre connexion et réessayez.",
+      "title": "Vos cours n'ont pas pu être chargés"
+    },
+    "explore": "Explorer les cours",
+    "greeting": {
+      "afternoon": "Bon après-midi",
+      "evening": "Bonsoir",
+      "morning": "Bonjour"
+    },
+    "joinCohort": "Rejoindre une cohorte",
+    "week": {
+      "calendar": "Calendrier",
+      "empty": "Aucune séance ni échéance dans les deux prochaines semaines.",
+      "title": "À venir",
+      "today": "Aujourd'hui",
+      "tomorrow": "Demain"
+    }
+  },
+  "myCourses": {
+    "completed": "Terminé",
+    "description": "Tous vos cours, avec votre progression et la suite du parcours.",
+    "empty": {
+      "completed": "Aucun cours terminé pour l'instant",
+      "completedBody": "Les cours arrivent ici une fois terminés.",
+      "learning": "Aucun cours en cours",
+      "otherBody": "Les cours auxquels vous vous inscrivez apparaîtront ici.",
+      "upcoming": "Aucun cours à venir"
+    },
+    "instructor": "Formateur",
+    "review": "Revoir le cours",
+    "schedule": "Calendrier",
+    "tabs": {
+      "completed": "Terminés",
+      "learning": "En cours",
+      "upcoming": "À venir"
+    },
+    "title": "Mes cours"
+  },
+  "quiz": {
+    "answered": "{{answered}} réponses sur {{count}}",
+    "correct": "Correct",
+    "correctAnswer": "Bonne réponse",
+    "empty": "Ce quiz n'a pas encore de questions.",
+    "explanation": "Explication",
+    "incorrect": "Incorrect",
+    "intro": "{{count}} questions. Il faut {{pass}} points sur {{total}} pour réussir, et vous pouvez recommencer.",
+    "loadError": "Ce quiz n'a pas pu être chargé",
+    "notPassed": "Pas encore réussi",
+    "notPassedBody": "Il faut {{pass}} points pour réussir. Relisez les explications et réessayez.",
+    "passed": "Réussi",
+    "passedBody": "Cette leçon est terminée. Relisez les explications ci-dessous ou continuez.",
+    "preview": "Vous consultez un aperçu de ce quiz. Les réponses ne sont pas enregistrées.",
+    "retry": "Réessayer",
+    "score": "{{score}} points sur {{total}}",
+    "submit": "Envoyer les réponses",
+    "submitError": "Vos réponses n'ont pas pu être envoyées. Réessayez.",
+    "submitting": "Envoi…",
+    "yourAnswer": "Votre réponse"
+  },
+  "reader": {
+    "download": "Télécharger {{title}}",
+    "error": {
+      "body": "Vous pouvez tout de même l'ouvrir dans un nouvel onglet ou le télécharger.",
+      "title": "Ce document ne peut pas être affiché ici"
+    },
+    "exitFullscreen": "Quitter le plein écran",
+    "fit": "Ajuster à la largeur",
+    "fullscreen": "Plein écran",
+    "loading": "Chargement du document",
+    "next": "Page suivante",
+    "open": "Ouvrir le document",
+    "page": "Page",
+    "prev": "Page précédente",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
+  "room": {
+    "about": "À propos de cette leçon",
+    "allDone": {
+      "body": "Bravo. Vous pouvez revoir n'importe quelle leçon à tout moment.",
+      "capstone": "Soumettez votre projet final pour obtenir votre certificat.",
+      "cta": "Ouvrir le projet final",
+      "title": "Vous avez terminé toutes les leçons"
+    },
+    "assignment": {
+      "cta": "Aller à la remise",
+      "due": "À rendre le {{date}}",
+      "noDue": "Déposez votre fichier ou partagez un lien quand vous êtes prêt.",
+      "title": "Remettre votre travail"
+    },
+    "attached": "Notes de la leçon",
+    "back": "Mes cours",
+    "backCourse": "Page du cours",
+    "backLabel": "Retour à mes cours",
+    "capstone": "Projet final",
+    "capstoneRule": "Votre certificat est délivré automatiquement lorsque votre projet final obtient 65 % ou plus.",
+    "completeError": "Votre progression n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
+    "completed": "Terminé",
+    "curriculum": "Contenu du cours",
+    "curriculumShort": "Contenu",
+    "file": {
+      "body": "Ce type de fichier s'ouvre en dehors du lecteur.",
+      "title": "Document de la leçon"
+    },
+    "finish": "Terminer",
+    "help": {
+      "askBody": "Votre formateur voit sur quelle leçon porte votre question.",
+      "askTitle": "Poser une question sur cette leçon",
+      "close": "Fermer l'aide",
+      "group": "Groupe WhatsApp du cours",
+      "instructor": "Votre formateur",
+      "instructorFallback": "Formateur du cours",
+      "lessonFile": "Fichier de la leçon",
+      "noResources": "Cette leçon n'a pas de ressources supplémentaires.",
+      "openMessages": "Ouvrir les messages",
+      "placeholder": "Qu'est-ce qui n'est pas clair ?",
+      "resources": "Ressources",
+      "send": "Envoyer la question",
+      "sendError": "Votre question n'a pas pu être envoyée. Réessayez.",
+      "sending": "Envoi…",
+      "sent": "Question envoyée. La réponse arrivera dans Messages.",
+      "title": "Aide pour cette leçon",
+      "toggle": "Aide"
+    },
+    "hideCurriculum": "Masquer le contenu du cours",
+    "loadError": "Ce cours n'a pas pu être ouvert",
+    "markComplete": "Marquer comme terminé",
+    "moduleProgress": "{{done}} sur {{total}} terminées",
+    "next": "Leçon suivante",
+    "nextLabel": "Leçon suivante : {{title}}",
+    "noCapstone": "Ce cours n'a pas de projet final.",
+    "noContent": "Le contenu de cette leçon n'a pas encore été ajouté.",
+    "noLessons": "Ce cours n'a pas encore de leçons. Revenez bientôt.",
+    "preview": "Aperçu",
+    "previous": "Précédent",
+    "previousLabel": "Leçon précédente : {{title}}",
+    "reading": "Document à lire",
+    "saving": "Enregistrement…",
+    "showCurriculum": "Afficher le contenu du cours",
+    "state": {
+      "completed": "terminée",
+      "current": "leçon en cours"
+    },
+    "type": {
+      "assignment": "Devoir",
+      "document": "Document",
+      "pdf": "Lecture",
+      "quiz": "Quiz",
+      "url": "Ressource",
+      "video": "Vidéo"
+    },
+    "url": {
+      "open": "Ouvrir dans un nouvel onglet",
+      "title": "Ressource externe"
+    }
+  },
+  "shell": {
+    "editCourse": "Modifier {{title}}",
+    "group": {
+      "academics": "Enseignement",
+      "communicate": "Communiquer",
+      "communication": "Communication",
+      "discover": "Découvrir",
+      "finance": "Finances",
+      "myCourses": "Mes cours",
+      "people": "Utilisateurs",
+      "review": "Évaluer",
+      "system": "Système",
+      "website": "Site web"
+    },
+    "language": "Langue",
+    "nav": {
+      "announcements": "Annonces",
+      "assignments": "Devoirs",
+      "bundles": "Offres groupées",
+      "calendar": "Calendrier",
+      "certificates": "Certificats",
+      "cohorts": "Cohortes",
+      "coupons": "Coupons",
+      "courses": "Cours",
+      "exhibition": "Exposition",
+      "explore": "Explorer les cours",
+      "grades": "Notes",
+      "home": "Accueil",
+      "logs": "Journal d'activité",
+      "messages": "Messages",
+      "myCourses": "Mes cours",
+      "overview": "Vue d'ensemble",
+      "partners": "Demandes de partenariat",
+      "payments": "Paiements",
+      "pricing": "Niveaux de prix",
+      "progress": "Progression des étudiants",
+      "scholarships": "Bourses",
+      "settings": "Paramètres",
+      "students": "Étudiants",
+      "submissions": "Travaux remis",
+      "teacherApprovals": "Validation des formateurs",
+      "testimonials": "Témoignages",
+      "users": "Utilisateurs"
+    },
+    "newCourse": "Créer un cours",
+    "notifications": {
+      "emptyBody": "Les retours, les changements d'horaire et les certificats apparaîtront ici.",
+      "emptyTitle": "Vous êtes à jour",
+      "markAll": "Tout marquer comme lu",
+      "title": "Notifications",
+      "unreadLabel": "Notifications, {{count}} non lues"
+    },
+    "primaryNav": "Navigation principale",
+    "toggleMenu": "Afficher ou masquer le menu"
+  },
+  "verify": {
+    "codeLabel": "Code de vérification",
+    "course": "Programme",
+    "description": "Saisissez le code de vérification imprimé sur un certificat DataPlus Academy, ou scannez son code QR.",
+    "error": {
+      "body": "Le certificat n'est pas en cause. Réessayez dans un instant.",
+      "title": "La vérification est indisponible pour le moment"
+    },
+    "holder": "Décerné à",
+    "issued": "Date de délivrance",
+    "issuer": "Délivré par",
+    "notFound": {
+      "body": "Vérifiez qu'il n'y a pas d'erreur de saisie. Si le code ne correspond toujours pas, ce certificat n'a pas été délivré par DataPlus Academy.",
+      "title": "Aucun certificat ne correspond à ce code"
+    },
+    "number": "Numéro du certificat",
+    "revoked": "Ce certificat a été révoqué",
+    "submit": "Vérifier",
+    "title": "Vérifier un certificat",
+    "valid": "Ce certificat est valide"
   }
 }

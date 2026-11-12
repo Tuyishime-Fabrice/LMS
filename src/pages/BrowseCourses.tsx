@@ -133,8 +133,6 @@ const BrowseCourses = () => {
     "from-yellow-500 to-orange-600",
   ];
 
-  const levels = ["Beginner", "Intermediate", "Advanced"];
-
   // Skeleton loader component for courses - compact cards for 4 per row
   const CourseSkeletonLoader = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -220,7 +218,8 @@ const BrowseCourses = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {courses.map((course, index) => {
               const gradient = gradients[index % gradients.length];
-              const level = levels[index % levels.length];
+              const rawLevel = (course as { level?: string | null }).level;
+              const level = rawLevel ? rawLevel.charAt(0).toUpperCase() + rawLevel.slice(1) : "";
               const columnIndex = index % 4; // Calculate which column (0-3) for 4-column grid
               const isEnrolled = enrolledCourseIds.has(course.id);
 

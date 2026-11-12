@@ -1,187 +1,221 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/*
+ * DataPlus Academy design tokens.
+ * Every colour in the product comes from here (HSL triplets, so Tailwind
+ * opacity modifiers keep working). Change the brand in this file only.
+ *
+ *   forest  #0F2A1D  navigation ink, headings, the Continue Learning panel
+ *   green   #006D2C  DataPlus green: primary actions, progress, active state
+ *   leaf    #E6F2EA  tinted surfaces behind green content
+ *   paper   #F7F7F3  app background (warm off-white)
+ *   surface #FFFFFF  cards and panels
+ *   ink     #18211C  body text       line #E3E6E0 hairlines
+ */
 @layer base {
   :root {
-    --background: 240 10% 98%;
-    --foreground: 240 10% 10%;
+    --background: 60 20% 96%;
+    --foreground: 147 16% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
-
+    --card-foreground: 147 16% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
+    --popover-foreground: 147 16% 11%;
 
-    --primary: 145 100% 21%;
+    --primary: 144 100% 21%;
     --primary-foreground: 0 0% 100%;
+    --primary-hover: 144 100% 17%;
 
-    --secondary: 145 48% 95%;
-    --secondary-foreground: 240 10% 10%;
+    --forest: 151 47% 11%;
+    --forest-foreground: 120 20% 96%;
+    --leaf: 140 32% 93%;
+    --leaf-foreground: 146 60% 16%;
 
-    --muted: 240 48% 95%;
-    --muted-foreground: 240 4% 46%;
+    --secondary: 140 32% 93%;
+    --secondary-foreground: 146 60% 16%;
+    --muted: 75 12% 93%;
+    --muted-foreground: 143 6% 37%;
+    --accent: 140 32% 93%;
+    --accent-foreground: 146 60% 16%;
 
-    --accent: 145 100% 21%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
+    --success: 144 100% 21%;
+    --warning: 35 92% 33%;
+    --warning-surface: 43 96% 93%;
+    --destructive: 4 74% 42%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-surface: 6 80% 96%;
+    --info: 207 72% 35%;
+    --info-surface: 207 75% 95%;
 
-    --border: 240 20% 90%;
-    --input: 240 20% 90%;
-    --ring: 145 100% 21%;
+    --border: 90 11% 89%;
+    --input: 90 9% 82%;
+    --ring: 144 100% 21%;
 
     --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(145 100% 21%), hsl(145 100% 18%));
-    --gradient-accent: linear-gradient(135deg, hsl(145 100% 21%), hsl(145 100% 18%));
-
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 240 10% 10%;
-    --sidebar-primary: 145 100% 21%;
+    --sidebar-background: 60 20% 96%;
+    --sidebar-foreground: 147 12% 24%;
+    --sidebar-primary: 144 100% 21%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 145 48% 95%;
-    --sidebar-accent-foreground: 240 10% 10%;
-    --sidebar-border: 240 20% 90%;
-    --sidebar-ring: 145 100% 21%;
+    --sidebar-accent: 0 0% 100%;
+    --sidebar-accent-foreground: 151 47% 11%;
+    --sidebar-border: 90 11% 89%;
+    --sidebar-ring: 144 100% 21%;
+
+    /* Motion: short, purposeful, and switched off for reduced-motion users. */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration-fast: 150ms;
+    --duration-base: 220ms;
   }
 
   .dark {
-    --background: 240 10% 10%;
-    --foreground: 0 0% 98%;
-
-    --card: 240 10% 13%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 13%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 145 100% 21%;
+    --background: 150 20% 7%;
+    --foreground: 120 12% 94%;
+    --card: 150 18% 10%;
+    --card-foreground: 120 12% 94%;
+    --popover: 150 18% 10%;
+    --popover-foreground: 120 12% 94%;
+    --primary: 144 62% 38%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 10% 20%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 10% 20%;
-    --muted-foreground: 240 5% 65%;
-
-    --accent: 145 100% 21%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
+    --primary-hover: 144 62% 44%;
+    --forest: 151 40% 14%;
+    --forest-foreground: 120 20% 96%;
+    --leaf: 146 30% 16%;
+    --leaf-foreground: 140 40% 82%;
+    --secondary: 146 30% 16%;
+    --secondary-foreground: 140 40% 82%;
+    --muted: 150 12% 15%;
+    --muted-foreground: 140 6% 64%;
+    --accent: 146 30% 16%;
+    --accent-foreground: 140 40% 82%;
+    --success: 144 62% 45%;
+    --warning: 38 90% 60%;
+    --warning-surface: 38 50% 14%;
+    --destructive: 4 70% 55%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 240 10% 20%;
-    --input: 240 10% 20%;
-    --ring: 145 100% 21%;
-
-    --sidebar-background: 240 10% 13%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 145 100% 21%;
+    --destructive-surface: 4 40% 14%;
+    --info: 207 80% 66%;
+    --info-surface: 207 40% 15%;
+    --border: 150 10% 18%;
+    --input: 150 10% 24%;
+    --ring: 144 62% 45%;
+    --sidebar-background: 150 20% 7%;
+    --sidebar-foreground: 120 10% 80%;
+    --sidebar-primary: 144 62% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 20%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 10% 20%;
-    --sidebar-ring: 145 100% 21%;
+    --sidebar-accent: 150 18% 12%;
+    --sidebar-accent-foreground: 120 12% 94%;
+    --sidebar-border: 150 10% 18%;
+    --sidebar-ring: 144 62% 45%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
-    font-family: 'Poppins', sans-serif;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Poppins', sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "tnum" 0;
   }
 
-  /* Paragraphs use Arial */
-  p {
-    font-family: Arial, sans-serif;
-  }
-
-  /* Headings use Poppins */
+  /* Poppins carries headings; everything else is the body face. */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    @apply font-display tracking-tight;
+    text-wrap: balance;
   }
 
-  /* Buttons, labels, and UI elements use Poppins */
-  button, label, input, select, textarea {
-    font-family: 'Poppins', sans-serif;
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Page titles and section titles, one scale for the whole product. */
+  .text-page-title { @apply font-display text-2xl font-semibold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
+  .text-section-title { @apply font-display text-lg font-semibold tracking-tight text-forest; }
+  .text-card-title { @apply font-display text-base font-semibold text-forest; }
+  .text-meta { @apply text-[0.8125rem] leading-5 text-muted-foreground; }
+
+  /* The one surface style: white, hairline, no shadow. */
+  .surface { @apply rounded-xl border border-border bg-card; }
+  .surface-interactive {
+    @apply surface transition-[border-color,box-shadow,transform] duration-200;
+  }
+  .surface-interactive:hover {
+    border-color: hsl(var(--primary) / 0.45);
+    box-shadow: 0 6px 20px -12px hsl(var(--forest) / 0.35);
   }
 }
 
 @layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
-/* Scroll animation for logos - medium speed (15s duration) */
+/* Route change: content settles in once. */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-page-in { animation: page-in var(--duration-base) var(--ease-out) both; }
+
+/* Progress bars grow from zero the first time they are shown. */
+@keyframes grow-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.animate-grow-x { transform-origin: left; animation: grow-x 700ms var(--ease-out) both; }
+
+/* Task done: a short confirmation pulse. */
+@keyframes confirm {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-confirm { animation: confirm 320ms var(--ease-out) both; }
+
+/* Landing page marquees (unchanged behaviour). */
 @keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
-
-.animate-scroll-left {
-  animation: scroll-left 15s linear infinite;
-}
-
-.animate-scroll-left:hover {
-  animation-play-state: paused;
-}
-
-/* Scroll animation for testimonials - right to left (15s duration) */
+.animate-scroll-left { animation: scroll-left 15s linear infinite; }
+.animate-scroll-left:hover { animation-play-state: paused; }
 @keyframes scroll-rtl {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
-
-.animate-scroll-rtl {
-  animation: scroll-rtl 15s linear infinite;
-}
-
-.animate-scroll-rtl:hover {
-  animation-play-state: paused;
-}
-
-/* Floa
-ting animation for images */
+.animate-scroll-rtl { animation: scroll-rtl 15s linear infinite; }
+.animate-scroll-rtl:hover { animation-play-state: paused; }
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+@media print {
+  .no-print { display: none !important; }
 }

@@ -119,9 +119,6 @@ export default function StudentChat() {
         `)
         .eq("student_id", user.id);
 
-      console.log("DEBUG - Enrollments:", JSON.stringify(enrollments, null, 2));
-      console.log("DEBUG - Enrollment Error:", enrollError);
-
       if (enrollError) {
         console.error("Error fetching enrollments:", enrollError);
         setConversations([]);
@@ -129,7 +126,6 @@ export default function StudentChat() {
       }
 
       if (!enrollments || enrollments.length === 0) {
-        console.log("DEBUG - No enrollments found");
         setConversations([]);
         return;
       }
@@ -141,10 +137,7 @@ export default function StudentChat() {
           .filter(Boolean)
       )];
 
-      console.log("DEBUG - Teacher IDs extracted:", teacherIds);
-
       if (teacherIds.length === 0) {
-        console.log("DEBUG - No teacher IDs found in courses");
         setConversations([]);
         return;
       }
@@ -154,9 +147,6 @@ export default function StudentChat() {
         .from("profiles")
         .select("id, full_name, avatar_url")
         .in("id", teacherIds);
-
-      console.log("DEBUG - Teacher Profiles:", JSON.stringify(teacherProfiles, null, 2));
-      console.log("DEBUG - Teacher Error:", teacherError);
 
       if (teacherError) {
         console.error("Error fetching teachers:", teacherError);
@@ -284,12 +274,10 @@ export default function StudentChat() {
   const markMessagesAsRead = async () => {
     if (!selectedConversation || selectedConversation.id.startsWith('new-')) return;
 
-    await supabase
-      .from("direct_messages")
-      .update({ is_read: true })
-      .eq("conversation_id", selectedConversation.id)
-      .eq("is_read", false)
-      .neq("sender_id", user?.id);
+    // The recipient marks messages read through a database function
+    // (only the sender may update a message row directly).
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).rpc("mark_conversation_read", { p_conversation_id: selectedConversation.id });
 
     fetchConversations();
   };

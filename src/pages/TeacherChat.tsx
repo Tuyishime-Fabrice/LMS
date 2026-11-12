@@ -283,12 +283,10 @@ export default function TeacherChat() {
   const markMessagesAsRead = async () => {
     if (!selectedConversation || selectedConversation.id.startsWith('new-')) return;
 
-    await supabase
-      .from("direct_messages")
-      .update({ is_read: true })
-      .eq("conversation_id", selectedConversation.id)
-      .eq("is_read", false)
-      .neq("sender_id", user?.id);
+    // The recipient marks messages read through a database function
+    // (only the sender may update a message row directly).
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).rpc("mark_conversation_read", { p_conversation_id: selectedConversation.id });
 
     // Update local state
     setConversations(prev => prev.map(conv => 

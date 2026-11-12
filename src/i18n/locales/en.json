@@ -25,7 +25,8 @@
     "view": "View",
     "actions": "Actions",
     "or": "or",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "tryAgain": "Try again"
   },
   "nav": {
     "home": "Home",
@@ -107,7 +108,9 @@
     "tutoring": "Tutoring",
     "enrolled": "Enrolled",
     "myQuizScores": "My Quiz Scores",
-    "trackQuizPerformance": "Track your quiz performance and marks"
+    "trackQuizPerformance": "Track your quiz performance and marks",
+    "allCourses": "All courses",
+    "latestFromTeachers": "Latest updates from your teachers"
   },
   "courses": {
     "courses": "Courses",
@@ -403,7 +406,16 @@
     "sendRequest": "Send Request",
     "alreadyInCohort": "Already in Cohort",
     "members": "members",
-    "studentsEnrolled": "students enrolled"
+    "studentsEnrolled": "students enrolled",
+    "approve": "Approve",
+    "joinRequests": "Join requests",
+    "manageStudentRequests": "Review requests from students who want to join your cohorts.",
+    "messageFrom": "Message from",
+    "noMessage": "No message",
+    "reject": "Reject",
+    "requestApproved": "Request approved",
+    "requestRejected": "Request rejected",
+    "studentMessage": "Student message"
   },
   "studentAssignments": {
     "uploadAssignment": "Upload Assignment",
@@ -893,5 +905,353 @@
       "deleteConfirm": "Are you sure you want to delete this cohort?",
       "noCourseLinked": "This cohort has no linked course. Please link a course to enroll students."
     }
+  },
+  "calendar2": {
+    "adminDescription": "All sessions, deadlines and cohort dates across the Academy. Sessions that overlap for the same teacher or room are flagged.",
+    "adminTitle": "Academy calendar",
+    "allDay": "All day",
+    "cancelled": "Cancelled",
+    "conflict": "This session overlaps another one for the same teacher or room.",
+    "conflictCount": "{{count}} sessions overlap for the same teacher or room.",
+    "conflictShort": "Conflict",
+    "dayEmpty": "Nothing on {{date}}.",
+    "empty": {
+      "body": "Sessions and deadlines for your courses will appear here.",
+      "title": "Nothing scheduled",
+      "week": "Nothing scheduled this week"
+    },
+    "error": "The calendar could not be loaded",
+    "from": "From {{date}}",
+    "hybrid": "In person and online",
+    "inPerson": "In person",
+    "join": "Join session",
+    "kind": {
+      "assignment": "Assignment due",
+      "capstone": "Capstone due",
+      "cohortEnd": "Cohort ends",
+      "cohortStart": "Cohort starts",
+      "session": "Live session"
+    },
+    "more": "+{{count}} more",
+    "next": "Next",
+    "noCourse": "DataPlus Academy",
+    "online": "Online",
+    "open": "Open",
+    "openAssignment": "Open assignment",
+    "openCapstone": "Open capstone",
+    "openCourse": "Open course",
+    "previous": "Previous",
+    "studentDescription": "Live sessions, deadlines and cohort dates for the courses you are enrolled in.",
+    "title": "Calendar",
+    "view": {
+      "agenda": "Agenda",
+      "month": "Month",
+      "week": "Week"
+    },
+    "viewLabel": "Calendar view",
+    "when": "When",
+    "where": "Where",
+    "zone": "Times are shown in your time zone: {{zone}}",
+    "due": "Due"
+  },
+  "certificate": {
+    "authority": "Issuing authority",
+    "awardedTo": "This certificate is awarded to",
+    "date": "Date of issue",
+    "for": "for successfully completing the programme",
+    "number": "Certificate no.",
+    "revoked": "Revoked",
+    "scan": "Scan to verify",
+    "title": "Certificate of Completion"
+  },
+  "certificates2": {
+    "codeLine": "Verification code {{code}}",
+    "copied": "Link copied",
+    "copy": "Copy verification link",
+    "description": "A certificate is issued automatically when your capstone project is graded {{mark}}% or higher. Each one can be verified online.",
+    "download": "Download PDF",
+    "downloadError": "The certificate could not be created. Try again.",
+    "empty": {
+      "body": "Finish a course capstone with {{mark}}% or more and your certificate appears here, ready to download and share.",
+      "cta": "Go to my courses",
+      "title": "No certificates yet"
+    },
+    "error": "Your certificates could not be loaded",
+    "issued": "Issued {{date}}",
+    "noCode": "This certificate was uploaded before online verification existed.",
+    "openVerify": "Open verification page",
+    "original": "Original file",
+    "preparing": "Preparing…",
+    "progress": {
+      "graded": "Capstone graded {{grade}}%. {{mark}}% is needed, so revise and resubmit.",
+      "noCapstone": "This course has no capstone yet. Your instructor will tell you how it is certified.",
+      "submitted": "Capstone submitted and waiting for a grade.",
+      "title": "Still to earn",
+      "todo": "Submit your capstone and score {{mark}}% or more.",
+      "waiting": "Awaiting grade"
+    },
+    "title": "Certificates",
+    "valid": "Valid",
+    "view": "View certificate for {{course}}"
+  },
+  "home": {
+    "allDone": {
+      "body": "Your certificates are ready, and there is more to learn when you want it.",
+      "title": "You have completed all your courses"
+    },
+    "announcements": {
+      "title": "Announcements"
+    },
+    "continue": {
+      "cta": "Continue learning",
+      "label": "Continue learning",
+      "lessons": "{{done}} of {{total}} lessons",
+      "progressLabel": "Course progress",
+      "startCta": "Start course",
+      "startLabel": "Start learning"
+    },
+    "courses": {
+      "completed": "Completed",
+      "empty": "Courses you enrol in appear here with your progress.",
+      "next": "Next: {{lesson}}",
+      "title": "My courses",
+      "viewAll": "View all"
+    },
+    "empty": {
+      "body": "Once you enrol, your next lesson will always be waiting here.",
+      "title": "Choose your first course"
+    },
+    "error": {
+      "body": "Check your connection and try again.",
+      "title": "Your courses could not be loaded"
+    },
+    "explore": "Explore courses",
+    "greeting": {
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "morning": "Good morning"
+    },
+    "joinCohort": "Join a cohort",
+    "week": {
+      "calendar": "Calendar",
+      "empty": "No sessions or deadlines in the next two weeks.",
+      "title": "Coming up",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    }
+  },
+  "myCourses": {
+    "completed": "Completed",
+    "description": "Everything you are enrolled in, with your progress and what comes next.",
+    "empty": {
+      "completed": "No completed courses yet",
+      "completedBody": "Courses move here when you finish them.",
+      "learning": "Nothing in progress",
+      "otherBody": "Courses you enrol in will appear here.",
+      "upcoming": "No upcoming courses"
+    },
+    "instructor": "Instructor",
+    "review": "Review course",
+    "schedule": "Schedule",
+    "tabs": {
+      "completed": "Completed",
+      "learning": "Currently learning",
+      "upcoming": "Upcoming"
+    },
+    "title": "My courses"
+  },
+  "quiz": {
+    "answered": "{{answered}} of {{count}} answered",
+    "correct": "Correct",
+    "correctAnswer": "Correct answer",
+    "empty": "This quiz has no questions yet.",
+    "explanation": "Explanation",
+    "incorrect": "Incorrect",
+    "intro": "{{count}} questions. You need {{pass}} of {{total}} points to pass, and you can retry.",
+    "loadError": "This quiz could not be loaded",
+    "notPassed": "Not passed yet",
+    "notPassedBody": "You need {{pass}} points to pass. Review the explanations and try again.",
+    "passed": "Passed",
+    "passedBody": "This lesson is complete. Review the explanations below or move on.",
+    "preview": "You are previewing this quiz. Answers are not recorded.",
+    "retry": "Try again",
+    "score": "{{score}} of {{total}} points",
+    "submit": "Submit answers",
+    "submitError": "Your answers could not be submitted. Try again.",
+    "submitting": "Submitting…",
+    "yourAnswer": "Your answer"
+  },
+  "reader": {
+    "download": "Download {{title}}",
+    "error": {
+      "body": "You can still open it in a new tab or download it.",
+      "title": "This document could not be displayed here"
+    },
+    "exitFullscreen": "Exit full screen",
+    "fit": "Fit to width",
+    "fullscreen": "Full screen",
+    "loading": "Loading document",
+    "next": "Next page",
+    "open": "Open document",
+    "page": "Page",
+    "prev": "Previous page",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
+  "room": {
+    "about": "About this lesson",
+    "allDone": {
+      "body": "Well done. You can revisit any lesson at any time.",
+      "capstone": "Submit your capstone to earn your certificate.",
+      "cta": "Open capstone",
+      "title": "You have finished every lesson"
+    },
+    "assignment": {
+      "cta": "Go to submission",
+      "due": "Due {{date}}",
+      "noDue": "Upload your file or share a link when you are ready.",
+      "title": "Submit your work"
+    },
+    "attached": "Lesson notes",
+    "back": "My courses",
+    "backCourse": "Course page",
+    "backLabel": "Back to my courses",
+    "capstone": "Capstone project",
+    "capstoneRule": "Your certificate is issued automatically when your capstone is graded 65% or higher.",
+    "completeError": "Your progress could not be saved. Check your connection and try again.",
+    "completed": "Completed",
+    "curriculum": "Course content",
+    "curriculumShort": "Content",
+    "file": {
+      "body": "This file type opens outside the reader.",
+      "title": "Lesson document"
+    },
+    "finish": "Finish",
+    "help": {
+      "askBody": "Your instructor sees which lesson you are asking about.",
+      "askTitle": "Ask about this lesson",
+      "close": "Close help",
+      "group": "Course WhatsApp group",
+      "instructor": "Your instructor",
+      "instructorFallback": "Course instructor",
+      "lessonFile": "Lesson file",
+      "noResources": "This lesson has no extra resources.",
+      "openMessages": "Open messages",
+      "placeholder": "What is unclear?",
+      "resources": "Resources",
+      "send": "Send question",
+      "sendError": "Your question could not be sent. Try again.",
+      "sending": "Sending…",
+      "sent": "Question sent. The reply will arrive in Messages.",
+      "title": "Help with this lesson",
+      "toggle": "Help"
+    },
+    "hideCurriculum": "Hide course content",
+    "loadError": "This course could not be opened",
+    "markComplete": "Mark as complete",
+    "moduleProgress": "{{done}} of {{total}} complete",
+    "next": "Next lesson",
+    "nextLabel": "Next lesson: {{title}}",
+    "noCapstone": "This course has no capstone project.",
+    "noContent": "The content for this lesson has not been added yet.",
+    "noLessons": "This course has no lessons yet. Check back soon.",
+    "preview": "Preview",
+    "previous": "Previous",
+    "previousLabel": "Previous lesson: {{title}}",
+    "reading": "Reading material",
+    "saving": "Saving…",
+    "showCurriculum": "Show course content",
+    "state": {
+      "completed": "completed",
+      "current": "current lesson"
+    },
+    "type": {
+      "assignment": "Assignment",
+      "document": "Document",
+      "pdf": "Reading",
+      "quiz": "Quiz",
+      "url": "Resource",
+      "video": "Video"
+    },
+    "url": {
+      "open": "Open in a new tab",
+      "title": "External resource"
+    }
+  },
+  "shell": {
+    "editCourse": "Edit {{title}}",
+    "group": {
+      "academics": "Academics",
+      "communicate": "Communicate",
+      "communication": "Communication",
+      "discover": "Discover",
+      "finance": "Finance",
+      "myCourses": "My courses",
+      "people": "People",
+      "review": "Review",
+      "system": "System",
+      "website": "Website"
+    },
+    "language": "Language",
+    "nav": {
+      "announcements": "Announcements",
+      "assignments": "Assignments",
+      "bundles": "Bundles",
+      "calendar": "Calendar",
+      "certificates": "Certificates",
+      "cohorts": "Cohorts",
+      "coupons": "Coupons",
+      "courses": "Courses",
+      "exhibition": "Exhibition",
+      "explore": "Explore courses",
+      "grades": "Grades",
+      "home": "Home",
+      "logs": "Activity logs",
+      "messages": "Messages",
+      "myCourses": "My courses",
+      "overview": "Overview",
+      "partners": "Partner requests",
+      "payments": "Payments",
+      "pricing": "Pricing tiers",
+      "progress": "Student progress",
+      "scholarships": "Scholarships",
+      "settings": "Settings",
+      "students": "Students",
+      "submissions": "Submissions",
+      "teacherApprovals": "Teacher approvals",
+      "testimonials": "Testimonials",
+      "users": "Users"
+    },
+    "newCourse": "Create a course",
+    "notifications": {
+      "emptyBody": "Feedback, schedule changes and certificates will show up here.",
+      "emptyTitle": "You're all caught up",
+      "markAll": "Mark all as read",
+      "title": "Notifications",
+      "unreadLabel": "Notifications, {{count}} unread"
+    },
+    "primaryNav": "Primary",
+    "toggleMenu": "Toggle menu"
+  },
+  "verify": {
+    "codeLabel": "Verification code",
+    "course": "Programme",
+    "description": "Enter the verification code printed on a DataPlus Academy certificate, or scan its QR code.",
+    "error": {
+      "body": "Nothing is wrong with the certificate. Try again in a moment.",
+      "title": "Verification is unavailable right now"
+    },
+    "holder": "Awarded to",
+    "issued": "Date of issue",
+    "issuer": "Issued by",
+    "notFound": {
+      "body": "Check the code for typing mistakes. If it still does not match, this certificate was not issued by DataPlus Academy.",
+      "title": "No certificate matches this code"
+    },
+    "number": "Certificate number",
+    "revoked": "This certificate has been revoked",
+    "submit": "Verify",
+    "title": "Verify a certificate",
+    "valid": "This certificate is valid"
   }
 }
