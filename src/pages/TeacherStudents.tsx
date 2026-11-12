@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,27 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Users, Search, Layers, BookOpen, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { CohortJoinRequests } from "@/components/CohortJoinRequests";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface Student {
   id: string;
@@ -181,26 +167,19 @@ const TeacherStudents = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <TeacherSidebar />
-        
-        <div className="flex-1 flex flex-col">
-          <TeacherHeader 
-            title={t('students.students')}
-            subtitle={t('teacher.students.manageStudents')}
-          >
-            <Button 
+    <AppShell role="teacher" width="wide">
+      <PageHeader
+        title={t('students.students')}
+        description={t('teacher.students.manageStudents')}
+        actions={<><Button 
               onClick={() => navigate("/teacher/cohorts")}
-              className="bg-[#006d2c] hover:bg-[#005523]"
+              className="bg-primary hover:bg-primary-hover"
             >
               <Layers className="h-4 w-4 mr-2" />
               {t('teacher.students.manageCohorts')}
-            </Button>
-          </TeacherHeader>
+            </Button></>}
+      />
 
-          {/* Main Content */}
-          <main className="flex-1 overflow-auto p-4">
             <div className="container mx-auto space-y-6">
               {/* Join Requests Section */}
               <CohortJoinRequests />
@@ -210,7 +189,7 @@ const TeacherStudents = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">{t('teacher.students.totalStudents')}</CardTitle>
-                    <Users className="h-4 w-4 text-[#006d2c]" />
+                    <Users className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{students.length}</div>
@@ -221,7 +200,7 @@ const TeacherStudents = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">{t('courses.courses')}</CardTitle>
-                    <BookOpen className="h-4 w-4 text-[#006d2c]" />
+                    <BookOpen className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{courses.length}</div>
@@ -232,7 +211,7 @@ const TeacherStudents = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">{t('teacher.students.cohorts')}</CardTitle>
-                    <Layers className="h-4 w-4 text-[#006d2c]" />
+                    <Layers className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{cohortInfoList.length}</div>
@@ -243,7 +222,7 @@ const TeacherStudents = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium">{t('teacher.students.unassigned')}</CardTitle>
-                    <UserPlus className="h-4 w-4 text-orange-500" />
+                    <UserPlus className="h-4 w-4 text-warning" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{studentsWithoutCohort}</div>
@@ -257,7 +236,7 @@ const TeacherStudents = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Layers className="h-5 w-5 text-[#006d2c]" />
+                      <Layers className="h-5 w-5 text-primary" />
                       {t('teacher.students.cohortOverview')}
                     </CardTitle>
                     <CardDescription>{t('teacher.students.cohortOverviewDesc')}</CardDescription>
@@ -267,17 +246,17 @@ const TeacherStudents = () => {
                       {cohortInfoList.map((cohort) => (
                         <div 
                           key={cohort.name}
-                          className="p-4 border rounded-lg hover:border-[#006d2c] transition-colors cursor-pointer"
+                          className="p-4 border rounded-lg hover:border-primary transition-colors cursor-pointer"
                           onClick={() => setSelectedCohort(cohort.name)}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-gray-900">{cohort.name}</h4>
-                            <Badge variant="secondary" className="bg-[#006d2c]/10 text-[#006d2c]">
+                            <h4 className="font-semibold text-forest">{cohort.name}</h4>
+                            <Badge variant="secondary" className="bg-leaf text-primary">
                               {cohort.studentCount} {cohort.studentCount === 1 ? t('teacher.students.studentSingular') : t('teacher.students.studentPlural')}
                             </Badge>
                           </div>
                           {cohort.courseTitle && (
-                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <p className="text-sm text-muted-foreground flex items-center gap-1">
                               <BookOpen className="h-3 w-3" />
                               {cohort.courseTitle}
                             </p>
@@ -334,7 +313,7 @@ const TeacherStudents = () => {
                     <div className="space-y-2">
                       <Label>{t('common.search')}</Label>
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                         <Input
                           placeholder={t('teacher.students.searchByName')}
                           value={searchQuery}
@@ -358,8 +337,8 @@ const TeacherStudents = () => {
                 <CardContent>
                   {filteredStudents.length === 0 ? (
                     <div className="text-center py-12">
-                      <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-600">{t('teacher.students.noStudentsFound')}</p>
+                      <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
+                      <p className="text-muted-foreground">{t('teacher.students.noStudentsFound')}</p>
                     </div>
                   ) : (
                     <Table>
@@ -381,7 +360,7 @@ const TeacherStudents = () => {
                                   {student.avatar_url ? (
                                     <img src={student.avatar_url} alt={student.full_name} />
                                   ) : (
-                                    <AvatarFallback className="bg-[#006d2c] text-white text-xs">
+                                    <AvatarFallback className="bg-primary text-white text-xs">
                                       {student.full_name.substring(0, 2).toUpperCase()}
                                     </AvatarFallback>
                                   )}
@@ -389,18 +368,18 @@ const TeacherStudents = () => {
                                 <span className="font-medium">{student.full_name}</span>
                               </div>
                             </TableCell>
-                            <TableCell className="text-sm text-gray-600">{student.email}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">{student.email}</TableCell>
                             <TableCell className="text-sm">{student.course_title}</TableCell>
                             <TableCell>
                               {student.cohort_name ? (
-                                <Badge variant="secondary" className="bg-[#006d2c]/10 text-[#006d2c]">
+                                <Badge variant="secondary" className="bg-leaf text-primary">
                                   {student.cohort_name}
                                 </Badge>
                               ) : (
-                                <span className="text-sm text-gray-400">{t('teacher.students.noCohort')}</span>
+                                <span className="text-sm text-muted-foreground/60">{t('teacher.students.noCohort')}</span>
                               )}
                             </TableCell>
-                            <TableCell className="text-sm text-gray-600">
+                            <TableCell className="text-sm text-muted-foreground">
                               {new Date(student.enrolled_at).toLocaleDateString()}
                             </TableCell>
                           </TableRow>
@@ -411,10 +390,8 @@ const TeacherStudents = () => {
                 </CardContent>
               </Card>
             </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+      {/* Main Content */}
+    </AppShell>
   );
 };
 

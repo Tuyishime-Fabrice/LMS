@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,53 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import {
-  Users,
-  Plus,
-  Trash2,
-  Eye,
-  Bell,
-  Check,
-  X,
-  BookOpen,
-  Calendar,
-  Send,
-  UserPlus,
-} from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Users, Plus, Trash2, Eye, Bell, Check, X, BookOpen, Calendar, Send, UserPlus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Course {
   id: string;
@@ -367,12 +329,12 @@ const TeacherCohorts = () => {
           .maybeSingle();
 
         if (!paid) {
-          toast.error("Student has not completed cohort payment yet.");
+          toast.error(t("teacherCohorts.studentHasNotCompletedCohortPayment", "Student has not completed cohort payment yet."));
           return;
         }
 
         if (cohort.price != null && Number(paid.amount) < Number(cohort.price)) {
-          toast.error("Payment amount does not match cohort fee.");
+          toast.error(t("teacherCohorts.paymentAmountDoesNotMatchCohort", "Payment amount does not match cohort fee."));
           return;
         }
       } else if (cohort.requires_payment && request.payment_track === "instalment" && cohort.course_id) {
@@ -386,7 +348,7 @@ const TeacherCohorts = () => {
           .maybeSingle();
 
         if (!enrol) {
-          toast.error("Student has not started the cohort instalment plan.");
+          toast.error(t("teacherCohorts.studentHasNotStartedTheCohort", "Student has not started the cohort instalment plan."));
           return;
         }
       }
@@ -504,25 +466,19 @@ const TeacherCohorts = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <TeacherSidebar />
-
-        <div className="flex-1 flex flex-col">
-          <TeacherHeader
-            title={t("teacher.cohorts.title")}
-            subtitle={t("teacher.cohorts.subtitle")}
-          >
-            <Button
+    <AppShell role="teacher" width="wide">
+      <PageHeader
+        title={t("teacher.cohorts.title")}
+        description={t("teacher.cohorts.subtitle")}
+        actions={<><Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-[#006d2c] hover:bg-[#005523]"
+              className="bg-primary hover:bg-primary-hover"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t("teacher.cohorts.createCohort")}
-            </Button>
-          </TeacherHeader>
+            </Button></>}
+      />
 
-          <main className="flex-1 overflow-auto p-4">
             <div className="container mx-auto space-y-6">
               <Tabs defaultValue="cohorts" className="space-y-6">
                 <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -541,7 +497,7 @@ const TeacherCohorts = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t("teacher.cohorts.totalCohorts")}</CardTitle>
-                        <Users className="h-4 w-4 text-[#006d2c]" />
+                        <Users className="h-4 w-4 text-primary" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{cohorts.length}</div>
@@ -550,7 +506,7 @@ const TeacherCohorts = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t("teacher.cohorts.totalStudents")}</CardTitle>
-                        <UserPlus className="h-4 w-4 text-[#006d2c]" />
+                        <UserPlus className="h-4 w-4 text-primary" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">
@@ -561,7 +517,7 @@ const TeacherCohorts = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t("teacher.cohorts.pendingRequests")}</CardTitle>
-                        <Bell className="h-4 w-4 text-orange-500" />
+                        <Bell className="h-4 w-4 text-warning" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{joinRequests.length}</div>
@@ -573,10 +529,10 @@ const TeacherCohorts = () => {
                   {cohorts.length === 0 ? (
                     <Card>
                       <CardContent className="py-12 text-center">
-                        <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                        <Users className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">{t("teacher.cohorts.noCohorts")}</h3>
-                        <p className="text-gray-600 mb-4">{t("teacher.cohorts.createFirst")}</p>
-                        <Button onClick={() => setShowCreateDialog(true)} className="bg-[#006d2c] hover:bg-[#005523]">
+                        <p className="text-muted-foreground mb-4">{t("teacher.cohorts.createFirst")}</p>
+                        <Button onClick={() => setShowCreateDialog(true)} className="bg-primary hover:bg-primary-hover">
                           <Plus className="h-4 w-4 mr-2" />
                           {t("teacher.cohorts.createCohort")}
                         </Button>
@@ -585,7 +541,7 @@ const TeacherCohorts = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {cohorts.map((cohort) => (
-                        <Card key={cohort.id} className="hover:shadow-lg transition-shadow">
+                        <Card key={cohort.id} className="transition-shadow">
                           <CardHeader>
                             <div className="flex items-start justify-between">
                               <div>
@@ -604,9 +560,9 @@ const TeacherCohorts = () => {
                           </CardHeader>
                           <CardContent>
                             {cohort.description && (
-                              <p className="text-sm text-gray-600 mb-4 line-clamp-2">{cohort.description}</p>
+                              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{cohort.description}</p>
                             )}
-                            <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                               <div className="flex items-center gap-1">
                                 <Users className="h-4 w-4" />
                                 <span>{cohort.student_count || 0} / {cohort.max_students}</span>
@@ -645,7 +601,7 @@ const TeacherCohorts = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleDeleteCohort(cohort.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                className="text-destructive hover:text-destructive hover:bg-destructive-surface"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -662,9 +618,9 @@ const TeacherCohorts = () => {
                   {joinRequests.length === 0 ? (
                     <Card>
                       <CardContent className="py-12 text-center">
-                        <Check className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                        <Check className="h-16 w-16 text-primary mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">{t("teacher.cohorts.noRequests")}</h3>
-                        <p className="text-gray-600">{t("teacher.cohorts.allCaughtUp")}</p>
+                        <p className="text-muted-foreground">{t("teacher.cohorts.allCaughtUp")}</p>
                       </CardContent>
                     </Card>
                   ) : (
@@ -679,14 +635,14 @@ const TeacherCohorts = () => {
                                   {request.profiles.avatar_url ? (
                                     <img src={request.profiles.avatar_url} alt={request.profiles.full_name} />
                                   ) : (
-                                    <AvatarFallback className="bg-[#006d2c] text-white">
+                                    <AvatarFallback className="bg-primary text-white">
                                       {request.profiles.full_name.substring(0, 2).toUpperCase()}
                                     </AvatarFallback>
                                   )}
                                 </Avatar>
                                 <div>
                                   <p className="font-semibold">{request.profiles.full_name}</p>
-                                  <p className="text-sm text-gray-600">{request.profiles.email}</p>
+                                  <p className="text-sm text-muted-foreground">{request.profiles.email}</p>
                                   <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="outline">{cohort?.name}</Badge>
                                     {request.payment_track && (
@@ -694,12 +650,12 @@ const TeacherCohorts = () => {
                                         {request.payment_track}
                                       </Badge>
                                     )}
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-muted-foreground">
                                       {new Date(request.created_at).toLocaleDateString()}
                                     </span>
                                   </div>
                                   {request.message && (
-                                    <p className="text-sm text-gray-600 mt-2 italic">"{request.message}"</p>
+                                    <p className="text-sm text-muted-foreground mt-2 italic">"{request.message}"</p>
                                   )}
                                 </div>
                               </div>
@@ -709,7 +665,7 @@ const TeacherCohorts = () => {
                                   variant="outline"
                                   onClick={() => handleRejectRequest(request.id)}
                                   disabled={processing}
-                                  className="text-red-600 hover:bg-red-50"
+                                  className="text-destructive hover:bg-destructive-surface"
                                 >
                                   <X className="h-4 w-4 mr-1" />
                                   {t("teacher.cohorts.reject")}
@@ -718,7 +674,7 @@ const TeacherCohorts = () => {
                                   size="sm"
                                   onClick={() => handleApproveRequest(request)}
                                   disabled={processing}
-                                  className="bg-[#006d2c] hover:bg-[#005523]"
+                                  className="bg-primary hover:bg-primary-hover"
                                 >
                                   <Check className="h-4 w-4 mr-1" />
                                   {t("teacher.cohorts.approve")}
@@ -733,11 +689,8 @@ const TeacherCohorts = () => {
                 </TabsContent>
               </Tabs>
             </div>
-          </main>
-        </div>
-
-        {/* Create Cohort Dialog */}
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+      {/* Create Cohort Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("teacher.cohorts.createCohort")}</DialogTitle>
@@ -799,14 +752,14 @@ const TeacherCohorts = () => {
                     setNewCohort({ ...newCohort, requires_payment: e.target.checked })
                   }
                 />
-                <Label htmlFor="requires_payment">Requires payment</Label>
+                <Label htmlFor="requires_payment">{t("teacherCohorts.requiresPayment", "Requires payment")}</Label>
               </div>
               {newCohort.requires_payment && (
                 <>
                   <div className="grid grid-cols-2 gap-2">
                     <Input
                       type="number"
-                      placeholder="Price"
+                      placeholder={t("teacherCohorts.price", "Price")}
                       value={newCohort.price}
                       onChange={(e) => setNewCohort({ ...newCohort, price: e.target.value })}
                     />
@@ -832,7 +785,7 @@ const TeacherCohorts = () => {
                         setNewCohort({ ...newCohort, instalment_enabled: e.target.checked })
                       }
                     />
-                    <Label htmlFor="instalment_enabled">Allow instalment track</Label>
+                    <Label htmlFor="instalment_enabled">{t("teacherCohorts.allowInstalmentTrack", "Allow instalment track")}</Label>
                   </div>
                 </>
               )}
@@ -844,16 +797,15 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleCreateCohort}
                 disabled={processing}
-                className="bg-[#006d2c] hover:bg-[#005523]"
+                className="bg-primary hover:bg-primary-hover"
               >
                 {processing ? t("common.loading") : t("common.create")}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {/* View Students Dialog */}
-        <Dialog open={showStudentsDialog} onOpenChange={setShowStudentsDialog}>
+      {/* View Students Dialog */}
+      <Dialog open={showStudentsDialog} onOpenChange={setShowStudentsDialog}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{selectedCohort?.name} - {t("teacher.cohorts.students")}</DialogTitle>
@@ -864,8 +816,8 @@ const TeacherCohorts = () => {
             <div className="max-h-96 overflow-y-auto">
               {cohortStudents.length === 0 ? (
                 <div className="text-center py-8">
-                  <Users className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-600">{t("teacher.cohorts.noStudentsYet")}</p>
+                  <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-2" />
+                  <p className="text-muted-foreground">{t("teacher.cohorts.noStudentsYet")}</p>
                 </div>
               ) : (
                 <Table>
@@ -885,7 +837,7 @@ const TeacherCohorts = () => {
                               {student.profiles.avatar_url ? (
                                 <img src={student.profiles.avatar_url} alt={student.profiles.full_name} />
                               ) : (
-                                <AvatarFallback className="bg-[#006d2c] text-white text-xs">
+                                <AvatarFallback className="bg-primary text-white text-xs">
                                   {student.profiles.full_name.substring(0, 2).toUpperCase()}
                                 </AvatarFallback>
                               )}
@@ -893,8 +845,8 @@ const TeacherCohorts = () => {
                             <span className="font-medium">{student.profiles.full_name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-gray-600">{student.profiles.email}</TableCell>
-                        <TableCell className="text-gray-600">
+                        <TableCell className="text-muted-foreground">{student.profiles.email}</TableCell>
+                        <TableCell className="text-muted-foreground">
                           {new Date(student.enrolled_at).toLocaleDateString()}
                         </TableCell>
                       </TableRow>
@@ -905,9 +857,8 @@ const TeacherCohorts = () => {
             </div>
           </DialogContent>
         </Dialog>
-
-        {/* Send Announcement Dialog */}
-        <Dialog open={showAnnouncementDialog} onOpenChange={setShowAnnouncementDialog}>
+      {/* Send Announcement Dialog */}
+      <Dialog open={showAnnouncementDialog} onOpenChange={setShowAnnouncementDialog}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("teacher.cohorts.sendAnnouncement")}</DialogTitle>
@@ -941,7 +892,7 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleSendAnnouncement}
                 disabled={processing}
-                className="bg-[#006d2c] hover:bg-[#005523]"
+                className="bg-primary hover:bg-primary-hover"
               >
                 <Send className="h-4 w-4 mr-2" />
                 {processing ? t("common.sending") : t("teacher.cohorts.send")}
@@ -949,8 +900,7 @@ const TeacherCohorts = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

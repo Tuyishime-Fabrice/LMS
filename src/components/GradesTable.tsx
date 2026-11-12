@@ -257,7 +257,7 @@ export function GradesTable({ teacherId, studentId, showFilters = true }: Grades
                 <p className="text-xs sm:text-sm text-muted-foreground">{t('gradesTable.averageScore')}</p>
                 <p className="text-lg sm:text-2xl font-bold">{getAverageScore()}%</p>
               </div>
-              <TrendingUp className="h-5 w-5 sm:h-8 sm:w-8 text-green-600 hidden sm:block" />
+              <TrendingUp className="h-5 w-5 sm:h-8 sm:w-8 text-primary hidden sm:block" />
             </div>
           </CardContent>
         </Card>
@@ -269,7 +269,7 @@ export function GradesTable({ teacherId, studentId, showFilters = true }: Grades
                 <p className="text-xs sm:text-sm text-muted-foreground">{t('gradesTable.passRate')}</p>
                 <p className="text-lg sm:text-2xl font-bold">{getPassRate()}%</p>
               </div>
-              <TrendingDown className="h-5 w-5 sm:h-8 sm:w-8 text-blue-600 hidden sm:block" />
+              <TrendingDown className="h-5 w-5 sm:h-8 sm:w-8 text-info hidden sm:block" />
             </div>
           </CardContent>
         </Card>

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -8,9 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
 import { Badge } from "@/components/ui/badge";
 import { Video, Clock, Calendar as CalendarIcon, Plus, ExternalLink, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -151,23 +150,18 @@ const TeacherSchedule = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <TeacherSidebar />
-        
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <TeacherHeader 
-            title={t('teacher.schedule.classSchedule')}
-            subtitle={t('teacher.schedule.manageClasses')}
-          />
+    <AppShell role="teacher" width="wide">
+      <PageHeader
+        title={t('teacher.schedule.classSchedule')}
+        description={t('teacher.schedule.manageClasses')}
+      />
 
-          <main className="flex-1 overflow-y-auto p-4">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Action Button */}
               <div className="flex justify-end">
                 <Button 
                   size="lg" 
-                  className="gap-2 bg-[#006d2c] hover:bg-[#005523] text-white"
+                  className="gap-2 bg-primary hover:bg-primary-hover text-white"
                   onClick={() => setShowForm(!showForm)}
                 >
                   <Plus className="h-5 w-5" />
@@ -177,27 +171,27 @@ const TeacherSchedule = () => {
 
               {/* Schedule Form */}
               {showForm && (
-                <Card className="border-2 border-[#006d2c]/20 shadow-xl">
+                <Card className="border-2 border-primary/20">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-[#006d2c]/10 flex items-center justify-center">
-                        <Video className="h-6 w-6 text-[#006d2c]" />
+                      <div className="w-12 h-12 rounded-full bg-leaf flex items-center justify-center">
+                        <Video className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-black">{t('teacher.schedule.scheduleOnlineClass')}</h2>
-                        <p className="text-gray-600">{t('teacher.schedule.createLiveSession')}</p>
+                        <h2 className="text-2xl font-bold text-forest">{t('teacher.schedule.scheduleOnlineClass')}</h2>
+                        <p className="text-muted-foreground">{t('teacher.schedule.createLiveSession')}</p>
                       </div>
                     </div>
 
                     <form onSubmit={handleScheduleClass} className="space-y-5">
-                      <div className="grid md:grid-cols-2 gap-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-2">
-                          <Label htmlFor="course" className="text-sm font-semibold text-gray-700">{t('teacher.schedule.selectCourse')} *</Label>
+                          <Label htmlFor="course" className="text-sm font-semibold text-foreground">{t('teacher.schedule.selectCourse')} *</Label>
                           <Select
                             value={scheduleForm.course_id}
                             onValueChange={(value) => setScheduleForm({ ...scheduleForm, course_id: value })}
                           >
-                            <SelectTrigger className="h-12 border-gray-300">
+                            <SelectTrigger className="h-12 border-border">
                               <SelectValue placeholder={t('teacher.schedule.chooseCourse')} />
                             </SelectTrigger>
                             <SelectContent>
@@ -211,59 +205,59 @@ const TeacherSchedule = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="title" className="text-sm font-semibold text-gray-700">{t('teacher.schedule.classTitle')} *</Label>
+                          <Label htmlFor="title" className="text-sm font-semibold text-foreground">{t('teacher.schedule.classTitle')} *</Label>
                           <Input
                             id="title"
                             value={scheduleForm.title}
                             onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
                             placeholder={t('teacher.schedule.classTitlePlaceholder')}
-                            className="h-12 border-gray-300"
+                            className="h-12 border-border"
                             required
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="description" className="text-sm font-semibold text-gray-700">{t('teacher.schedule.description')}</Label>
+                        <Label htmlFor="description" className="text-sm font-semibold text-foreground">{t('teacher.schedule.description')}</Label>
                         <Textarea
                           id="description"
                           value={scheduleForm.description}
                           onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
                           placeholder={t('teacher.schedule.descriptionPlaceholder')}
                           rows={3}
-                          className="border-gray-300"
+                          className="border-border"
                         />
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-2">
-                          <Label htmlFor="scheduled_time" className="text-sm font-semibold text-gray-700">{t('teacher.schedule.dateTime')} *</Label>
+                          <Label htmlFor="scheduled_time" className="text-sm font-semibold text-foreground">{t('teacher.schedule.dateTime')} *</Label>
                           <Input
                             id="scheduled_time"
                             type="datetime-local"
                             value={scheduleForm.scheduled_time}
                             onChange={(e) => setScheduleForm({ ...scheduleForm, scheduled_time: e.target.value })}
-                            className="h-12 border-gray-300"
+                            className="h-12 border-border"
                             required
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="meet_link" className="text-sm font-semibold text-gray-700">{t('teacher.schedule.meetLink')} *</Label>
+                          <Label htmlFor="meet_link" className="text-sm font-semibold text-foreground">{t('teacher.schedule.meetLink')} *</Label>
                           <Input
                             id="meet_link"
                             type="url"
                             value={scheduleForm.meet_link}
                             onChange={(e) => setScheduleForm({ ...scheduleForm, meet_link: e.target.value })}
                             placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                            className="h-12 border-gray-300"
+                            className="h-12 border-border"
                             required
                           />
                         </div>
                       </div>
 
                       <div className="flex gap-3 pt-4">
-                        <Button type="submit" className="bg-[#006d2c] hover:bg-[#005523] text-white px-8">
+                        <Button type="submit" className="bg-primary hover:bg-primary-hover text-white px-8">
                           {t('teacher.schedule.scheduleClass')}
                         </Button>
                         <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
@@ -275,18 +269,18 @@ const TeacherSchedule = () => {
                 </Card>
               )}
 
-              <div className="grid lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Scheduled Classes List */}
                 <div className="lg:col-span-2 space-y-4">
-                  <h2 className="text-2xl font-bold text-black mb-4">{t('teacher.schedule.upcomingClasses')}</h2>
+                  <h2 className="text-2xl font-bold text-forest mb-4">{t('teacher.schedule.upcomingClasses')}</h2>
                   
                   {scheduledClasses.length === 0 ? (
-                    <Card className="border-2 border-dashed border-gray-300">
+                    <Card className="border-2 border-dashed border-border">
                       <CardContent className="p-12 text-center">
-                        <Video className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('teacher.schedule.noClassesScheduled')}</h3>
-                        <p className="text-gray-600 mb-6">{t('teacher.schedule.startScheduling')}</p>
-                        <Button onClick={() => setShowForm(true)} className="bg-[#006d2c] hover:bg-[#005523]">
+                        <Video className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-forest mb-2">{t('teacher.schedule.noClassesScheduled')}</h3>
+                        <p className="text-muted-foreground mb-6">{t('teacher.schedule.startScheduling')}</p>
+                        <Button onClick={() => setShowForm(true)} className="bg-primary hover:bg-primary-hover">
                           <Plus className="h-4 w-4 mr-2" />
                           {t('teacher.schedule.scheduleClass')}
                         </Button>
@@ -294,31 +288,31 @@ const TeacherSchedule = () => {
                     </Card>
                   ) : (
                     scheduledClasses.map((classItem) => (
-                      <Card key={classItem.id} className="border-l-4 border-l-[#006d2c] hover:shadow-lg transition-shadow">
+                      <Card key={classItem.id} className="border-l-4 border-l-[#006d2c] transition-shadow">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-2">
-                                <div className="w-12 h-12 rounded-lg bg-[#006d2c]/10 flex items-center justify-center">
-                                  <Video className="h-6 w-6 text-[#006d2c]" />
+                                <div className="w-12 h-12 rounded-lg bg-leaf flex items-center justify-center">
+                                  <Video className="h-6 w-6 text-primary" />
                                 </div>
                                 <div>
-                                  <h3 className="text-lg font-bold text-black">{classItem.title}</h3>
-                                  <p className="text-sm text-gray-600">{classItem.courses?.title}</p>
+                                  <h3 className="text-lg font-bold text-forest">{classItem.title}</h3>
+                                  <p className="text-sm text-muted-foreground">{classItem.courses?.title}</p>
                                 </div>
                               </div>
                               
                               {classItem.description && (
-                                <p className="text-gray-700 mb-4 ml-15">{classItem.description}</p>
+                                <p className="text-foreground mb-4 ml-15">{classItem.description}</p>
                               )}
 
                               <div className="flex flex-wrap gap-4 ml-15">
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <CalendarIcon className="h-4 w-4 text-[#006d2c]" />
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <CalendarIcon className="h-4 w-4 text-primary" />
                                   <span>{format(new Date(classItem.scheduled_time), "MMM dd, yyyy")}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <Clock className="h-4 w-4 text-[#006d2c]" />
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <Clock className="h-4 w-4 text-primary" />
                                   <span>{format(new Date(classItem.scheduled_time), "hh:mm a")}</span>
                                 </div>
                               </div>
@@ -338,7 +332,7 @@ const TeacherSchedule = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleDeleteClass(classItem.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                className="text-destructive hover:text-destructive hover:bg-destructive-surface"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -346,7 +340,7 @@ const TeacherSchedule = () => {
                           </div>
 
                           <div className="flex items-center gap-2 ml-15">
-                            <Badge className="bg-[#006d2c]/10 text-[#006d2c] hover:bg-[#006d2c]/20">
+                            <Badge className="bg-leaf text-primary hover:bg-leaf">
                               {t('teacher.schedule.scheduled')}
                             </Badge>
                           </div>
@@ -358,9 +352,9 @@ const TeacherSchedule = () => {
 
                 {/* Calendar Sidebar */}
                 <div className="space-y-6">
-                  <Card className="border-2 border-gray-200">
+                  <Card className="border-2 border-border">
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-bold text-black mb-4">{t('schedule.calendar')}</h3>
+                      <h3 className="text-lg font-bold text-forest mb-4">{t('schedule.calendar')}</h3>
                       <Calendar
                         mode="single"
                         selected={date}
@@ -370,17 +364,17 @@ const TeacherSchedule = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-2 border-[#006d2c]/20 bg-gradient-to-br from-[#006d2c]/5 to-white">
+                  <Card className="border-2 border-primary/20">
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-bold text-black mb-4">{t('teacher.schedule.quickStats')}</h3>
+                      <h3 className="text-lg font-bold text-forest mb-4">{t('teacher.schedule.quickStats')}</h3>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-600">{t('teacher.schedule.totalClasses')}</span>
-                          <span className="text-2xl font-bold text-[#006d2c]">{scheduledClasses.length}</span>
+                          <span className="text-muted-foreground">{t('teacher.schedule.totalClasses')}</span>
+                          <span className="text-2xl font-bold text-primary">{scheduledClasses.length}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-600">{t('teacher.schedule.thisWeek')}</span>
-                          <span className="text-2xl font-bold text-[#006d2c]">
+                          <span className="text-muted-foreground">{t('teacher.schedule.thisWeek')}</span>
+                          <span className="text-2xl font-bold text-primary">
                             {scheduledClasses.filter(c => {
                               const classDate = new Date(c.scheduled_time);
                               const weekFromNow = new Date();
@@ -395,10 +389,7 @@ const TeacherSchedule = () => {
                 </div>
               </div>
             </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

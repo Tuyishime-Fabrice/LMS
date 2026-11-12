@@ -5,15 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Check, X, Clock, MessageSquare } from "lucide-react";
+import { Check, X, MessageSquare } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface JoinRequest {
   id: string;
@@ -205,26 +199,26 @@ export function CohortJoinRequests() {
             {requests.map((request) => (
               <div
                 key={request.id}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted transition-colors"
               >
                 <div className="flex items-center gap-4 flex-1">
                   <Avatar className="h-10 w-10">
                     {request.profiles.avatar_url ? (
                       <img src={request.profiles.avatar_url} alt={request.profiles.full_name} />
                     ) : (
-                      <AvatarFallback className="bg-[#006d2c] text-white">
+                      <AvatarFallback className="bg-primary text-white">
                         {request.profiles.full_name.substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     )}
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900">{request.profiles.full_name}</p>
-                    <p className="text-sm text-gray-600 truncate">{request.profiles.email}</p>
+                    <p className="font-medium text-forest">{request.profiles.full_name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{request.profiles.email}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline" className="text-xs">
                         {request.cohorts.name}
                       </Badge>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {request.cohorts.courses.title}
                       </span>
                     </div>
@@ -234,7 +228,7 @@ export function CohortJoinRequests() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setSelectedRequest(request)}
-                      className="text-gray-600"
+                      className="text-muted-foreground"
                     >
                       <MessageSquare className="h-4 w-4" />
                     </Button>
@@ -246,7 +240,7 @@ export function CohortJoinRequests() {
                     variant="outline"
                     onClick={() => handleReject(request.id)}
                     disabled={processing}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-destructive hover:text-destructive hover:bg-destructive-surface"
                   >
                     <X className="h-4 w-4 mr-1" />
                     {t("cohort.reject")}
@@ -255,7 +249,7 @@ export function CohortJoinRequests() {
                     size="sm"
                     onClick={() => handleApprove(request)}
                     disabled={processing}
-                    className="bg-[#006d2c] hover:bg-[#005523]"
+                    className="bg-primary hover:bg-primary-hover"
                   >
                     <Check className="h-4 w-4 mr-1" />
                     {t("cohort.approve")}
@@ -277,7 +271,7 @@ export function CohortJoinRequests() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <p className="text-gray-700 whitespace-pre-wrap">
+            <p className="text-foreground whitespace-pre-wrap">
               {selectedRequest?.message || t("cohort.noMessage")}
             </p>
           </div>
@@ -286,7 +280,7 @@ export function CohortJoinRequests() {
               variant="outline"
               onClick={() => selectedRequest && handleReject(selectedRequest.id)}
               disabled={processing}
-              className="text-red-600 hover:text-red-700"
+              className="text-destructive hover:text-destructive"
             >
               <X className="h-4 w-4 mr-1" />
               {t("cohort.reject")}
@@ -294,7 +288,7 @@ export function CohortJoinRequests() {
             <Button
               onClick={() => selectedRequest && handleApprove(selectedRequest)}
               disabled={processing}
-              className="bg-[#006d2c] hover:bg-[#005523]"
+              className="bg-primary hover:bg-primary-hover"
             >
               <Check className="h-4 w-4 mr-1" />
               {t("cohort.approve")}

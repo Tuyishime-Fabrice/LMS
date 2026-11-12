@@ -1,51 +1,21 @@
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
 import { GradesTable } from "@/components/GradesTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  GraduationCap, 
-  FileText, 
-  TrendingUp,
-  Edit,
-  Save,
-  X,
-  Download
-} from "lucide-react";
+import { GraduationCap, FileText, TrendingUp, Edit, Save, X, Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -357,7 +327,7 @@ const TeacherGrades = () => {
 
   const handleGradeAssignment = (student: StudentGrade) => {
     if (!student.submission_id) {
-      toast.error("No submission found for this student");
+      toast.error(t("teacherGrades.noSubmissionFoundForThisStudent", "No submission found for this student"));
       return;
     }
 
@@ -410,12 +380,12 @@ const TeacherGrades = () => {
   };
 
   const getGradeColor = (grade: number | null) => {
-    if (grade === null) return "text-gray-400";
-    if (grade >= 90) return "text-green-600";
-    if (grade >= 80) return "text-blue-600";
-    if (grade >= 70) return "text-yellow-600";
-    if (grade >= 60) return "text-orange-600";
-    return "text-red-600";
+    if (grade === null) return "text-muted-foreground/60";
+    if (grade >= 90) return "text-primary";
+    if (grade >= 80) return "text-info";
+    if (grade >= 70) return "text-warning";
+    if (grade >= 60) return "text-warning";
+    return "text-destructive";
   };
 
   const getGradeLetter = (grade: number | null) => {
@@ -429,11 +399,11 @@ const TeacherGrades = () => {
 
   const exportToExcel = async () => {
     if (studentGrades.length === 0) {
-      toast.error("No data to export");
+      toast.error(t("teacherGrades.noDataToExport", "No data to export"));
       return;
     }
 
-    toast.info("Preparing export with quiz details...");
+    toast.info(t("teacherGrades.preparingExportWithQuizDetails", "Preparing export with quiz details..."));
 
     const courseName = courses.find(c => c.id === selectedCourseId)?.title || "Course";
     
@@ -617,7 +587,7 @@ const TeacherGrades = () => {
 
     // Download
     XLSX.writeFile(wb, filename);
-    toast.success("Grades exported with quiz & capstone details!");
+    toast.success(t("teacherGrades.gradesExportedWithQuizCapstoneDetails", "Grades exported with quiz & capstone details!"));
   };
 
   if (loading) {
@@ -629,29 +599,23 @@ const TeacherGrades = () => {
     : 0;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        {userRole === "admin" ? <AdminSidebar /> : <TeacherSidebar />}
-
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <TeacherHeader 
-            title={t('grades.grades')}
-            subtitle={t('teacher.grades.viewQuizScores')}
-          >
-            {selectedCourseId && studentGrades.length > 0 && (
+    <AppShell role={userRole === "admin" ? "admin" : "teacher"} width="wide">
+      <PageHeader
+        title={t('grades.grades')}
+        description={t('teacher.grades.viewQuizScores')}
+        actions={<>{selectedCourseId && studentGrades.length > 0 && (
               <Button 
                 onClick={exportToExcel}
                 variant="outline"
                 className="gap-2"
               >
                 <Download className="h-4 w-4" />
-                {t('common.download')} Excel
+                {t('common.download')}{" "}{t("teacherGrades.excel", "Excel")}
               </Button>
-            )}
-          </TeacherHeader>
+            )}</>}
+      />
 
-          <main className="flex-1 overflow-y-auto p-4">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Course Selector */}
               <Card>
                 <CardHeader>
@@ -663,11 +627,11 @@ const TeacherGrades = () => {
                 <CardContent>
                   {courses.length === 0 ? (
                     <div className="text-center py-8">
-                      <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600">{t('teacher.grades.noCoursesFound')}</p>
+                      <GraduationCap className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <p className="text-muted-foreground">{t('teacher.grades.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
-                        className="mt-4 bg-[#006d2c] hover:bg-[#005523]"
+                        className="mt-4 bg-primary hover:bg-primary-hover"
                       >
                         {t('teacher.grades.createFirstCourse')}
                       </Button>
@@ -705,20 +669,20 @@ const TeacherGrades = () => {
                     <TabsContent value="assignments" className="space-y-6">
                       {/* Stats Cards */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
+                    <Card className="border-info/30">
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t('teacher.students.totalStudents')}</CardTitle>
-                        <GraduationCap className="h-4 w-4 text-blue-500" />
+                        <GraduationCap className="h-4 w-4 text-info" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{studentGrades.length}</div>
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
+                    <Card className="border-primary/30">
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t('teacher.grades.classAverage')}</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        <TrendingUp className="h-4 w-4 text-primary" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">
@@ -730,10 +694,10 @@ const TeacherGrades = () => {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
+                    <Card className="border-border">
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">{t('teacher.grades.gradedAssignments')}</CardTitle>
-                        <FileText className="h-4 w-4 text-purple-500" />
+                        <FileText className="h-4 w-4 text-forest" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">
@@ -757,20 +721,20 @@ const TeacherGrades = () => {
                     <CardContent>
                       {studentGrades.length === 0 ? (
                         <div className="text-center py-12">
-                          <GraduationCap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-600">{t('teacher.grades.noStudentsEnrolled')}</p>
+                          <GraduationCap className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                          <p className="text-muted-foreground">{t('teacher.grades.noStudentsEnrolled')}</p>
                         </div>
                       ) : (
                         <div className="overflow-x-auto">
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead>Student</TableHead>
-                                <TableHead className="text-center">Quiz Average</TableHead>
-                                <TableHead className="text-center">Assignment</TableHead>
-                                <TableHead className="text-center">Overall Grade</TableHead>
-                                <TableHead className="text-center">Letter</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead>{t("teacherGrades.student", "Student")}</TableHead>
+                                <TableHead className="text-center">{t("teacherGrades.quizAverage", "Quiz Average")}</TableHead>
+                                <TableHead className="text-center">{t("teacherGrades.assignment", "Assignment")}</TableHead>
+                                <TableHead className="text-center">{t("teacherGrades.overallGrade", "Overall Grade")}</TableHead>
+                                <TableHead className="text-center">{t("teacherGrades.letter", "Letter")}</TableHead>
+                                <TableHead className="text-right">{t("teacherGrades.actions", "Actions")}</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -782,7 +746,7 @@ const TeacherGrades = () => {
                                         {student.avatar_url ? (
                                           <img src={student.avatar_url} alt={student.student_name} />
                                         ) : (
-                                          <AvatarFallback className="bg-[#006d2c] text-white">
+                                          <AvatarFallback className="bg-primary text-white">
                                             {student.student_name.charAt(0)}
                                           </AvatarFallback>
                                         )}
@@ -805,7 +769,7 @@ const TeacherGrades = () => {
                                           className="h-auto p-0 text-xs"
                                           onClick={() => handleViewQuizzes(student)}
                                         >
-                                          ({student.quiz_count} quizzes)
+                                          {t("teacherGrades.quizzes", "({{count}} quizzes)", { count: student.quiz_count })}
                                         </Button>
                                       )}
                                     </div>
@@ -833,7 +797,7 @@ const TeacherGrades = () => {
                                         onClick={() => handleGradeAssignment(student)}
                                       >
                                         <Edit className="h-4 w-4 mr-1" />
-                                        {student.assignment_grade !== null ? "Edit Grade" : "Grade"}
+                                        {student.assignment_grade !== null ? t("teacherGrades.editGrade", "Edit Grade") : t("teacherGrades.grade", "Grade")}
                                       </Button>
                                     )}
                                   </TableCell>
@@ -850,22 +814,18 @@ const TeacherGrades = () => {
                 </>
               )}
             </div>
-          </main>
-        </div>
-      </div>
-
       {/* Grade Assignment Dialog */}
       <Dialog open={showGradeDialog} onOpenChange={setShowGradeDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Grade Assignment</DialogTitle>
+            <DialogTitle>{t("teacherGrades.gradeAssignment", "Grade Assignment")}</DialogTitle>
             <DialogDescription>
-              Grade {selectedStudent?.student_name}'s capstone submission
+              {t("teacherGrades.gradeSCapstoneSubmission", "Grade {{studentName}}'s capstone submission", { studentName: selectedStudent?.student_name })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="grade">Grade (0-100)</Label>
+              <Label htmlFor="grade">{t("teacherGrades.grade0100", "Grade (0-100)")}</Label>
               <Input
                 id="grade"
                 type="number"
@@ -873,16 +833,16 @@ const TeacherGrades = () => {
                 max="100"
                 value={gradeForm.grade}
                 onChange={(e) => setGradeForm({ ...gradeForm, grade: e.target.value })}
-                placeholder="Enter grade"
+                placeholder={t("teacherGrades.enterGrade", "Enter grade")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="feedback">Feedback (Optional)</Label>
+              <Label htmlFor="feedback">{t("teacherGrades.feedbackOptional", "Feedback (Optional)")}</Label>
               <Textarea
                 id="feedback"
                 value={gradeForm.feedback}
                 onChange={(e) => setGradeForm({ ...gradeForm, feedback: e.target.value })}
-                placeholder="Provide feedback to the student..."
+                placeholder={t("teacherGrades.provideFeedbackToTheStudent", "Provide feedback to the student...")}
                 rows={4}
               />
             </div>
@@ -890,28 +850,27 @@ const TeacherGrades = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowGradeDialog(false)}>
               <X className="h-4 w-4 mr-1" />
-              Cancel
+              {t("teacherGrades.cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSaveGrade} disabled={saving} className="bg-[#006d2c] hover:bg-[#005523]">
+            <Button onClick={handleSaveGrade} disabled={saving} className="bg-primary hover:bg-primary-hover">
               <Save className="h-4 w-4 mr-1" />
-              {saving ? "Saving..." : "Save Grade"}
+              {saving ? t("teacherGrades.saving", "Saving...") : t("teacherGrades.saveGrade", "Save Grade")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Quiz Attempts Dialog */}
       <Dialog open={showQuizDialog} onOpenChange={setShowQuizDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Quiz Attempts</DialogTitle>
+            <DialogTitle>{t("teacherGrades.quizAttempts", "Quiz Attempts")}</DialogTitle>
             <DialogDescription>
-              {selectedStudent?.student_name}'s quiz history
+              {t("teacherGrades.sQuizHistory", "{{studentName}}'s quiz history", { studentName: selectedStudent?.student_name })}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             {quizAttempts.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No quiz attempts found</p>
+              <p className="text-center text-muted-foreground py-8">{t("teacherGrades.noQuizAttemptsFound", "No quiz attempts found")}</p>
             ) : (
               <div className="space-y-3">
                 {quizAttempts.map((attempt) => (
@@ -934,7 +893,7 @@ const TeacherGrades = () => {
                             </p>
                           </div>
                           <Badge variant={attempt.passed ? "default" : "destructive"}>
-                            {attempt.passed ? "Passed" : "Failed"}
+                            {attempt.passed ? t("teacherGrades.passed", "Passed") : t("teacherGrades.failed", "Failed")}
                           </Badge>
                         </div>
                       </div>
@@ -946,7 +905,7 @@ const TeacherGrades = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 

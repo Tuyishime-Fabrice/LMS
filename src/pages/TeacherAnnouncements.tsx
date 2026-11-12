@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,9 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
 import { Megaphone, Plus, Trash2, BookOpen, Users, Clock } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
@@ -114,7 +113,7 @@ export default function TeacherAnnouncements() {
 
   const handleCreate = async () => {
     if (!title.trim() || !message.trim()) {
-      toast.error("Please fill in all fields");
+      toast.error(t("teacherAnnouncements.pleaseFillInAllFields", "Please fill in all fields"));
       return;
     }
     if (!user) return;
@@ -131,7 +130,7 @@ export default function TeacherAnnouncements() {
 
       if (error) throw error;
 
-      toast.success("Announcement sent to students!");
+      toast.success(t("teacherAnnouncements.announcementSentToStudents", "Announcement sent to students!"));
       setShowCreateDialog(false);
       setTitle("");
       setMessage("");
@@ -139,7 +138,7 @@ export default function TeacherAnnouncements() {
       fetchAnnouncements();
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error(error.message || "Failed to create announcement");
+      toast.error(error.message || t("teacherAnnouncements.failedToCreateAnnouncement", "Failed to create announcement"));
     } finally {
       setProcessing(false);
     }
@@ -156,12 +155,12 @@ export default function TeacherAnnouncements() {
 
       if (error) throw error;
 
-      toast.success("Announcement deleted");
+      toast.success(t("teacherAnnouncements.announcementDeleted", "Announcement deleted"));
       setShowDeleteDialog(false);
       setSelectedAnnouncement(null);
       fetchAnnouncements();
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete");
+      toast.error(error.message || t("teacherAnnouncements.failedToDelete", "Failed to delete"));
     } finally {
       setProcessing(false);
     }
@@ -178,62 +177,56 @@ export default function TeacherAnnouncements() {
       toast.success(announcement.is_active ? "Announcement hidden" : "Announcement visible");
       fetchAnnouncements();
     } catch (error: any) {
-      toast.error("Failed to update");
+      toast.error(t("teacherAnnouncements.failedToUpdate", "Failed to update"));
     }
   };
 
   if (authLoading || loading) return <LoadingSpinner />;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <TeacherSidebar />
-
-        <div className="flex-1 flex flex-col">
-          <TeacherHeader
-            title={t('teacher.announcements.title')}
-            subtitle={t('teacher.announcements.subtitle')}
-          >
-            <Button
+    <AppShell role="teacher" width="wide">
+      <PageHeader
+        title={t('teacher.announcements.title')}
+        description={t('teacher.announcements.subtitle')}
+        actions={<><Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-[#006d2c] hover:bg-[#005523]"
+              className="bg-primary hover:bg-primary-hover"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t('teacher.announcements.newAnnouncement')}
-            </Button>
-          </TeacherHeader>
+            </Button></>}
+      />
 
-          <main className="flex-1 overflow-y-auto p-4">
             <div className="max-w-5xl mx-auto space-y-6">
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                   <CardContent className="p-6 flex justify-between items-center">
                     <div>
-                      <p className="text-sm text-gray-600">{t('teacher.announcements.totalAnnouncements')}</p>
-                      <p className="text-3xl font-bold text-[#006d2c]">{announcements.length}</p>
+                      <p className="text-sm text-muted-foreground">{t('teacher.announcements.totalAnnouncements')}</p>
+                      <p className="text-3xl font-bold text-primary">{announcements.length}</p>
                     </div>
-                    <Megaphone className="h-10 w-10 text-[#006d2c]/30" />
+                    <Megaphone className="h-10 w-10 text-primary/30" />
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-6 flex justify-between items-center">
                     <div>
-                      <p className="text-sm text-gray-600">{t('teacher.announcements.active')}</p>
-                      <p className="text-3xl font-bold text-green-600">
+                      <p className="text-sm text-muted-foreground">{t('teacher.announcements.active')}</p>
+                      <p className="text-3xl font-bold text-primary">
                         {announcements.filter(a => a.is_active).length}
                       </p>
                     </div>
-                    <Megaphone className="h-10 w-10 text-green-500/30" />
+                    <Megaphone className="h-10 w-10 text-primary/30" />
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-6 flex justify-between items-center">
                     <div>
-                      <p className="text-sm text-gray-600">{t('teacher.announcements.yourCourses')}</p>
-                      <p className="text-3xl font-bold text-blue-600">{courses.length}</p>
+                      <p className="text-sm text-muted-foreground">{t('teacher.announcements.yourCourses')}</p>
+                      <p className="text-3xl font-bold text-info">{courses.length}</p>
                     </div>
-                    <BookOpen className="h-10 w-10 text-blue-500/30" />
+                    <BookOpen className="h-10 w-10 text-info/30" />
                   </CardContent>
                 </Card>
               </div>
@@ -249,14 +242,14 @@ export default function TeacherAnnouncements() {
                 <CardContent>
                   {announcements.length === 0 ? (
                     <div className="text-center py-12">
-                      <Megaphone className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                      <h3 className="font-medium text-gray-900 mb-1">{t('teacher.announcements.noAnnouncements')}</h3>
-                      <p className="text-sm text-gray-500 mb-4">
+                      <Megaphone className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                      <h3 className="font-medium text-forest mb-1">{t('teacher.announcements.noAnnouncements')}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
                         {t('teacher.announcements.createFirst')}
                       </p>
                       <Button
                         onClick={() => setShowCreateDialog(true)}
-                        className="bg-[#006d2c] hover:bg-[#005523]"
+                        className="bg-primary hover:bg-primary-hover"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         {t('teacher.announcements.createAnnouncement')}
@@ -270,20 +263,20 @@ export default function TeacherAnnouncements() {
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <h3 className="font-semibold text-gray-900">
+                                  <h3 className="font-semibold text-forest">
                                     {announcement.title}
                                   </h3>
                                   <Badge
                                     variant={announcement.is_active ? "default" : "secondary"}
-                                    className={announcement.is_active ? "bg-green-100 text-green-800" : ""}
+                                    className={announcement.is_active ? "bg-leaf text-leaf-foreground" : ""}
                                   >
                                     {announcement.is_active ? t('teacher.announcements.active') : t('teacher.announcements.hidden')}
                                   </Badge>
                                 </div>
-                                <p className="text-gray-600 text-sm mb-3">
+                                <p className="text-muted-foreground text-sm mb-3">
                                   {announcement.message}
                                 </p>
-                                <div className="flex items-center gap-4 text-xs text-gray-500">
+                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
                                   <span className="flex items-center gap-1">
                                     <BookOpen className="h-3 w-3" />
                                     {announcement.course_title}
@@ -322,10 +315,6 @@ export default function TeacherAnnouncements() {
                 </CardContent>
               </Card>
             </div>
-          </main>
-        </div>
-      </div>
-
       {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent>
@@ -385,14 +374,13 @@ export default function TeacherAnnouncements() {
             <Button
               onClick={handleCreate}
               disabled={processing || !title.trim() || !message.trim()}
-              className="bg-[#006d2c] hover:bg-[#005523]"
+              className="bg-primary hover:bg-primary-hover"
             >
               {processing ? t('teacher.announcements.sending') : t('teacher.announcements.sendAnnouncement')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Delete Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
@@ -406,13 +394,13 @@ export default function TeacherAnnouncements() {
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90"
             >
               {processing ? t('teacher.announcements.deleting') : t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SidebarProvider>
+    </AppShell>
   );
 }

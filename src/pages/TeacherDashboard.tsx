@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/shell/page";
+import { AppShell } from "@/components/shell/AppShell";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Users, BookOpen, Calendar as CalendarIcon, Layers, PlayCircle } from "lucide-react";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { TeacherHeader } from "@/components/TeacherHeader";
+import { Pencil, Plus, Users, BookOpen, Calendar as CalendarIcon, Layers, PlayCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { CourseCard } from "@/components/CourseCard";
+import { CourseThumb } from "@/features/learning/CourseThumb";
+import { StatusPill } from "@/components/shell/page";
 import { toast } from "sonner";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ const CourseCardSkeleton = () => (
 );
 
 const UpcomingClassSkeleton = () => (
-  <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
+  <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
     <Skeleton className="w-12 h-12 rounded-lg" />
     <div className="flex-1 space-y-2">
       <Skeleton className="h-4 w-32" />
@@ -74,7 +74,7 @@ const TeacherDashboard = () => {
 
       if (profile) {
         if (!profile.onboarding_completed) {
-          toast.info("Please complete your profile setup");
+          toast.info(t("teacherDashboard.pleaseCompleteYourProfileSetup", "Please complete your profile setup"));
           navigate("/teacher/onboarding", { replace: true });
           return;
         }
@@ -165,10 +165,10 @@ const TeacherDashboard = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-muted/50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-[#006d2c] mx-auto mb-3"></div>
-          <p className="text-gray-500 text-sm">{t('common.loading')}</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-border border-t-[#006d2c] mx-auto mb-3"></div>
+          <p className="text-muted-foreground text-sm">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -177,19 +177,14 @@ const TeacherDashboard = () => {
   if (!user) return null;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <TeacherSidebar />
+    <AppShell role="teacher" width="wide">
+      <PageHeader
+        title={`${t('teacher.dashboard.welcomeBack')}, ${profile?.full_name?.split(' ')[0] || t('onboarding.teacher')}`}
+        description={t('teacher.dashboard.happeningToday')}
+        actions={<Button onClick={() => navigate("/create-course")}><Plus />{t('courses.createCourse')}</Button>}
+      />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <TeacherHeader
-            title={`${t('teacher.dashboard.welcomeBack')}, ${profile?.full_name?.split(' ')[0] || t('onboarding.teacher')}`}
-            subtitle={t('teacher.dashboard.happeningToday')}
-            loading={dataLoading}
-          />
-
-          <main className="flex-1 overflow-y-auto p-4">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Stats */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {dataLoading ? (
@@ -203,45 +198,45 @@ const TeacherDashboard = () => {
                   <>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600">{t('nav.courses')}</CardTitle>
-                        <BookOpen className="h-4 w-4 text-gray-400" />
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.courses')}</CardTitle>
+                        <BookOpen className="h-4 w-4 text-muted-foreground/60" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{courses.length}</div>
-                        <p className="text-xs text-gray-500">{t('teacher.dashboard.activeCourses')}</p>
+                        <p className="text-xs text-muted-foreground">{t('teacher.dashboard.activeCourses')}</p>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600">{t('nav.students')}</CardTitle>
-                        <Users className="h-4 w-4 text-gray-400" />
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.students')}</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground/60" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalStudents}</div>
-                        <p className="text-xs text-gray-500">{t('courses.enrolled')}</p>
+                        <p className="text-xs text-muted-foreground">{t('courses.enrolled')}</p>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600">{t('teacher.dashboard.lessons')}</CardTitle>
-                        <PlayCircle className="h-4 w-4 text-gray-400" />
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.lessons')}</CardTitle>
+                        <PlayCircle className="h-4 w-4 text-muted-foreground/60" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalLessons}</div>
-                        <p className="text-xs text-gray-500">{t('teacher.dashboard.totalLessons')}</p>
+                        <p className="text-xs text-muted-foreground">{t('teacher.dashboard.totalLessons')}</p>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-600">{t('teacher.dashboard.chapters')}</CardTitle>
-                        <Layers className="h-4 w-4 text-gray-400" />
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.chapters')}</CardTitle>
+                        <Layers className="h-4 w-4 text-muted-foreground/60" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalChapters}</div>
-                        <p className="text-xs text-gray-500">{t('teacher.dashboard.totalChapters')}</p>
+                        <p className="text-xs text-muted-foreground">{t('teacher.dashboard.totalChapters')}</p>
                       </CardContent>
                     </Card>
                   </>
@@ -251,25 +246,6 @@ const TeacherDashboard = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
-                  {/* Quick Action */}
-                  <Card className="bg-[#006d2c] text-white">
-                    <CardContent className="p-5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold mb-1">{t('teacher.dashboard.readyToCreate')}</h3>
-                          <p className="text-sm text-white/80">{t('teacher.dashboard.shareKnowledge')}</p>
-                        </div>
-                        <Button
-                          onClick={() => navigate("/create-course")}
-                          className="bg-white text-[#006d2c] hover:bg-gray-100"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          {t('courses.createCourse')}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
                   {/* Courses */}
                   <Card>
                     <CardHeader className="pb-3">
@@ -292,37 +268,37 @@ const TeacherDashboard = () => {
                         </div>
                       ) : courses.length === 0 ? (
                         <div className="text-center py-10">
-                          <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                          <h3 className="font-medium text-gray-900 mb-1">{t('teacher.dashboard.noCourses')}</h3>
-                          <p className="text-sm text-gray-500 mb-4">{t('teacher.dashboard.createFirst')}</p>
-                          <Button onClick={() => navigate("/create-course")} className="bg-[#006d2c] hover:bg-[#005523]">
+                          <BookOpen className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                          <h3 className="font-medium text-forest mb-1">{t('teacher.dashboard.noCourses')}</h3>
+                          <p className="text-sm text-muted-foreground mb-4">{t('teacher.dashboard.createFirst')}</p>
+                          <Button onClick={() => navigate("/create-course")} className="bg-primary hover:bg-primary-hover">
                             <Plus className="h-4 w-4 mr-2" />
                             {t('courses.createCourse')}
                           </Button>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {courses.map((course, index) => {
-                            const gradients = [
-                              'from-blue-500 to-purple-600',
-                              'from-green-500 to-teal-600',
-                              'from-orange-500 to-red-600',
-                              'from-pink-500 to-rose-600',
-                              'from-indigo-500 to-blue-600',
-                              'from-yellow-500 to-orange-600',
-                            ];
-                            return (
-                              <CourseCard
-                                key={course.id}
-                                course={course}
-                                onClick={() => navigate(`/course/${course.id}`)}
-                                onEdit={() => navigate(`/create-course?edit=${course.id}`)}
-                                gradient={gradients[index % gradients.length]}
-                                showTeacher={false}
-                              />
-                            );
-                          })}
-                        </div>
+                        <ul className="divide-y">
+                          {courses.map((course) => (
+                            <li key={course.id} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                              <CourseThumb src={course.thumbnail_url} title={course.title} className="h-14 w-20 shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <Link to={`/course/${course.id}`} className="block truncate text-[0.9375rem] font-medium text-forest hover:text-primary">
+                                  {course.title}
+                                </Link>
+                                {course.approval_status && course.approval_status !== "approved" && (
+                                  <StatusPill tone={course.approval_status === "rejected" ? "red" : "amber"} className="mt-1">
+                                    {course.approval_status === "rejected"
+                                      ? t("teacherDashboard.rejected", "Not approved")
+                                      : t("teacherDashboard.pendingReview", "Awaiting review")}
+                                  </StatusPill>
+                                )}
+                              </div>
+                              <Button asChild variant="outline" size="sm">
+                                <Link to={`/create-course?edit=${course.id}`}><Pencil />{t("common.edit", "Edit")}</Link>
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
                       )}
                     </CardContent>
                   </Card>
@@ -368,22 +344,22 @@ const TeacherDashboard = () => {
                         </>
                       ) : scheduledClasses.length === 0 ? (
                         <div className="text-center py-6">
-                          <CalendarIcon className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">{t('schedule.noUpcomingClasses')}</p>
+                          <CalendarIcon className="h-8 w-8 text-muted-foreground/60 mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">{t('schedule.noUpcomingClasses')}</p>
                         </div>
                       ) : (
                         scheduledClasses.slice(0, 3).map((classItem) => {
                           const { day, date: classDate, time } = formatClassDate(classItem.scheduled_time);
                           return (
-                            <div key={classItem.id} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                              <div className="w-12 h-12 rounded-lg bg-white border flex flex-col items-center justify-center text-center">
-                                <span className="text-[10px] font-medium text-gray-500">{day}</span>
-                                <span className="text-lg font-bold text-gray-900">{classDate}</span>
+                            <div key={classItem.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                              <div className="w-12 h-12 rounded-lg bg-card border flex flex-col items-center justify-center text-center">
+                                <span className="text-[10px] font-medium text-muted-foreground">{day}</span>
+                                <span className="text-lg font-bold text-forest">{classDate}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h5 className="font-medium text-sm text-gray-900 truncate">{classItem.title}</h5>
-                                <p className="text-xs text-gray-500 truncate">{classItem.courses?.title}</p>
-                                <p className="text-xs text-gray-400 mt-1">{time}</p>
+                                <h5 className="font-medium text-sm text-forest truncate">{classItem.title}</h5>
+                                <p className="text-xs text-muted-foreground truncate">{classItem.courses?.title}</p>
+                                <p className="text-xs text-muted-foreground/60 mt-1">{time}</p>
                               </div>
                             </div>
                           );
@@ -394,10 +370,7 @@ const TeacherDashboard = () => {
                 </div>
               </div>
             </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+    </AppShell>
   );
 };
 
