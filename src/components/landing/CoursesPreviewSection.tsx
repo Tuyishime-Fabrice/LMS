@@ -133,7 +133,7 @@ export const CoursesPreviewSection = () => {
                             >
                                 <div className="relative h-48 overflow-hidden">
                                     <img
-                                        src={course.thumbnail_url || "/images/placeholder.jpg"}
+                                        src={course.thumbnail_url || "/placeholder.svg"}
                                         alt={course.title}
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                     />

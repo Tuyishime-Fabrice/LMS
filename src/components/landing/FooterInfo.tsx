@@ -125,8 +125,7 @@ export const Footer = () => {
                         <img
                             src="/images/seal.png"
                             alt="DBI Certified EdTech Trust Seal"
-                            style={{ transform: "scale(2.5)", transformOrigin: "center center" }}
-                            className="h-40 w-40 object-contain drop-shadow-[0_0_20px_rgba(255,200,50,0.35)]"
+                            className="h-40 w-40 origin-center scale-[2] object-contain drop-shadow-[0_0_20px_rgba(255,200,50,0.35)] sm:scale-[2.5]"
                         />
                     </div>
                 </div>

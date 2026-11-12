@@ -73,6 +73,34 @@ The app tolerates a database where they are not applied yet (the new features st
 
 After a schema change, update `src/integrations/supabase/types.ts` (regenerate from the live project when you have access).
 
+## Demo mode
+
+The app can run entirely in the browser with sample data, without Supabase or any server key. Use it to show the product or test the interface.
+
+| Account | Email | Password |
+|---|---|---|
+| Learner (Aline Uwase) | `aline@dataplus-demo.test` | `demo1234` |
+| Instructor (Théo Mugisha) | `theo@dataplus-demo.test` | `demo1234` |
+| Admin (Grace Ingabire) | `admin@dataplus-demo.test` | `demo1234` |
+
+The sign-in page also has one-click buttons for each, and a **Demo** button in the corner switches account or resets the data.
+
+The sample academy has four courses (one free and in French, one awaiting approval), a cohort with live sessions and a Kigali workshop, quizzes, graded and pending submissions, a certificate you can verify (code `K7QX4M2P`), messages, instalments and payments. Mobile Money checkout is simulated: the payment confirms itself after a few seconds and enrols the learner. The AI tutor gives a fixed sample answer, labelled as such. Changes are kept in that browser only.
+
+Run it locally:
+
+```bash
+VITE_DEMO_MODE=true npm run dev
+```
+
+Build a static copy (hash URLs, relative paths) into `dist-demo/`:
+
+```bash
+npm run build:demo
+```
+
+To put the demo on Vercel, set `VITE_DEMO_MODE=true` in that project's environment variables. Never set it on the real site: it replaces the database with sample data. The data lives in `src/demo/seed.ts` and the stand-in backend in `src/demo/backend.ts`; a normal build contains neither.
+
 ## AI tutor
 
 Learners open **Help** inside a lesson and ask the tutor a question. It answers in the learner's language, knows which lesson they are on, and gives hints instead of answers on graded work.

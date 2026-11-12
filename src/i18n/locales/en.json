@@ -2212,5 +2212,20 @@
     "noneLeft": "You have used today's questions. The tutor is available again tomorrow.",
     "remaining": "{{count}} questions left today.",
     "disclaimer": "AI answers can contain mistakes. For grades and deadlines, ask your instructor."
+  },
+  "demo": {
+    "open": "Demo options",
+    "badge": "Demo",
+    "barSignedIn": "You are exploring sample data. Changes stay in this browser only.",
+    "barSignedOut": "You are exploring sample data. Pick someone to sign in as.",
+    "reset": "Reset sample data",
+    "role": {
+      "student": "Learner",
+      "teacher": "Instructor",
+      "admin": "Admin"
+    },
+    "accountsTitle": "Try the demo",
+    "accountsBody": "Sample data only. Sign in with one click, or type an email below with the password {{password}}.",
+    "signingIn": "Signing in…"
   }
 }

@@ -2212,5 +2212,20 @@
     "noneLeft": "Vous avez utilisé vos questions du jour. Le tuteur sera de nouveau disponible demain.",
     "remaining": "Il vous reste {{count}} questions aujourd'hui.",
     "disclaimer": "Les réponses de l'IA peuvent contenir des erreurs. Pour les notes et les échéances, adressez-vous à votre formateur."
+  },
+  "demo": {
+    "open": "Options de la démo",
+    "badge": "Démo",
+    "barSignedIn": "Vous explorez des données d'exemple. Vos modifications restent dans ce navigateur.",
+    "barSignedOut": "Vous explorez des données d'exemple. Choisissez avec qui vous connecter.",
+    "reset": "Réinitialiser les données",
+    "role": {
+      "student": "Apprenant",
+      "teacher": "Formateur",
+      "admin": "Administrateur"
+    },
+    "accountsTitle": "Essayer la démo",
+    "accountsBody": "Données d'exemple uniquement. Connectez-vous en un clic, ou saisissez une adresse ci-dessous avec le mot de passe {{password}}.",
+    "signingIn": "Connexion…"
   }
 }

@@ -3,7 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Navigate, Routes, Route } from "react-router-dom";
+import { DEMO_MODE, HASH_ROUTER } from "./demo/config";
+import { DemoBar } from "./demo/DemoBar";
 import "./i18n/config";
 import { SuspensionDialog } from "@/components/SuspensionDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -70,6 +72,8 @@ const LearningRoom = lazy(() => import("./pages/LearningRoom"));
 const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
 const AdminCalendar = lazy(() => import("./pages/AdminCalendar"));
 
+const Router = HASH_ROUTER ? HashRouter : BrowserRouter;
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, refetchOnWindowFocus: false, staleTime: 30_000 },
@@ -86,9 +90,10 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <Router>
         <AuthProvider>
           <SuspensionDialog />
+          {DEMO_MODE && <DemoBar />}
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             <Route path="/" element={<Index />} />
@@ -158,7 +163,7 @@ const App = () => (
           </Routes>
         </Suspense>
         </AuthProvider>
-      </BrowserRouter>
+      </Router>
     </TooltipProvider>
   </QueryClientProvider>
 );

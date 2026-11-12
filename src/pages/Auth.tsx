@@ -12,6 +12,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAppAuth } from "@/contexts/AuthContext";
+import { DEMO_MODE } from "@/demo/config";
+import { DemoAccounts } from "@/demo/DemoAccounts";
 
 const AUTH_METHOD_KEY = "lastAuthMethod";
 
@@ -126,6 +128,8 @@ const Auth = () => {
             </h1>
             <p className="text-gray-500 text-sm">{t('login.signInToStart')}</p>
           </div>
+
+          {DEMO_MODE && <DemoAccounts />}
 
           {/* Google Auth Button */}
           <div className="relative">

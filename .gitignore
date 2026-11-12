@@ -29,3 +29,6 @@ branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
 config.bat
+
+# Demo build (npm run build:demo)
+dist-demo

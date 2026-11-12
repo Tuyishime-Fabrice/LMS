@@ -1,0 +1,471 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 5176
+>>
+stream
+0.200025 w
+0 G
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.353 0.392 0.369 rg
+56. 785.8899999999999864 Td
+(DataPlus Academy  ·  Data Analysis with Excel and Power BI) Tj
+ET
+BT
+/F2 20 Tf
+23. TL
+0. 0.427 0.173 rg
+56. 767.7400000000000091 Td
+(Cleaning data: duplicates, blanks and wrong types) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.353 0.392 0.369 rg
+56. 736.7400000000000091 Td
+(Lesson notes · Module 1 · Sample material for the demo) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.094 0.129 0.11 rg
+56. 709.2400000000000091 Td
+(Why cleaning comes first) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 685.6899999999999409 Td
+(Every total, average and chart you build is only as good as the rows underneath it. A shop file with) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 670.8399999999999181 Td
+(a sale typed twice will overstate revenue; a quantity stored as text will be silently ignored by SUM.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 655.9900000000000091 Td
+(Ten minutes of checking saves hours of explaining a wrong number to your manager.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.094 0.129 0.11 rg
+56. 635.1399999999999864 Td
+(The five checks to run on any new dataset) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 611.5899999999999181 Td
+(1. Count the rows.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 596.7400000000000091 Td
+(Write down how many rows the file has before you change anything. Count again at the end. The) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 581.8899999999999864 Td
+(difference is exactly what your cleaning removed.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 559.0399999999999636 Td
+(2. Find duplicates.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 544.1899999999999409 Td
+(Sort by the receipt or transaction number. Two rows with the same number, date and amount are) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 529.3399999999999181 Td
+(almost always the same sale entered twice. Data > Remove Duplicates does this in one step, but) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 514.4899999999998954 Td
+(look before you delete.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 491.6399999999998727 Td
+(3. Decide what blanks mean.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 476.7899999999998499 Td
+(A blank quantity can mean zero, unknown or forgotten. Check the source \(the receipt book, the) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 461.9399999999998272 Td
+(clinic register\) before you fill or delete. Never type 0 just to make a formula work.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 439.0899999999998045 Td
+(4. Fix numbers stored as text.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 424.2399999999997817 Td
+(Numbers aligned to the left, or a SUM that returns 0, are the giveaway. Use VALUE\(\), or Data >) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 409.389999999999759 Td
+(Text to Columns, to convert the column.) Tj
+ET
+BT
+/F2 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 386.5399999999997362 Td
+(5. Make categories consistent.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 371.6899999999997135 Td
+("Kigali", "kigali " and "KGL" are three different values to Excel. Use TRIM, PROPER and Find &) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 356.8399999999996908 Td
+(Replace so each category is spelled one way.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.094 0.129 0.11 rg
+56. 333.989999999999668 Td
+(Worked example) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 310.4399999999997135 Td
+(A Nyabugogo shop records five sales in a week: RWF 12,000 on Monday, 8,500 on Tuesday,) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 295.5899999999996908 Td
+(12,000 on Tuesday \(same receipt no. 0412\), 9,000 on Wednesday and 20,500 on Friday. The raw) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 280.739999999999668 Td
+(total is RWF 62,000. Receipt 0412 appears twice, so one row is removed and the real total is RWF) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 265.8899999999996453 Td
+(50,000: a 24% overstatement from a single duplicate.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.094 0.129 0.11 rg
+56. 245.0399999999996226 Td
+(Your turn) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 221.489999999999668 Td
+(Open the shop sales file from the exercise. Run the five checks, keep a short note of each change) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 206.6399999999996453 Td
+(and its reason, and compare your row count before and after. You will hand in the cleaned file and) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.094 0.129 0.11 rg
+56. 191.7899999999996226 Td
+(the note in the next lesson.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.353 0.392 0.369 rg
+498.6399999999999864 21.8899999999999864 Td
+(Page 1 of 1) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R ]
+/Count 1
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+/F3 7 0 R
+/F4 8 0 R
+/F5 9 0 R
+/F6 10 0 R
+/F7 11 0 R
+/F8 12 0 R
+/F9 13 0 R
+/F10 14 0 R
+/F11 15 0 R
+/F12 16 0 R
+/F13 17 0 R
+/F14 18 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+19 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20261112173126-00'00')
+>>
+endobj
+20 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000005380 00000 n 
+0000007197 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000005437 00000 n 
+0000005562 00000 n 
+0000005692 00000 n 
+0000005825 00000 n 
+0000005962 00000 n 
+0000006085 00000 n 
+0000006214 00000 n 
+0000006346 00000 n 
+0000006482 00000 n 
+0000006610 00000 n 
+0000006737 00000 n 
+0000006866 00000 n 
+0000006999 00000 n 
+0000007101 00000 n 
+0000007445 00000 n 
+0000007531 00000 n 
+trailer
+<<
+/Size 21
+/Root 20 0 R
+/Info 19 0 R
+/ID [ <902C95DCD59314E4C982F604DC82C419> <902C95DCD59314E4C982F604DC82C419> ]
+>>
+startxref
+7635
+%%EOF
