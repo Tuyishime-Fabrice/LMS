@@ -55,21 +55,32 @@ npm run build
 
 ## Database
 
-Migrations are in `supabase/migrations`. Do not replay the whole folder on an existing database: the historical order is inconsistent. Apply new migrations one at a time.
+**New project:** follow [docs/supabase-setup.md](docs/supabase-setup.md). It runs one file, `supabase/setup.sql`, in the Supabase SQL Editor and then connects the site.
 
-These three are the newest. Each is additive and safe to run more than once:
+**Existing project:** migrations are in `supabase/migrations`. Do not replay the whole folder on a database in use: the historical order is inconsistent. Apply new migrations one at a time: take a backup (Supabase Dashboard → Database → Backups), open SQL Editor, paste the file, run it, in the order below. Each of these is additive and safe to run more than once:
 
 | File | What it adds |
 |---|---|
 | `20261112000000_security_hardening.sql` | Stops users changing their own role or price tier, server-marked quizzes, protected grades |
 | `20261112000100_learning_experience.sql` | Resume point, calendar fields, notifications, automatic certificates |
 | `20261113000000_ai_tutor.sql` | `tutor_messages` table for the AI tutor |
+| `20261118000000_exhibition_projects.sql` | The student exhibition table and image bucket, which the exhibition pages already used |
+| `20261118000100_realtime_tables.sql` | Live updates for messages, notifications and announcements |
+| `20261118000200_lesson_files_access.sql` | Lesson files follow lesson access: no longer readable by anyone signed out, by learners of other courses, or by unapproved teachers |
 
-To apply one: take a backup (Supabase Dashboard → Database → Backups), open SQL Editor, paste the file, run it. Apply them in the order above.
+The app tolerates a database where the first two are not applied yet (the new features stay hidden or fall back), but the redesigned learner pages need them to work fully.
 
-The app tolerates a database where they are not applied yet (the new features stay hidden or fall back), but the redesigned learner pages need the first two to work fully.
+`supabase/setup.sql` is generated from the migrations; do not edit it by hand. After adding a migration, regenerate and check it against a disposable local Postgres:
 
-`supabase/tests` holds behaviour checks for these migrations. They are for a scratch database only, never production.
+```bash
+scripts/build-supabase-setup.sh postgresql://postgres@127.0.0.1:5432
+```
+
+```bash
+scripts/check-supabase-setup.sh postgresql://postgres@127.0.0.1:5432
+```
+
+The check runs `setup.sql` on an imitation of a new Supabase project (`supabase/setup-build/supabase_stub.sql`) and then the behaviour tests in `supabase/tests`. Those tests are for a scratch database only, never production.
 
 After a schema change, update `src/integrations/supabase/types.ts` (regenerate from the live project when you have access).
 
