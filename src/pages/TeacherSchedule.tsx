@@ -288,7 +288,7 @@ const TeacherSchedule = () => {
                     </Card>
                   ) : (
                     scheduledClasses.map((classItem) => (
-                      <Card key={classItem.id} className="border-l-4 border-l-[#006d2c] transition-shadow">
+                      <Card key={classItem.id} className="border-l-4 border-l-primary transition-shadow">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex-1">

@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { fetchSuspensionStatus } from "@/lib/fetchProfile";
 
 export const SuspensionDialog = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [suspensionReason, setSuspensionReason] = useState("");
 
@@ -77,27 +72,27 @@ export const SuspensionDialog = () => {
       <AlertDialogContent className="max-w-md" onEscapeKeyDown={(e) => e.preventDefault()}>
         <AlertDialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertTriangle className="h-6 w-6 text-red-600" />
+            <div className="h-12 w-12 rounded-full bg-destructive-surface flex items-center justify-center">
+              <AlertTriangle className="h-6 w-6 text-destructive" />
             </div>
-            <AlertDialogTitle className="text-xl">Account Suspended</AlertDialogTitle>
+            <AlertDialogTitle className="text-xl">{t("suspensionDialog.accountSuspended", "Account Suspended")}</AlertDialogTitle>
           </div>
           <AlertDialogDescription className="text-base space-y-3">
-            <p className="text-gray-700">
-              Your account has been suspended by an administrator.
+            <p className="text-foreground">
+              {t("suspensionDialog.yourAccountHasBeenSuspendedBy", "Your account has been suspended by an administrator.")}
             </p>
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="font-semibold text-red-900 mb-1">Reason:</p>
-              <p className="text-red-800">{suspensionReason}</p>
+            <div className="bg-destructive-surface border border-destructive/30 rounded-lg p-4">
+              <p className="font-semibold text-destructive mb-1">{t("suspensionDialog.reason", "Reason:")}</p>
+              <p className="text-destructive">{suspensionReason}</p>
             </div>
-            <p className="text-gray-600 text-sm">
-              If you believe this is a mistake, please contact support.
+            <p className="text-muted-foreground text-sm">
+              {t("suspensionDialog.ifYouBelieveThisIsA", "If you believe this is a mistake, please contact support.")}
             </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <Button onClick={handleSignOut} className="w-full">
-            Sign Out
+            {t("suspensionDialog.signOut", "Sign Out")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

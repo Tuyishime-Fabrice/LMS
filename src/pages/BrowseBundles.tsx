@@ -1,3 +1,7 @@
+import { PageBand } from "@/features/site/PageBand";
+import { SiteHeader } from "@/features/site/SiteHeader";
+import { useTranslation } from "react-i18next";
+import { SiteFooter } from "@/features/site/SiteFooter";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { beginPaymentSignUp, clearPaymentReturn } from "@/lib/coursePaymentReturn";
@@ -27,6 +31,7 @@ interface Bundle {
 }
 
 export default function BrowseBundles() {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
@@ -100,35 +105,25 @@ export default function BrowseBundles() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-[#133223] to-[#006d2c] text-white py-12 px-4">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex items-center gap-3 mb-4">
-                        <Package className="h-8 w-8" />
-                        <h1 className="text-3xl font-bold">Course Bundles</h1>
-                    </div>
-                    <p className="text-lg text-white/80 max-w-2xl">
-                        Save more by purchasing course bundles! Get multiple courses at a discounted price.
-                    </p>
-                </div>
-            </div>
+        <div className="min-h-screen bg-muted/50">
+          <SiteHeader />
+            <PageBand eyebrow={t("browseBundles.eyebrow", "Learning paths")} title={t("browseBundles.title", "Learning paths")} body={t("browseBundles.body", "Courses that build on each other, at a lower price than buying them one by one.")} />
 
             {/* Bundles Grid */}
             <div className="max-w-6xl mx-auto px-4 py-8">
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-80 bg-gray-200 rounded-xl animate-pulse" />
+                            <div key={i} className="h-80 bg-border rounded-xl animate-pulse" />
                         ))}
                     </div>
                 ) : bundles.length === 0 ? (
                     <div className="text-center py-16">
-                        <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-gray-600 mb-2">No bundles available</h2>
-                        <p className="text-gray-500">Check back later for special offers!</p>
-                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-[#006d2c] hover:bg-[#005523]">
-                            Browse Individual Courses
+                        <Package className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-muted-foreground mb-2">{t("browseBundles.noBundlesAvailable", "No bundles available")}</h2>
+                        <p className="text-muted-foreground">{t("browseBundles.checkBackLaterForSpecialOffers", "Check back later for special offers!")}</p>
+                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-primary hover:bg-primary-hover">
+                            {t("browseBundles.browseIndividualCourses", "Browse Individual Courses")}
                         </Button>
                     </div>
                 ) : (
@@ -138,14 +133,14 @@ export default function BrowseBundles() {
                             return (
                                 <Card
                                     key={bundle.id}
-                                    className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 shadow-md group"
+                                    className="overflow-hidden transition-all duration-300 border-0 group"
                                 >
                                     {/* Bundle header */}
-                                    <div className="relative bg-gradient-to-br from-purple-600 to-indigo-700 p-6 text-white">
+                                    <div className="relative p-6 text-white bg-forest">
                                         {discount > 0 && (
-                                            <Badge className="absolute top-3 right-3 bg-amber-500 text-white text-sm font-bold">
+                                            <Badge className="absolute top-3 right-3 bg-warning text-white text-sm font-bold">
                                                 <Percent className="h-3.5 w-3.5 mr-1" />
-                                                {discount}% OFF
+                                                {discount}{t("browseBundles.off", "% OFF")}
                                             </Badge>
                                         )}
                                         <Package className="h-10 w-10 mb-3 opacity-80" />
@@ -158,13 +153,13 @@ export default function BrowseBundles() {
                                     <CardContent className="p-5 space-y-4">
                                         {/* Included courses */}
                                         <div>
-                                            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                                                {bundle.courses.length} Courses Included
+                                            <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">
+                                                {t("browseBundles.coursesIncluded", "{{count}} Courses Included", { count: bundle.courses.length })}
                                             </p>
                                             <div className="space-y-2">
                                                 {bundle.courses.map((course) => (
                                                     <div key={course.id} className="flex items-center gap-2 text-sm">
-                                                        <BookOpen className="h-4 w-4 text-[#006d2c] flex-shrink-0" />
+                                                        <BookOpen className="h-4 w-4 text-primary flex-shrink-0" />
                                                         <span className="truncate">{course.title}</span>
                                                     </div>
                                                 ))}
@@ -173,11 +168,11 @@ export default function BrowseBundles() {
 
                                         {/* Pricing */}
                                         <div className="flex items-baseline gap-2">
-                                            <span className="text-2xl font-bold text-[#006d2c]">
+                                            <span className="text-2xl font-bold text-primary">
                                                 {formatPrice(bundle.bundle_price, bundle.currency)}
                                             </span>
                                             {bundle.original_price > bundle.bundle_price && (
-                                                <span className="text-sm text-gray-400 line-through">
+                                                <span className="text-sm text-muted-foreground/60 line-through">
                                                     {formatPrice(bundle.original_price, bundle.currency)}
                                                 </span>
                                             )}
@@ -185,7 +180,7 @@ export default function BrowseBundles() {
 
                                         {/* CTA */}
                                         <Button
-                                            className="w-full bg-[#006d2c] hover:bg-[#005523] text-white h-11"
+                                            className="w-full bg-primary hover:bg-primary-hover text-white h-11"
                                             onClick={() => {
                                                 if (!user) {
                                                     navigate(beginPaymentSignUp(`/bundles?bundle=${bundle.id}`));
@@ -195,7 +190,7 @@ export default function BrowseBundles() {
                                             }}
                                         >
                                             <Tag className="h-4 w-4 mr-2" />
-                                            Claim Offer
+                                            {t("browseBundles.claimOffer", "Claim Offer")}
                                         </Button>
                                     </CardContent>
                                 </Card>
@@ -223,6 +218,7 @@ export default function BrowseBundles() {
                     }}
                 />
             )}
+          <SiteFooter />
         </div>
     );
 }

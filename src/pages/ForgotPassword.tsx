@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ const ForgotPassword = () => {
 
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail) {
-      toast.error("Please enter your email address");
+      toast.error(t("forgotPassword.pleaseEnterYourEmailAddress", "Please enter your email address"));
       return;
     }
 
@@ -33,54 +35,54 @@ const ForgotPassword = () => {
       if (error) throw error;
 
       setSentTo(normalizedEmail);
-      toast.success("Password reset link sent. Please check your email.");
+      toast.success(t("forgotPassword.passwordResetLinkSentPleaseCheck", "Password reset link sent. Please check your email."));
     } catch (error: any) {
-      toast.error(error.message || "Failed to send password reset email");
+      toast.error(error.message || t("forgotPassword.failedToSendPasswordResetEmail", "Failed to send password reset email"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4 py-10">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-3">
           <Button
             type="button"
             variant="ghost"
-            className="w-fit px-0 text-gray-600 hover:text-[#006d2c]"
+            className="w-fit px-0 text-muted-foreground hover:text-primary"
             onClick={() => navigate("/auth")}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to login
+            {t("forgotPassword.backToLogin", "Back to login")}
           </Button>
           <div className="space-y-1">
-            <CardTitle className="text-2xl">Forgot password?</CardTitle>
+            <CardTitle className="text-2xl">{t("forgotPassword.forgotPassword", "Forgot password?")}</CardTitle>
             <CardDescription>
-              Enter your account email and we will send you a secure reset link.
+              {t("forgotPassword.enterYourAccountEmailAndWe", "Enter your account email and we will send you a secure reset link.")}
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-5">
           {sentTo && (
-            <Alert className="border-[#006d2c]/30 bg-green-50 text-green-900">
+            <Alert className="border-primary/30 bg-leaf text-leaf-foreground">
               <Mail className="h-4 w-4" />
-              <AlertTitle>Check your email</AlertTitle>
+              <AlertTitle>{t("forgotPassword.checkYourEmail", "Check your email")}</AlertTitle>
               <AlertDescription>
-                We sent a reset link to {sentTo}. Open it to create a new password.
+                {t("forgotPassword.weSentAResetLinkTo", "We sent a reset link to {{sentTo}}. Open it to create a new password.", { sentTo: sentTo })}
               </AlertDescription>
             </Alert>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email">Email address</Label>
+              <Label htmlFor="reset-email">{t("forgotPassword.emailAddress", "Email address")}</Label>
               <Input
                 id="reset-email"
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("forgotPassword.youExampleCom", "you@example.com")}
                 autoComplete="email"
                 required
               />
@@ -89,9 +91,9 @@ const ForgotPassword = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-black hover:bg-[#006d2c] text-white"
+              className="w-full bg-primary hover:bg-primary-hover text-white"
             >
-              {loading ? "Sending..." : "Send reset link"}
+              {loading ? t("forgotPassword.sending", "Sending...") : t("forgotPassword.sendResetLink", "Send reset link")}
             </Button>
           </form>
         </CardContent>

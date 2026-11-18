@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Play, FileText, Link, ClipboardList, CheckCircle2, Circle, Clock, BookOpen, Sparkles, Lock, Eye } from "lucide-react";
@@ -37,6 +38,7 @@ interface CourseCurriculumProps {
 }
 
 export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, welcomeVideoUrl, onSelectWelcome, isWelcomeSelected, isPaidCourse = false, hasAccess = true }: CourseCurriculumProps) {
+  const { t } = useTranslation();
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
     new Set(chapters.map((c) => c.id))
   );
@@ -52,7 +54,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
   };
 
   const getLessonIcon = (contentType: string, isCompleted?: boolean) => {
-    const iconClass = isCompleted ? "text-[#0A400C]" : "text-gray-400";
+    const iconClass = isCompleted ? "text-primary" : "text-muted-foreground/60";
     switch (contentType) {
       case "video":
         return <Play className={cn("h-4 w-4", iconClass)} />;
@@ -103,27 +105,27 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
   const completedLessons = chapters.reduce((sum, ch) => sum + ch.lessons.filter(l => l.is_completed).length, 0);
 
   return (
-    <Card className="h-fit sticky top-6 border-0 shadow-xl rounded-2xl overflow-hidden">
+    <Card className="h-fit sticky top-6 border-0 rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#0A400C] to-[#116315] p-5">
+      <div className="p-5 bg-forest">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-white text-lg">Course Content</h3>
-            <p className="text-white/70 text-sm">{chapters.length} chapters • {totalLessons} lessons</p>
+            <h3 className="font-bold text-white text-lg">{t("courseCurriculum.courseContent", "Course Content")}</h3>
+            <p className="text-white/70 text-sm">{t("courseCurriculum.chaptersLessons", "{{count}} chapters • {{totalLessons}} lessons", { count: chapters.length, totalLessons: totalLessons })}</p>
           </div>
         </div>
         {/* Mini Progress */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/80">Your Progress</span>
+            <span className="text-white/80">{t("courseCurriculum.yourProgress", "Your Progress")}</span>
             <span className="text-white font-semibold">{completedLessons}/{totalLessons}</span>
           </div>
           <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div
-              className="h-full bg-white rounded-full transition-all duration-500"
+              className="h-full bg-card rounded-full transition-all duration-500"
               style={{ width: `${totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0}%` }}
             />
           </div>
@@ -139,24 +141,24 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
               className={cn(
                 "w-full p-4 flex items-center gap-4 transition-all text-left group",
                 isWelcomeSelected
-                  ? "bg-gradient-to-r from-[#0A400C]/10 to-[#0A400C]/5 border-l-4 border-[#0A400C]"
-                  : "hover:bg-gray-50"
+                  ? "   border-l-4 border-primary"
+                  : "hover:bg-muted"
               )}
             >
               <div className={cn(
                 "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
                 isWelcomeSelected
-                  ? "bg-[#0A400C] shadow-lg shadow-[#0A400C]/30"
-                  : "bg-gradient-to-br from-purple-500 to-pink-500"
+                  ? "bg-primary shadow-primary/30"
+                  : "  "
               )}>
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-900">Welcome Video</span>
-                  <Badge className="bg-purple-100 text-purple-700 text-xs">Start Here</Badge>
+                  <span className="font-semibold text-forest">{t("courseCurriculum.welcomeVideo", "Welcome Video")}</span>
+                  <Badge className="bg-leaf text-forest text-xs">{t("courseCurriculum.startHere", "Start Here")}</Badge>
                 </div>
-                <p className="text-sm text-gray-500 mt-0.5">Introduction to the course</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{t("courseCurriculum.introductionToTheCourse", "Introduction to the course")}</p>
               </div>
             </button>
           )}
@@ -177,17 +179,17 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                   onClick={() => toggleChapter(chapter.id)}
                   className={cn(
                     "w-full p-4 flex items-center gap-4 transition-all text-left group",
-                    isExpanded ? "bg-gray-50" : "hover:bg-gray-50"
+                    isExpanded ? "bg-muted/50" : "hover:bg-muted"
                   )}
                 >
                   {/* Chapter Number Circle */}
                   <div className={cn(
                     "w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all",
                     chapterLocked
-                      ? "bg-gray-200 text-gray-400"
+                      ? "bg-border text-muted-foreground/60"
                       : isChapterComplete
-                        ? "bg-[#0A400C] text-white shadow-lg shadow-[#0A400C]/20"
-                        : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                        ? "bg-primary text-white shadow-primary/20"
+                        : "bg-muted text-muted-foreground group-hover:bg-gray-200"
                   )}>
                     {chapterLocked ? (
                       <Lock className="h-5 w-5" />
@@ -202,24 +204,24 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                     <div className="flex items-center gap-2 mb-1">
                       <span className={cn(
                         "font-semibold",
-                        chapterLocked ? "text-gray-400" : "text-gray-900"
+                        chapterLocked ? "text-muted-foreground/60" : "text-forest"
                       )}>
                         {chapter.title}
                       </span>
                       {isPaidCourse && !hasAccess && chapter.is_preview && (
-                        <Badge className="bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0">
+                        <Badge className="bg-info-surface text-info text-[10px] px-1.5 py-0">
                           <Eye className="h-3 w-3 mr-0.5" />
-                          Free Preview
+                          {t("courseCurriculum.freePreview", "Free Preview")}
                         </Badge>
                       )}
                       {chapterLocked && (
-                        <Badge className="bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0">
+                        <Badge className="bg-muted text-muted-foreground text-[10px] px-1.5 py-0">
                           <Lock className="h-3 w-3 mr-0.5" />
-                          Locked
+                          {t("courseCurriculum.locked", "Locked")}
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <BookOpen className="h-3 w-3" />
                         {totalChapterLessons} lessons
@@ -233,7 +235,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                       {!chapterLocked && (
                         <span className={cn(
                           "font-medium",
-                          isChapterComplete ? "text-[#0A400C]" : "text-gray-500"
+                          isChapterComplete ? "text-primary" : "text-muted-foreground"
                         )}>
                           {completedCount}/{totalChapterLessons}
                         </span>
@@ -241,13 +243,13 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                     </div>
                     {/* Chapter Progress Bar */}
                     {!chapterLocked && (
-                      <div className="mt-2 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="mt-2 h-1.5 bg-border rounded-full overflow-hidden">
                         <div
                           className={cn(
                             "h-full rounded-full transition-all duration-500",
                             isChapterComplete
-                              ? "bg-[#0A400C]"
-                              : "bg-gradient-to-r from-[#0A400C] to-emerald-500"
+                              ? "bg-primary"
+                              : "   bg-forest"
                           )}
                           style={{ width: `${chapterProgress}%` }}
                         />
@@ -257,7 +259,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
                   <div className={cn(
                     "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
-                    isExpanded ? "bg-[#0A400C] text-white" : "bg-gray-100 text-gray-500"
+                    isExpanded ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                   )}>
                     {isExpanded ? (
                       <ChevronUp className="h-4 w-4" />
@@ -269,7 +271,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
                 {/* Lessons */}
                 {isExpanded && (
-                  <div className="bg-gray-50/50 border-t border-gray-100">
+                  <div className="bg-muted/50 border-t border-border">
                     {chapter.lessons.map((lesson, lessonIndex) => {
                       const isActive = currentLessonId === lesson.id;
                       const locked = isLessonLocked(chapter, lesson);
@@ -286,9 +288,9 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                           className={cn(
                             "w-full pl-8 pr-4 py-3 flex items-center gap-3 transition-all text-left group",
                             locked
-                              ? "opacity-50 cursor-not-allowed bg-gray-50"
+                              ? "opacity-50 cursor-not-allowed bg-muted/50"
                               : isActive
-                                ? "bg-[#0A400C]/10 border-l-4 border-[#0A400C]"
+                                ? "bg-leaf border-l-4 border-primary"
                                 : "hover:bg-white border-l-4 border-transparent"
                           )}
                         >
@@ -296,19 +298,19 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                           <div className={cn(
                             "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all",
                             locked
-                              ? "bg-gray-200"
+                              ? "bg-border"
                               : lesson.is_completed
-                                ? "bg-[#0A400C] shadow-sm"
+                                ? "bg-primary "
                                 : isActive
-                                  ? "bg-[#0A400C]/20 ring-2 ring-[#0A400C]"
-                                  : "bg-white border border-gray-200 group-hover:border-gray-300"
+                                  ? "bg-leaf ring-2 ring-primary"
+                                  : "bg-card border border-border group-hover:border-gray-300"
                           )}>
                             {locked ? (
-                              <Lock className="h-4 w-4 text-gray-400" />
+                              <Lock className="h-4 w-4 text-muted-foreground/60" />
                             ) : lesson.is_completed ? (
                               <CheckCircle2 className="h-4 w-4 text-white" />
                             ) : (
-                              <span className="text-xs font-medium text-gray-500">
+                              <span className="text-xs font-medium text-muted-foreground">
                                 {lessonIndex + 1}
                               </span>
                             )}
@@ -317,7 +319,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                           {/* Content Type Icon */}
                           <div className={cn(
                             "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
-                            locked ? "bg-gray-100" : lesson.is_completed ? "bg-[#0A400C]/10" : "bg-gray-100"
+                            locked ? "bg-muted" : lesson.is_completed ? "bg-leaf" : "bg-muted"
                           )}>
                             {getLessonIcon(lesson.content_type, lesson.is_completed)}
                           </div>
@@ -326,7 +328,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                           <div className="flex-1 min-w-0">
                             <div className={cn(
                               "text-sm font-medium transition-colors",
-                              locked ? "text-gray-400" : isActive ? "text-[#0A400C]" : lesson.is_completed ? "text-gray-700" : "text-gray-600"
+                              locked ? "text-muted-foreground/60" : isActive ? "text-primary" : lesson.is_completed ? "text-foreground" : "text-muted-foreground"
                             )}>
                               {lesson.title}
                             </div>
@@ -335,14 +337,14 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                                 {getContentTypeLabel(lesson.content_type)}
                               </Badge>
                               {lesson.duration && (
-                                <span className="text-xs text-gray-400 flex items-center gap-1">
+                                <span className="text-xs text-muted-foreground/60 flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
                                   {lesson.duration}m
                                 </span>
                               )}
                               {!locked && isPaidCourse && !hasAccess && lesson.is_preview && (
-                                <Badge className="bg-blue-50 text-blue-600 text-[10px] px-1 py-0 h-4">
-                                  Free
+                                <Badge className="bg-info-surface text-info text-[10px] px-1 py-0 h-4">
+                                  {t("courseCurriculum.free", "Free")}
                                 </Badge>
                               )}
                             </div>
@@ -350,9 +352,9 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
                           {/* Active Indicator or Lock Icon */}
                           {locked ? (
-                            <Lock className="h-4 w-4 text-gray-300" />
+                            <Lock className="h-4 w-4 text-muted-foreground/60" />
                           ) : isActive ? (
-                            <div className="w-2 h-2 rounded-full bg-[#0A400C] animate-pulse" />
+                            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                           ) : null}
                         </button>
                       );

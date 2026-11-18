@@ -119,7 +119,7 @@ function UpcomingItem({ event }: { event: CalendarEvent }) {
           {dayLabel(event.start, locale, t as never)}, {eventTimeLabel(event, locale)}
         </span>
         <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <StatusPill tone={isSession ? "green" : "amber"} icon={meta.icon}>{t(meta.labelKey, meta.label)}</StatusPill>
+          <StatusPill tone={isSession ? "brand" : "amber"} icon={meta.icon}>{t(meta.labelKey, meta.label)}</StatusPill>
           {isSession && event.modality && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <ModalityIcon event={event} className="h-3 w-3" />

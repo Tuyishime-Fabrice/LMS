@@ -1,71 +1,85 @@
-@import "@fontsource/poppins/500.css";
-@import "@fontsource/poppins/600.css";
+/* Latin and Latin Extended cover English, French and Kinyarwanda. */
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-ext-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-ext-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-ext-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/inter/latin-ext-700.css";
+@import "@fontsource/bebas-neue/latin-400.css";
+@import "@fontsource/bebas-neue/latin-ext-400.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
- * DataPlus Academy design tokens.
- * Every colour in the product comes from here (HSL triplets, so Tailwind
- * opacity modifiers keep working). Change the brand in this file only.
+ * DataPlus Academy design tokens (2026 identity: midnight navy, flame
+ * orange, royal blue on warm paper). Every colour in the product comes
+ * from here as HSL triplets, so Tailwind opacity modifiers keep working.
  *
- *   forest  #0F2A1D  navigation ink, headings, the Continue Learning panel
- *   green   #006D2C  DataPlus green: primary actions, progress, active state
- *   leaf    #E6F2EA  tinted surfaces behind green content
- *   paper   #F7F7F3  app background (warm off-white)
- *   surface #FFFFFF  cards and panels
- *   ink     #18211C  body text       line #E3E6E0 hairlines
+ *   forest   #060C2E  midnight navy: bands, headings, navigation ink
+ *   primary  #C9501F  orange for buttons and links (AA on white)
+ *   flame    #E4683A  bright orange for icons and accents on navy
+ *   royal    #2442E4  royal blue: focus, information, small accents
+ *   leaf     #ECEEF8  lavender tint behind highlighted content
+ *   paper    #F2F1EC  app background     surface #FFFFFF cards
+ *   success  #1E7A4C  completed, paid, passed (never the brand colour)
  */
 @layer base {
   :root {
-    --background: 60 20% 96%;
-    --foreground: 147 16% 11%;
+    --background: 50 19% 94%;
+    --foreground: 230 57% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 147 16% 11%;
+    --card-foreground: 230 57% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 147 16% 11%;
+    --popover-foreground: 230 57% 13%;
 
-    --primary: 144 100% 21%;
+    --primary: 17 73% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 144 100% 17%;
+    --primary-hover: 17 75% 39%;
+    --flame: 16 76% 56%;
+    --royal: 231 78% 52%;
 
-    --forest: 151 47% 11%;
-    --forest-foreground: 120 20% 96%;
-    --leaf: 140 32% 93%;
-    --leaf-foreground: 146 60% 16%;
+    --forest: 231 77% 10%;
+    --forest-foreground: 50 19% 94%;
+    --forest-2: 232 50% 19%;
+    --leaf: 230 46% 95%;
+    --leaf-foreground: 232 68% 33%;
 
-    --secondary: 140 32% 93%;
-    --secondary-foreground: 146 60% 16%;
-    --muted: 75 12% 93%;
-    --muted-foreground: 143 6% 37%;
-    --accent: 140 32% 93%;
-    --accent-foreground: 146 60% 16%;
+    --secondary: 230 46% 95%;
+    --secondary-foreground: 232 68% 33%;
+    --muted: 51 13% 90%;
+    --muted-foreground: 228 12% 40%;
+    --accent: 230 46% 95%;
+    --accent-foreground: 232 68% 33%;
 
-    --success: 144 100% 21%;
-    --warning: 35 92% 33%;
-    --warning-surface: 43 96% 93%;
-    --destructive: 4 74% 42%;
+    --success: 150 61% 30%;
+    --success-surface: 146 35% 92%;
+    --warning: 35 100% 30%;
+    --warning-surface: 38 89% 93%;
+    --destructive: 2 63% 46%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-surface: 6 80% 96%;
-    --info: 207 72% 35%;
-    --info-surface: 207 75% 95%;
+    --destructive-surface: 7 68% 95%;
+    --info: 231 78% 52%;
+    --info-surface: 228 83% 95%;
 
-    --border: 90 11% 89%;
-    --input: 90 9% 82%;
-    --ring: 144 100% 21%;
+    --border: 230 11% 89%;
+    --input: 229 12% 83%;
+    --ring: 231 78% 52%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    --sidebar-background: 60 20% 96%;
-    --sidebar-foreground: 147 12% 24%;
-    --sidebar-primary: 144 100% 21%;
+    --sidebar-background: 50 19% 94%;
+    --sidebar-foreground: 230 30% 24%;
+    --sidebar-primary: 17 73% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 151 47% 11%;
-    --sidebar-border: 90 11% 89%;
-    --sidebar-ring: 144 100% 21%;
+    --sidebar-accent-foreground: 231 77% 10%;
+    --sidebar-border: 230 11% 89%;
+    --sidebar-ring: 231 78% 52%;
 
     /* Motion: short, purposeful, and switched off for reduced-motion users. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -74,44 +88,48 @@
   }
 
   .dark {
-    --background: 150 20% 7%;
-    --foreground: 120 12% 94%;
-    --card: 150 18% 10%;
-    --card-foreground: 120 12% 94%;
-    --popover: 150 18% 10%;
-    --popover-foreground: 120 12% 94%;
-    --primary: 144 62% 38%;
+    --background: 231 60% 7%;
+    --foreground: 50 19% 94%;
+    --card: 232 45% 11%;
+    --card-foreground: 50 19% 94%;
+    --popover: 232 45% 11%;
+    --popover-foreground: 50 19% 94%;
+    --primary: 16 76% 56%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 144 62% 44%;
-    --forest: 151 40% 14%;
-    --forest-foreground: 120 20% 96%;
-    --leaf: 146 30% 16%;
-    --leaf-foreground: 140 40% 82%;
-    --secondary: 146 30% 16%;
-    --secondary-foreground: 140 40% 82%;
-    --muted: 150 12% 15%;
-    --muted-foreground: 140 6% 64%;
-    --accent: 146 30% 16%;
-    --accent-foreground: 140 40% 82%;
-    --success: 144 62% 45%;
+    --primary-hover: 16 80% 62%;
+    --flame: 16 80% 62%;
+    --royal: 230 85% 68%;
+    --forest: 231 77% 10%;
+    --forest-foreground: 50 19% 94%;
+    --forest-2: 232 50% 19%;
+    --leaf: 232 40% 18%;
+    --leaf-foreground: 230 80% 85%;
+    --secondary: 232 40% 18%;
+    --secondary-foreground: 230 80% 85%;
+    --muted: 232 30% 15%;
+    --muted-foreground: 230 15% 68%;
+    --accent: 232 40% 18%;
+    --accent-foreground: 230 80% 85%;
+    --success: 150 50% 55%;
+    --success-surface: 150 40% 14%;
     --warning: 38 90% 60%;
     --warning-surface: 38 50% 14%;
-    --destructive: 4 70% 55%;
+    --destructive: 4 70% 60%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 4 40% 14%;
-    --info: 207 80% 66%;
-    --info-surface: 207 40% 15%;
-    --border: 150 10% 18%;
-    --input: 150 10% 24%;
-    --ring: 144 62% 45%;
-    --sidebar-background: 150 20% 7%;
-    --sidebar-foreground: 120 10% 80%;
-    --sidebar-primary: 144 62% 45%;
+    --info: 230 85% 68%;
+    --info-surface: 230 40% 16%;
+    --border: 232 25% 20%;
+    --input: 232 25% 26%;
+    --ring: 230 85% 68%;
+    --sidebar-background: 231 60% 7%;
+    --sidebar-foreground: 230 15% 80%;
+    --sidebar-primary: 16 76% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 150 18% 12%;
-    --sidebar-accent-foreground: 120 12% 94%;
-    --sidebar-border: 150 10% 18%;
-    --sidebar-ring: 144 62% 45%;
+    --sidebar-accent: 232 45% 11%;
+    --sidebar-accent-foreground: 50 19% 94%;
+    --sidebar-border: 232 25% 20%;
+    --sidebar-ring: 230 85% 68%;
   }
 }
 
@@ -129,7 +147,7 @@
     font-feature-settings: "tnum" 0;
   }
 
-  /* Poppins carries headings; everything else is the body face. */
+  /* Inter carries text and headings; Bebas Neue is for poster headlines only. */
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
     text-wrap: balance;
@@ -143,7 +161,9 @@
 
 @layer components {
   /* Page titles and section titles, one scale for the whole product. */
-  .text-page-title { @apply font-display text-2xl font-semibold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
+  .text-page-title { @apply font-display text-2xl font-bold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
+  /* Condensed poster headline (landing page, banners). */
+  .text-poster { @apply font-poster uppercase leading-[0.92] tracking-[0.01em]; }
   .text-section-title { @apply font-display text-lg font-semibold tracking-tight text-forest; }
   .text-card-title { @apply font-display text-base font-semibold text-forest; }
   .text-meta { @apply text-[0.8125rem] leading-5 text-muted-foreground; }

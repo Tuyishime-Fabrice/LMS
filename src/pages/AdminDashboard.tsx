@@ -426,14 +426,14 @@ const AdminDashboard = () => {
                         <Line 
                           type="monotone" 
                           dataKey="students" 
-                          stroke="#10b981" 
+                          stroke="hsl(var(--primary))" 
                           strokeWidth={2}
                           name="Students"
                         />
                         <Line 
                           type="monotone" 
                           dataKey="teachers" 
-                          stroke="#8b5cf6" 
+                          stroke="hsl(var(--royal))" 
                           strokeWidth={2}
                           name="Teachers"
                         />
@@ -520,7 +520,7 @@ const AdminDashboard = () => {
                         <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
                           <BookOpen className="h-5 w-5 text-primary" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-[#006d2c] group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                       </div>
                       <p className="font-semibold text-sm text-forest">{t("adminDashboard.allCourses", "All Courses")}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.viewApproveManage", "View, approve, manage")}</p>

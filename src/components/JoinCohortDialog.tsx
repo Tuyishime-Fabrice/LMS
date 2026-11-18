@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Users, Calendar, BookOpen, Loader2, DollarSign } from "lucide-react";
+import { Users, BookOpen, Loader2, DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatPrice } from "@/services/paymentService";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -227,12 +221,12 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-[#006D2C]" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : cohorts.length === 0 ? (
           <div className="text-center py-12">
-            <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-600">{t("cohort.noCohortsAvailable")}</p>
+            <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+            <p className="text-muted-foreground">{t("cohort.noCohortsAvailable")}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -248,12 +242,12 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                   key={cohort.id}
                   className={`transition-all ${
                     cohort.isAlreadyIn
-                      ? "border-green-300 border-2 bg-green-50"
+                      ? "border-primary/30 border-2 bg-leaf"
                       : cohort.hasPendingRequest
-                      ? "border-yellow-300 border-2 bg-yellow-50"
+                      ? "border-warning/30 border-2 bg-warning-surface"
                       : isSelected
-                      ? "border-[#006D2C] border-2 shadow-md cursor-pointer"
-                      : "border-2 hover:border-gray-300 cursor-pointer"
+                      ? "border-primary border-2 cursor-pointer"
+                      : "border-2 hover:border-border cursor-pointer"
                   } ${isFull && !cohort.isAlreadyIn ? "opacity-60" : ""}`}
                   onClick={() => !isFull && !cohort.isAlreadyIn && !cohort.hasPendingRequest && setSelectedCohort(cohort.id)}
                 >
@@ -262,13 +256,13 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                       <div className="flex-1">
                         <h3 className="font-bold text-lg mb-1">{cohort.name}</h3>
                         {cohort.description && (
-                          <p className="text-sm text-gray-600 mb-2">{cohort.description}</p>
+                          <p className="text-sm text-muted-foreground mb-2">{cohort.description}</p>
                         )}
                       </div>
                       {cohort.isAlreadyIn ? (
-                        <Badge className="bg-green-500">{t("cohort.alreadyInCohort")}</Badge>
+                        <Badge className="bg-primary">{t("cohort.alreadyInCohort")}</Badge>
                       ) : cohort.hasPendingRequest ? (
-                        <Badge className="bg-yellow-500">Pending Request</Badge>
+                        <Badge className="bg-warning">{t("joinCohortDialog.pendingRequest", "Pending Request")}</Badge>
                       ) : isFull ? (
                         <Badge variant="destructive">{t("cohort.full")}</Badge>
                       ) : (
@@ -280,18 +274,18 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                       {cohort.courses && (
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <BookOpen className="h-4 w-4" />
                           <span>{cohort.courses.title}</span>
                         </div>
                       )}
                       {cohort.profiles && (
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <Users className="h-4 w-4" />
-                          <span>By {cohort.profiles.full_name}</span>
+                          <span>{t("joinCohortDialog.by", "By {{fullName}}", { fullName: cohort.profiles.full_name })}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-gray-600">
+                      <div className="flex items-center gap-2 text-muted-foreground">
                         <Users className="h-4 w-4" />
                         <span>{cohort._count?.enrollments || 0}/{cohort.max_students} {t("cohort.members")}</span>
                       </div>
@@ -307,12 +301,12 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                   const cohort = cohorts.find((c) => c.id === selectedCohort);
                   if (!cohort?.requires_payment || !cohort.price) return null;
                   return (
-                    <div className="rounded-lg border bg-gray-50 p-3 space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-800">
-                        <DollarSign className="h-4 w-4 text-[#006D2C]" />
-                        Cohort fee: {formatPrice(Number(cohort.price), cohort.currency || "RWF")}
+                    <div className="rounded-lg border bg-muted/50 p-3 space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-forest">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        {t("joinCohortDialog.cohortFee", "Cohort fee:")}{" "}{formatPrice(Number(cohort.price), cohort.currency || "RWF")}
                       </div>
-                      <Label className="text-sm">Payment track</Label>
+                      <Label className="text-sm">{t("joinCohortDialog.paymentTrack", "Payment track")}</Label>
                       <RadioGroup
                         value={paymentTrack}
                         onValueChange={(v) => setPaymentTrack(v as typeof paymentTrack)}
@@ -320,17 +314,17 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                       >
                         <label className="flex items-center gap-2 text-sm">
                           <RadioGroupItem value="full" />
-                          Pay in full
+                          {t("joinCohortDialog.payInFull", "Pay in full")}
                         </label>
                         {cohort.instalment_enabled && (
                           <label className="flex items-center gap-2 text-sm">
                             <RadioGroupItem value="instalment" />
-                            Instalment plan
+                            {t("joinCohortDialog.instalmentPlan", "Instalment plan")}
                           </label>
                         )}
                         <label className="flex items-center gap-2 text-sm">
                           <RadioGroupItem value="scholarship" />
-                          Scholarship (apply separately on course page)
+                          {t("joinCohortDialog.scholarshipApplySeparatelyOnCoursePage", "Scholarship (apply separately on course page)")}
                         </label>
                       </RadioGroup>
                     </div>
@@ -363,7 +357,7 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                   <Button
                     onClick={handleJoinRequest}
                     disabled={submitting}
-                    className="bg-[#006D2C] hover:bg-[#005523]"
+                    className="bg-primary hover:bg-primary-hover"
                   >
                     {submitting ? (
                       <>

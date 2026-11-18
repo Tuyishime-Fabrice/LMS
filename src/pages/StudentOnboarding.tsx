@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { authContinuationUrl, postAuthDestination } from "@/lib/coursePaymentRet
 
 
 const StudentOnboarding = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { refreshProfile } = useAppAuth();
   const [currentStep, setCurrentStep] = useState(1);
@@ -137,12 +139,12 @@ const StudentOnboarding = () => {
   const handleNext = () => {
     if (currentStep === 1) {
       if (!formData.firstName || !formData.lastName || !formData.telephone || !formData.avatar) {
-        toast.error("Please fill in all fields and select an avatar");
+        toast.error(t("studentOnboarding.pleaseFillInAllFieldsAnd", "Please fill in all fields and select an avatar"));
         return;
       }
     } else if (currentStep === 2) {
       if (!formData.organizationName || !formData.industry || !formData.role) {
-        toast.error("Please fill in all fields");
+        toast.error(t("studentOnboarding.pleaseFillInAllFields", "Please fill in all fields"));
         return;
       }
     }
@@ -162,7 +164,7 @@ const StudentOnboarding = () => {
 
   const handleComplete = async () => {
     if (formData.interests.length === 0) {
-      toast.error("Please select at least one interest");
+      toast.error(t("studentOnboarding.pleaseSelectAtLeastOneInterest", "Please select at least one interest"));
       return;
     }
 
@@ -172,7 +174,7 @@ const StudentOnboarding = () => {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        toast.error("User not authenticated");
+        toast.error(t("studentOnboarding.userNotAuthenticated", "User not authenticated"));
         navigate(authContinuationUrl("/auth"));
         return;
       }
@@ -209,12 +211,12 @@ const StudentOnboarding = () => {
         throw new Error("Onboarding update failed");
       }
 
-      toast.success("Onboarding completed successfully!");
+      toast.success(t("studentOnboarding.onboardingCompletedSuccessfully", "Onboarding completed successfully!"));
 
       navigate(postAuthDestination(profile), { replace: true });
     } catch (error: any) {
       console.error("Error completing onboarding:", error);
-      toast.error("Failed to complete onboarding. Please try again.");
+      toast.error(t("studentOnboarding.failedToCompleteOnboardingPleaseTry", "Failed to complete onboarding. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -230,16 +232,16 @@ const StudentOnboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-muted/50">
       {/* Left Sidebar - Green */}
-      <div className="w-80 bg-gradient-to-br from-[#006d2c] to-[#006d2c] p-8 flex flex-col">
+      <div className="w-80 p-8 flex flex-col bg-forest">
         <div className="flex items-center gap-3 mb-12">
           <img
             src="/images/dataplus_logggg-removebg-preview.png"
-            alt="DataPlus Logo"
+            alt="DataPlus Academy"
             className="w-10 h-10 object-contain"
           />
-          <span className="text-2xl font-bold text-white">DataPlus Labs</span>
+          <span className="text-2xl font-bold text-white">{t("studentOnboarding.dataplusLabs", "DataPlus Labs")}</span>
         </div>
 
         {/* Steps */}
@@ -247,17 +249,17 @@ const StudentOnboarding = () => {
           {/* Step 1 */}
           <div className="flex items-start gap-4">
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 1 ? "bg-white text-[#006d2c]" : "bg-white/20 text-white"
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 1 ? "bg-card text-primary" : "bg-white/20 text-white"
                 }`}
             >
               <Image className="w-6 h-6" />
             </div>
             <div>
               <h3 className={`font-bold ${currentStep >= 1 ? "text-white" : "text-white/60"}`}>
-                Profile & Avatar
+                {t("studentOnboarding.profileAvatar", "Profile & Avatar")}
               </h3>
               <p className={`text-sm ${currentStep >= 1 ? "text-white/90" : "text-white/50"}`}>
-                Personal details and avatar
+                {t("studentOnboarding.personalDetailsAndAvatar", "Personal details and avatar")}
               </p>
             </div>
           </div>
@@ -265,17 +267,17 @@ const StudentOnboarding = () => {
           {/* Step 2 */}
           <div className="flex items-start gap-4">
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 2 ? "bg-white text-[#006d2c]" : "bg-white/20 text-white"
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 2 ? "bg-card text-primary" : "bg-white/20 text-white"
                 }`}
             >
               <Building2 className="w-6 h-6" />
             </div>
             <div>
               <h3 className={`font-bold ${currentStep >= 2 ? "text-white" : "text-white/60"}`}>
-                Organization
+                {t("studentOnboarding.organization", "Organization")}
               </h3>
               <p className={`text-sm ${currentStep >= 2 ? "text-white/90" : "text-white/50"}`}>
-                Organization information
+                {t("studentOnboarding.organizationInformation", "Organization information")}
               </p>
             </div>
           </div>
@@ -283,24 +285,24 @@ const StudentOnboarding = () => {
           {/* Step 3 */}
           <div className="flex items-start gap-4">
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 3 ? "bg-white text-[#006d2c]" : "bg-white/20 text-white"
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 3 ? "bg-card text-primary" : "bg-white/20 text-white"
                 }`}
             >
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
               <h3 className={`font-bold ${currentStep >= 3 ? "text-white" : "text-white/60"}`}>
-                Your Interests
+                {t("studentOnboarding.yourInterests", "Your Interests")}
               </h3>
               <p className={`text-sm ${currentStep >= 3 ? "text-white/90" : "text-white/50"}`}>
-                Select your learning interests
+                {t("studentOnboarding.selectYourLearningInterests", "Select your learning interests")}
               </p>
             </div>
           </div>
         </div>
 
         <div className="text-white/60 text-sm">
-          All rights reserved @DataPlus Labs
+          {t("studentOnboarding.allRightsReservedDataplusLabs", "All rights reserved @DataPlus Labs")}
         </div>
       </div>
 
@@ -311,44 +313,44 @@ const StudentOnboarding = () => {
           {currentStep === 1 && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-500 mb-2">Step 1/3</p>
-                <h1 className="text-4xl font-bold text-black mb-3">Profile & Avatar</h1>
-                <p className="text-gray-600">
-                  Tell us a bit about yourself and choose your avatar.
+                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step13", "Step 1/3")}</p>
+                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.profileAvatar", "Profile & Avatar")}</h1>
+                <p className="text-muted-foreground">
+                  {t("studentOnboarding.tellUsABitAboutYourself", "Tell us a bit about yourself and choose your avatar.")}
                 </p>
               </div>
 
               <div className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                      First name
+                    <Label htmlFor="firstName" className="text-sm font-medium text-foreground">
+                      {t("studentOnboarding.firstName", "First name")}
                     </Label>
                     <Input
                       id="firstName"
-                      placeholder="John"
+                      placeholder={t("studentOnboarding.john", "John")}
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="h-12 border-gray-300 rounded-lg"
+                      className="h-12 border-border rounded-lg"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                      Last name
+                    <Label htmlFor="lastName" className="text-sm font-medium text-foreground">
+                      {t("studentOnboarding.lastName", "Last name")}
                     </Label>
                     <Input
                       id="lastName"
-                      placeholder="Doe"
+                      placeholder={t("studentOnboarding.doe", "Doe")}
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="h-12 border-gray-300 rounded-lg"
+                      className="h-12 border-border rounded-lg"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="telephone" className="text-sm font-medium text-gray-700">
-                    Telephone number
+                  <Label htmlFor="telephone" className="text-sm font-medium text-foreground">
+                    {t("studentOnboarding.telephoneNumber", "Telephone number")}
                   </Label>
                   <Input
                     id="telephone"
@@ -356,24 +358,24 @@ const StudentOnboarding = () => {
                     placeholder="+250 788 123 456"
                     value={formData.telephone}
                     onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                    className="h-12 border-gray-300 rounded-lg"
+                    className="h-12 border-border rounded-lg"
                   />
                 </div>
 
                 {/* Avatar Selection */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700">
-                    Choose your avatar
+                  <Label className="text-sm font-medium text-foreground">
+                    {t("studentOnboarding.chooseYourAvatar", "Choose your avatar")}
                   </Label>
-                  <div className="grid grid-cols-7 gap-3 max-h-64 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                  <div className="grid grid-cols-7 gap-3 max-h-64 overflow-y-auto p-2 border border-border rounded-lg">
                     {avatars.map((avatar, index) => (
                       <button
                         key={index}
                         type="button"
                         onClick={() => setFormData({ ...formData, avatar })}
                         className={`relative rounded-full overflow-hidden border-4 transition-all hover:scale-110 ${formData.avatar === avatar
-                          ? "border-[#006d2c] ring-4 ring-[#006d2c]/30"
-                          : "border-gray-200 hover:border-[#006d2c]/50"
+                          ? "border-primary ring-4 ring-primary/30"
+                          : "border-border hover:border-primary/50"
                           }`}
                       >
                         <img
@@ -382,7 +384,7 @@ const StudentOnboarding = () => {
                           className="w-full h-full object-cover aspect-square"
                         />
                         {formData.avatar === avatar && (
-                          <div className="absolute inset-0 bg-[#006d2c]/20 flex items-center justify-center">
+                          <div className="absolute inset-0 bg-leaf flex items-center justify-center">
                             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
@@ -392,7 +394,7 @@ const StudentOnboarding = () => {
                     ))}
                   </div>
                   {formData.avatar && (
-                    <p className="text-sm text-[#006d2c] font-medium">✓ Avatar selected</p>
+                    <p className="text-sm text-primary font-medium">{t("studentOnboarding.avatarSelected", "✓ Avatar selected")}</p>
                   )}
                 </div>
               </div>
@@ -400,9 +402,9 @@ const StudentOnboarding = () => {
               <div className="flex gap-3 pt-4">
                 <Button
                   onClick={handleNext}
-                  className="bg-[#006d2c] hover:bg-[#006d2c] text-black font-medium h-12 px-8"
+                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
                 >
-                  Next
+                  {t("studentOnboarding.next", "Next")}
                 </Button>
               </div>
             </div>
@@ -412,37 +414,37 @@ const StudentOnboarding = () => {
           {currentStep === 2 && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-500 mb-2">Step 2/3</p>
-                <h1 className="text-4xl font-bold text-black mb-3">Organization</h1>
-                <p className="text-gray-600">
-                  Tell us about your organization. It helps us tailor your learning experience.
+                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step23", "Step 2/3")}</p>
+                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.organization", "Organization")}</h1>
+                <p className="text-muted-foreground">
+                  {t("studentOnboarding.tellUsAboutYourOrganizationIt", "Tell us about your organization. It helps us tailor your learning experience.")}
                 </p>
               </div>
 
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="organizationName" className="text-sm font-medium text-gray-700">
-                    Organization name
+                  <Label htmlFor="organizationName" className="text-sm font-medium text-foreground">
+                    {t("studentOnboarding.organizationName", "Organization name")}
                   </Label>
                   <Input
                     id="organizationName"
-                    placeholder="Enter organization name"
+                    placeholder={t("studentOnboarding.enterOrganizationName", "Enter organization name")}
                     value={formData.organizationName}
                     onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-                    className="h-12 border-gray-300 rounded-lg"
+                    className="h-12 border-border rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="industry" className="text-sm font-medium text-gray-700">
-                    Industry
+                  <Label htmlFor="industry" className="text-sm font-medium text-foreground">
+                    {t("studentOnboarding.industry", "Industry")}
                   </Label>
                   <Select
                     value={formData.industry}
                     onValueChange={(value) => setFormData({ ...formData, industry: value })}
                   >
-                    <SelectTrigger className="h-12 border-gray-300 rounded-lg">
-                      <SelectValue placeholder="Select industry" />
+                    <SelectTrigger className="h-12 border-border rounded-lg">
+                      <SelectValue placeholder={t("studentOnboarding.selectIndustry", "Select industry")} />
                     </SelectTrigger>
                     <SelectContent>
                       {industries.map((industry) => (
@@ -455,15 +457,15 @@ const StudentOnboarding = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="role" className="text-sm font-medium text-gray-700">
-                    Your role
+                  <Label htmlFor="role" className="text-sm font-medium text-foreground">
+                    {t("studentOnboarding.yourRole", "Your role")}
                   </Label>
                   <Input
                     id="role"
-                    placeholder="e.g., Student, Professional, Manager"
+                    placeholder={t("studentOnboarding.eGStudentProfessionalManager", "e.g., Student, Professional, Manager")}
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="h-12 border-gray-300 rounded-lg"
+                    className="h-12 border-border rounded-lg"
                   />
                 </div>
               </div>
@@ -472,16 +474,16 @@ const StudentOnboarding = () => {
                 <Button
                   onClick={handleBack}
                   variant="outline"
-                  className="h-12 px-6 border-gray-300"
+                  className="h-12 px-6 border-border"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1" />
-                  Back
+                  {t("studentOnboarding.back", "Back")}
                 </Button>
                 <Button
                   onClick={handleNext}
-                  className="bg-[#006d2c] hover:bg-[#006d2c] text-black font-medium h-12 px-8"
+                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
                 >
-                  Next
+                  {t("studentOnboarding.next", "Next")}
                 </Button>
               </div>
             </div>
@@ -491,10 +493,10 @@ const StudentOnboarding = () => {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-500 mb-2">Step 3/3</p>
-                <h1 className="text-4xl font-bold text-black mb-3">Your Interests</h1>
-                <p className="text-gray-600">
-                  Select the topics you're interested in learning. You can choose multiple options.
+                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step33", "Step 3/3")}</p>
+                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.yourInterests", "Your Interests")}</h1>
+                <p className="text-muted-foreground">
+                  {t("studentOnboarding.selectTheTopicsYouReInterested", "Select the topics you're interested in learning. You can choose multiple options.")}
                 </p>
               </div>
 
@@ -504,15 +506,15 @@ const StudentOnboarding = () => {
                     key={interest}
                     onClick={() => toggleInterest(interest)}
                     className={`p-4 rounded-xl border-2 text-left transition-all ${formData.interests.includes(interest)
-                      ? "border-[#006d2c] bg-[#006d2c]/10"
-                      : "border-gray-200 hover:border-[#006d2c]/50"
+                      ? "border-primary bg-leaf"
+                      : "border-border hover:border-primary/50"
                       }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.interests.includes(interest)
-                          ? "border-[#006d2c] bg-[#006d2c]"
-                          : "border-gray-300"
+                          ? "border-primary bg-primary"
+                          : "border-border"
                           }`}
                       >
                         {formData.interests.includes(interest) && (
@@ -521,7 +523,7 @@ const StudentOnboarding = () => {
                           </svg>
                         )}
                       </div>
-                      <span className="font-medium text-gray-900">{interest}</span>
+                      <span className="font-medium text-forest">{interest}</span>
                     </div>
                   </button>
                 ))}
@@ -531,17 +533,17 @@ const StudentOnboarding = () => {
                 <Button
                   onClick={handleBack}
                   variant="outline"
-                  className="h-12 px-6 border-gray-300"
+                  className="h-12 px-6 border-border"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1" />
-                  Back
+                  {t("studentOnboarding.back", "Back")}
                 </Button>
                 <Button
                   onClick={handleComplete}
                   disabled={loading}
-                  className="bg-[#006d2c] hover:bg-[#006d2c] text-black font-medium h-12 px-8"
+                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
                 >
-                  {loading ? "Saving..." : "Complete"}
+                  {loading ? t("studentOnboarding.saving", "Saving...") : t("studentOnboarding.complete", "Complete")}
                 </Button>
               </div>
             </div>

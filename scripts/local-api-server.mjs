@@ -39,6 +39,7 @@ const routes = {
     'POST /api/webhooks/xentripay': () => import('../api/webhooks/xentripay.js'),
     'GET /api/tutor': () => import('../api/tutor.js'),
     'POST /api/tutor': () => import('../api/tutor.js'),
+    'GET /api/send-notification-emails': () => import('../api/send-notification-emails.js'),
 };
 
 function parseQuery(url) {

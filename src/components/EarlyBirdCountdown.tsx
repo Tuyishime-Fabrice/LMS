@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { formatCountdown } from "@/lib/earlyBirdPricing";
 
@@ -9,6 +10,7 @@ interface EarlyBirdCountdownProps {
 }
 
 export function EarlyBirdCountdown({ endsAt, seatsLeft, className }: EarlyBirdCountdownProps) {
+  const { t } = useTranslation();
   const [remaining, setRemaining] = useState(() => new Date(endsAt).getTime() - Date.now());
 
   useEffect(() => {
@@ -20,11 +22,11 @@ export function EarlyBirdCountdown({ endsAt, seatsLeft, className }: EarlyBirdCo
 
   return (
     <div className={className}>
-      <Badge className="bg-orange-500 hover:bg-orange-500 text-white mb-2">
-        Early bird · ends in {formatCountdown(remaining)}
+      <Badge className="bg-warning hover:bg-orange-500 text-white mb-2">
+        {t("earlyBirdCountdown.earlyBirdEndsIn", "Early bird · ends in {{formatCountdown}}", { formatCountdown: formatCountdown(remaining) })}
       </Badge>
       {seatsLeft != null && seatsLeft <= 20 && (
-        <p className="text-xs text-orange-700">{seatsLeft} early-bird seats left</p>
+        <p className="text-xs text-warning">{t("earlyBirdCountdown.earlyBirdSeatsLeft", "{{seatsLeft}} early-bird seats left", { seatsLeft: seatsLeft })}</p>
       )}
     </div>
   );

@@ -122,6 +122,26 @@ Every question and answer is stored in `tutor_messages` with the model and token
 
 The tutor sees lesson titles, descriptions and objectives. It does not see the video or PDF content.
 
+## Design
+
+Colours, fonts and radii live in `src/index.css` (tokens) and `tailwind.config.ts`. The palette is midnight navy `#060C2E`, orange `#C9501F` for buttons and links (`#E4683A` on navy), royal blue `#2442E4` for accents and focus, and warm paper `#F2F1EC` behind white cards. Success states (paid, passed, graded) use green and never the brand orange. Text and headings are Inter; large headlines use Bebas Neue (`text-poster`). Both fonts are bundled, so no font is loaded from Google.
+
+Public pages share `src/features/site` (header, footer, title band, partner form). Signed-in pages share `src/components/shell`.
+
+## Notification emails
+
+Grades, submission receipts, applications and certificates are queued as emails by the database. `/api/send-notification-emails` sends the queue through [Resend](https://resend.com) and marks each one sent, failed or skipped.
+
+1. Create a Resend account and verify the sending domain.
+2. In Vercel, set `RESEND_API_KEY`, `EMAIL_FROM` (for example `DataPlus Academy <notifications@dataplusacademy.com>`) and `CRON_SECRET` (any long random string).
+3. Redeploy.
+
+`vercel.json` runs the sender once a day, the most often a Vercel Hobby plan allows. On a Pro plan change the schedule to `*/10 * * * *`. Without the key nothing is sent and notifications stay in the app.
+
+## Installable app
+
+The site has a web app manifest and a service worker (`public/sw.js`), so learners can add it to their phone's home screen and the interface opens without a connection. Pages are fetched from the network first, so a new deployment shows up immediately. Lesson videos and documents are not stored offline.
+
 ## Payments
 
 `api/payment-*.js` and `server/lib` implement checkout through XentriPay, with coupons, bundles, instalments, scholarships and early-bird pricing. Card payments are behind `VITE_CARD_PAYMENT_ENABLED`. See `.env.example` for the variables and `docs/checkout-repair.md` for the Supabase redirect settings that checkout depends on.
@@ -143,7 +163,6 @@ The original project archive contained a hidden loader in two build files. It wa
 
 ## Not built yet
 
-- Email delivery for notifications (the database queues them; nothing sends them)
-- Installable app with offline lessons (PWA), then a native mobile app
-- Payments outside Rwanda (XOF/XAF and other operators)
-- French for the public pages: landing, about, contact, course detail, bundles, exhibition, onboarding, legal
+- Payments outside Rwanda (XOF/XAF and other operators). This needs a choice of payment provider first.
+- A native mobile app. The installable web app covers phones for now.
+- Lessons available offline (videos and documents).

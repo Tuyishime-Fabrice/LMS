@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { useAppAuth } from "@/contexts/AuthContext";
 import { authContinuationUrl, getPaymentReturnUrl, postAuthDestination } from "@/lib/coursePaymentReturn";
 
 const TeacherOnboarding = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { refreshProfile } = useAppAuth();
   const [loading, setLoading] = useState(false);
@@ -138,7 +140,7 @@ const TeacherOnboarding = () => {
 
   const handleComplete = async () => {
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.telephone || !formData.avatar) {
-      toast.error("Please fill in all fields and select an avatar");
+      toast.error(t("teacherOnboarding.pleaseFillInAllFieldsAnd", "Please fill in all fields and select an avatar"));
       return;
     }
 
@@ -148,7 +150,7 @@ const TeacherOnboarding = () => {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        toast.error("User not authenticated");
+        toast.error(t("teacherOnboarding.userNotAuthenticated", "User not authenticated"));
         navigate(authContinuationUrl("/auth"));
         return;
       }
@@ -182,44 +184,44 @@ const TeacherOnboarding = () => {
         throw new Error("Onboarding update failed");
       }
 
-      toast.success("Profile setup completed! Your account is pending admin approval.");
+      toast.success(t("teacherOnboarding.profileSetupCompletedYourAccountIs", "Profile setup completed! Your account is pending admin approval."));
       navigate(getPaymentReturnUrl() || "/teacher/pending-approval", { replace: true });
     } catch (error: any) {
       console.error("Error completing onboarding:", error);
-      toast.error("Failed to complete profile setup. Please try again.");
+      toast.error(t("teacherOnboarding.failedToCompleteProfileSetupPlease", "Failed to complete profile setup. Please try again."));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-muted/50">
       {/* Left Sidebar - Green */}
-      <div className="w-80 bg-gradient-to-br from-[#006d2c] to-[#006d2c] p-8 flex flex-col">
+      <div className="w-80 p-8 flex flex-col bg-forest">
         <div className="flex items-center gap-3 mb-12">
           <img
             src="/images/dataplus_logggg-removebg-preview.png"
-            alt="DataPlus Logo"
+            alt="DataPlus Academy"
             className="w-10 h-10 object-contain"
           />
-          <span className="text-2xl font-bold text-white">DataPlus Labs</span>
+          <span className="text-2xl font-bold text-white">{t("teacherOnboarding.dataplusLabs", "DataPlus Labs")}</span>
         </div>
 
         {/* Step Indicator */}
         <div className="flex-1 space-y-8">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-white text-[#006d2c]">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-card text-primary">
               <Image className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-white">Teacher Profile</h3>
-              <p className="text-sm text-white/90">Complete your profile to get started</p>
+              <h3 className="font-bold text-white">{t("teacherOnboarding.teacherProfile", "Teacher Profile")}</h3>
+              <p className="text-sm text-white/90">{t("teacherOnboarding.completeYourProfileToGetStarted", "Complete your profile to get started")}</p>
             </div>
           </div>
         </div>
 
         <div className="text-white/60 text-sm">
-          All rights reserved @DataPlus Labs
+          {t("teacherOnboarding.allRightsReservedDataplusLabs", "All rights reserved @DataPlus Labs")}
         </div>
       </div>
 
@@ -228,57 +230,57 @@ const TeacherOnboarding = () => {
         <div className="w-full max-w-2xl">
           <div className="space-y-6">
             <div>
-              <h1 className="text-4xl font-bold text-black mb-3">Welcome, Teacher!</h1>
-              <p className="text-gray-600">
-                Let's set up your profile so you can start creating amazing courses.
+              <h1 className="text-4xl font-bold text-forest mb-3">{t("teacherOnboarding.welcomeTeacher", "Welcome, Teacher!")}</h1>
+              <p className="text-muted-foreground">
+                {t("teacherOnboarding.letSSetUpYourProfile", "Let's set up your profile so you can start creating amazing courses.")}
               </p>
             </div>
 
             <div className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                    First name *
+                  <Label htmlFor="firstName" className="text-sm font-medium text-foreground">
+                    {t("teacherOnboarding.firstName", "First name *")}
                   </Label>
                   <Input
                     id="firstName"
-                    placeholder="John"
+                    placeholder={t("teacherOnboarding.john", "John")}
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="h-12 border-gray-300 rounded-lg"
+                    className="h-12 border-border rounded-lg"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                    Last name *
+                  <Label htmlFor="lastName" className="text-sm font-medium text-foreground">
+                    {t("teacherOnboarding.lastName", "Last name *")}
                   </Label>
                   <Input
                     id="lastName"
-                    placeholder="Doe"
+                    placeholder={t("teacherOnboarding.doe", "Doe")}
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="h-12 border-gray-300 rounded-lg"
+                    className="h-12 border-border rounded-lg"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                  Email *
+                <Label htmlFor="email" className="text-sm font-medium text-foreground">
+                  {t("teacherOnboarding.email", "Email *")}
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john.doe@example.com"
+                  placeholder={t("teacherOnboarding.johnDoeExampleCom", "john.doe@example.com")}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="h-12 border-gray-300 rounded-lg"
+                  className="h-12 border-border rounded-lg"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="telephone" className="text-sm font-medium text-gray-700">
-                  Telephone number *
+                <Label htmlFor="telephone" className="text-sm font-medium text-foreground">
+                  {t("teacherOnboarding.telephoneNumber", "Telephone number *")}
                 </Label>
                 <Input
                   id="telephone"
@@ -286,16 +288,16 @@ const TeacherOnboarding = () => {
                   placeholder="+250 788 123 456"
                   value={formData.telephone}
                   onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                  className="h-12 border-gray-300 rounded-lg"
+                  className="h-12 border-border rounded-lg"
                 />
               </div>
 
               {/* Avatar Selection */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium text-gray-700">
-                  Choose your avatar *
+                <Label className="text-sm font-medium text-foreground">
+                  {t("teacherOnboarding.chooseYourAvatar", "Choose your avatar *")}
                 </Label>
-                <div className="grid grid-cols-7 gap-3 max-h-64 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                <div className="grid grid-cols-7 gap-3 max-h-64 overflow-y-auto p-2 border border-border rounded-lg">
                   {avatars.map((avatar, index) => (
                     <button
                       key={index}
@@ -303,8 +305,8 @@ const TeacherOnboarding = () => {
                       onClick={() => setFormData({ ...formData, avatar })}
                       className={`relative rounded-full overflow-hidden border-4 transition-all hover:scale-110 ${
                         formData.avatar === avatar
-                          ? "border-[#006d2c] ring-4 ring-[#006d2c]/30"
-                          : "border-gray-200 hover:border-[#006d2c]/50"
+                          ? "border-primary ring-4 ring-primary/30"
+                          : "border-border hover:border-primary/50"
                       }`}
                     >
                       <img
@@ -313,7 +315,7 @@ const TeacherOnboarding = () => {
                         className="w-full h-full object-cover aspect-square"
                       />
                       {formData.avatar === avatar && (
-                        <div className="absolute inset-0 bg-[#006d2c]/20 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-leaf flex items-center justify-center">
                           <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
@@ -323,7 +325,7 @@ const TeacherOnboarding = () => {
                   ))}
                 </div>
                 {formData.avatar && (
-                  <p className="text-sm text-[#006d2c] font-medium">✓ Avatar selected</p>
+                  <p className="text-sm text-primary font-medium">{t("teacherOnboarding.avatarSelected", "✓ Avatar selected")}</p>
                 )}
               </div>
             </div>
@@ -332,9 +334,9 @@ const TeacherOnboarding = () => {
               <Button
                 onClick={handleComplete}
                 disabled={loading}
-                className="bg-[#006d2c] hover:bg-[#006d2c] text-black font-medium h-12 px-8"
+                className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
               >
-                {loading ? "Saving..." : "Complete Setup"}
+                {loading ? t("teacherOnboarding.saving", "Saving...") : t("teacherOnboarding.completeSetup", "Complete Setup")}
               </Button>
             </div>
           </div>

@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
+import { useTranslation } from "react-i18next";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,14 +9,7 @@ import { Smartphone, CreditCard, Loader2, CheckCircle, XCircle, Phone, Tag } fro
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { beginPaymentSignUp } from "@/lib/coursePaymentReturn";
-import {
-    initiatePayment,
-    checkPaymentStatus,
-    validateCoupon,
-    formatPrice,
-    type PaymentMethod,
-    type CouponValidationResult,
-} from "@/services/paymentService";
+import { initiatePayment, checkPaymentStatus, validateCoupon, formatPrice, type PaymentMethod, type CouponValidationResult } from "@/services/paymentService";
 import type { EarlyBirdState } from "@/lib/earlyBirdPricing";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -74,6 +62,7 @@ export function PurchaseDialog({
     instalmentNumber,
     dueDate,
 }: PurchaseDialogProps) {
+  const { t } = useTranslation();
     const { user, profile, loading: authLoading } = useAuth();
     const navigate = useNavigate();
     const [step, setStep] = useState<PaymentStep>("method");
@@ -255,11 +244,11 @@ export function PurchaseDialog({
                 <DialogHeader>
                     <DialogTitle className="text-xl">
                         {step === "success"
-                            ? "Payment Successful!"
+                            ? t("purchaseDialog.paymentSuccessful", "Payment Successful!")
                             : step === "failed"
-                              ? "Payment Failed"
+                              ? t("purchaseDialog.paymentFailed", "Payment Failed")
                               : step === "confirming"
-                                ? "Confirm Your Payment"
+                                ? t("purchaseDialog.confirmYourPayment", "Confirm Your Payment")
                                 : mode === "instalment-pay"
                                   ? `Pay Instalment ${instalmentNumber ?? ""}`
                                   : `Purchase ${type === "bundle" ? "Bundle" : "Course"}`}
@@ -267,17 +256,17 @@ export function PurchaseDialog({
                     <DialogDescription>
                         {item.title}
                         {mode === "instalment-pay" && dueDate && (
-                            <span className="block text-xs mt-1">Due {new Date(dueDate).toLocaleDateString()}</span>
+                            <span className="block text-xs mt-1">{t("purchaseDialog.due", "Due {{toLocaleDateString}}", { toLocaleDateString: new Date(dueDate).toLocaleDateString() })}</span>
                         )}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4">
-                    <div className="p-3 bg-green-50 rounded-lg border border-green-200 space-y-1">
+                    <div className="p-3 bg-leaf rounded-lg border border-primary/30 space-y-1">
                         {earlyBird?.active && (
-                            <div className="flex items-center justify-between text-sm text-orange-700">
-                                <span>Early bird price</span>
-                                <span className="line-through text-gray-400 mr-2">
+                            <div className="flex items-center justify-between text-sm text-warning">
+                                <span>{t("purchaseDialog.earlyBirdPrice", "Early bird price")}</span>
+                                <span className="line-through text-muted-foreground/60 mr-2">
                                     {formatPrice(earlyBird.regularPrice, item.currency)}
                                 </span>
                                 <span>{formatPrice(earlyBird.price, item.currency)}</span>
@@ -285,51 +274,51 @@ export function PurchaseDialog({
                         )}
                         {appliedCoupon?.discountAmount ? (
                             <>
-                                <div className="flex items-center justify-between text-sm text-gray-600">
-                                    <span>{isInstalmentDeposit ? "Deposit" : "Subtotal"}</span>
+                                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    <span>{isInstalmentDeposit ? t("purchaseDialog.deposit", "Deposit") : t("purchaseDialog.subtotal", "Subtotal")}</span>
                                     <span>{formatPrice(chargeBase, item.currency)}</span>
                                 </div>
                                 {isInstalmentDeposit && (
-                                    <div className="flex items-center justify-between text-xs text-gray-500">
-                                        <span>Full course price</span>
+                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                        <span>{t("purchaseDialog.fullCoursePrice", "Full course price")}</span>
                                         <span>{formatPrice(listPrice, item.currency)}</span>
                                     </div>
                                 )}
-                                <div className="flex items-center justify-between text-sm text-emerald-700">
+                                <div className="flex items-center justify-between text-sm text-primary">
                                     <span className="flex items-center gap-1">
                                         <Tag className="h-3.5 w-3.5" />
                                         {appliedCoupon.code}
                                     </span>
                                     <span>-{formatPrice(appliedCoupon.discountAmount, displayCurrency)}</span>
                                 </div>
-                                <div className="flex items-center justify-between pt-1 border-t border-green-200">
-                                    <span className="text-sm font-medium text-gray-700">Total due now</span>
-                                    <span className="text-xl font-bold text-green-700">
+                                <div className="flex items-center justify-between pt-1 border-t border-primary/30">
+                                    <span className="text-sm font-medium text-foreground">{t("purchaseDialog.totalDueNow", "Total due now")}</span>
+                                    <span className="text-xl font-bold text-primary">
                                         {formatPrice(displayAmount, displayCurrency)}
                                     </span>
                                 </div>
                             </>
                         ) : isInstalmentDeposit ? (
                             <>
-                                <div className="flex items-center justify-between text-sm text-gray-600">
-                                    <span>Full course price</span>
+                                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    <span>{t("purchaseDialog.fullCoursePrice", "Full course price")}</span>
                                     <span>{formatPrice(listPrice, item.currency)}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm text-gray-600">
-                                    <span>Deposit ({depositPercent}%)</span>
+                                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    <span>{t("purchaseDialog.deposit2", "Deposit ({{depositPercent}}%)", { depositPercent: depositPercent })}</span>
                                     <span>{formatPrice(chargeBase, item.currency)}</span>
                                 </div>
-                                <div className="flex items-center justify-between pt-1 border-t border-green-200">
-                                    <span className="text-sm font-medium text-gray-700">Due now</span>
-                                    <span className="text-xl font-bold text-green-700">
+                                <div className="flex items-center justify-between pt-1 border-t border-primary/30">
+                                    <span className="text-sm font-medium text-foreground">{t("purchaseDialog.dueNow", "Due now")}</span>
+                                    <span className="text-xl font-bold text-primary">
                                         {formatPrice(chargeBase, item.currency)}
                                     </span>
                                 </div>
                             </>
                         ) : (
                             <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-gray-700">Total</span>
-                                <span className="text-xl font-bold text-green-700">
+                                <span className="text-sm font-medium text-foreground">{t("purchaseDialog.total", "Total")}</span>
+                                <span className="text-xl font-bold text-primary">
                                     {formatPrice(chargeBase, item.currency)}
                                 </span>
                             </div>
@@ -340,7 +329,7 @@ export function PurchaseDialog({
                         <div className="space-y-4">
                             {showPaymentPlan && (
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">Payment plan</Label>
+                                    <Label className="text-sm font-medium">{t("purchaseDialog.paymentPlan", "Payment plan")}</Label>
                                     <RadioGroup
                                         value={paymentTrack}
                                         onValueChange={(v) => {
@@ -352,16 +341,16 @@ export function PurchaseDialog({
                                     >
                                         <label className="flex items-center gap-2 border rounded-lg p-3 cursor-pointer has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
                                             <RadioGroupItem value="full" />
-                                            <span className="text-sm font-medium">Pay in full</span>
+                                            <span className="text-sm font-medium">{t("purchaseDialog.payInFull", "Pay in full")}</span>
                                         </label>
                                         <label className="flex items-center gap-2 border rounded-lg p-3 cursor-pointer has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
                                             <RadioGroupItem value="instalment" />
-                                            <span className="text-sm font-medium">Instalments</span>
+                                            <span className="text-sm font-medium">{t("purchaseDialog.instalments", "Instalments")}</span>
                                         </label>
                                     </RadioGroup>
                                     {paymentTrack === "instalment" && (
-                                        <p className="text-xs text-gray-500">
-                                            Pay a deposit now; remaining instalments are due monthly.
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("purchaseDialog.payADepositNowRemainingInstalments", "Pay a deposit now; remaining instalments are due monthly.")}
                                         </p>
                                     )}
                                 </div>
@@ -369,10 +358,10 @@ export function PurchaseDialog({
 
                             {showCoupons && (
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">Coupon Code</Label>
+                                <Label className="text-sm font-medium">{t("purchaseDialog.couponCode", "Coupon Code")}</Label>
                                 <div className="flex gap-2">
                                     <Input
-                                        placeholder="Enter code"
+                                        placeholder={t("purchaseDialog.enterCode", "Enter code")}
                                         value={couponInput}
                                         onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                                         disabled={!!appliedCoupon?.valid}
@@ -380,7 +369,7 @@ export function PurchaseDialog({
                                     />
                                     {appliedCoupon?.valid ? (
                                         <Button type="button" variant="outline" onClick={handleRemoveCoupon}>
-                                            Remove
+                                            {t("purchaseDialog.remove", "Remove")}
                                         </Button>
                                     ) : (
                                         <Button
@@ -392,40 +381,40 @@ export function PurchaseDialog({
                                             {couponLoading ? (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                             ) : (
-                                                "Apply"
+                                                t("purchaseDialog.apply", "Apply")
                                             )}
                                         </Button>
                                     )}
                                 </div>
                                 {appliedCoupon?.valid && (
-                                    <p className="text-xs text-emerald-700">Coupon applied successfully</p>
+                                    <p className="text-xs text-primary">{t("purchaseDialog.couponAppliedSuccessfully", "Coupon applied successfully")}</p>
                                 )}
                             </div>
                             )}
 
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium">Payment Method</Label>
+                                <Label className="text-sm font-medium">{t("purchaseDialog.paymentMethod", "Payment Method")}</Label>
 
                                 <button
                                     type="button"
                                     onClick={() => setPaymentMethod("momo")}
                                     className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${paymentMethod === "momo"
-                                        ? "border-green-500 bg-green-50"
-                                        : "border-gray-200 hover:border-gray-300"
+                                        ? "border-primary/30 bg-leaf"
+                                        : "border-border hover:border-border"
                                         }`}
                                 >
                                     <div
-                                        className={`w-10 h-10 rounded-full flex items-center justify-center ${paymentMethod === "momo" ? "bg-green-500 text-white" : "bg-gray-100 text-gray-500"
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center ${paymentMethod === "momo" ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                                             }`}
                                     >
                                         <Smartphone className="h-5 w-5" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="font-semibold">MTN Mobile Money</p>
-                                        <p className="text-xs text-gray-500">Rwanda MoMo / Airtel (RWF only)</p>
+                                        <p className="font-semibold">{t("purchaseDialog.mtnMobileMoney", "MTN Mobile Money")}</p>
+                                        <p className="text-xs text-muted-foreground">{t("purchaseDialog.rwandaMomoAirtelRwfOnly", "Rwanda MoMo / Airtel (RWF only)")}</p>
                                     </div>
                                     {paymentMethod === "momo" && (
-                                        <CheckCircle className="h-5 w-5 text-green-500 ml-auto" />
+                                        <CheckCircle className="h-5 w-5 text-primary ml-auto" />
                                     )}
                                 </button>
 
@@ -435,38 +424,38 @@ export function PurchaseDialog({
                                     disabled={!CARD_PAYMENT_ENABLED}
                                     className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                                         !CARD_PAYMENT_ENABLED
-                                            ? "border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed"
+                                            ? "border-border bg-muted/50 opacity-60 cursor-not-allowed"
                                             : paymentMethod === "card"
-                                              ? "border-blue-500 bg-blue-50"
-                                              : "border-gray-200 hover:border-gray-300"
+                                              ? "border-info/30 bg-info-surface"
+                                              : "border-border hover:border-border"
                                     }`}
                                 >
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                                             !CARD_PAYMENT_ENABLED
-                                                ? "bg-gray-100 text-gray-400"
+                                                ? "bg-muted text-muted-foreground/60"
                                                 : paymentMethod === "card"
-                                                  ? "bg-blue-500 text-white"
-                                                  : "bg-gray-100 text-gray-500"
+                                                  ? "bg-info text-white"
+                                                  : "bg-muted text-muted-foreground"
                                         }`}
                                     >
                                         <CreditCard className="h-5 w-5" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="font-semibold text-gray-500">Card Payment</p>
-                                        <p className="text-xs text-gray-400">
+                                        <p className="font-semibold text-muted-foreground">{t("purchaseDialog.cardPayment", "Card Payment")}</p>
+                                        <p className="text-xs text-muted-foreground/60">
                                             {CARD_PAYMENT_ENABLED
-                                                ? "Visa, Mastercard via XentriPay"
-                                                : "Coming soon — use MoMo for now"}
+                                                ? t("purchaseDialog.visaMastercardViaXentripay", "Visa, Mastercard via XentriPay")
+                                                : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon — use MoMo for now")}
                                         </p>
                                     </div>
                                     {!CARD_PAYMENT_ENABLED && (
-                                        <span className="ml-auto text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                                            Soon
+                                        <span className="ml-auto text-xs font-medium text-muted-foreground/60 bg-muted px-2 py-0.5 rounded-full">
+                                            {t("purchaseDialog.soon", "Soon")}
                                         </span>
                                     )}
                                     {CARD_PAYMENT_ENABLED && paymentMethod === "card" && (
-                                        <CheckCircle className="h-5 w-5 text-blue-500 ml-auto" />
+                                        <CheckCircle className="h-5 w-5 text-info ml-auto" />
                                     )}
                                 </button>
                             </div>
@@ -474,10 +463,10 @@ export function PurchaseDialog({
                             {needsPhone && (
                                 <div className="space-y-2">
                                     <Label htmlFor="phone" className="text-sm">
-                                        {paymentMethod === "momo" ? "MTN MoMo Phone Number" : "Phone Number"}
+                                        {paymentMethod === "momo" ? t("purchaseDialog.mtnMomoPhoneNumber", "MTN MoMo Phone Number") : t("purchaseDialog.phoneNumber", "Phone Number")}
                                     </Label>
                                     <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
                                         <Input
                                             id="phone"
                                             type="tel"
@@ -487,27 +476,27 @@ export function PurchaseDialog({
                                             className="pl-10"
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-muted-foreground">
                                         {paymentMethod === "momo"
-                                            ? "Rwanda MTN/Airtel number only (e.g. 0788123456 or +250788123456)"
-                                            : "Any phone number — local or international (e.g. +1 555 123 4567)"}
+                                            ? t("purchaseDialog.rwandaMtnAirtelNumberOnlyE", "Rwanda MTN/Airtel number only (e.g. 0788123456 or +250788123456)")
+                                            : t("purchaseDialog.anyPhoneNumberLocalOrInternational", "Any phone number — local or international (e.g. +1 555 123 4567)")}
                                     </p>
                                 </div>
                             )}
 
                             {error && (
-                                <p className="text-sm text-red-600 flex items-center gap-1">
+                                <p className="text-sm text-destructive flex items-center gap-1">
                                     <XCircle className="h-4 w-4" /> {error}
                                 </p>
                             )}
 
                             <Button
-                                className="w-full bg-[#006d2c] hover:bg-[#005523] text-white h-12 text-base"
+                                className="w-full bg-primary hover:bg-primary-hover text-white h-12 text-base"
                                 onClick={handleInitiatePayment}
                                 disabled={authLoading}
                             >
                                 {displayAmount <= 0 && appliedCoupon?.valid
-                                    ? "Confirm Free Enrolment"
+                                    ? t("purchaseDialog.confirmFreeEnrolment", "Confirm Free Enrolment")
                                     : `Pay ${formatPrice(displayAmount, displayCurrency)}`}
                             </Button>
                         </div>
@@ -515,106 +504,106 @@ export function PurchaseDialog({
 
                     {step === "confirming" && (
                         <div className="text-center py-6 space-y-4">
-                            <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mx-auto border-2 border-amber-200">
+                            <div className="w-16 h-16 rounded-full bg-warning-surface flex items-center justify-center mx-auto border-2 border-warning/30">
                                 {paymentMethod === "momo" ? (
-                                    <Smartphone className="h-8 w-8 text-amber-600" />
+                                    <Smartphone className="h-8 w-8 text-warning" />
                                 ) : (
-                                    <CreditCard className="h-8 w-8 text-amber-600" />
+                                    <CreditCard className="h-8 w-8 text-warning" />
                                 )}
                             </div>
-                            <p className="font-semibold text-lg">Confirm your payment</p>
+                            <p className="font-semibold text-lg">{t("purchaseDialog.confirmYourPayment2", "Confirm your payment")}</p>
                             {paymentMethod === "momo" ? (
-                                <p className="text-gray-600 text-sm leading-relaxed">
-                                    A payment prompt has been sent to your phone.
+                                <p className="text-muted-foreground text-sm leading-relaxed">
+                                    {t("purchaseDialog.aPaymentPromptHasBeenSent", "A payment prompt has been sent to your phone.")}
                                     <br />
-                                    <strong>Open MTN MoMo</strong> and approve the request to complete your purchase.
+                                    <strong>{t("purchaseDialog.openMtnMomo", "Open MTN MoMo")}</strong>{" "}{t("purchaseDialog.andApproveTheRequestToComplete", "and approve the request to complete your purchase.")}
                                 </p>
                             ) : (
-                                <p className="text-gray-600 text-sm leading-relaxed">
-                                    Complete your payment on the secure card checkout page.
+                                <p className="text-muted-foreground text-sm leading-relaxed">
+                                    {t("purchaseDialog.completeYourPaymentOnTheSecure", "Complete your payment on the secure card checkout page.")}
                                     <br />
-                                    Enter your card details to confirm your purchase.
+                                    {t("purchaseDialog.enterYourCardDetailsToConfirm", "Enter your card details to confirm your purchase.")}
                                 </p>
                             )}
                             {gatewayMessage && (
-                                <p className="text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg p-3 leading-relaxed">
+                                <p className="text-sm text-leaf-foreground bg-leaf border border-primary/30 rounded-lg p-3 leading-relaxed">
                                     {gatewayMessage}
                                 </p>
                             )}
-                            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                                <Loader2 className="h-4 w-4 animate-spin text-green-600" />
-                                Waiting for payment confirmation…
+                            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                {t("purchaseDialog.waitingForPaymentConfirmation", "Waiting for payment confirmation…")}
                             </div>
                             {referenceId && (
                                 <Badge variant="outline" className="text-xs">
-                                    Ref: {referenceId}
+                                    {t("purchaseDialog.ref", "Ref: {{referenceId}}", { referenceId: referenceId })}
                                 </Badge>
                             )}
                             <Badge variant="secondary" className="text-xs">
-                                XentriPay · {paymentMethod === "momo" ? "MoMo" : "Card"}
+                                {t("purchaseDialog.xentripay", "XentriPay ·")}{" "}{paymentMethod === "momo" ? t("purchaseDialog.momo", "MoMo") : t("purchaseDialog.card", "Card")}
                             </Badge>
                         </div>
                     )}
 
                     {step === "processing" && (
                         <div className="text-center py-6 space-y-4">
-                            <Loader2 className="h-12 w-12 animate-spin text-green-600 mx-auto" />
-                            <p className="font-semibold text-lg">Starting payment…</p>
+                            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
+                            <p className="font-semibold text-lg">{t("purchaseDialog.startingPayment", "Starting payment…")}</p>
                         </div>
                     )}
 
                     {step === "success" && (
                         <div className="text-center py-6 space-y-4">
-                            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-                                <CheckCircle className="h-10 w-10 text-green-600" />
+                            <div className="w-16 h-16 rounded-full bg-leaf flex items-center justify-center mx-auto">
+                                <CheckCircle className="h-10 w-10 text-primary" />
                             </div>
-                            <p className="font-semibold text-lg">Payment Complete!</p>
-                            <p className="text-gray-500 text-sm">
-                                You have been enrolled in the {type}. You can now access all course content.
+                            <p className="font-semibold text-lg">{t("purchaseDialog.paymentComplete", "Payment Complete!")}</p>
+                            <p className="text-muted-foreground text-sm">
+                                {t("purchaseDialog.youHaveBeenEnrolledInThe", "You have been enrolled in the {{type}}. You can now access all course content.", { type: type })}
                             </p>
                             <Button
-                                className="w-full bg-[#006d2c] hover:bg-[#005523] text-white"
+                                className="w-full bg-primary hover:bg-primary-hover text-white"
                                 onClick={() => {
                                     onOpenChange(false);
                                     onSuccess?.();
                                 }}
                             >
-                                Start Learning
+                                {t("purchaseDialog.startLearning", "Start Learning")}
                             </Button>
                         </div>
                     )}
 
                     {step === "failed" && (
                         <div className="text-center py-6 space-y-4">
-                            <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto">
-                                <XCircle className="h-10 w-10 text-red-600" />
+                            <div className="w-16 h-16 rounded-full bg-destructive-surface flex items-center justify-center mx-auto">
+                                <XCircle className="h-10 w-10 text-destructive" />
                             </div>
-                            <p className="font-semibold text-lg">Payment Failed</p>
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-left space-y-1">
-                                <p className="text-sm text-red-700 font-medium">
-                                    {error || "Something went wrong. Please try again."}
+                            <p className="font-semibold text-lg">{t("purchaseDialog.paymentFailed", "Payment Failed")}</p>
+                            <div className="bg-destructive-surface border border-destructive/30 rounded-lg p-3 text-left space-y-1">
+                                <p className="text-sm text-destructive font-medium">
+                                    {error || t("purchaseDialog.somethingWentWrongPleaseTryAgain", "Something went wrong. Please try again.")}
                                 </p>
                                 {referenceId && (
-                                    <p className="text-xs text-red-500 font-mono">
-                                        Ref: {referenceId}
+                                    <p className="text-xs text-destructive font-mono">
+                                        {t("purchaseDialog.ref", "Ref: {{referenceId}}", { referenceId: referenceId })}
                                     </p>
                                 )}
                             </div>
-                            <p className="text-xs text-gray-400">
-                                If the problem persists, contact support with the reference above.
+                            <p className="text-xs text-muted-foreground/60">
+                                {t("purchaseDialog.ifTheProblemPersistsContactSupport", "If the problem persists, contact support with the reference above.")}
                             </p>
                             <div className="flex gap-2">
                                 <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
-                                    Cancel
+                                    {t("purchaseDialog.cancel", "Cancel")}
                                 </Button>
                                 <Button
-                                    className="flex-1 bg-[#006d2c] hover:bg-[#005523] text-white"
+                                    className="flex-1 bg-primary hover:bg-primary-hover text-white"
                                     onClick={() => {
                                         setStep("method");
                                         setError(null);
                                     }}
                                 >
-                                    Try Again
+                                    {t("purchaseDialog.tryAgain", "Try Again")}
                                 </Button>
                             </div>
                         </div>

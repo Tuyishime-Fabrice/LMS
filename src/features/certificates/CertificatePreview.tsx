@@ -18,7 +18,7 @@ export function CertificatePreview({ certificate, className }: { certificate: Ce
     let active = true;
     if (!certificate.code) { setQr(null); return; }
     void import("qrcode").then((QRCode) =>
-      QRCode.toDataURL(verificationUrl(certificate.code!), { margin: 0, width: 240, color: { dark: "#0F2A1D", light: "#FCFCF9" } }))
+      QRCode.toDataURL(verificationUrl(certificate.code!), { margin: 0, width: 240, color: { dark: "#060C2E", light: "#FCFCF9" } }))
       .then((data) => { if (active) setQr(data); });
     return () => { active = false; };
   }, [certificate.code]);

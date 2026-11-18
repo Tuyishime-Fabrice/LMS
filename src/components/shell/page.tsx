@@ -79,7 +79,7 @@ export function ProgressBar({
       )}
     >
       <div style={{ width: `${clamped}%` }} className="h-full">
-        <div className={cn("animate-grow-x h-full rounded-full", tone === "green" ? "bg-primary" : "bg-[hsl(140_55%_62%)]")} />
+        <div className={cn("animate-grow-x h-full rounded-full", tone === "green" ? "bg-primary" : "bg-flame")} />
       </div>
     </div>
   );
@@ -87,7 +87,8 @@ export function ProgressBar({
 
 const pillTones = {
   neutral: "bg-muted text-foreground/80",
-  green: "bg-leaf text-leaf-foreground",
+  green: "bg-success-surface text-success",
+  brand: "bg-leaf text-leaf-foreground",
   amber: "bg-warning-surface text-warning",
   red: "bg-destructive-surface text-destructive",
   blue: "bg-info-surface text-info",

@@ -44,3 +44,5 @@
 /sitemap.xml
   Content-Type: application/xml
   Cache-Control: public, max-age=86400
+/sw.js
+  Cache-Control: no-cache

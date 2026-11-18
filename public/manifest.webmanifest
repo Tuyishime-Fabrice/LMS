@@ -1,0 +1,16 @@
+{
+  "name": "DataPlus Academy",
+  "short_name": "DataPlus",
+  "description": "Practical data, AI and project management courses, in English and French.",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F2F1EC",
+  "theme_color": "#060C2E",
+  "lang": "en",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

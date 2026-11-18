@@ -167,7 +167,7 @@ const TeacherDashboard = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-border border-t-[#006d2c] mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-border border-t-primary mx-auto mb-3"></div>
           <p className="text-muted-foreground text-sm">{t('common.loading')}</p>
         </div>
       </div>
@@ -322,7 +322,7 @@ const TeacherDashboard = () => {
                         }}
                         modifiersStyles={{
                           scheduled: {
-                            backgroundColor: '#006d2c',
+                            backgroundColor: 'hsl(var(--primary))',
                             color: 'white',
                             borderRadius: '50%'
                           }

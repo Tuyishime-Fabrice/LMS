@@ -126,10 +126,10 @@ export function QuizPanel({ lessonId, preview = false, onPassed }: { lessonId: s
         <div
           role="status"
           className={cn("flex flex-wrap items-center gap-4 rounded-xl border px-5 py-4",
-            result.passed ? "border-primary/30 bg-leaf" : "border-warning/30 bg-warning-surface")}
+            result.passed ? "border-success/30 bg-success-surface" : "border-warning/30 bg-warning-surface")}
         >
           {result.passed
-            ? <CheckCircle2 className="animate-confirm h-8 w-8 text-primary" />
+            ? <CheckCircle2 className="animate-confirm h-8 w-8 text-success" />
             : <CircleX className="h-8 w-8 text-warning" />}
           <div className="min-w-0 flex-1">
             <p className="text-card-title">
@@ -181,7 +181,7 @@ export function QuizPanel({ lessonId, preview = false, onPassed }: { lessonId: s
                           "flex cursor-pointer items-start gap-3 rounded-lg border px-3.5 py-2.5 text-sm leading-6 transition-colors",
                           !review && selected && "border-primary bg-leaf/60",
                           !review && !selected && "hover:border-primary/40 hover:bg-muted/50",
-                          isCorrect && "border-primary/50 bg-leaf",
+                          isCorrect && "border-success/50 bg-success-surface",
                           isWrongPick && "border-destructive/40 bg-destructive-surface",
                           (result || preview) && "cursor-default",
                         )}
@@ -195,7 +195,7 @@ export function QuizPanel({ lessonId, preview = false, onPassed }: { lessonId: s
                           className="mt-1 h-4 w-4 shrink-0 accent-[hsl(var(--primary))]"
                         />
                         <span className="flex-1">{option.text}</span>
-                        {isCorrect && <span className="text-xs font-semibold text-primary">{t("quiz.correctAnswer", "Correct answer")}</span>}
+                        {isCorrect && <span className="text-xs font-semibold text-success">{t("quiz.correctAnswer", "Correct answer")}</span>}
                         {isWrongPick && <span className="text-xs font-semibold text-destructive">{t("quiz.yourAnswer", "Your answer")}</span>}
                       </label>
                     );

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { checkPaymentStatus } from "@/services/paymentService";
 
 const PaymentSuccess = () => {
+  const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const ref = searchParams.get("ref");
@@ -48,29 +50,29 @@ const PaymentSuccess = () => {
     }, [ref]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center">
+        <div className="min-h-screen flex items-center justify-center bg-muted/50">
+            <div className="bg-card rounded-xl p-8 max-w-md w-full mx-4 text-center">
                 {status === "checking" && (
                     <>
-                        <Loader2 className="w-16 h-16 text-blue-500 animate-spin mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-gray-800 mb-2">Verifying Payment...</h1>
-                        <p className="text-gray-600">Please wait while we confirm your payment.</p>
+                        <Loader2 className="w-16 h-16 text-info animate-spin mx-auto mb-4" />
+                        <h1 className="text-2xl font-bold text-forest mb-2">{t("paymentSuccess.verifyingPayment", "Verifying Payment...")}</h1>
+                        <p className="text-muted-foreground">{t("paymentSuccess.pleaseWaitWhileWeConfirmYour", "Please wait while we confirm your payment.")}</p>
                     </>
                 )}
 
                 {status === "success" && (
                     <>
-                        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
-                        <p className="text-gray-600 mb-6">
-                            You have been enrolled in the course. You can now access all course content.
+                        <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
+                        <h1 className="text-2xl font-bold text-forest mb-2">{t("paymentSuccess.paymentSuccessful", "Payment Successful!")}</h1>
+                        <p className="text-muted-foreground mb-6">
+                            {t("paymentSuccess.youHaveBeenEnrolledInThe", "You have been enrolled in the course. You can now access all course content.")}
                         </p>
                         <div className="flex gap-3 justify-center">
                             <Button onClick={() => navigate("/student/my-courses")}>
-                                Go to My Courses
+                                {t("paymentSuccess.goToMyCourses", "Go to My Courses")}
                             </Button>
                             <Button variant="outline" onClick={() => navigate("/courses")}>
-                                Browse More
+                                {t("paymentSuccess.browseMore", "Browse More")}
                             </Button>
                         </div>
                     </>
@@ -78,36 +80,35 @@ const PaymentSuccess = () => {
 
                 {status === "pending" && (
                     <>
-                        <Loader2 className="w-16 h-16 text-orange-500 animate-spin mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-gray-800 mb-2">Payment Processing</h1>
-                        <p className="text-gray-600 mb-6">
-                            Your payment is being processed. This may take a few moments.
-                            You'll be enrolled automatically once confirmed.
+                        <Loader2 className="w-16 h-16 text-warning animate-spin mx-auto mb-4" />
+                        <h1 className="text-2xl font-bold text-forest mb-2">{t("paymentSuccess.paymentProcessing", "Payment Processing")}</h1>
+                        <p className="text-muted-foreground mb-6">
+                            {t("paymentSuccess.yourPaymentIsBeingProcessedThis", "Your payment is being processed. This may take a few moments. You'll be enrolled automatically once confirmed.")}
                         </p>
                         <Button variant="outline" onClick={() => navigate("/courses")}>
-                            Back to Courses
+                            {t("paymentSuccess.backToCourses", "Back to Courses")}
                         </Button>
                     </>
                 )}
 
                 {status === "failed" && (
                     <>
-                        <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-gray-800 mb-2">Payment Failed</h1>
-                        <p className="text-gray-600 mb-6">
+                        <XCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+                        <h1 className="text-2xl font-bold text-forest mb-2">{t("paymentSuccess.paymentFailed", "Payment Failed")}</h1>
+                        <p className="text-muted-foreground mb-6">
                             {ref
-                                ? "There was an issue processing your payment. Please try again."
-                                : "Invalid payment reference. Please try purchasing again."}
+                                ? t("paymentSuccess.thereWasAnIssueProcessingYour", "There was an issue processing your payment. Please try again.")
+                                : t("paymentSuccess.invalidPaymentReferencePleaseTryPurchasing", "Invalid payment reference. Please try purchasing again.")}
                         </p>
                         <Button onClick={() => navigate("/courses")}>
-                            Back to Courses
+                            {t("paymentSuccess.backToCourses", "Back to Courses")}
                         </Button>
                     </>
                 )}
 
                 {ref && (
-                    <p className="text-xs text-gray-400 mt-6">
-                        Reference: {ref}
+                    <p className="text-xs text-muted-foreground/60 mt-6">
+                        {t("paymentSuccess.reference", "Reference: {{ref}}", { ref: ref })}
                     </p>
                 )}
             </div>

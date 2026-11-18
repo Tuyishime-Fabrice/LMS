@@ -34,7 +34,7 @@ function CourseCard({ course }: { course: EnrolledCourse }) {
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex flex-wrap gap-1.5">
           {format_ && <StatusPill>{format_}</StatusPill>}
-          {course.cohortName && <StatusPill tone="green" icon={UsersRound}>{course.cohortName}</StatusPill>}
+          {course.cohortName && <StatusPill tone="brand" icon={UsersRound}>{course.cohortName}</StatusPill>}
           {bucket === "completed" && <StatusPill tone="green" icon={CheckCircle2}>{t("myCourses.completed", "Completed")}</StatusPill>}
         </div>
         <h2 className="text-card-title leading-snug">

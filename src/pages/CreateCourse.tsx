@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { parseQuizOptions, lessonContentTypeSchema } from "@/lib/quizData";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -10,12 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Plus, Trash2, ChevronDown, ChevronRight, ArrowLeft,
-  BookOpen, Layers, Award, Save, Video, FileText,
-  Link2, HelpCircle, ClipboardList, GripVertical, Check,
-  Eye, X, Play, Clock, Globe, Users, Target, Upload, ImageIcon, Loader2
-} from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronRight, ArrowLeft, BookOpen, Layers, Award, Save, Video, FileText, Link2, HelpCircle, ClipboardList, GripVertical, Check, Eye, X, Play, Clock, Globe, Target, Upload, Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { FileUploadField } from "@/components/FileUploadField";
@@ -72,6 +68,7 @@ const contentTypeIcons: Record<string, any> = {
 
 
 export default function CreateCourse() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -100,15 +97,15 @@ export default function CreateCourse() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please upload an image file (JPG, PNG, WebP).", variant: "destructive" });
+      toast({ title: t("createCourse.invalidFile", "Invalid file"), description: t("createCourse.pleaseUploadAnImageFileJpg", "Please upload an image file (JPG, PNG, WebP)."), variant: "destructive" });
       return;
     }
 
     const MAX_SIZE = 1 * 1024 * 1024; // 1MB
     if (file.size > MAX_SIZE) {
       toast({
-        title: "File too large",
-        description: "Image must be under 1MB. Please compress your image using a tool like TinyPNG (tinypng.com) or Squoosh (squoosh.app) before uploading.",
+        title: t("createCourse.fileTooLarge", "File too large"),
+        description: t("createCourse.imageMustBeUnder1mbPlease", "Image must be under 1MB. Please compress your image using a tool like TinyPNG (tinypng.com) or Squoosh (squoosh.app) before uploading."),
         variant: "destructive",
       });
       e.currentTarget.value = "";
@@ -132,10 +129,10 @@ export default function CreateCourse() {
         .getPublicUrl(filePath);
 
       setCourseData({ ...courseData, thumbnail_url: publicUrl });
-      toast({ title: "Thumbnail uploaded", description: "Course thumbnail has been uploaded successfully." });
+      toast({ title: t("createCourse.thumbnailUploaded", "Thumbnail uploaded"), description: t("createCourse.courseThumbnailHasBeenUploadedSuccessfully", "Course thumbnail has been uploaded successfully.") });
     } catch (error) {
       console.error("Thumbnail upload error:", error);
-      toast({ title: "Upload failed", description: "Failed to upload thumbnail. Please try again.", variant: "destructive" });
+      toast({ title: t("createCourse.uploadFailed", "Upload failed"), description: t("createCourse.failedToUploadThumbnailPleaseTry", "Failed to upload thumbnail. Please try again."), variant: "destructive" });
     } finally {
       setUploadingThumbnail(false);
     }
@@ -289,7 +286,7 @@ export default function CreateCourse() {
       }
     } catch (error) {
       console.error("Error fetching course:", error);
-      toast({ title: "Error", description: "Failed to load course data", variant: "destructive" });
+      toast({ title: t("createCourse.error", "Error"), description: t("createCourse.failedToLoadCourseData", "Failed to load course data"), variant: "destructive" });
     } finally {
       setInitialLoading(false);
     }
@@ -673,7 +670,7 @@ export default function CreateCourse() {
       await syncCourseStructure(course.id);
       await syncCapstoneProject(course.id);
 
-      toast({ title: "Success!", description: isEditMode ? "Course updated" : "Course created" });
+      toast({ title: t("createCourse.success", "Success!"), description: isEditMode ? "Course updated" : "Course created" });
 
       // Redirect admins back to admin courses, teachers to their dashboard
       const { data: profile } = await supabase
@@ -684,7 +681,7 @@ export default function CreateCourse() {
       navigate(profile?.role === "admin" ? "/admin/courses" : "/teacher/dashboard");
     } catch (error) {
       console.error("Error:", error);
-      toast({ title: "Error", description: "Failed to save course", variant: "destructive" });
+      toast({ title: t("createCourse.error", "Error"), description: t("createCourse.failedToSaveCourse", "Failed to save course"), variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -693,8 +690,8 @@ export default function CreateCourse() {
 
   if (initialLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white border-b px-6 py-4">
+      <div className="min-h-screen bg-muted/50">
+        <div className="bg-card border-b px-6 py-4">
           <div className="max-w-5xl mx-auto flex items-center gap-4">
             <Skeleton className="h-9 w-9 rounded" />
             <Skeleton className="h-6 w-48" />
@@ -716,32 +713,32 @@ export default function CreateCourse() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/50">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <div className="bg-card border-b sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-4">
               <Button variant="ghost" size="icon" onClick={() => navigate("/teacher/dashboard")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900">
-                  {isEditMode ? "Edit Course" : "Create Course"}
+              <div className="min-w-0">
+                <h1 className="text-lg font-semibold text-forest">
+                  {isEditMode ? t("createCourse.editCourse", "Edit Course") : t("createCourse.createCourse", "Create Course")}
                 </h1>
-                <p className="text-sm text-gray-500">
-                  {courseData.title || "Untitled course"}
+                <p className="truncate text-sm text-muted-foreground">
+                  {courseData.title || t("createCourse.untitledCourse", "Untitled course")}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" onClick={() => setShowPreview(true)} disabled={!courseData.title}>
                 <Eye className="h-4 w-4 mr-2" />
-                Preview
+                {t("createCourse.preview", "Preview")}
               </Button>
-              <Button onClick={handleSubmit} disabled={loading} className="bg-[#006d2c] hover:bg-[#005523]">
+              <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
                 <Save className="h-4 w-4 mr-2" />
-                {loading ? "Saving..." : "Save Course"}
+                {loading ? t("createCourse.saving", "Saving...") : t("createCourse.saveCourse", "Save Course")}
               </Button>
             </div>
           </div>
@@ -749,8 +746,8 @@ export default function CreateCourse() {
       </div>
 
       {/* Steps */}
-      <div className="bg-white border-b">
-        <div className="max-w-5xl mx-auto px-6">
+      <div className="bg-card border-b">
+        <div className="max-w-5xl mx-auto overflow-x-auto px-2 sm:px-6">
           <div className="flex">
             {steps.map((step, index) => {
               const Icon = step.icon;
@@ -760,14 +757,14 @@ export default function CreateCourse() {
                 <button
                   key={step.title}
                   onClick={() => setActiveStep(index)}
-                  className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${isActive
-                    ? "border-[#006d2c] text-[#006d2c]"
+                  className={`flex shrink-0 items-center gap-2 px-4 py-4 border-b-2 transition-colors sm:px-6 ${isActive
+                    ? "border-primary text-primary"
                     : isCompleted
-                      ? "border-transparent text-gray-600 hover:text-gray-900"
-                      : "border-transparent text-gray-400"
+                      ? "border-transparent text-muted-foreground hover:text-forest"
+                      : "border-transparent text-muted-foreground/60"
                     }`}
                 >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${isActive ? "bg-[#006d2c] text-white" : isCompleted ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${isActive ? "bg-primary text-white" : isCompleted ? "bg-leaf text-primary" : "bg-muted text-muted-foreground/60"
                     }`}>
                     {isCompleted ? <Check className="h-3 w-3" /> : index + 1}
                   </div>
@@ -789,21 +786,21 @@ export default function CreateCourse() {
               <Card>
                 <CardContent className="p-6 space-y-5">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700">Course Title</Label>
+                    <Label className="text-sm font-medium text-foreground">{t("createCourse.courseTitle", "Course Title")}</Label>
                     <Input
                       value={courseData.title}
                       onChange={(e) => setCourseData({ ...courseData, title: e.target.value })}
-                      placeholder="e.g., Complete Web Development Bootcamp"
+                      placeholder={t("createCourse.eGCompleteWebDevelopmentBootcamp", "e.g., Complete Web Development Bootcamp")}
                       className="mt-1.5"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700">Description</Label>
+                    <Label className="text-sm font-medium text-foreground">{t("createCourse.description", "Description")}</Label>
                     <Textarea
                       value={courseData.description}
                       onChange={(e) => setCourseData({ ...courseData, description: e.target.value })}
-                      placeholder="What will students learn?"
+                      placeholder={t("createCourse.whatWillStudentsLearn", "What will students learn?")}
                       rows={4}
                       className="mt-1.5"
                     />
@@ -811,70 +808,70 @@ export default function CreateCourse() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-sm font-medium text-gray-700">Level</Label>
+                      <Label className="text-sm font-medium text-foreground">{t("createCourse.level", "Level")}</Label>
                       <Select value={courseData.level} onValueChange={(v) => setCourseData({ ...courseData, level: v })}>
                         <SelectTrigger className="mt-1.5">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
-                          <SelectItem value="advanced">Advanced</SelectItem>
+                          <SelectItem value="beginner">{t("createCourse.beginner", "Beginner")}</SelectItem>
+                          <SelectItem value="intermediate">{t("createCourse.intermediate", "Intermediate")}</SelectItem>
+                          <SelectItem value="advanced">{t("createCourse.advanced", "Advanced")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-700">Language</Label>
+                      <Label className="text-sm font-medium text-foreground">{t("createCourse.language", "Language")}</Label>
                       <Input
                         value={courseData.language}
                         onChange={(e) => setCourseData({ ...courseData, language: e.target.value })}
-                        placeholder="e.g., English"
+                        placeholder={t("createCourse.eGEnglish", "e.g., English")}
                         className="mt-1.5"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700">Welcome Video URL</Label>
+                    <Label className="text-sm font-medium text-foreground">{t("createCourse.welcomeVideoUrl", "Welcome Video URL")}</Label>
                     <Input
                       value={courseData.welcome_video_url}
                       onChange={(e) => setCourseData({ ...courseData, welcome_video_url: e.target.value })}
                       placeholder="https://youtube.com/watch?v=..."
                       className="mt-1.5"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Optional intro video for your course</p>
+                    <p className="text-xs text-muted-foreground mt-1">{t("createCourse.optionalIntroVideoForYourCourse", "Optional intro video for your course")}</p>
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700">Course Thumbnail</Label>
+                    <Label className="text-sm font-medium text-foreground">{t("createCourse.courseThumbnail", "Course Thumbnail")}</Label>
                     <div className="mt-1.5">
                       {courseData.thumbnail_url ? (
                         <div className="relative group">
                           <img
                             src={courseData.thumbnail_url}
-                            alt="Thumbnail preview"
-                            className="w-full aspect-video object-cover rounded-lg border border-gray-200"
+                            alt={t("createCourse.thumbnailPreview", "Thumbnail preview")}
+                            className="w-full aspect-video object-cover rounded-lg border border-border"
                           />
                           <button
                             type="button"
                             onClick={() => setCourseData({ ...courseData, thumbnail_url: "" })}
-                            className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-2 right-2 w-8 h-8 bg-destructive hover:bg-destructive/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
-                        <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors">
                           <div className="flex flex-col items-center justify-center py-4">
                             {uploadingThumbnail ? (
-                              <Loader2 className="w-8 h-8 text-gray-400 animate-spin mb-2" />
+                              <Loader2 className="w-8 h-8 text-muted-foreground/60 animate-spin mb-2" />
                             ) : (
-                              <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                              <Upload className="w-8 h-8 text-muted-foreground/60 mb-2" />
                             )}
-                            <p className="text-sm font-medium text-gray-600">
-                              {uploadingThumbnail ? "Uploading..." : "Click to upload thumbnail"}
+                            <p className="text-sm font-medium text-muted-foreground">
+                              {uploadingThumbnail ? t("createCourse.uploading", "Uploading...") : t("createCourse.clickToUploadThumbnail", "Click to upload thumbnail")}
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">JPG, PNG or WebP — Max 1MB</p>
+                            <p className="text-xs text-muted-foreground/60 mt-1">{t("createCourse.jpgPngOrWebpMax1mb", "JPG, PNG or WebP — Max 1MB")}</p>
                           </div>
                           <input
                             type="file"
@@ -885,16 +882,16 @@ export default function CreateCourse() {
                           />
                         </label>
                       )}
-                      <p className="text-xs text-amber-600 mt-1.5">⚠️ Max file size: 1MB. Use <a href="https://tinypng.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">TinyPNG</a> or <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" className="underline font-medium">Squoosh</a> to compress your image.</p>
+                      <p className="text-xs text-warning mt-1.5">{t("createCourse.maxFileSize1mbUse", "⚠️ Max file size: 1MB. Use")}{" "}<a href="https://tinypng.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">TinyPNG</a> or <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" className="underline font-medium">Squoosh</a>{" "}{t("createCourse.toCompressYourImage", "to compress your image.")}</p>
                     </div>
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700">Requirements</Label>
+                    <Label className="text-sm font-medium text-foreground">{t("createCourse.requirements", "Requirements")}</Label>
                     <Textarea
                       value={courseData.requirements}
                       onChange={(e) => setCourseData({ ...courseData, requirements: e.target.value })}
-                      placeholder="Prerequisites for this course (one per line)"
+                      placeholder={t("createCourse.prerequisitesForThisCourseOnePer", "Prerequisites for this course (one per line)")}
                       rows={3}
                       className="mt-1.5"
                     />
@@ -903,8 +900,8 @@ export default function CreateCourse() {
               </Card>
 
               <div className="flex justify-end">
-                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-[#006d2c] hover:bg-[#005523]">
-                  Continue to Content
+                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-primary hover:bg-primary-hover">
+                  {t("createCourse.continueToContent", "Continue to Content")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
@@ -917,24 +914,24 @@ export default function CreateCourse() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Course Content</h2>
-                  <p className="text-sm text-gray-500">Organize your course into chapters and lessons</p>
+                  <h2 className="text-lg font-semibold text-forest">{t("createCourse.courseContent", "Course Content")}</h2>
+                  <p className="text-sm text-muted-foreground">{t("createCourse.organizeYourCourseIntoChaptersAnd", "Organize your course into chapters and lessons")}</p>
                 </div>
                 <Button onClick={addChapter} variant="outline">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Chapter
+                  {t("createCourse.addChapter", "Add Chapter")}
                 </Button>
               </div>
 
               {chapters.length === 0 ? (
                 <Card>
                   <CardContent className="p-12 text-center">
-                    <Layers className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                    <h3 className="font-medium text-gray-900 mb-1">No chapters yet</h3>
-                    <p className="text-sm text-gray-500 mb-4">Start building your course structure</p>
-                    <Button onClick={addChapter} className="bg-[#006d2c] hover:bg-[#005523]">
+                    <Layers className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                    <h3 className="font-medium text-forest mb-1">{t("createCourse.noChaptersYet", "No chapters yet")}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{t("createCourse.startBuildingYourCourseStructure", "Start building your course structure")}</p>
+                    <Button onClick={addChapter} className="bg-primary hover:bg-primary-hover">
                       <Plus className="h-4 w-4 mr-2" />
-                      Add First Chapter
+                      {t("createCourse.addFirstChapter", "Add First Chapter")}
                     </Button>
                   </CardContent>
                 </Card>
@@ -948,69 +945,69 @@ export default function CreateCourse() {
                     >
                       <Card>
                         <CollapsibleTrigger asChild>
-                          <div className="p-4 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors">
-                            <GripVertical className="h-4 w-4 text-gray-400" />
-                            <div className="w-8 h-8 rounded-lg bg-[#006d2c]/10 flex items-center justify-center">
-                              <span className="text-sm font-semibold text-[#006d2c]">{chapterIndex + 1}</span>
+                          <div className="p-4 flex items-center gap-3 cursor-pointer hover:bg-muted transition-colors">
+                            <GripVertical className="h-4 w-4 text-muted-foreground/60" />
+                            <div className="w-8 h-8 rounded-lg bg-leaf flex items-center justify-center">
+                              <span className="text-sm font-semibold text-primary">{chapterIndex + 1}</span>
                             </div>
                             <div className="flex-1">
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-forest">
                                 {chapter.title || `Chapter ${chapterIndex + 1}`}
                               </p>
-                              <p className="text-xs text-gray-500">{chapter.lessons.length} lessons</p>
+                              <p className="text-xs text-muted-foreground">{t("createCourse.lessons", "{{count}} lessons", { count: chapter.lessons.length })}</p>
                             </div>
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon"
                               onClick={(e) => { e.stopPropagation(); removeChapter(chapterIndex); }}
-                              className="text-gray-400 hover:text-red-500"
+                              className="text-muted-foreground/60 hover:text-destructive"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                             {openChapters.has(chapterIndex) ? (
-                              <ChevronDown className="h-4 w-4 text-gray-400" />
+                              <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
                             ) : (
-                              <ChevronRight className="h-4 w-4 text-gray-400" />
+                              <ChevronRight className="h-4 w-4 text-muted-foreground/60" />
                             )}
                           </div>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <div className="px-4 pb-4 space-y-4 border-t">
                             <div className="pt-4">
-                              <Label className="text-sm text-gray-600">Chapter Title</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.chapterTitle", "Chapter Title")}</Label>
                               <Input
                                 value={chapter.title}
                                 onChange={(e) => updateChapter(chapterIndex, "title", e.target.value)}
-                                placeholder="e.g., Introduction to React"
+                                placeholder={t("createCourse.eGIntroductionToReact", "e.g., Introduction to React")}
                                 className="mt-1"
                               />
                             </div>
 
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
-                                <Label className="text-sm text-gray-600">Lessons</Label>
+                                <Label className="text-sm text-muted-foreground">{t("createCourse.lessons2", "Lessons")}</Label>
                                 <Button type="button" size="sm" variant="outline" onClick={() => addLesson(chapterIndex)}>
                                   <Plus className="h-3 w-3 mr-1" />
-                                  Add Lesson
+                                  {t("createCourse.addLesson", "Add Lesson")}
                                 </Button>
                               </div>
 
                               {chapter.lessons.length === 0 ? (
-                                <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed">
-                                  <p className="text-sm text-gray-500">No lessons yet</p>
+                                <div className="text-center py-6 bg-muted/50 rounded-lg border border-dashed">
+                                  <p className="text-sm text-muted-foreground">{t("createCourse.noLessonsYet", "No lessons yet")}</p>
                                 </div>
                               ) : (
                                 chapter.lessons.map((lesson, lessonIndex) => {
                                   const ContentIcon = contentTypeIcons[lesson.content_type] || FileText;
                                   return (
-                                    <Card key={lessonIndex} className="bg-gray-50 border-gray-200">
+                                    <Card key={lessonIndex} className="bg-muted/50 border-border">
                                       <CardContent className="p-4 space-y-3">
                                         <div className="flex items-center justify-between">
                                           <div className="flex items-center gap-2">
-                                            <ContentIcon className="h-4 w-4 text-gray-500" />
-                                            <span className="text-sm font-medium text-gray-700">
-                                              Lesson {lessonIndex + 1}
+                                            <ContentIcon className="h-4 w-4 text-muted-foreground" />
+                                            <span className="text-sm font-medium text-foreground">
+                                              {t("createCourse.lesson", "Lesson {{value}}", { value: lessonIndex + 1 })}
                                             </span>
                                           </div>
                                           <Button
@@ -1018,7 +1015,7 @@ export default function CreateCourse() {
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeLesson(chapterIndex, lessonIndex)}
-                                            className="h-7 w-7 text-gray-400 hover:text-red-500"
+                                            className="h-7 w-7 text-muted-foreground/60 hover:text-destructive"
                                           >
                                             <Trash2 className="h-3 w-3" />
                                           </Button>
@@ -1027,8 +1024,8 @@ export default function CreateCourse() {
                                         <Input
                                           value={lesson.title}
                                           onChange={(e) => updateLesson(chapterIndex, lessonIndex, "title", e.target.value)}
-                                          placeholder="Lesson title"
-                                          className="bg-white"
+                                          placeholder={t("createCourse.lessonTitle", "Lesson title")}
+                                          className="bg-card"
                                         />
 
                                         <div className="grid grid-cols-2 gap-3">
@@ -1036,16 +1033,16 @@ export default function CreateCourse() {
                                             value={lesson.content_type}
                                             onValueChange={(v) => updateLesson(chapterIndex, lessonIndex, "content_type", v)}
                                           >
-                                            <SelectTrigger className="bg-white">
+                                            <SelectTrigger className="bg-card">
                                               <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                              <SelectItem value="video">Video</SelectItem>
+                                              <SelectItem value="video">{t("createCourse.video", "Video")}</SelectItem>
                                               <SelectItem value="pdf">PDF</SelectItem>
-                                              <SelectItem value="document">Document</SelectItem>
-                                              <SelectItem value="url">External URL</SelectItem>
-                                              <SelectItem value="quiz">Quiz</SelectItem>
-                                              <SelectItem value="assignment">Assignment</SelectItem>
+                                              <SelectItem value="document">{t("createCourse.document", "Document")}</SelectItem>
+                                              <SelectItem value="url">{t("createCourse.externalUrl", "External URL")}</SelectItem>
+                                              <SelectItem value="quiz">{t("createCourse.quiz", "Quiz")}</SelectItem>
+                                              <SelectItem value="assignment">{t("createCourse.assignment", "Assignment")}</SelectItem>
                                             </SelectContent>
                                           </Select>
 
@@ -1054,8 +1051,8 @@ export default function CreateCourse() {
                                               type="number"
                                               value={lesson.duration || ""}
                                               onChange={(e) => updateLesson(chapterIndex, lessonIndex, "duration", parseInt(e.target.value) || 0)}
-                                              placeholder="Duration (min)"
-                                              className="bg-white"
+                                              placeholder={t("createCourse.durationMin", "Duration (min)")}
+                                              className="bg-card"
                                             />
                                           )}
                                         </div>
@@ -1076,7 +1073,7 @@ export default function CreateCourse() {
                                                   }
                                                 }}
                                                 accept=".pdf"
-                                                placeholder="Upload or paste URL"
+                                                placeholder={t("createCourse.uploadOrPasteUrl", "Upload or paste URL")}
                                                 courseId={courseId || undefined}
                                                 lessonId={`temp-${chapterIndex}-${lessonIndex}`}
                                               />
@@ -1084,8 +1081,8 @@ export default function CreateCourse() {
                                               <Input
                                                 value={lesson.content_url}
                                                 onChange={(e) => updateLesson(chapterIndex, lessonIndex, "content_url", e.target.value)}
-                                                placeholder={lesson.content_type === "video" ? "YouTube URL" : "URL"}
-                                                className="bg-white"
+                                                placeholder={lesson.content_type === "video" ? t("createCourse.youtubeUrl", "YouTube URL") : "URL"}
+                                                className="bg-card"
                                               />
                                             )}
                                           </>
@@ -1094,9 +1091,9 @@ export default function CreateCourse() {
                                         {/* Optional PDF upload for video lessons */}
                                         {lesson.content_type === "video" && (
                                           <div className="space-y-1.5">
-                                            <Label className="text-xs text-gray-500 flex items-center gap-1.5">
+                                            <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
                                               <FileText className="h-3.5 w-3.5" />
-                                              Accompanying PDF (Optional)
+                                              {t("createCourse.accompanyingPdfOptional", "Accompanying PDF (Optional)")}
                                             </Label>
                                             <FileUploadField
                                               label=""
@@ -1105,7 +1102,7 @@ export default function CreateCourse() {
                                                 updateLesson(chapterIndex, lessonIndex, "file_url", url);
                                               }}
                                               accept=".pdf"
-                                              placeholder="Upload or paste PDF URL"
+                                              placeholder={t("createCourse.uploadOrPastePdfUrl", "Upload or paste PDF URL")}
                                               courseId={courseId || undefined}
                                               lessonId={`temp-${chapterIndex}-${lessonIndex}`}
                                             />
@@ -1115,9 +1112,9 @@ export default function CreateCourse() {
                                         <Textarea
                                           value={lesson.description}
                                           onChange={(e) => updateLesson(chapterIndex, lessonIndex, "description", e.target.value)}
-                                          placeholder="Brief description (optional)"
+                                          placeholder={t("createCourse.briefDescriptionOptional", "Brief description (optional)")}
                                           rows={2}
-                                          className="bg-white"
+                                          className="bg-card"
                                         />
 
 
@@ -1132,13 +1129,13 @@ export default function CreateCourse() {
                                                 onChange={(e) => updateLesson(chapterIndex, lessonIndex, "is_mandatory", e.target.checked)}
                                                 className="rounded"
                                               />
-                                              <Label htmlFor={`mandatory-${chapterIndex}-${lessonIndex}`} className="text-xs text-gray-600">
-                                                Required to pass
+                                              <Label htmlFor={`mandatory-${chapterIndex}-${lessonIndex}`} className="text-xs text-muted-foreground">
+                                                {t("createCourse.requiredToPass", "Required to pass")}
                                               </Label>
                                             </div>
 
                                             <div className="flex items-center justify-between">
-                                              <span className="text-sm font-medium text-gray-700">Questions</span>
+                                              <span className="text-sm font-medium text-foreground">{t("createCourse.questions", "Questions")}</span>
                                               <Button
                                                 type="button"
                                                 size="sm"
@@ -1147,14 +1144,14 @@ export default function CreateCourse() {
                                                 className="h-7 text-xs"
                                               >
                                                 <Plus className="h-3 w-3 mr-1" />
-                                                Add Question
+                                                {t("createCourse.addQuestion", "Add Question")}
                                               </Button>
                                             </div>
 
                                             {lesson.quiz_questions?.map((q, qIndex) => (
-                                              <Card key={q.id} className="bg-white p-3 space-y-2">
+                                              <Card key={q.id} className="bg-card p-3 space-y-2">
                                                 <div className="flex items-center justify-between">
-                                                  <span className="text-xs font-medium text-gray-500">Q{qIndex + 1}</span>
+                                                  <span className="text-xs font-medium text-muted-foreground">Q{qIndex + 1}</span>
                                                   <Button
                                                     type="button"
                                                     variant="ghost"
@@ -1168,7 +1165,7 @@ export default function CreateCourse() {
                                                 <Input
                                                   value={q.question_text}
                                                   onChange={(e) => updateQuizQuestion(chapterIndex, lessonIndex, qIndex, "question_text", e.target.value)}
-                                                  placeholder="Question"
+                                                  placeholder={t("createCourse.question", "Question")}
                                                   className="text-sm"
                                                 />
                                                 <div className="grid grid-cols-2 gap-2">
@@ -1197,12 +1194,12 @@ export default function CreateCourse() {
                                                     onChange={(e) => updateQuizQuestion(chapterIndex, lessonIndex, qIndex, "points", parseInt(e.target.value) || 1)}
                                                     className="w-20 text-xs h-8"
                                                     min="1"
-                                                    placeholder="Points"
+                                                    placeholder={t("createCourse.points", "Points")}
                                                   />
                                                   <Input
                                                     value={q.explanation}
                                                     onChange={(e) => updateQuizQuestion(chapterIndex, lessonIndex, qIndex, "explanation", e.target.value)}
-                                                    placeholder="Explanation (optional)"
+                                                    placeholder={t("createCourse.explanationOptional", "Explanation (optional)")}
                                                     className="flex-1 text-xs h-8"
                                                   />
                                                 </div>
@@ -1210,7 +1207,7 @@ export default function CreateCourse() {
                                             ))}
 
                                             {(!lesson.quiz_questions || lesson.quiz_questions.length === 0) && (
-                                              <p className="text-xs text-gray-400 text-center py-3">No questions added</p>
+                                              <p className="text-xs text-muted-foreground/60 text-center py-3">{t("createCourse.noQuestionsAdded", "No questions added")}</p>
                                             )}
                                           </div>
                                         )}
@@ -1231,10 +1228,10 @@ export default function CreateCourse() {
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setActiveStep(0)}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={() => setActiveStep(2)} className="bg-[#006d2c] hover:bg-[#005523]">
-                  Continue to Capstone
+                <Button onClick={() => setActiveStep(2)} className="bg-primary hover:bg-primary-hover">
+                  {t("createCourse.continueToCapstone", "Continue to Capstone")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
@@ -1249,12 +1246,12 @@ export default function CreateCourse() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <Award className="h-5 w-5 text-purple-600" />
+                      <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
+                        <Award className="h-5 w-5 text-forest" />
                       </div>
                       <div>
-                        <h2 className="font-semibold text-gray-900">Capstone Project</h2>
-                        <p className="text-sm text-gray-500">Final project for course completion</p>
+                        <h2 className="font-semibold text-forest">{t("createCourse.capstoneProject", "Capstone Project")}</h2>
+                        <p className="text-sm text-muted-foreground">{t("createCourse.finalProjectForCourseCompletion", "Final project for course completion")}</p>
                       </div>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -1264,53 +1261,53 @@ export default function CreateCourse() {
                         onChange={(e) => setIncludeCapstone(e.target.checked)}
                         className="rounded"
                       />
-                      <span className="text-sm text-gray-600">Include capstone</span>
+                      <span className="text-sm text-muted-foreground">{t("createCourse.includeCapstone", "Include capstone")}</span>
                     </label>
                   </div>
 
                   {includeCapstone ? (
                     <div className="space-y-6">
                       {capstoneProjects.map((cp, cpIndex) => (
-                        <Card key={cpIndex} className="border-purple-100 bg-purple-50/30">
+                        <Card key={cpIndex} className="border-border bg-purple-50/30">
                           <CardContent className="p-5 space-y-4">
                             <div className="flex items-center justify-between">
-                              <h3 className="font-semibold text-gray-800">
-                                Capstone Project {capstoneProjects.length > 1 ? `#${cpIndex + 1}` : ""}
+                              <h3 className="font-semibold text-forest">
+                                {t("createCourse.capstoneProject", "Capstone Project")}{" "}{capstoneProjects.length > 1 ? `#${cpIndex + 1}` : ""}
                               </h3>
                               {capstoneProjects.length > 1 && (
-                                <Button type="button" size="sm" variant="ghost" onClick={() => removeCapstoneProject(cpIndex)} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8">
-                                  <Trash2 className="h-4 w-4 mr-1" /> Remove
+                                <Button type="button" size="sm" variant="ghost" onClick={() => removeCapstoneProject(cpIndex)} className="text-destructive hover:text-destructive hover:bg-destructive-surface h-8">
+                                  <Trash2 className="h-4 w-4 mr-1" />{" "}{t("createCourse.remove", "Remove")}
                                 </Button>
                               )}
                             </div>
 
                             <div>
-                              <Label className="text-sm text-gray-600">Project Title</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.projectTitle", "Project Title")}</Label>
                               <Input
                                 value={cp.title}
                                 onChange={(e) => updateCapstoneProject(cpIndex, { title: e.target.value })}
-                                placeholder="e.g., Build a Full-Stack Application"
+                                placeholder={t("createCourse.eGBuildAFullStack", "e.g., Build a Full-Stack Application")}
                                 className="mt-1"
                               />
                             </div>
 
                             <div>
-                              <Label className="text-sm text-gray-600">Description</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.description", "Description")}</Label>
                               <Textarea
                                 value={cp.description}
                                 onChange={(e) => updateCapstoneProject(cpIndex, { description: e.target.value })}
-                                placeholder="Overview of the project"
+                                placeholder={t("createCourse.overviewOfTheProject", "Overview of the project")}
                                 rows={3}
                                 className="mt-1"
                               />
                             </div>
 
                             <div>
-                              <Label className="text-sm text-gray-600">Instructions</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.instructions", "Instructions")}</Label>
                               <Textarea
                                 value={cp.instructions}
                                 onChange={(e) => updateCapstoneProject(cpIndex, { instructions: e.target.value })}
-                                placeholder="Step-by-step instructions"
+                                placeholder={t("createCourse.stepByStepInstructions", "Step-by-step instructions")}
                                 rows={5}
                                 className="mt-1"
                               />
@@ -1318,9 +1315,9 @@ export default function CreateCourse() {
 
                             <div>
                               <div className="flex items-center justify-between mb-2">
-                                <Label className="text-sm text-gray-600">Requirements</Label>
+                                <Label className="text-sm text-muted-foreground">{t("createCourse.requirements", "Requirements")}</Label>
                                 <Button type="button" size="sm" variant="outline" onClick={() => addCapstoneRequirement(cpIndex)} className="h-7 text-xs">
-                                  <Plus className="h-3 w-3 mr-1" /> Add
+                                  <Plus className="h-3 w-3 mr-1" />{" "}{t("createCourse.add", "Add")}
                                 </Button>
                               </div>
                               <div className="space-y-2">
@@ -1332,7 +1329,7 @@ export default function CreateCourse() {
                                       placeholder={`Requirement ${reqIndex + 1}`}
                                     />
                                     {cp.requirements.length > 1 && (
-                                      <Button type="button" size="icon" variant="ghost" onClick={() => removeCapstoneRequirement(cpIndex, reqIndex)} className="text-gray-400 hover:text-red-500">
+                                      <Button type="button" size="icon" variant="ghost" onClick={() => removeCapstoneRequirement(cpIndex, reqIndex)} className="text-muted-foreground/60 hover:text-destructive">
                                         <Trash2 className="h-4 w-4" />
                                       </Button>
                                     )}
@@ -1342,7 +1339,7 @@ export default function CreateCourse() {
                             </div>
 
                             <div>
-                              <Label className="text-sm text-gray-600">Due Date (Optional)</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.dueDateOptional", "Due Date (Optional)")}</Label>
                               <Input
                                 type="date"
                                 value={cp.due_date}
@@ -1352,13 +1349,13 @@ export default function CreateCourse() {
                             </div>
 
                             <div>
-                              <Label className="text-sm text-gray-600">Upload Capstone Brief PDF (Optional)</Label>
+                              <Label className="text-sm text-muted-foreground">{t("createCourse.uploadCapstoneBriefPdfOptional", "Upload Capstone Brief PDF (Optional)")}</Label>
                               <FileUploadField
                                 label=""
                                 value={cp.file_url || ""}
                                 onChange={(url) => updateCapstoneProject(cpIndex, { file_url: url })}
                                 accept=".pdf"
-                                placeholder="Upload or paste PDF URL"
+                                placeholder={t("createCourse.uploadOrPastePdfUrl", "Upload or paste PDF URL")}
                                 courseId={courseId || undefined}
                                 lessonId={`capstone-${cp.id || `new-${cpIndex}`}`}
                               />
@@ -1371,17 +1368,17 @@ export default function CreateCourse() {
                         type="button"
                         variant="outline"
                         onClick={addCapstoneProject}
-                        className="w-full border-dashed border-2 border-purple-300 text-purple-600 hover:bg-purple-50 hover:border-purple-400 h-12"
+                        className="w-full border-dashed border-2 border-border text-forest hover:bg-leaf hover:border-border h-12"
                       >
                         <Plus className="h-5 w-5 mr-2" />
-                        Add Another Capstone Project
+                        {t("createCourse.addAnotherCapstoneProject", "Add Another Capstone Project")}
                       </Button>
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <Award className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500">No capstone project</p>
-                      <p className="text-sm text-gray-400">Enable to add a final project</p>
+                      <Award className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <p className="text-muted-foreground">{t("createCourse.noCapstoneProject", "No capstone project")}</p>
+                      <p className="text-sm text-muted-foreground/60">{t("createCourse.enableToAddAFinalProject", "Enable to add a final project")}</p>
                     </div>
                   )}
                 </CardContent>
@@ -1390,11 +1387,11 @@ export default function CreateCourse() {
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setActiveStep(1)}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={handleSubmit} disabled={loading} className="bg-[#006d2c] hover:bg-[#005523]">
+                <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? "Saving..." : (isEditMode ? "Update Course" : "Create Course")}
+                  {loading ? t("createCourse.saving", "Saving...") : (isEditMode ? t("createCourse.updateCourse", "Update Course") : t("createCourse.createCourse", "Create Course"))}
                 </Button>
               </div>
             </div>
@@ -1407,12 +1404,12 @@ export default function CreateCourse() {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
           <div className="flex flex-col h-[85vh]">
             {/* Preview Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
+            <div className="flex items-center justify-between px-6 py-4 border-b bg-muted/50">
               <div className="flex items-center gap-3">
-                <Eye className="h-5 w-5 text-gray-500" />
+                <Eye className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <h2 className="font-semibold text-gray-900">Course Preview</h2>
-                  <p className="text-xs text-gray-500">How students will see your course</p>
+                  <h2 className="font-semibold text-forest">{t("createCourse.coursePreview", "Course Preview")}</h2>
+                  <p className="text-xs text-muted-foreground">{t("createCourse.howStudentsWillSeeYourCourse", "How students will see your course")}</p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setShowPreview(false)}>
@@ -1423,19 +1420,19 @@ export default function CreateCourse() {
             {/* Preview Content */}
             <div className="flex-1 overflow-y-auto">
               {/* Course Header */}
-              <div className="bg-gradient-to-r from-[#006d2c] to-[#008d3c] text-white p-8">
+              <div className="text-white p-8 bg-forest">
                 <div className="max-w-3xl">
                   <Badge className="bg-white/20 text-white mb-3 capitalize">{courseData.level}</Badge>
-                  <h1 className="text-2xl font-bold mb-3">{courseData.title || "Course Title"}</h1>
-                  <p className="text-white/90 mb-4 line-clamp-2">{courseData.description || "Course description will appear here"}</p>
+                  <h1 className="text-2xl font-bold mb-3">{courseData.title || t("createCourse.courseTitle", "Course Title")}</h1>
+                  <p className="text-white/90 mb-4 line-clamp-2">{courseData.description || t("createCourse.courseDescriptionWillAppearHere", "Course description will appear here")}</p>
                   <div className="flex items-center gap-4 text-sm text-white/80">
                     <div className="flex items-center gap-1">
                       <Layers className="h-4 w-4" />
-                      <span>{chapters.length} chapters</span>
+                      <span>{t("createCourse.chapters", "{{count}} chapters", { count: chapters.length })}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <BookOpen className="h-4 w-4" />
-                      <span>{chapters.reduce((sum, c) => sum + c.lessons.length, 0)} lessons</span>
+                      <span>{t("createCourse.lessons3", "{{reduce}} lessons", { reduce: chapters.reduce((sum, c) => sum + c.lessons.length, 0) })}</span>
                     </div>
                     {courseData.language && (
                       <div className="flex items-center gap-1">
@@ -1457,7 +1454,7 @@ export default function CreateCourse() {
                         <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
                           <div className="text-center text-white">
                             <Play className="h-12 w-12 mx-auto mb-2 opacity-80" />
-                            <p className="text-sm opacity-60">Welcome Video</p>
+                            <p className="text-sm opacity-60">{t("createCourse.welcomeVideo", "Welcome Video")}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -1467,24 +1464,24 @@ export default function CreateCourse() {
                   {/* Course Curriculum */}
                   <Card>
                     <CardContent className="p-4">
-                      <h3 className="font-semibold text-gray-900 mb-4">Course Curriculum</h3>
+                      <h3 className="font-semibold text-forest mb-4">{t("createCourse.courseCurriculum", "Course Curriculum")}</h3>
                       {chapters.length === 0 ? (
-                        <p className="text-sm text-gray-500 text-center py-6">No chapters added yet</p>
+                        <p className="text-sm text-muted-foreground text-center py-6">{t("createCourse.noChaptersAddedYet", "No chapters added yet")}</p>
                       ) : (
                         <div className="space-y-3">
                           {chapters.map((chapter, idx) => {
                             const totalDuration = chapter.lessons.reduce((sum, l) => sum + (l.duration || 0), 0);
                             return (
                               <div key={idx} className="border rounded-lg">
-                                <div className="p-3 bg-gray-50 flex items-center justify-between">
+                                <div className="p-3 bg-muted/50 flex items-center justify-between">
                                   <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded bg-[#006d2c]/10 flex items-center justify-center">
-                                      <span className="text-xs font-semibold text-[#006d2c]">{idx + 1}</span>
+                                    <div className="w-6 h-6 rounded bg-leaf flex items-center justify-center">
+                                      <span className="text-xs font-semibold text-primary">{idx + 1}</span>
                                     </div>
                                     <span className="font-medium text-sm">{chapter.title || `Chapter ${idx + 1}`}</span>
                                   </div>
-                                  <div className="flex items-center gap-3 text-xs text-gray-500">
-                                    <span>{chapter.lessons.length} lessons</span>
+                                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                    <span>{t("createCourse.lessons", "{{count}} lessons", { count: chapter.lessons.length })}</span>
                                     {totalDuration > 0 && (
                                       <span className="flex items-center gap-1">
                                         <Clock className="h-3 w-3" />
@@ -1497,11 +1494,11 @@ export default function CreateCourse() {
                                   {chapter.lessons.map((lesson, lIdx) => {
                                     const Icon = contentTypeIcons[lesson.content_type] || FileText;
                                     return (
-                                      <div key={lIdx} className="p-3 flex items-center gap-3 hover:bg-gray-50">
-                                        <Icon className="h-4 w-4 text-gray-400" />
-                                        <span className="text-sm text-gray-700 flex-1">{lesson.title || `Lesson ${lIdx + 1}`}</span>
+                                      <div key={lIdx} className="p-3 flex items-center gap-3 hover:bg-muted">
+                                        <Icon className="h-4 w-4 text-muted-foreground/60" />
+                                        <span className="text-sm text-foreground flex-1">{lesson.title || `Lesson ${lIdx + 1}`}</span>
                                         {lesson.duration && (
-                                          <span className="text-xs text-gray-400">{lesson.duration} min</span>
+                                          <span className="text-xs text-muted-foreground/60">{t("createCourse.min", "{{duration}} min", { duration: lesson.duration })}</span>
                                         )}
                                       </div>
                                     );
@@ -1517,16 +1514,16 @@ export default function CreateCourse() {
 
                   {/* Capstone Preview */}
                   {includeCapstone && capstoneProjects.filter(cp => cp.title).length > 0 && (
-                    <Card className="border-purple-200">
+                    <Card className="border-border">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2 mb-3">
-                          <Award className="h-5 w-5 text-purple-600" />
-                          <h3 className="font-semibold text-gray-900">Capstone Projects ({capstoneProjects.filter(cp => cp.title).length})</h3>
+                          <Award className="h-5 w-5 text-forest" />
+                          <h3 className="font-semibold text-forest">{t("createCourse.capstoneProjects", "Capstone Projects ({{count}})", { count: capstoneProjects.filter(cp => cp.title).length })}</h3>
                         </div>
                         {capstoneProjects.filter(cp => cp.title).map((cp, idx) => (
                           <div key={idx} className={idx > 0 ? "mt-3 pt-3 border-t" : ""}>
-                            <h4 className="font-medium text-gray-800 mb-1">{cp.title}</h4>
-                            <p className="text-sm text-gray-600">{cp.description}</p>
+                            <h4 className="font-medium text-forest mb-1">{cp.title}</h4>
+                            <p className="text-sm text-muted-foreground">{cp.description}</p>
                           </div>
                         ))}
                       </CardContent>
@@ -1542,17 +1539,17 @@ export default function CreateCourse() {
                       {courseData.thumbnail_url ? (
                         <img
                           src={courseData.thumbnail_url}
-                          alt="Course thumbnail"
+                          alt={t("createCourse.courseThumbnail2", "Course thumbnail")}
                           className="w-full aspect-video object-cover rounded-t-lg"
                         />
                       ) : (
-                        <div className="w-full aspect-video bg-gradient-to-br from-[#006d2c] to-[#008d3c] rounded-t-lg flex items-center justify-center">
+                        <div className="w-full aspect-video rounded-t-lg flex items-center justify-center bg-forest">
                           <BookOpen className="h-12 w-12 text-white/50" />
                         </div>
                       )}
                       <div className="p-4">
-                        <Button className="w-full bg-[#006d2c] hover:bg-[#005523]">
-                          Enroll Now
+                        <Button className="w-full bg-primary hover:bg-primary-hover">
+                          {t("createCourse.enrollNow", "Enroll Now")}
                         </Button>
                       </div>
                     </CardContent>
@@ -1561,24 +1558,24 @@ export default function CreateCourse() {
                   {/* Course Info */}
                   <Card>
                     <CardContent className="p-4 space-y-3">
-                      <h4 className="font-medium text-gray-900">This course includes</h4>
+                      <h4 className="font-medium text-forest">{t("createCourse.thisCourseIncludes", "This course includes")}</h4>
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <Layers className="h-4 w-4" />
-                          <span>{chapters.length} chapters</span>
+                          <span>{t("createCourse.chapters", "{{count}} chapters", { count: chapters.length })}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <BookOpen className="h-4 w-4" />
-                          <span>{chapters.reduce((sum, c) => sum + c.lessons.length, 0)} lessons</span>
+                          <span>{t("createCourse.lessons3", "{{reduce}} lessons", { reduce: chapters.reduce((sum, c) => sum + c.lessons.length, 0) })}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <Clock className="h-4 w-4" />
-                          <span>{chapters.reduce((sum, c) => sum + c.lessons.reduce((s, l) => s + (l.duration || 0), 0), 0)} min total</span>
+                          <span>{t("createCourse.minTotal", "{{reduce}} min total", { reduce: chapters.reduce((sum, c) => sum + c.lessons.reduce((s, l) => s + (l.duration || 0), 0), 0) })}</span>
                         </div>
                         {includeCapstone && (
-                          <div className="flex items-center gap-2 text-gray-600">
+                          <div className="flex items-center gap-2 text-muted-foreground">
                             <Award className="h-4 w-4" />
-                            <span>Capstone project</span>
+                            <span>{t("createCourse.capstoneProject2", "Capstone project")}</span>
                           </div>
                         )}
                       </div>
@@ -1589,11 +1586,11 @@ export default function CreateCourse() {
                   {courseData.requirements && (
                     <Card>
                       <CardContent className="p-4">
-                        <h4 className="font-medium text-gray-900 mb-2">Requirements</h4>
-                        <div className="text-sm text-gray-600 space-y-1">
+                        <h4 className="font-medium text-forest mb-2">{t("createCourse.requirements", "Requirements")}</h4>
+                        <div className="text-sm text-muted-foreground space-y-1">
                           {courseData.requirements.split('\n').filter(r => r.trim()).map((req, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <Target className="h-3 w-3 mt-1 text-gray-400" />
+                              <Target className="h-3 w-3 mt-1 text-muted-foreground/60" />
                               <span>{req}</span>
                             </div>
                           ))}

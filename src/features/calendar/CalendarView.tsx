@@ -50,7 +50,7 @@ function EventDetails({ event, conflicted, onClose }: { event: CalendarEvent | n
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="mb-1 flex flex-wrap gap-1.5">
-            <StatusPill tone={isSession ? "green" : event.kind.startsWith("cohort") ? "blue" : "amber"} icon={meta.icon}>
+            <StatusPill tone={isSession ? "brand" : event.kind.startsWith("cohort") ? "blue" : "amber"} icon={meta.icon}>
               {t(meta.labelKey, meta.label)}
             </StatusPill>
             {event.cancelled && <StatusPill tone="red">{t("calendar2.cancelled", "Cancelled")}</StatusPill>}

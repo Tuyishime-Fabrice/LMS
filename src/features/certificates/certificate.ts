@@ -71,8 +71,8 @@ async function imageDataUrl(path: string): Promise<{ data: string; width: number
   }
 }
 
-const FOREST: [number, number, number] = [15, 42, 29];
-const GREEN: [number, number, number] = [0, 109, 44];
+const FOREST: [number, number, number] = [6, 12, 46];
+const GREEN: [number, number, number] = [201, 80, 31];
 const MUTED: [number, number, number] = [94, 107, 99];
 
 /**
@@ -167,7 +167,7 @@ export async function downloadCertificatePdf(certificate: Certificate, language:
 
   if (certificate.code) {
     const url = verificationUrl(certificate.code);
-    const qr = await QRCode.toDataURL(url, { margin: 0, width: 360, color: { dark: "#0F2A1D", light: "#FCFCF9" } });
+    const qr = await QRCode.toDataURL(url, { margin: 0, width: 360, color: { dark: "#060C2E", light: "#FCFCF9" } });
     doc.addImage(qr, "PNG", 232, 148, 30, 30);
     doc.setFontSize(8);
     doc.setTextColor(...MUTED);

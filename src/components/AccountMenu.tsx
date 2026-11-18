@@ -1,25 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Pencil, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -37,6 +24,7 @@ interface AccountMenuProps {
 }
 
 export function AccountMenu({ profile, fallback = "U", className, onProfileUpdated }: AccountMenuProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [displayProfile, setDisplayProfile] = useState(profile);
   const [editOpen, setEditOpen] = useState(false);
@@ -64,7 +52,7 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
 
     const nextName = fullName.trim();
     if (!nextName) {
-      toast.error("Please enter your name");
+      toast.error(t("accountMenu.pleaseEnterYourName", "Please enter your name"));
       return;
     }
 
@@ -88,9 +76,9 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
       setDisplayProfile(data);
       onProfileUpdated?.(data);
       setEditOpen(false);
-      toast.success("Name updated successfully");
+      toast.success(t("accountMenu.nameUpdatedSuccessfully", "Name updated successfully"));
     } catch (error: any) {
-      toast.error(error.message || "Failed to update name");
+      toast.error(error.message || t("accountMenu.failedToUpdateName", "Failed to update name"));
     } finally {
       setSaving(false);
     }
@@ -102,10 +90,10 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      toast.success("Signed out successfully");
+      toast.success(t("accountMenu.signedOutSuccessfully", "Signed out successfully"));
       navigate("/auth", { replace: true });
     } catch (error: any) {
-      toast.error(error.message || "Failed to sign out");
+      toast.error(error.message || t("accountMenu.failedToSignOut", "Failed to sign out"));
     } finally {
       setSigningOut(false);
     }
@@ -117,12 +105,12 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="rounded-full focus:outline-none focus:ring-2 focus:ring-[#006d2c] focus:ring-offset-2"
-            aria-label="Open account menu"
+            className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            aria-label={t("accountMenu.openAccountMenu", "Open account menu")}
           >
             <Avatar className={className}>
-              <AvatarImage src={displayProfile?.avatar_url || undefined} alt={displayProfile?.full_name || "User avatar"} />
-              <AvatarFallback className="bg-[#006d2c] text-white text-sm">{initials || fallback}</AvatarFallback>
+              <AvatarImage src={displayProfile?.avatar_url || undefined} alt={displayProfile?.full_name || t("accountMenu.userAvatar", "User avatar")} />
+              <AvatarFallback className="bg-primary text-white text-sm">{initials || fallback}</AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>
@@ -130,11 +118,11 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
           <DropdownMenuLabel>
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={displayProfile?.avatar_url || undefined} alt={displayProfile?.full_name || "User avatar"} />
-                <AvatarFallback className="bg-[#006d2c] text-white text-sm">{initials || fallback}</AvatarFallback>
+                <AvatarImage src={displayProfile?.avatar_url || undefined} alt={displayProfile?.full_name || t("accountMenu.userAvatar", "User avatar")} />
+                <AvatarFallback className="bg-primary text-white text-sm">{initials || fallback}</AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <p className="truncate font-semibold">{displayProfile?.full_name || "Your profile"}</p>
+                <p className="truncate font-semibold">{displayProfile?.full_name || t("accountMenu.yourProfile", "Your profile")}</p>
                 {displayProfile?.email && <p className="truncate text-xs font-normal text-muted-foreground">{displayProfile.email}</p>}
               </div>
             </div>
@@ -147,7 +135,7 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
             }}
           >
             <Pencil className="mr-2 h-4 w-4" />
-            Edit name
+            {t("accountMenu.editName", "Edit name")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={(event) => {
@@ -155,10 +143,10 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
               handleSignOut();
             }}
             disabled={signingOut}
-            className="text-red-600 focus:text-red-600"
+            className="text-destructive focus:text-red-600"
           >
             <LogOut className="mr-2 h-4 w-4" />
-            {signingOut ? "Signing out..." : "Sign out"}
+            {signingOut ? t("accountMenu.signingOut", "Signing out...") : t("accountMenu.signOut", "Sign out")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -168,30 +156,30 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Edit profile name
+              {t("accountMenu.editProfileName", "Edit profile name")}
             </DialogTitle>
             <DialogDescription>
-              This name appears on your dashboard, courses, chats, and certificates.
+              {t("accountMenu.thisNameAppearsOnYourDashboard", "This name appears on your dashboard, courses, chats, and certificates.")}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSaveName} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="profile-full-name">Full name</Label>
+              <Label htmlFor="profile-full-name">{t("accountMenu.fullName", "Full name")}</Label>
               <Input
                 id="profile-full-name"
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
-                placeholder="Enter your full name"
+                placeholder={t("accountMenu.enterYourFullName", "Enter your full name")}
                 autoComplete="name"
                 required
               />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>
-                Cancel
+                {t("accountMenu.cancel", "Cancel")}
               </Button>
-              <Button type="submit" disabled={saving} className="bg-[#006d2c] hover:bg-[#005523] text-white">
-                {saving ? "Saving..." : "Save changes"}
+              <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary-hover text-white">
+                {saving ? t("accountMenu.saving", "Saving...") : t("accountMenu.saveChanges", "Save changes")}
               </Button>
             </DialogFooter>
           </form>

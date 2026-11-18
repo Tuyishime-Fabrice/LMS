@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,12 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Award, Plus, Trash2, CheckCircle, Clock, FileText, Download, Upload, Eye, ExternalLink, AlertTriangle, RotateCcw } from "lucide-react";
 import PdfJsInlineViewer from "@/components/PdfJsInlineViewer";
-import {
-  NON_MEDIA_FILE_HELP_TEXT,
-  isViewableSubmissionFile,
-  sanitizeFileName,
-  validateSubmissionFile,
-} from "@/lib/submissionFiles";
+import { NON_MEDIA_FILE_HELP_TEXT, isViewableSubmissionFile, sanitizeFileName, validateSubmissionFile } from "@/lib/submissionFiles";
 
 interface CapstoneProject {
   id: string;
@@ -31,6 +27,7 @@ interface CapstoneSubmissionProps {
 }
 
 export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmissionProps) {
+  const { t } = useTranslation();
   const [projectLinks, setProjectLinks] = useState<string[]>([""]);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,7 +116,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
 
     const validation = validateSubmissionFile(file);
     if (!validation.valid) {
-      toast.error(validation.error || "This file cannot be uploaded.");
+      toast.error(validation.error || t("capstoneSubmission.thisFileCannotBeUploaded", "This file cannot be uploaded."));
       event.target.value = "";
       return;
     }
@@ -139,7 +136,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
       toast.success(`File "${file.name}" uploaded successfully`);
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Failed to upload file");
+      toast.error(t("capstoneSubmission.failedToUploadFile", "Failed to upload file"));
     } finally {
       setUploadingDoc(false);
     }
@@ -149,7 +146,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
     const validLinks = projectLinks.filter(link => link.trim() !== "");
     
     if (validLinks.length === 0 && !submissionFileUrl) {
-      toast.error("Please add at least one project link or upload a document");
+      toast.error(t("capstoneSubmission.pleaseAddAtLeastOneProject", "Please add at least one project link or upload a document"));
       return;
     }
 
@@ -170,11 +167,11 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
 
       if (error) throw error;
 
-      toast.success("Capstone project submitted successfully!");
+      toast.success(t("capstoneSubmission.capstoneProjectSubmittedSuccessfully", "Capstone project submitted successfully!"));
       fetchSubmission();
     } catch (error) {
       console.error("Error submitting capstone:", error);
-      toast.error("Failed to submit project");
+      toast.error(t("capstoneSubmission.failedToSubmitProject", "Failed to submit project"));
     } finally {
       setIsSubmitting(false);
     }
@@ -203,10 +200,10 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
       setDescription("");
       setSubmissionFileUrl(null);
       setConfirmDelete(false);
-      toast.success('Submission deleted. You can now submit a new project.');
+      toast.success(t("capstoneSubmission.submissionDeletedYouCanNowSubmit", "Submission deleted. You can now submit a new project."));
     } catch (error) {
       console.error('Error deleting submission:', error);
-      toast.error('Failed to delete submission');
+      toast.error(t("capstoneSubmission.failedToDeleteSubmission", "Failed to delete submission"));
     } finally {
       setDeleting(false);
     }
@@ -242,7 +239,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-700"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-border"></div>
       </div>
     );
   }
@@ -250,16 +247,16 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
   return (
     <div className="space-y-6">
       {/* Project Details */}
-      <Card className="border-gray-200 bg-gray-50">
+      <Card className="border-border bg-muted/50">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <Award className="h-8 w-8 text-gray-700" />
+            <Award className="h-8 w-8 text-foreground" />
             <div>
-              <CardTitle className="text-2xl text-gray-900">{capstoneProject.title}</CardTitle>
+              <CardTitle className="text-2xl text-forest">{capstoneProject.title}</CardTitle>
               {capstoneProject.due_date && (
-                <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                   <Clock className="h-4 w-4" />
-                  Due: {new Date(capstoneProject.due_date).toLocaleDateString()}
+                  {t("capstoneSubmission.due", "Due:")}{" "}{new Date(capstoneProject.due_date).toLocaleDateString()}
                 </p>
               )}
             </div>
@@ -267,21 +264,21 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
-            <p className="text-gray-700">{capstoneProject.description}</p>
+            <h3 className="font-semibold text-forest mb-2">{t("capstoneSubmission.description", "Description")}</h3>
+            <p className="text-foreground">{capstoneProject.description}</p>
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Instructions</h3>
-            <p className="text-gray-700 whitespace-pre-wrap">{capstoneProject.instructions}</p>
+            <h3 className="font-semibold text-forest mb-2">{t("capstoneSubmission.instructions", "Instructions")}</h3>
+            <p className="text-foreground whitespace-pre-wrap">{capstoneProject.instructions}</p>
           </div>
 
           {capstoneProject.requirements.length > 0 && (
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Requirements</h3>
+              <h3 className="font-semibold text-forest mb-2">{t("capstoneSubmission.requirements", "Requirements")}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {capstoneProject.requirements.map((req, i) => (
-                  <li key={i} className="text-gray-700">{req}</li>
+                  <li key={i} className="text-foreground">{req}</li>
                 ))}
               </ul>
             </div>
@@ -292,20 +289,20 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
             <div className="pt-2">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-600" />
-                  <h3 className="font-semibold text-gray-900">Capstone Brief (PDF)</h3>
+                  <FileText className="h-5 w-5 text-info" />
+                  <h3 className="font-semibold text-forest">{t("capstoneSubmission.capstoneBriefPdf", "Capstone Brief (PDF)")}</h3>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                  className="text-info border-info/30 hover:bg-info-surface"
                   onClick={() => window.open(pdfResolvedUrl, "_blank")}
                 >
                   <Download className="h-4 w-4 mr-1.5" />
-                  Download
+                  {t("capstoneSubmission.download", "Download")}
                 </Button>
               </div>
-              <div className="rounded-xl overflow-hidden border border-gray-200" style={{ minHeight: "50vh" }}>
+              <div className="rounded-xl overflow-hidden border border-border" style={{ minHeight: "50vh" }}>
                 {!pdfError ? (
                   <PdfJsInlineViewer src={pdfResolvedUrl} onError={() => setPdfError(true)} />
                 ) : (
@@ -323,30 +320,30 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
 
       {/* Submitted Project Details */}
       {submission && (
-        <Card className="border-green-200 bg-gradient-to-br from-green-50/80 to-emerald-50/50">
+        <Card className="border-primary/30">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-green-100">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                <div className="p-2 rounded-full bg-leaf">
+                  <CheckCircle className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg text-green-900">Project Submitted</CardTitle>
-                  <p className="text-sm text-green-700">
-                    Submitted on {new Date(submission.submitted_at).toLocaleDateString()} at {new Date(submission.submitted_at).toLocaleTimeString()}
+                  <CardTitle className="text-lg text-leaf-foreground">{t("capstoneSubmission.projectSubmitted", "Project Submitted")}</CardTitle>
+                  <p className="text-sm text-primary">
+                    {t("capstoneSubmission.submittedOnAt", "Submitted on {{toLocaleDateString}} at {{toLocaleTimeString}}", { toLocaleDateString: new Date(submission.submitted_at).toLocaleDateString(), toLocaleTimeString: new Date(submission.submitted_at).toLocaleTimeString() })}
                   </p>
                 </div>
               </div>
               {submission.grade !== null ? (
                 <div className="text-right">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-600 text-white text-sm font-bold">
-                    Grade: {submission.grade}/100
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white text-sm font-bold">
+                    {t("capstoneSubmission.grade100", "Grade: {{grade}}/100", { grade: submission.grade })}
                   </span>
                 </div>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-medium border border-orange-200">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-warning-surface text-warning text-xs font-medium border border-warning/30">
                   <Clock className="h-3 w-3" />
-                  Pending Review
+                  {t("capstoneSubmission.pendingReview", "Pending Review")}
                 </span>
               )}
             </div>
@@ -354,40 +351,40 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
           <CardContent className="space-y-4">
             {/* Teacher Feedback */}
             {submission.feedback && (
-              <div className="p-4 bg-white rounded-xl border border-green-200 shadow-sm">
-                <p className="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-2">
-                  <Award className="h-4 w-4 text-green-600" />
-                  Teacher Feedback
+              <div className="p-4 bg-card rounded-xl border border-primary/30">
+                <p className="text-sm font-semibold text-forest mb-1 flex items-center gap-2">
+                  <Award className="h-4 w-4 text-primary" />
+                  {t("capstoneSubmission.teacherFeedback", "Teacher Feedback")}
                 </p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{submission.feedback}</p>
+                <p className="text-sm text-foreground whitespace-pre-wrap">{submission.feedback}</p>
               </div>
             )}
 
             {/* Submitted Links */}
             {submission.project_links && submission.project_links.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <ExternalLink className="h-4 w-4 text-blue-600" />
-                  Your Submitted Links
+                <h4 className="text-sm font-semibold text-forest mb-2 flex items-center gap-2">
+                  <ExternalLink className="h-4 w-4 text-info" />
+                  {t("capstoneSubmission.yourSubmittedLinks", "Your Submitted Links")}
                 </h4>
                 <div className="space-y-2">
                   {submission.project_links.map((link: string, index: number) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 shadow-sm hover:border-blue-200 transition-colors">
-                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-50 text-blue-600 text-xs font-bold flex-shrink-0">
+                    <div key={index} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border hover:border-info/30 transition-colors">
+                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-info-surface text-info text-xs font-bold flex-shrink-0">
                         {index + 1}
                       </span>
                       <a
                         href={link.startsWith('http') ? link : `https://${link}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline truncate flex-1"
+                        className="text-sm text-info hover:text-info hover:underline truncate flex-1"
                       >
                         {link}
                       </a>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-blue-600 hover:bg-blue-50 flex-shrink-0"
+                        className="h-7 px-2 text-info hover:bg-info-surface flex-shrink-0"
                         onClick={() => window.open(link.startsWith('http') ? link : `https://${link}`, '_blank')}
                       >
                         <Eye className="h-3.5 w-3.5" />
@@ -401,39 +398,39 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
             {/* Submitted Document */}
             {submission.file_url && (
               <div>
-                <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-purple-600" />
-                  Your Uploaded Document
+                <h4 className="text-sm font-semibold text-forest mb-2 flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-forest" />
+                  {t("capstoneSubmission.yourUploadedDocument", "Your Uploaded Document")}
                 </h4>
-                <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-purple-200 shadow-sm">
-                  <div className="p-2 rounded-lg bg-purple-50">
-                    <FileText className="h-6 w-6 text-purple-600" />
+                <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+                  <div className="p-2 rounded-lg bg-leaf">
+                    <FileText className="h-6 w-6 text-forest" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">
-                      {submission.file_url.split('/').pop() || 'Uploaded document'}
+                    <p className="text-sm font-medium text-forest truncate">
+                      {submission.file_url.split('/').pop() || t("capstoneSubmission.uploadedDocument", "Uploaded document")}
                     </p>
-                    <p className="text-xs text-gray-500">Attached to your submission</p>
+                    <p className="text-xs text-muted-foreground">{t("capstoneSubmission.attachedToYourSubmission", "Attached to your submission")}</p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 text-xs hover:bg-purple-50 border-purple-200"
+                      className="h-8 text-xs hover:bg-leaf border-border"
                       onClick={handleDownloadSubmittedFile}
                     >
                       <Download className="h-3.5 w-3.5 mr-1" />
-                      Download
+                      {t("capstoneSubmission.download", "Download")}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 text-xs hover:bg-blue-50 border-blue-200"
+                      className="h-8 text-xs hover:bg-info-surface border-info/30"
                       onClick={handlePreviewSubmittedFile}
                       disabled={!isViewableSubmissionFile(submission.file_url)}
                     >
                       <Eye className="h-3.5 w-3.5 mr-1" />
-                      Preview
+                      {t("capstoneSubmission.preview", "Preview")}
                     </Button>
                   </div>
                 </div>
@@ -443,31 +440,31 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
             {/* Submitted Description */}
             {submission.description && (
               <div>
-                <h4 className="text-sm font-semibold text-gray-800 mb-2">Your Description</h4>
-                <div className="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{submission.description}</p>
+                <h4 className="text-sm font-semibold text-forest mb-2">{t("capstoneSubmission.yourDescription", "Your Description")}</h4>
+                <div className="p-3 bg-card rounded-lg border border-border">
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{submission.description}</p>
                 </div>
               </div>
             )}
 
             {/* Delete / Undo Submission */}
-            <div className="pt-2 border-t border-green-200">
+            <div className="pt-2 border-t border-primary/30">
               {!confirmDelete ? (
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                  className="text-destructive border-destructive/30 hover:bg-destructive-surface hover:border-destructive/30"
                   onClick={() => setConfirmDelete(true)}
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
-                  Delete Submission & Start Over
+                  {t("capstoneSubmission.deleteSubmissionStartOver", "Delete Submission & Start Over")}
                 </Button>
               ) : (
-                <div className="flex items-center gap-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                  <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 p-3 bg-destructive-surface rounded-lg border border-destructive/30">
+                  <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-red-800">Are you sure?</p>
-                    <p className="text-xs text-red-600">This will permanently delete your submission, uploaded files, and any grades/feedback.</p>
+                    <p className="text-sm font-semibold text-destructive">{t("capstoneSubmission.areYouSure", "Are you sure?")}</p>
+                    <p className="text-xs text-destructive">{t("capstoneSubmission.thisWillPermanentlyDeleteYourSubmission", "This will permanently delete your submission, uploaded files, and any grades/feedback.")}</p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <Button
@@ -477,7 +474,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
                       onClick={() => setConfirmDelete(false)}
                       disabled={deleting}
                     >
-                      Cancel
+                      {t("capstoneSubmission.cancel", "Cancel")}
                     </Button>
                     <Button
                       size="sm"
@@ -488,13 +485,13 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
                     >
                       {deleting ? (
                         <>
-                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent mr-1.5" />
-                          Deleting...
+                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-card border-t-transparent mr-1.5" />
+                          {t("capstoneSubmission.deleting", "Deleting...")}
                         </>
                       ) : (
                         <>
                           <Trash2 className="h-3.5 w-3.5 mr-1" />
-                          Yes, Delete
+                          {t("capstoneSubmission.yesDelete", "Yes, Delete")}
                         </>
                       )}
                     </Button>
@@ -509,15 +506,15 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
       {/* Submission Form */}
       <Card>
         <CardHeader>
-          <CardTitle>{submission ? "Update Your Submission" : "Submit Your Project"}</CardTitle>
+          <CardTitle>{submission ? t("capstoneSubmission.updateYourSubmission", "Update Your Submission") : t("capstoneSubmission.submitYourProject", "Submit Your Project")}</CardTitle>
           {submission && (
-            <p className="text-sm text-muted-foreground">You can update your links, document, or description below and resubmit.</p>
+            <p className="text-sm text-muted-foreground">{t("capstoneSubmission.youCanUpdateYourLinksDocument", "You can update your links, document, or description below and resubmit.")}</p>
           )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label>Project Links</Label>
+              <Label>{t("capstoneSubmission.projectLinks", "Project Links")}</Label>
               <Button
                 type="button"
                 size="sm"
@@ -525,7 +522,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
                 onClick={addLink}
               >
                 <Plus className="h-3 w-3 mr-1" />
-                Add Link
+                {t("capstoneSubmission.addLink", "Add Link")}
               </Button>
             </div>
             <div className="space-y-2">
@@ -550,13 +547,13 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
               ))}
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Add links to your GitHub repository, live demo, documentation, etc.
+              {t("capstoneSubmission.addLinksToYourGithubRepository", "Add links to your GitHub repository, live demo, documentation, etc.")}
             </p>
           </div>
 
           {/* Document Upload */}
           <div>
-            <Label>Upload Document (Optional)</Label>
+            <Label>{t("capstoneSubmission.uploadDocumentOptional", "Upload Document (Optional)")}</Label>
             <p className="text-xs text-muted-foreground mb-2">
               {NON_MEDIA_FILE_HELP_TEXT}
             </p>
@@ -569,35 +566,35 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
               />
               {uploadingDoc && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600" />
-                  Uploading...
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-border border-t-gray-600" />
+                  {t("capstoneSubmission.uploading", "Uploading...")}
                 </div>
               )}
             </div>
             {submissionFileUrl && !uploadingDoc && (
-              <div className="flex items-center gap-2 text-sm text-green-600 mt-1">
+              <div className="flex items-center gap-2 text-sm text-primary mt-1">
                 <CheckCircle className="h-4 w-4" />
-                <span>Document attached</span>
+                <span>{t("capstoneSubmission.documentAttached", "Document attached")}</span>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-6 px-2 text-xs text-red-500 hover:text-red-700"
+                  className="h-6 px-2 text-xs text-destructive hover:text-destructive"
                   onClick={() => setSubmissionFileUrl(null)}
                 >
-                  Remove
+                  {t("capstoneSubmission.remove", "Remove")}
                 </Button>
               </div>
             )}
           </div>
 
           <div>
-            <Label htmlFor="description">Project Description</Label>
+            <Label htmlFor="description">{t("capstoneSubmission.projectDescription", "Project Description")}</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe your project, what you built, challenges faced, and what you learned..."
+              placeholder={t("capstoneSubmission.describeYourProjectWhatYouBuilt", "Describe your project, what you built, challenges faced, and what you learned...")}
               rows={6}
             />
           </div>
@@ -605,9 +602,9 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full bg-[#0A400C] hover:bg-[#0d5210]"
+            className="w-full bg-primary hover:bg-primary-hover"
           >
-            {isSubmitting ? "Submitting..." : submission ? "Update Submission" : "Submit Project"}
+            {isSubmitting ? t("capstoneSubmission.submitting", "Submitting...") : submission ? t("capstoneSubmission.updateSubmission", "Update Submission") : t("capstoneSubmission.submitProject", "Submit Project")}
           </Button>
         </CardContent>
       </Card>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PdfJsInlineViewerProps {
   src: string;
@@ -27,6 +28,7 @@ const loadPdfJs = () => {
 };
 
 export default function PdfJsInlineViewer({ src, onError }: PdfJsInlineViewerProps) {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pdfDocRef = useRef<any | null>(null);
   const [numPages, setNumPages] = useState(0);
@@ -102,17 +104,17 @@ export default function PdfJsInlineViewer({ src, onError }: PdfJsInlineViewerPro
   }, [pageNumber, loading, src]);
 
   return (
-    <div className="w-full h-full flex flex-col bg-white">
+    <div className="w-full h-full flex flex-col bg-card">
       <div className="flex items-center justify-between border-b p-2">
         <div className="text-sm">
-          {loading ? "Loading PDF..." : error ? "Failed to load PDF" : `Page ${pageNumber} / ${numPages}`}
+          {loading ? t("pdfJsInlineViewer.loadingPdf", "Loading PDF...") : error ? t("pdfJsInlineViewer.failedToLoadPdf", "Failed to load PDF") : `Page ${pageNumber} / ${numPages}`}
         </div>
         <div className="flex gap-2">
-          <button onClick={prev} disabled={loading || pageNumber <= 1} className="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
-          <button onClick={next} disabled={loading || pageNumber >= numPages} className="px-3 py-1 border rounded disabled:opacity-50">Next</button>
+          <button onClick={prev} disabled={loading || pageNumber <= 1} className="px-3 py-1 border rounded disabled:opacity-50">{t("pdfJsInlineViewer.prev", "Prev")}</button>
+          <button onClick={next} disabled={loading || pageNumber >= numPages} className="px-3 py-1 border rounded disabled:opacity-50">{t("pdfJsInlineViewer.next", "Next")}</button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto flex items-center justify-center p-2 bg-neutral-50">
+      <div className="flex-1 overflow-auto flex items-center justify-center p-2 bg-muted/50">
         <canvas ref={canvasRef} />
       </div>
     </div>

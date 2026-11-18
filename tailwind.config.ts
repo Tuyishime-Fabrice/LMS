@@ -14,9 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Arial', '"Helvetica Neue"', 'Helvetica', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'Arial', 'system-ui', 'sans-serif'],
-        body: ['Arial', '"Helvetica Neue"', 'Helvetica', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
+        display: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
+        body: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
+        poster: ['"Bebas Neue"', '"Arial Narrow"', 'Impact', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -32,12 +33,18 @@ export default {
         forest: {
           DEFAULT: "hsl(var(--forest))",
           foreground: "hsl(var(--forest-foreground))",
+          2: "hsl(var(--forest-2))",
         },
+        flame: "hsl(var(--flame))",
+        royal: "hsl(var(--royal))",
         leaf: {
           DEFAULT: "hsl(var(--leaf))",
           foreground: "hsl(var(--leaf-foreground))",
         },
-        success: "hsl(var(--success))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          surface: "hsl(var(--success-surface))",
+        },
         warning: {
           DEFAULT: "hsl(var(--warning))",
           surface: "hsl(var(--warning-surface))",

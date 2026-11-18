@@ -1,4 +1,5 @@
-import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from "@/lib/browserStorage";
+import { removeBrowserStorage } from "@/lib/browserStorage";
+import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +8,7 @@ import { useAppAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const AuthCallback = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { refreshProfile } = useAppAuth();
@@ -64,7 +66,7 @@ const AuthCallback = () => {
       } catch (error) {
         if (!active) return;
         console.error("Authentication callback failed", error);
-        toast.error("Could not complete sign in. Please try again.");
+        toast.error(t("authCallback.couldNotCompleteSignInPlease", "Could not complete sign in. Please try again."));
         navigate(authContinuationUrl("/auth"), { replace: true });
       }
     };
@@ -73,11 +75,11 @@ const AuthCallback = () => {
   }, [navigate, searchParams, refreshProfile]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-card">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-        <p className="text-gray-600 text-lg">Completing authentication...</p>
-        <p className="text-gray-400 text-sm mt-2">Please wait while we set up your account</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-info/30 mx-auto mb-4" />
+        <p className="text-muted-foreground text-lg">{t("authCallback.completingAuthentication", "Completing authentication...")}</p>
+        <p className="text-muted-foreground/60 text-sm mt-2">{t("authCallback.pleaseWaitWhileWeSetUp", "Please wait while we set up your account")}</p>
       </div>
     </div>
   );

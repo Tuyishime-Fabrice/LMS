@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ export function FileUploadField({
   courseId,
   lessonId,
 }: FileUploadFieldProps) {
+  const { t } = useTranslation();
   const [uploadMethod, setUploadMethod] = useState<"upload" | "url">("upload");
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -41,8 +43,8 @@ export function FileUploadField({
     const isPdf = file.type === "application/pdf" || ext === "pdf";
     if (!isPdf) {
       toast({
-        title: "Invalid file type",
-        description: "Only PDF files are allowed.",
+        title: t("fileUploadField.invalidFileType", "Invalid file type"),
+        description: t("fileUploadField.onlyPdfFilesAreAllowed", "Only PDF files are allowed."),
         variant: "destructive",
       });
       event.currentTarget.value = "";
@@ -76,13 +78,13 @@ export function FileUploadField({
       onChange(data.path, true);
 
       toast({
-        title: "File uploaded successfully",
+        title: t("fileUploadField.fileUploadedSuccessfully", "File uploaded successfully"),
         description: `${file.name} has been uploaded`,
       });
     } catch (error) {
       console.error("Upload error:", error);
       toast({
-        title: "Upload failed",
+        title: t("fileUploadField.uploadFailed", "Upload failed"),
         description: error instanceof Error ? error.message : "Failed to upload file",
         variant: "destructive",
       });
@@ -113,13 +115,13 @@ export function FileUploadField({
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="upload" id="upload-option" />
           <Label htmlFor="upload-option" className="font-normal cursor-pointer">
-            Upload File
+            {t("fileUploadField.uploadFile", "Upload File")}
           </Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="url" id="url-option" />
           <Label htmlFor="url-option" className="font-normal cursor-pointer">
-            Provide URL
+            {t("fileUploadField.provideUrl", "Provide URL")}
           </Label>
         </div>
       </RadioGroup>
@@ -151,7 +153,7 @@ export function FileUploadField({
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Uploading {fileName}...</span>
+                <span>{t("fileUploadField.uploading", "Uploading {{fileName}}...", { fileName: fileName })}</span>
               </div>
               <div className="w-full bg-secondary rounded-full h-2">
                 <div
@@ -163,9 +165,9 @@ export function FileUploadField({
           )}
 
           {value && !uploading && (
-            <div className="flex items-center gap-2 text-sm text-green-600">
+            <div className="flex items-center gap-2 text-sm text-primary">
               <FileCheck className="h-4 w-4" />
-              <span>File uploaded successfully</span>
+              <span>{t("fileUploadField.fileUploadedSuccessfully", "File uploaded successfully")}</span>
             </div>
           )}
         </div>

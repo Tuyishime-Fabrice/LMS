@@ -258,7 +258,7 @@ export default function TeacherAnnouncements() {
                   ) : (
                     <div className="space-y-4">
                       {announcements.map((announcement) => (
-                        <Card key={announcement.id} className="border-l-4 border-l-[#006d2c]">
+                        <Card key={announcement.id} className="border-l-4 border-l-primary">
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1">

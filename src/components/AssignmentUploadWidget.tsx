@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,11 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, FileText, CheckCircle2, MessageSquare } from "lucide-react";
-import {
-  NON_MEDIA_FILE_HELP_TEXT,
-  sanitizeFileName,
-  validateSubmissionFile,
-} from "@/lib/submissionFiles";
+import { NON_MEDIA_FILE_HELP_TEXT, sanitizeFileName, validateSubmissionFile } from "@/lib/submissionFiles";
 
 interface AssignmentUploadWidgetProps {
   studentId: string;
@@ -20,6 +17,7 @@ interface AssignmentUploadWidgetProps {
 }
 
 export default function AssignmentUploadWidget({ studentId, capstoneProjectId, onUploaded, submissionType = 'capstone' }: AssignmentUploadWidgetProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState("");
@@ -31,7 +29,7 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
     const validation = selectedFile ? validateSubmissionFile(selectedFile) : { valid: true };
     if (!validation.valid) {
       toast({
-        title: "File cannot be uploaded",
+        title: t("assignmentUploadWidget.fileCannotBeUploaded", "File cannot be uploaded"),
         description: validation.error,
         variant: "destructive",
       });
@@ -45,14 +43,14 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
 
   const handleUpload = async () => {
     if (!file) {
-      toast({ title: "No file selected", variant: "destructive" });
+      toast({ title: t("assignmentUploadWidget.noFileSelected", "No file selected"), variant: "destructive" });
       return;
     }
 
     const validation = validateSubmissionFile(file);
     if (!validation.valid) {
       toast({
-        title: "File cannot be uploaded",
+        title: t("assignmentUploadWidget.fileCannotBeUploaded", "File cannot be uploaded"),
         description: validation.error,
         variant: "destructive",
       });
@@ -60,7 +58,7 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
     }
 
     if (!description.trim()) {
-      toast({ title: "Please add a description", variant: "destructive" });
+      toast({ title: t("assignmentUploadWidget.pleaseAddADescription", "Please add a description"), variant: "destructive" });
       return;
     }
 
@@ -107,8 +105,8 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
       }
 
       toast({ 
-        title: "Success!", 
-        description: "Your assignment has been submitted successfully.",
+        title: t("assignmentUploadWidget.success", "Success!"), 
+        description: t("assignmentUploadWidget.yourAssignmentHasBeenSubmittedSuccessfully", "Your assignment has been submitted successfully."),
       });
       setFile(null);
       setDescription("");
@@ -116,8 +114,8 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
     } catch (e: any) {
       console.error("Assignment upload failed", e);
       toast({ 
-        title: "Upload failed", 
-        description: e.message || "Failed to upload assignment. Please try again.", 
+        title: t("assignmentUploadWidget.uploadFailed", "Upload failed"), 
+        description: e.message || t("assignmentUploadWidget.failedToUploadAssignmentPleaseTry", "Failed to upload assignment. Please try again."), 
         variant: "destructive" 
       });
     } finally {
@@ -131,7 +129,7 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
       <div className="space-y-2">
         <Label htmlFor="file-upload" className="flex items-center gap-2">
           <FileText className="h-4 w-4" />
-          Upload File
+          {t("assignmentUploadWidget.uploadFile", "Upload File")}
         </Label>
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
@@ -144,16 +142,16 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
             />
             {file && (
               <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                <FileText className="h-4 w-4 text-[#006d2c]" />
+                <FileText className="h-4 w-4 text-primary" />
               </div>
             )}
           </div>
         </div>
         {file && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-green-50 border border-green-200 rounded-md p-2">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-leaf border border-primary/30 rounded-md p-2">
+            <CheckCircle2 className="h-4 w-4 text-primary" />
             <span className="truncate">{file.name}</span>
-            <span className="text-xs">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+            <span className="text-xs">{t("assignmentUploadWidget.mb", "({{toFixed}} MB)", { toFixed: (file.size / 1024 / 1024).toFixed(2) })}</span>
           </div>
         )}
         <p className="text-xs text-muted-foreground">
@@ -165,11 +163,11 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
       <div className="space-y-2">
         <Label htmlFor="description" className="flex items-center gap-2">
           <MessageSquare className="h-4 w-4" />
-          Description / Remarks
+          {t("assignmentUploadWidget.descriptionRemarks", "Description / Remarks")}
         </Label>
         <Textarea
           id="description"
-          placeholder="Explain your submission, add notes, or provide context about your work..."
+          placeholder={t("assignmentUploadWidget.explainYourSubmissionAddNotesOr", "Explain your submission, add notes, or provide context about your work...")}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={uploading}
@@ -177,7 +175,7 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
           className="resize-none"
         />
         <p className="text-xs text-muted-foreground">
-          {description.length}/500 characters
+          {t("assignmentUploadWidget.n500Characters", "{{count}}/500 characters", { count: description.length })}
         </p>
       </div>
 
@@ -185,18 +183,18 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
       <Button 
         onClick={handleUpload} 
         disabled={uploading || !file || !description.trim()} 
-        className="w-full bg-[#006d2c] hover:bg-[#005523]"
+        className="w-full bg-primary hover:bg-primary-hover"
         size="lg"
       >
         {uploading ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-            Uploading...
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-card mr-2" />
+            {t("assignmentUploadWidget.uploading", "Uploading...")}
           </>
         ) : (
           <>
             <Upload className="h-4 w-4 mr-2" />
-            Submit Assignment
+            {t("assignmentUploadWidget.submitAssignment", "Submit Assignment")}
           </>
         )}
       </Button>

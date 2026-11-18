@@ -1,11 +1,11 @@
 const LoadingSpinner = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="loader"></div>
       <style>{`
         .loader {
           width: 4px;
-          color: #006d2c;
+          color: hsl(var(--primary));
           aspect-ratio: 1;
           border-radius: 50%;
           box-shadow: 19px -19px 0 0px, 38px -19px 0 0px, 57px -19px 0 0px,

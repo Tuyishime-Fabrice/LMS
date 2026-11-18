@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ interface CourseContentPlayerProps {
 
 // Sub-component: Displays an attached PDF for video lessons
 function LessonPdfCard({ fileUrl }: { fileUrl: string }) {
+  const { t } = useTranslation();
   const [pdfResolvedUrl, setPdfResolvedUrl] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -62,19 +64,19 @@ function LessonPdfCard({ fileUrl }: { fileUrl: string }) {
 
   if (loading) {
     return (
-      <Card className="border-0 shadow-lg rounded-2xl">
+      <Card className="border-0 rounded-xl">
         <CardContent className="p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <FileText className="h-5 w-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-info-surface flex items-center justify-center">
+              <FileText className="h-5 w-5 text-info" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900">Lesson PDF</h3>
-              <p className="text-sm text-gray-500">Loading document...</p>
+              <h3 className="font-bold text-forest">{t("courseContentPlayer.lessonPdf", "Lesson PDF")}</h3>
+              <p className="text-sm text-muted-foreground">{t("courseContentPlayer.loadingDocument", "Loading document...")}</p>
             </div>
           </div>
-          <div className="mt-4 h-[50vh] flex items-center justify-center bg-gray-50 rounded-xl">
-            <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600" />
+          <div className="mt-4 h-[50vh] flex items-center justify-center bg-muted/50 rounded-xl">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-info/30 border-t-blue-600" />
           </div>
         </CardContent>
       </Card>
@@ -84,26 +86,26 @@ function LessonPdfCard({ fileUrl }: { fileUrl: string }) {
   if (!pdfResolvedUrl) return null;
 
   return (
-    <Card className="border-0 shadow-lg rounded-2xl">
+    <Card className="border-0 rounded-xl">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <FileText className="h-5 w-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-info-surface flex items-center justify-center">
+              <FileText className="h-5 w-5 text-info" />
             </div>
-            <h3 className="font-bold text-gray-900">Lesson PDF</h3>
+            <h3 className="font-bold text-forest">{t("courseContentPlayer.lessonPdf", "Lesson PDF")}</h3>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+            className="text-info border-info/30 hover:bg-info-surface"
             onClick={() => window.open(pdfResolvedUrl, "_blank")}
           >
             <Download className="h-4 w-4 mr-1.5" />
-            Download
+            {t("courseContentPlayer.download", "Download")}
           </Button>
         </div>
-        <div className="rounded-xl overflow-hidden border border-gray-200" style={{ minHeight: "50vh" }}>
+        <div className="rounded-xl overflow-hidden border border-border" style={{ minHeight: "50vh" }}>
           {!pdfError ? (
             <PdfJsInlineViewer src={pdfResolvedUrl} onError={() => setPdfError(true)} />
           ) : (
@@ -120,6 +122,7 @@ function LessonPdfCard({ fileUrl }: { fileUrl: string }) {
 }
 
 export function CourseContentPlayer({ lesson, studentId, onComplete, progressPercent = 0, isPreviewMode = false }: CourseContentPlayerProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [markingComplete, setMarkingComplete] = useState(false);
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
@@ -169,8 +172,8 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
     // Don't track progress for teachers in preview mode
     if (isPreviewMode) {
       toast({
-        title: "Preview Mode",
-        description: "Progress is not tracked for teachers.",
+        title: t("courseContentPlayer.previewMode", "Preview Mode"),
+        description: t("courseContentPlayer.progressIsNotTrackedForTeachers", "Progress is not tracked for teachers."),
       });
       return;
     }
@@ -193,8 +196,8 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
       if (isComplete) {
         toast({
-          title: "Lesson completed!",
-          description: "Your progress has been saved.",
+          title: t("courseContentPlayer.lessonCompleted", "Lesson completed!"),
+          description: t("courseContentPlayer.yourProgressHasBeenSaved", "Your progress has been saved."),
         });
         onComplete?.();
       }
@@ -235,25 +238,25 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
   if (!lesson) {
     return (
-      <Card className="border-0 shadow-xl rounded-2xl overflow-hidden">
+      <Card className="border-0 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Empty State with Premium Design */}
-          <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 min-h-[400px] flex items-center justify-center">
+          <div className="relative min-h-[400px] flex items-center justify-center">
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#0A400C]/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#0A400C]/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-leaf rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-leaf rounded-full translate-y-1/2 -translate-x-1/2" />
             
             <div className="relative text-center p-8">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#0A400C] to-[#116315] flex items-center justify-center shadow-xl shadow-[#0A400C]/20">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center shadow-primary/20 bg-forest">
                 <Play className="h-10 w-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to Learn?</h3>
-              <p className="text-gray-500 max-w-sm mx-auto">
-                Select a lesson from the curriculum to start your learning journey
+              <h3 className="text-2xl font-bold text-forest mb-2">{t("courseContentPlayer.readyToLearn", "Ready to Learn?")}</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                {t("courseContentPlayer.selectALessonFromTheCurriculum", "Select a lesson from the curriculum to start your learning journey")}
               </p>
-              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[#0A400C]">
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-primary">
                 <Sparkles className="h-4 w-4" />
-                <span>Pick a lesson to begin</span>
+                <span>{t("courseContentPlayer.pickALessonToBegin", "Pick a lesson to begin")}</span>
                 <ChevronRight className="h-4 w-4" />
               </div>
             </div>
@@ -266,11 +269,11 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
   return (
     <div className="space-y-4">
       {/* Main Content Card */}
-      <Card className="border-0 shadow-xl rounded-2xl overflow-hidden">
+      <Card className="border-0 rounded-xl overflow-hidden">
         <CardContent className="p-0">
           {/* Video Content */}
           {lesson.content_type === "video" && (
-            <div className="relative w-full bg-black rounded-t-2xl overflow-hidden" style={{ paddingTop: "56.25%" }}>
+            <div className="relative w-full bg-primary rounded-t-xl overflow-hidden" style={{ paddingTop: "56.25%" }}>
               {(() => {
                 const embedUrl = getYouTubeEmbedUrl(lesson.content_url);
                 if (embedUrl) {
@@ -291,7 +294,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
                         <FileText className="h-8 w-8 text-white/50" />
                       </div>
-                      <p className="text-white/70">Unable to load video. Please check the URL.</p>
+                      <p className="text-white/70">{t("courseContentPlayer.unableToLoadVideoPleaseCheck", "Unable to load video. Please check the URL.")}</p>
                     </div>
                   </div>
                 );
@@ -301,7 +304,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
           {/* PDF/Document Content */}
           {(lesson.content_type === "pdf" || lesson.content_type === "document" || lesson.content_type === "assignment") && (
-            <div className="relative w-full bg-gray-50" style={{ minHeight: "65vh" }}>
+            <div className="relative w-full bg-muted/50" style={{ minHeight: "65vh" }}>
               {(() => {
                 const raw = (lesson.file_url || lesson.content_url) || "";
                 const isUploaded = !!lesson.file_url;
@@ -314,8 +317,8 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                     return (
                       <div className="w-full h-[65vh] flex items-center justify-center">
                         <div className="text-center">
-                          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0A400C]/20 border-t-[#0A400C] mx-auto mb-4" />
-                          <p className="text-gray-500">Loading document...</p>
+                          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary mx-auto mb-4" />
+                          <p className="text-muted-foreground">{t("courseContentPlayer.loadingDocument", "Loading document...")}</p>
                         </div>
                       </div>
                     );
@@ -338,16 +341,16 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                 return (
                   <div className="h-[40vh] flex items-center justify-center">
                     <div className="text-center p-8">
-                      <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
+                      <div className="w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center">
                         <FileText className="h-10 w-10 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">External Document</h3>
-                      <p className="text-sm text-gray-500 mb-6 max-w-sm break-all">{urlToOpen}</p>
+                      <h3 className="text-xl font-bold text-forest mb-2">{t("courseContentPlayer.externalDocument", "External Document")}</h3>
+                      <p className="text-sm text-muted-foreground mb-6 max-w-sm break-all">{urlToOpen}</p>
                       <Button 
                         onClick={() => window.open(urlToOpen, "_blank")}
-                        className="bg-[#0A400C] hover:bg-[#083308] rounded-xl px-6"
+                        className="bg-primary hover:bg-primary-hover rounded-xl px-6"
                       >
-                        <ExternalLink className="h-4 w-4 mr-2" /> Open Document
+                        <ExternalLink className="h-4 w-4 mr-2" />{" "}{t("courseContentPlayer.openDocument", "Open Document")}
                       </Button>
                     </div>
                   </div>
@@ -358,47 +361,47 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
           {/* URL Content */}
           {lesson.content_type === "url" && (
-            <div className="h-[40vh] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="h-[40vh] flex items-center justify-center">
               <div className="text-center p-8">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-xl">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center">
                   <ExternalLink className="h-10 w-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">External Resource</h3>
-                <p className="text-sm text-gray-500 mb-6 max-w-sm break-all">{lesson.content_url}</p>
+                <h3 className="text-xl font-bold text-forest mb-2">{t("courseContentPlayer.externalResource", "External Resource")}</h3>
+                <p className="text-sm text-muted-foreground mb-6 max-w-sm break-all">{lesson.content_url}</p>
                 <Button 
                   onClick={() => window.open(lesson.content_url, "_blank")}
-                  className="bg-[#0A400C] hover:bg-[#083308] rounded-xl px-6"
+                  className="bg-primary hover:bg-primary-hover rounded-xl px-6"
                 > 
-                  <ExternalLink className="h-4 w-4 mr-2" /> Open Link
+                  <ExternalLink className="h-4 w-4 mr-2" />{" "}{t("courseContentPlayer.openLink", "Open Link")}
                 </Button>
               </div>
             </div>
           )}
 
           {/* Lesson Info Bar */}
-          <div className="p-5 bg-white border-t">
+          <div className="p-5 bg-card border-t">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               {/* Left: Lesson Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge className="bg-[#0A400C]/10 text-[#0A400C] hover:bg-[#0A400C]/20">
+                  <Badge className="bg-leaf text-primary hover:bg-leaf">
                     {getContentTypeIcon(lesson.content_type)}
                     <span className="ml-1.5">{getContentTypeLabel(lesson.content_type)}</span>
                   </Badge>
                   {lesson.duration && (
-                    <Badge variant="outline" className="text-gray-500">
+                    <Badge variant="outline" className="text-muted-foreground">
                       <Clock className="h-3 w-3 mr-1" />
                       {lesson.duration} min
                     </Badge>
                   )}
                   {lesson.is_completed && (
-                    <Badge className="bg-green-100 text-green-700">
+                    <Badge className="bg-leaf text-primary">
                       <CheckCircle2 className="h-3 w-3 mr-1" />
-                      Completed
+                      {t("courseContentPlayer.completed", "Completed")}
                     </Badge>
                   )}
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">{lesson.title}</h2>
+                <h2 className="text-xl font-bold text-forest">{lesson.title}</h2>
               </div>
 
               {/* Right: Mark Complete Button - Only for students */}
@@ -409,32 +412,32 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                   className={cn(
                     "rounded-xl px-6 transition-all",
                     lesson.is_completed 
-                      ? "bg-green-100 text-green-700 hover:bg-green-100 cursor-default" 
-                      : "bg-[#0A400C] hover:bg-[#083308] shadow-lg shadow-[#0A400C]/20 hover:shadow-xl hover:scale-[1.02]"
+                      ? "bg-leaf text-primary hover:bg-leaf cursor-default" 
+                      : "bg-primary hover:bg-primary-hover shadow-primary/20 hover:scale-[1.02]"
                   )}
                 >
                   {lesson.is_completed ? (
                     <>
                       <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Completed
+                      {t("courseContentPlayer.completed", "Completed")}
                     </>
                   ) : markingComplete ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2" />
-                      Saving...
+                      {t("courseContentPlayer.saving", "Saving...")}
                     </>
                   ) : (
                     <>
                       <Target className="h-4 w-4 mr-2" />
-                      Mark Complete
+                      {t("courseContentPlayer.markComplete", "Mark Complete")}
                     </>
                   )}
                 </Button>
               )}
               {/* Preview mode indicator for teachers */}
               {isPreviewMode && (
-                <Badge className="bg-yellow-100 text-yellow-800 px-4 py-2">
-                  Teacher Preview Mode
+                <Badge className="bg-warning-surface text-warning px-4 py-2">
+                  {t("courseContentPlayer.teacherPreviewMode", "Teacher Preview Mode")}
                 </Badge>
               )}
             </div>
@@ -444,7 +447,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
       {/* Progress Card - Only show for students, not teachers */}
       {studentId && !isPreviewMode && (
-        <Card className="border-0 shadow-lg rounded-2xl overflow-hidden bg-gradient-to-r from-[#0A400C] to-[#116315]">
+        <Card className="border-0 rounded-xl overflow-hidden bg-forest">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -452,29 +455,29 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                   <Target className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-white/70 text-sm">Course Progress</p>
+                  <p className="text-white/70 text-sm">{t("courseContentPlayer.courseProgress", "Course Progress")}</p>
                   <p className="text-white font-bold text-xl">{Math.round(progressPercent)}%</p>
                 </div>
               </div>
               {progressPercent >= 100 && (
                 <Badge className="bg-white/20 text-white border-0">
                   <Sparkles className="h-3 w-3 mr-1" />
-                  Course Complete!
+                  {t("courseContentPlayer.courseComplete", "Course Complete!")}
                 </Badge>
               )}
             </div>
             {/* Progress Bar */}
             <div className="relative h-3 bg-white/20 rounded-full overflow-hidden">
               <div 
-                className="absolute inset-y-0 left-0 bg-white rounded-full transition-all duration-700 ease-out"
+                className="absolute inset-y-0 left-0 bg-card rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
               <div 
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-white/50 to-transparent rounded-full"
+                className="absolute inset-y-0 left-0 to-transparent rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-            <p className="text-white/60 text-xs mt-2">Keep going! You're making great progress.</p>
+            <p className="text-white/60 text-xs mt-2">{t("courseContentPlayer.keepGoingYouReMakingGreat", "Keep going! You're making great progress.")}</p>
           </CardContent>
         </Card>
       )}
@@ -486,15 +489,15 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
 
       {/* Description Card */}
       {lesson.description && (
-        <Card className="border-0 shadow-lg rounded-2xl">
+        <Card className="border-0 rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#0A400C]/10 flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-[#0A400C]" />
+              <div className="w-10 h-10 rounded-xl bg-leaf flex items-center justify-center">
+                <BookOpen className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-bold text-gray-900">About This Lesson</h3>
+              <h3 className="font-bold text-forest">{t("courseContentPlayer.aboutThisLesson", "About This Lesson")}</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
               {lesson.description}
             </p>
           </CardContent>

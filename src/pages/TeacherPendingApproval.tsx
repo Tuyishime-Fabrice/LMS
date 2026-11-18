@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
 
 const TeacherPendingApproval = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
@@ -34,20 +36,20 @@ const TeacherPendingApproval = () => {
 
       // If approved, redirect to teacher dashboard
       if (profileData.teacher_approved) {
-        toast.success("Your account has been approved!");
+        toast.success(t("teacherPendingApproval.yourAccountHasBeenApproved", "Your account has been approved!"));
         navigate("/teacher/dashboard");
         return;
       }
 
       // If rejected, show rejection reason
       if (profileData.teacher_approval_status === "rejected") {
-        toast.error("Your teacher application was not approved");
+        toast.error(t("teacherPendingApproval.yourTeacherApplicationWasNotApproved", "Your teacher application was not approved"));
       }
 
       setProfile(profileData);
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error("Failed to check approval status");
+      toast.error(t("teacherPendingApproval.failedToCheckApprovalStatus", "Failed to check approval status"));
     } finally {
       setLoading(false);
     }
@@ -63,73 +65,73 @@ const TeacherPendingApproval = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="max-w-2xl w-full">
         <CardContent className="p-8">
           <div className="text-center space-y-6">
             {/* Icon */}
             <div className="flex justify-center">
               {profile?.teacher_approval_status === "rejected" ? (
-                <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
-                  <Mail className="h-10 w-10 text-red-600" />
+                <div className="w-20 h-20 rounded-full bg-destructive-surface flex items-center justify-center">
+                  <Mail className="h-10 w-10 text-destructive" />
                 </div>
               ) : (
-                <div className="w-20 h-20 rounded-full bg-yellow-100 flex items-center justify-center">
-                  <Clock className="h-10 w-10 text-yellow-600 animate-pulse" />
+                <div className="w-20 h-20 rounded-full bg-warning-surface flex items-center justify-center">
+                  <Clock className="h-10 w-10 text-warning animate-pulse" />
                 </div>
               )}
             </div>
 
             {/* Title */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-forest mb-2">
                 {profile?.teacher_approval_status === "rejected"
-                  ? "Application Not Approved"
-                  : "Account Pending Approval"}
+                  ? t("teacherPendingApproval.applicationNotApproved", "Application Not Approved")
+                  : t("teacherPendingApproval.accountPendingApproval", "Account Pending Approval")}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 {profile?.teacher_approval_status === "rejected"
-                  ? "Your teacher application has been reviewed"
-                  : "Your teacher account is under review"}
+                  ? t("teacherPendingApproval.yourTeacherApplicationHasBeenReviewed", "Your teacher application has been reviewed")
+                  : t("teacherPendingApproval.yourTeacherAccountIsUnderReview", "Your teacher account is under review")}
               </p>
             </div>
 
             {/* Message */}
-            <div className="bg-gray-50 rounded-lg p-6 text-left">
+            <div className="bg-muted/50 rounded-lg p-6 text-left">
               {profile?.teacher_approval_status === "rejected" ? (
                 <>
-                  <h3 className="font-semibold text-gray-900 mb-2">Rejection Reason:</h3>
-                  <p className="text-gray-700">
-                    {profile?.teacher_rejection_reason || "No reason provided"}
+                  <h3 className="font-semibold text-forest mb-2">{t("teacherPendingApproval.rejectionReason", "Rejection Reason:")}</h3>
+                  <p className="text-foreground">
+                    {profile?.teacher_rejection_reason || t("teacherPendingApproval.noReasonProvided", "No reason provided")}
                   </p>
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      If you believe this was a mistake, please contact our support team at{" "}
-                      <a href="mailto:support@datapluslearning.com" className="font-semibold underline">
-                        support@datapluslearning.com
+                  <div className="mt-4 p-4 bg-info-surface rounded-lg">
+                    <p className="text-sm text-info">
+                      {t("teacherPendingApproval.ifYouBelieveThisWasA", "If you believe this was a mistake, please contact our support team at")}{" "}
+                      <a href="mailto:info@dataplusrwanda.com" className="font-semibold underline">
+                        info@dataplusrwanda.com
                       </a>
                     </p>
                   </div>
                 </>
               ) : (
                 <>
-                  <h3 className="font-semibold text-gray-900 mb-3">What happens next?</h3>
-                  <ul className="space-y-3 text-gray-700">
+                  <h3 className="font-semibold text-forest mb-3">{t("teacherPendingApproval.whatHappensNext", "What happens next?")}</h3>
+                  <ul className="space-y-3 text-foreground">
                     <li className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>Our admin team will review your teacher application</span>
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{t("teacherPendingApproval.ourAdminTeamWillReviewYour", "Our admin team will review your teacher application")}</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>You'll receive an email notification once your account is approved</span>
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{t("teacherPendingApproval.youLlReceiveAnEmailNotification", "You'll receive an email notification once your account is approved")}</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>This usually takes 24-48 hours</span>
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{t("teacherPendingApproval.thisUsuallyTakes2448Hours", "This usually takes 24-48 hours")}</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>Once approved, you'll have full access to the teacher dashboard</span>
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{t("teacherPendingApproval.onceApprovedYouLlHaveFull", "Once approved, you'll have full access to the teacher dashboard")}</span>
                     </li>
                   </ul>
                 </>
@@ -137,13 +139,13 @@ const TeacherPendingApproval = () => {
             </div>
 
             {/* Profile Info */}
-            <div className="bg-green-50 rounded-lg p-4">
-              <div className="text-sm text-gray-700">
-                <p className="font-semibold mb-1">Your Account Details:</p>
-                <p>Name: {profile?.full_name}</p>
-                <p>Email: {profile?.email}</p>
-                <p>Status: <span className="font-semibold text-yellow-600">
-                  {profile?.teacher_approval_status === "rejected" ? "Rejected" : "Pending Approval"}
+            <div className="bg-leaf rounded-lg p-4">
+              <div className="text-sm text-foreground">
+                <p className="font-semibold mb-1">{t("teacherPendingApproval.yourAccountDetails", "Your Account Details:")}</p>
+                <p>{t("teacherPendingApproval.name", "Name: {{fullName}}", { fullName: profile?.full_name })}</p>
+                <p>{t("teacherPendingApproval.email", "Email: {{email}}", { email: profile?.email })}</p>
+                <p>{t("teacherPendingApproval.status", "Status:")}{" "}<span className="font-semibold text-warning">
+                  {profile?.teacher_approval_status === "rejected" ? t("teacherPendingApproval.rejected", "Rejected") : t("teacherPendingApproval.pendingApproval", "Pending Approval")}
                 </span></p>
               </div>
             </div>
@@ -155,7 +157,7 @@ const TeacherPendingApproval = () => {
                 variant="outline"
                 className="flex-1 max-w-xs"
               >
-                Check Status
+                {t("teacherPendingApproval.checkStatus", "Check Status")}
               </Button>
               <Button
                 onClick={handleSignOut}
@@ -163,15 +165,15 @@ const TeacherPendingApproval = () => {
                 className="flex-1 max-w-xs"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+                {t("teacherPendingApproval.signOut", "Sign Out")}
               </Button>
             </div>
 
             {/* Help Text */}
-            <p className="text-sm text-gray-500">
-              Need help? Contact us at{" "}
-              <a href="mailto:support@datapluslearning.com" className="text-[#006d2c] font-semibold hover:underline">
-                support@datapluslearning.com
+            <p className="text-sm text-muted-foreground">
+              {t("teacherPendingApproval.needHelpContactUsAt", "Need help? Contact us at")}{" "}
+              <a href="mailto:info@dataplusrwanda.com" className="text-primary font-semibold hover:underline">
+                info@dataplusrwanda.com
               </a>
             </p>
           </div>
