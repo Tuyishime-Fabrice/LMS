@@ -4,7 +4,8 @@ import { useLocation } from "react-router-dom";
 import { siteFacts } from "@/content/site-facts";
 import { useAppAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { INTRO_END_EVENT, INTRO_TIMING, hasStoredSession, pickIntroSource, shouldPlayIntro, type IntroSource } from "./introPolicy";
+import { markIntroEnded, markIntroPlaying } from "./introState";
+import { INTRO_TIMING, hasStoredSession, pickIntroSource, shouldPlayIntro, type IntroSource } from "./introPolicy";
 
 const PLAYED_KEY = "dataplus-intro-played";
 const INTRO_END_KEYS = new Set(["Escape", "PageDown", "PageUp", "ArrowDown", "ArrowUp", " ", "Home", "End"]);
@@ -56,6 +57,7 @@ export function BrandIntro({ force = false, onEnd }: { force?: boolean; onEnd?: 
   const { user } = useAppAuth();
   const [source] = useState<IntroSource | null>(() => {
     if (!force && !conditionsAllow(pathname)) return null;
+    if (!force) markIntroPlaying();
     const probe = document.createElement("video");
     return pickIntroSource(siteFacts.brand.intro, probe.canPlayType('video/webm; codecs="vp9"') !== "", navigator.userAgent);
   });
@@ -82,10 +84,10 @@ export function BrandIntro({ force = false, onEnd }: { force?: boolean; onEnd?: 
       return () => window.clearTimeout(timer);
     }
     if (phase === "gone") {
-      window.dispatchEvent(new Event(INTRO_END_EVENT));
+      if (!force) markIntroEnded();
       onEnd?.();
     }
-  }, [phase, onEnd]);
+  }, [phase, onEnd, force]);
 
   // Timers: give up if the video has not started in time; leave at 3.4 s.
   useEffect(() => {

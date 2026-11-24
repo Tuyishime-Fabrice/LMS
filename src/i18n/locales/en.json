@@ -2398,7 +2398,12 @@
       "bodyBundle": "No subscription. Pay per course or for a bundle of courses, by Mobile Money.",
       "scholarship2": "Scholarships on courses that offer them, shown on the course page",
       "singleBody2": "One course with its lessons, assessments and certificate.",
-      "viewBundles": "View course bundles"
+      "viewBundles": "View course bundles",
+      "paths": "Learning paths",
+      "pathsBody": "Skill and career tracks put several courses in order toward one skill or role.",
+      "pathsCta": "See tracks",
+      "perCourseNote": "per course, depending on the course",
+      "range": "{{min}} to {{max}}"
     },
     "free": "Free",
     "level": {
@@ -2469,7 +2474,9 @@
       "cardBody": "Certificate issued automatically, with a QR code",
       "body2": "Live cohorts online and in Kigali. The platform is in English and French, and each course shows the language it is taught in.",
       "heading": "Data, M&E and AI training from the people who do this work across Rwanda and the region.",
-      "team": "Train your team"
+      "team": "Train your team",
+      "photoAlt": "A trainer presents at the front of a classroom while learners follow on their laptops",
+      "screenAlt": "The DATA+ Academy lesson player: the module list on the left and a reading lesson on cleaning data"
     },
     "partners": "Partners",
     "trusted": "Working with",
@@ -2496,7 +2503,11 @@
       "title": "Sponsoring learners from your organisation?",
       "body": "Organisations can sponsor places, enrol a group into a dedicated cohort and agree a tailored course sequence. The learning content stays the same; schedule, support and pricing are arranged with you.",
       "cta": "Request organisation access",
-      "contact": "Contact DATA+"
+      "contact": "Contact DATA+",
+      "parent": "More about DATA+ Rwanda",
+      "photo": "A group of trainees and trainers standing together outside, beside a DATA+ banner",
+      "programmes": "For NGOs, government teams and companies, DATA+ also runs tailored training and helps with M&E systems, research and dashboards.",
+      "title2": "Training for your organisation"
     },
     "cta": {
       "title": "Your next chapter starts here.",
@@ -2532,6 +2543,82 @@
       "body2": "Take a course on its own, or join a cohort with a schedule and live sessions.",
       "coursesBody2": "Lessons in order, the work each course sets, and a certificate anyone can check.",
       "title2": "Choose how you learn"
+    },
+    "capstone": {
+      "body": "Courses with a capstone end with a real problem worked through the five-step framework and marked by your instructor. A mark of 65% or more earns the certificate.",
+      "pass": "65% on the capstone: certificate earned",
+      "photo1": "Four learners gather around one laptop to work through a problem together",
+      "photo2": "Learners discuss their work at shared desks with their laptops open",
+      "projects": "Verified projects",
+      "seeWork": "See the work",
+      "step1": "Problem definition",
+      "step1Body": "Name the decision someone has to make and the question the data must answer.",
+      "step2": "Data and evidence",
+      "step2Body": "Find and clean the data that bears on that question.",
+      "step3": "Tools and methods",
+      "step3Body": "Choose the tools and methods the course taught that fit the problem.",
+      "step4": "Analysis",
+      "step4Body": "Work through the data and show what it says.",
+      "step5": "Recommendations",
+      "step5Body": "Turn the findings into actions the decision maker can take.",
+      "title": "The capstone"
+    },
+    "faq": {
+      "body": "Answers from our terms and course pages.",
+      "certificateA": "Meet the course's pass requirements, which include 65% on the capstone where there is one. Each certificate carries a code that anyone can check on the verification page.",
+      "certificateQ": "How do I earn a certificate, and can an employer check it?",
+      "languageA": "The platform works in English and French. Each course page states the language the course is taught in.",
+      "languageQ": "Which language are courses taught in?",
+      "paymentA": "By MTN Mobile Money or Airtel Money. Cohort courses can be paid in two instalments.",
+      "paymentQ": "How do I pay?",
+      "refundsA": "Refund requests must be made within 7 days of purchase and are considered case by case, as set out in the terms of service.",
+      "refundsQ": "Can I get a refund?",
+      "scheduleA": "Cohort courses run evening classes online and hands-on Saturday workshops in Kigali. Where a course has an upcoming cohort, its start date is shown on the course card.",
+      "scheduleQ": "When do classes take place?",
+      "scholarshipA": "Some courses offer scholarships. The course page shows whether you can apply.",
+      "scholarshipQ": "Are there scholarships?",
+      "teamsA": "Yes. Organisations can sponsor places or enrol a group into a dedicated cohort. Use the form above to tell us what you need.",
+      "teamsQ": "Can my organisation pay for its staff?",
+      "termsLink": "Read the terms of service",
+      "title": "Questions",
+      "verifyLink": "Check a certificate"
+    },
+    "featured": {
+      "live": "Live cohort",
+      "starts": "Next start {{date}}"
+    },
+    "platform": {
+      "assignments": "Assignments",
+      "assignmentsAlt": "The assignments page listing two assignments with due dates and an open marking rubric",
+      "assignmentsCaption": "Deadlines in one list, and the marking rubric visible before you submit.",
+      "body": "What you see once you are enrolled.",
+      "certificate": "Certificates",
+      "certificateAlt": "A certificate of completion with a QR code, and buttons to download it or copy its verification link",
+      "certificateCaption": "Each certificate carries a code and a QR code that anyone can check.",
+      "player": "Lessons",
+      "playerAlt": "The lesson player showing a reading lesson on cleaning data, with the course modules listed on the left",
+      "playerCaption": "Lessons in order, with the module list beside them and your place saved.",
+      "progress": "Progress",
+      "progressAlt": "The grades page with overall, quiz and assignment scores and a comment from the instructor",
+      "progressCaption": "Your quiz results and marked work for each course, with the written feedback that came with them.",
+      "sample": "Shown with sample data.",
+      "title": "Inside the platform",
+      "verify": "Check a certificate"
+    },
+    "proof": {
+      "countries": "countries",
+      "label": "DATA+ in figures",
+      "lastYear": "trained in {{year}}",
+      "organisations": "Organisations we have trained or worked with",
+      "trained": "people trained"
+    },
+    "subjects": {
+      "body": "Pick a subject to see its courses, levels and prices.",
+      "from": "From {{price}}",
+      "see": "See courses",
+      "title": "Find your course",
+      "count_one": "{{count}} course",
+      "count_other": "{{count}} courses"
     }
   },
   "partner": {
@@ -2546,7 +2633,9 @@
     "phone": "Phone number",
     "message": "What would you like to achieve? (optional)",
     "sending": "Sending…",
-    "send": "Send request"
+    "send": "Send request",
+    "another": "Send another request",
+    "formTitle": "Tell us about your organisation"
   },
   "site": {
     "home": "DATA+ Academy home",
@@ -2564,7 +2653,9 @@
       "contact": "Contact",
       "competitions": "Competitions",
       "tracks": "Skill & career tracks",
-      "verify": "Verify a certificate"
+      "verify": "Verify a certificate",
+      "organisations": "For organisations",
+      "projects": "Student projects"
     },
     "footer": {
       "learn": "Learn",
@@ -2583,7 +2674,9 @@
       "parent": "DATA+ Rwanda",
       "whatsapp": "WhatsApp"
     },
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "byParent": "by {{parent}}",
+    "menu": "Menu"
   },
   "capstoneSubmission": {
     "thisFileCannotBeUploaded": "This file cannot be uploaded.",
@@ -3182,7 +3275,9 @@
   "catalogue": {
     "eyebrow": "Courses",
     "title": "Explore courses",
-    "body": "Data analysis, AI, monitoring and evaluation and project management. Taught in English and French, with live cohorts and a capstone."
+    "body": "Data analysis, AI, monitoring and evaluation and project management. Taught in English and French, with live cohorts and a capstone.",
+    "subjectAll": "Show all courses",
+    "subjectShowing": "Showing {{subject}} courses"
   },
   "createCourse": {
     "invalidFile": "Invalid file",

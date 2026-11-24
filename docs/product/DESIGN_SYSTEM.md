@@ -94,7 +94,14 @@ it fades out over 400 ms at 3.4 s and is dropped if the video has not started wi
 - Forms: label above, hint below, `aria-invalid`, inline counters (feedback).
 - Tables: eyebrow header row, divided rows, right-aligned numbers.
 
+## Photos and screenshots
+`<Photo name>` (`src/features/site/home/Photo.tsx`) serves `public/images/home/{name}-{480|960|1600}.{avif|webp}` with
+`srcset`, `sizes`, width and height. Originals live in `assets-src/photos` and `assets-src/screenshots`; each output is
+under 200 KB. Never stock or generated people; alt text says what is visible without naming anyone.
+
 ## Motion
+Home reveals use one IntersectionObserver (`useReveal`, callback ref; observe an unclipped wrapper): 600 ms, once.
+The plus-shaped mask (900 ms) is used on the hero photo and one capstone photo only.
 150 to 220 ms ease-out; page fade-in once; progress grows once; spinner only for "waiting" states; plus draw-in once;
 all disabled under `prefers-reduced-motion`.
 

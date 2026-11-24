@@ -3,7 +3,8 @@ import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { SiteFooter } from "@/features/site/SiteFooter";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { COVER_FAMILIES, coverFamily, type CoverFamily } from "@/features/courses/coverFamily";
 import { supabase } from "@/integrations/supabase/client";
 import { beginPaymentSignUp } from "@/lib/coursePaymentReturn";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ type Course = {
   currency: string | null;
   requirements: string | null;
   created_at: string;
+  category?: string | null;
 };
 
 type EnrollmentCount = {
@@ -45,6 +47,18 @@ const BrowseCourses = () => {
   const [enrollingCourseId, setEnrollingCourseId] = useState<string | null>(null);
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [purchaseCourse, setPurchaseCourse] = useState<Course | null>(null);
+  // ?subject= comes from the subject tiles on the home page (same families as the course covers).
+  const [searchParams] = useSearchParams();
+  const subjectParam = searchParams.get("subject");
+  const subject = (COVER_FAMILIES as readonly string[]).includes(subjectParam || "") ? (subjectParam as CoverFamily) : null;
+  const subjectLabel: Record<CoverFamily, string> = {
+    data: t("cover.family.data", "Data analysis"),
+    me: t("cover.family.me", "Monitoring and evaluation"),
+    ai: t("cover.family.ai", "AI for professionals"),
+    research: t("cover.family.research", "Research and proposals"),
+    geo: t("cover.family.geo", "Geospatial"),
+  };
+  const shown = subject ? courses.filter((course) => coverFamily(course) === subject) : courses;
 
   useEffect(() => {
     fetchCourses();
@@ -173,9 +187,15 @@ const BrowseCourses = () => {
 
       {/* Courses Grid */}
       <main className="container mx-auto px-4 sm:px-6 py-8">
-        {courses.length > 0 ? (
+        {subject && (
+          <p className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+            <span>{t("catalogue.subjectShowing", "Showing {{subject}} courses", { subject: subjectLabel[subject] })}</span>
+            <Link to="/courses" className="font-semibold text-primary hover:underline">{t("catalogue.subjectAll", "Show all courses")}</Link>
+          </p>
+        )}
+        {shown.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {courses.map((course, index) => {
+            {shown.map((course, index) => {
               const gradient = gradients[index % gradients.length];
               const rawLevel = (course as { level?: string | null }).level;
               const level = rawLevel ? rawLevel.charAt(0).toUpperCase() + rawLevel.slice(1) : "";

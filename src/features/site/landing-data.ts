@@ -16,6 +16,7 @@ export type LandingCourse = {
   earlyBird: number | null;
   teacherId: string | null;
   teacherName: string | null;
+  teacherAvatar: string | null;
   scholarshipOpen: boolean;
 };
 
@@ -29,23 +30,24 @@ function earlyBirdPrice(row: Record<string, unknown>): number | null {
 }
 
 /**
- * Approved courses that are listed in the public catalogue, featured first.
+ * Every approved course that is listed in the public catalogue, featured first
+ * (the home page counts them per subject and shows the first three).
  * An unlisted course (courses.listed = false, set by an admin for client-only
  * programmes) is left out here but still opens from a direct link.
  */
 export async function fetchLandingCourses(): Promise<LandingCourse[]> {
-  const columns = "id, title, summary, description, thumbnail_url, category, level, duration, language, price, currency, is_free, is_featured, early_bird_price, early_bird_start, early_bird_end, teacher_id, created_at, scholarship_open, profiles ( full_name )";
+  const columns = "id, title, summary, description, thumbnail_url, category, level, duration, language, price, currency, is_free, is_featured, early_bird_price, early_bird_start, early_bird_end, teacher_id, created_at, scholarship_open, profiles ( full_name, avatar_url )";
   const query = (select: string) => supabase.from("courses").select(select)
     .eq("approval_status", "approved")
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
-    .limit(24);
+    .limit(200);
   // `listed` arrives with the 2026-11-27 migration; read without it before that.
   let result = await query(`${columns}, listed`);
   if (result.error && isMissingSchema(result.error)) result = await query(columns);
   if (result.error) throw result.error;
-  const rows = (result.data || []) as unknown as (Record<string, unknown> & { profiles: { full_name: string | null } | null })[];
-  return rows.filter((row) => row.listed !== false).slice(0, 12).map((row) => ({
+  const rows = (result.data || []) as unknown as (Record<string, unknown> & { profiles: { full_name: string | null; avatar_url: string | null } | null })[];
+  return rows.filter((row) => row.listed !== false).map((row) => ({
     id: row.id as string,
     title: row.title as string,
     summary: (row.summary || row.description) as string | null,
@@ -60,6 +62,7 @@ export async function fetchLandingCourses(): Promise<LandingCourse[]> {
     earlyBird: earlyBirdPrice(row),
     teacherId: row.teacher_id as string | null,
     teacherName: row.profiles?.full_name ?? null,
+    teacherAvatar: row.profiles?.avatar_url ?? null,
     scholarshipOpen: Boolean(row.scholarship_open),
   }));
 }
@@ -102,6 +105,27 @@ export async function fetchNextCohort(): Promise<{ name: string; startDate: stri
     .eq("is_active", true).gte("start_date", new Date().toISOString()).order("start_date", { ascending: true }).limit(1);
   if (error || !data?.length || !data[0].start_date) return null;
   return { name: data[0].name, startDate: data[0].start_date };
+}
+
+/** The earliest upcoming start date of an active cohort, per course. */
+export async function fetchUpcomingStarts(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from("cohorts").select("course_id, start_date")
+    .eq("is_active", true).gte("start_date", new Date().toISOString()).order("start_date", { ascending: true }).limit(200);
+  if (error || !data) return {};
+  const starts: Record<string, string> = {};
+  for (const row of data) if (row.course_id && row.start_date && !starts[row.course_id]) starts[row.course_id] = row.start_date;
+  return starts;
+}
+
+export type VerifiedProject = { id: string; title: string; learner: string; course: string; link: string | null };
+
+/** Up to two capstone projects whose outcomes an admin has verified (exhibition_projects.outcomes_verified). */
+export async function fetchVerifiedProjects(): Promise<VerifiedProject[]> {
+  const { data, error } = await supabase.from("exhibition_projects")
+    .select("id, project_title, student_name, course_name, project_link, outcomes_verified")
+    .eq("outcomes_verified", true).order("display_order", { ascending: true }).limit(2);
+  if (error || !data) return []; // includes "column does not exist" before the 2026-11-27 migration
+  return data.map((row) => ({ id: row.id, title: row.project_title, learner: row.student_name, course: row.course_name, link: row.project_link }));
 }
 
 export function formatAmount(amount: number, currency: string, locale: string) {

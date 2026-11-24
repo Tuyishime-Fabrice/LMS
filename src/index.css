@@ -1,17 +1,50 @@
-/* Latin and Latin Extended cover English, French and Kinyarwanda. */
-@import "@fontsource/inter/latin-400.css";
-@import "@fontsource/inter/latin-ext-400.css";
-@import "@fontsource/inter/latin-500.css";
-@import "@fontsource/inter/latin-ext-500.css";
-@import "@fontsource/inter/latin-600.css";
-@import "@fontsource/inter/latin-ext-600.css";
-@import "@fontsource/inter/latin-700.css";
-@import "@fontsource/inter/latin-ext-700.css";
+/*
+ * Fonts, self-hosted. The weight files below declare unicode ranges, so English and French
+ * pages download only the Latin subset (Latin Extended only when a character needs it).
+ */
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
 /* Headings: League Spartan 600 and 700, as on dataplusrwanda.com. */
-@import "@fontsource/league-spartan/latin-600.css";
-@import "@fontsource/league-spartan/latin-ext-600.css";
-@import "@fontsource/league-spartan/latin-700.css";
-@import "@fontsource/league-spartan/latin-ext-700.css";
+@import "@fontsource/league-spartan/600.css";
+
+/*
+ * The two faces the home page paints first are served from stable URLs in public/fonts so
+ * index.html can preload them; that keeps the heading from reflowing when the font arrives.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/fonts/inter-latin-400.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "League Spartan";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/fonts/league-spartan-latin-700.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/fonts/inter-latin-ext-400.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "League Spartan";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/fonts/league-spartan-latin-ext-700.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 @tailwind base;
 @tailwind components;
@@ -276,6 +309,31 @@
   animation: plus-loop 1200ms ease-in-out infinite;
 }
 
+/* Home page reveals (src/features/site/home/useReveal.ts): once, 600 ms, one easing. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+.reveal .reveal-img { transform: scale(1.03); transition: transform 600ms var(--ease-out); }
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal.is-in .reveal-img { transform: none; }
+
+/* Plus-shaped mask reveal: the hero photo and one capstone photo only (900 ms, once). */
+@keyframes plus-mask {
+  0% { clip-path: polygon(48% 43%, 52% 43%, 52% 48%, 57% 48%, 57% 52%, 52% 52%, 52% 57%, 48% 57%, 48% 52%, 43% 52%, 43% 48%, 48% 48%); }
+  45% { clip-path: polygon(37% 14%, 63% 14%, 63% 37%, 86% 37%, 86% 63%, 63% 63%, 63% 86%, 37% 86%, 37% 63%, 14% 63%, 14% 37%, 37% 37%); }
+  100% { clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 0%, 0% 0%); }
+}
+.plus-mask { clip-path: polygon(48% 43%, 52% 43%, 52% 48%, 57% 48%, 57% 52%, 52% 52%, 52% 57%, 48% 57%, 48% 52%, 43% 52%, 43% 48%, 48% 48%); }
+.is-in .plus-mask, .plus-mask.is-in { animation: plus-mask 900ms var(--ease-out) forwards; }
+
+/* Hover on course covers and instructor cards: image scale 1.03, border to green-700. */
+.hover-lift { transition: border-color 200ms var(--ease-out); }
+.hover-lift .hover-img { transition: transform 200ms var(--ease-out); }
+.hover-lift:hover { border-color: hsl(var(--primary)); }
+.hover-lift:hover .hover-img { transform: scale(1.03); }
+
 /* Landing page marquees (unchanged behaviour). */
 @keyframes scroll-left {
   0% { transform: translateX(0); }
@@ -291,6 +349,8 @@
 .animate-scroll-rtl:hover { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal .reveal-img { opacity: 1; transform: none; }
+  .plus-mask { clip-path: none; animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

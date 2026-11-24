@@ -2398,7 +2398,12 @@
       "bodyBundle": "Pas d'abonnement. Payez par cours ou pour un lot de cours, via Mobile Money.",
       "scholarship2": "Bourses pour les cours qui en proposent, indiquées sur la page du cours",
       "singleBody2": "Un cours avec ses leçons, ses évaluations et son certificat.",
-      "viewBundles": "Voir les lots de cours"
+      "viewBundles": "Voir les lots de cours",
+      "paths": "Parcours",
+      "pathsBody": "Les parcours de compétences et de carrière enchaînent plusieurs cours vers une compétence ou un métier.",
+      "pathsCta": "Voir les parcours",
+      "perCourseNote": "par cours, selon le cours",
+      "range": "De {{min}} à {{max}}"
     },
     "free": "Gratuit",
     "level": {
@@ -2469,7 +2474,9 @@
       "cardBody": "Certificat délivré automatiquement, avec un code QR",
       "body2": "Cohortes en direct, en ligne et à Kigali. La plateforme est en anglais et en français, et chaque cours indique sa langue d'enseignement.",
       "heading": "Formations en données, suivi-évaluation et IA, par des praticiens qui font ce travail au Rwanda et dans la région.",
-      "team": "Former votre équipe"
+      "team": "Former votre équipe",
+      "photoAlt": "Un formateur présente devant une salle de classe pendant que les apprenants suivent sur leurs ordinateurs",
+      "screenAlt": "Le lecteur de leçons de DATA+ Academy : la liste des modules à gauche et une leçon de lecture sur le nettoyage des données"
     },
     "partners": "Partenaires",
     "trusted": "Ils travaillent avec nous",
@@ -2496,7 +2503,11 @@
       "title": "Vous financez des apprenants de votre organisation ?",
       "body": "Les organisations peuvent financer des places, inscrire un groupe dans une cohorte dédiée et convenir d'un enchaînement de cours sur mesure. Le contenu reste le même ; le calendrier, l'accompagnement et le tarif sont définis avec vous.",
       "cta": "Demander un accès organisation",
-      "contact": "Contacter DATA+"
+      "contact": "Contacter DATA+",
+      "parent": "En savoir plus sur DATA+ Rwanda",
+      "photo": "Un groupe d'apprenants et de formateurs réunis dehors, à côté d'une bannière DATA+",
+      "programmes": "Pour les ONG, les administrations et les entreprises, DATA+ propose aussi des formations sur mesure et un appui pour les systèmes de suivi-évaluation, la recherche et les tableaux de bord.",
+      "title2": "Formation pour votre organisation"
     },
     "cta": {
       "title": "Votre prochain chapitre commence ici.",
@@ -2532,6 +2543,82 @@
       "body2": "Suivez un cours seul, ou rejoignez une cohorte avec un calendrier et des sessions en direct.",
       "coursesBody2": "Des leçons dans l'ordre, les travaux demandés par chaque cours et un certificat vérifiable par tous.",
       "title2": "Choisissez votre façon d'apprendre"
+    },
+    "capstone": {
+      "body": "Les cours avec un projet final se terminent par un vrai problème traité avec le cadre en cinq étapes et noté par votre formateur. Une note de 65 % ou plus donne droit au certificat.",
+      "pass": "65 % au projet final : certificat obtenu",
+      "photo1": "Quatre apprenants réunis autour d'un ordinateur portable pour résoudre un problème ensemble",
+      "photo2": "Des apprenants discutent de leur travail à des tables partagées, ordinateurs ouverts",
+      "projects": "Projets vérifiés",
+      "seeWork": "Voir le travail",
+      "step1": "Définition du problème",
+      "step1Body": "Nommer la décision à prendre et la question à laquelle les données doivent répondre.",
+      "step2": "Données et preuves",
+      "step2Body": "Trouver et nettoyer les données utiles à cette question.",
+      "step3": "Outils et méthodes",
+      "step3Body": "Choisir, parmi les outils et méthodes vus en cours, ceux qui conviennent au problème.",
+      "step4": "Analyse",
+      "step4Body": "Travailler les données et montrer ce qu'elles disent.",
+      "step5": "Recommandations",
+      "step5Body": "Transformer les résultats en actions que le décideur peut mener.",
+      "title": "Le projet final"
+    },
+    "faq": {
+      "body": "Réponses tirées de nos conditions et des pages de cours.",
+      "certificateA": "Remplissez les conditions de réussite du cours, dont 65 % au projet final lorsqu'il y en a un. Chaque certificat porte un code que tout le monde peut vérifier sur la page de vérification.",
+      "certificateQ": "Comment obtenir un certificat, et un employeur peut-il le vérifier ?",
+      "languageA": "La plateforme fonctionne en anglais et en français. Chaque page de cours indique la langue d'enseignement.",
+      "languageQ": "Dans quelle langue les cours sont-ils enseignés ?",
+      "paymentA": "Par MTN Mobile Money ou Airtel Money. Les cours en cohorte peuvent être payés en deux versements.",
+      "paymentQ": "Comment payer ?",
+      "refundsA": "Les demandes de remboursement doivent être faites dans les 7 jours suivant l'achat et sont examinées au cas par cas, comme le prévoient les conditions d'utilisation.",
+      "refundsQ": "Puis-je être remboursé ?",
+      "scheduleA": "Les cours en cohorte ont lieu le soir en ligne, avec des ateliers pratiques le samedi à Kigali. Lorsqu'une cohorte est prévue, sa date de début figure sur la carte du cours.",
+      "scheduleQ": "Quand les cours ont-ils lieu ?",
+      "scholarshipA": "Certains cours proposent des bourses. La page du cours indique si vous pouvez postuler.",
+      "scholarshipQ": "Y a-t-il des bourses ?",
+      "teamsA": "Oui. Les organisations peuvent financer des places ou inscrire un groupe dans une cohorte dédiée. Utilisez le formulaire ci-dessus pour nous dire ce dont vous avez besoin.",
+      "teamsQ": "Mon organisation peut-elle payer pour son personnel ?",
+      "termsLink": "Lire les conditions d'utilisation",
+      "title": "Questions",
+      "verifyLink": "Vérifier un certificat"
+    },
+    "featured": {
+      "live": "Cohorte en direct",
+      "starts": "Prochain début : {{date}}"
+    },
+    "platform": {
+      "assignments": "Devoirs",
+      "assignmentsAlt": "La page des devoirs avec deux devoirs, leurs dates limites et une grille de notation ouverte",
+      "assignmentsCaption": "Les échéances dans une seule liste, et la grille de notation visible avant de rendre votre travail.",
+      "body": "Ce que vous voyez une fois inscrit.",
+      "certificate": "Certificats",
+      "certificateAlt": "Un certificat de réussite avec un code QR, et des boutons pour le télécharger ou copier son lien de vérification",
+      "certificateCaption": "Chaque certificat porte un code et un code QR que tout le monde peut vérifier.",
+      "player": "Leçons",
+      "playerAlt": "Le lecteur de leçons avec une leçon de lecture sur le nettoyage des données et les modules du cours listés à gauche",
+      "playerCaption": "Des leçons dans l'ordre, avec la liste des modules à côté et votre progression enregistrée.",
+      "progress": "Progression",
+      "progressAlt": "La page des notes avec les résultats globaux, des quiz et des devoirs, et un commentaire du formateur",
+      "progressCaption": "Vos résultats aux quiz et vos travaux notés pour chaque cours, avec les commentaires écrits qui les accompagnent.",
+      "sample": "Affiché avec des données d'exemple.",
+      "title": "Dans la plateforme",
+      "verify": "Vérifier un certificat"
+    },
+    "proof": {
+      "countries": "pays",
+      "label": "DATA+ en chiffres",
+      "lastYear": "formés en {{year}}",
+      "organisations": "Organisations que nous avons formées ou avec lesquelles nous avons travaillé",
+      "trained": "personnes formées"
+    },
+    "subjects": {
+      "body": "Choisissez un domaine pour voir ses cours, niveaux et prix.",
+      "from": "À partir de {{price}}",
+      "see": "Voir les cours",
+      "title": "Trouvez votre cours",
+      "count_one": "{{count}} cours",
+      "count_other": "{{count}} cours"
     }
   },
   "partner": {
@@ -2546,7 +2633,9 @@
     "phone": "Numéro de téléphone",
     "message": "Quels sont vos objectifs ? (facultatif)",
     "sending": "Envoi…",
-    "send": "Envoyer la demande"
+    "send": "Envoyer la demande",
+    "another": "Envoyer une autre demande",
+    "formTitle": "Parlez-nous de votre organisation"
   },
   "site": {
     "home": "Accueil DATA+ Academy",
@@ -2564,7 +2653,9 @@
       "contact": "Contact",
       "competitions": "Compétitions",
       "tracks": "Parcours",
-      "verify": "Vérifier un certificat"
+      "verify": "Vérifier un certificat",
+      "organisations": "Pour les organisations",
+      "projects": "Projets des apprenants"
     },
     "footer": {
       "learn": "Apprendre",
@@ -2583,7 +2674,9 @@
       "parent": "DATA+ Rwanda",
       "whatsapp": "WhatsApp"
     },
-    "skip": "Aller au contenu"
+    "skip": "Aller au contenu",
+    "byParent": "par {{parent}}",
+    "menu": "Menu"
   },
   "capstoneSubmission": {
     "thisFileCannotBeUploaded": "Ce fichier ne peut pas être envoyé.",
@@ -3182,7 +3275,9 @@
   "catalogue": {
     "eyebrow": "Cours",
     "title": "Explorer les cours",
-    "body": "Analyse de données, IA, suivi-évaluation et gestion de projet. Enseignés en français et en anglais, avec des cohortes en direct et un projet final."
+    "body": "Analyse de données, IA, suivi-évaluation et gestion de projet. Enseignés en français et en anglais, avec des cohortes en direct et un projet final.",
+    "subjectAll": "Voir tous les cours",
+    "subjectShowing": "Cours : {{subject}}"
   },
   "createCourse": {
     "invalidFile": "Fichier non valide",

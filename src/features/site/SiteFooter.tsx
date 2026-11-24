@@ -8,7 +8,7 @@ import { fetchLandingBundle } from "./landing-data";
 import { useSiteLinks } from "./siteLinks";
 
 /** Navy footer shared by the public pages. */
-export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
+export function SiteFooter() {
   const { t, i18n } = useTranslation();
   const learnLinks = useSiteLinks();
   const bundle = useQuery({ queryKey: ["landing-bundle"], queryFn: fetchLandingBundle, staleTime: 5 * 60_000 });
@@ -28,18 +28,16 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
     },
   ];
   return (
-    <footer className="bg-forest text-white">
+    <footer className="bg-forest-2 text-white">
       <div className="mx-auto grid max-w-site gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div className="max-w-sm">
           <Brand tone="light" />
           <p className="mt-4 text-sm leading-6 text-white/65">
             {t("site.footer.mission2", "The learning platform of DATA+ Rwanda: courses in data analysis, monitoring and evaluation, research and AI, online and in Kigali.")}
           </p>
-          {onPartner && (
-            <button type="button" onClick={onPartner} className="mt-4 text-sm font-semibold text-flame hover:underline">
-              {t("site.footer.partner", "Train your team with us")}
-            </button>
-          )}
+          <Link to="/#organisations" className="mt-4 inline-block text-sm font-semibold text-flame hover:underline">
+            {t("site.footer.partner", "Train your team with us")}
+          </Link>
         </div>
         {columns.map((column) => (
           <nav key={column.title} aria-label={column.title}>
