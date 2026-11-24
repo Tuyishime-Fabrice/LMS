@@ -90,7 +90,7 @@ export default function TrackDetail() {
                       <Link to={`/course/${course.id}`} className="text-[0.9375rem] font-semibold text-forest hover:text-primary">{course.title}</Link>
                       {!item.required && <StatusPill>{t("tracks.optional", "Optional")}</StatusPill>}
                       {item.state === "completed" && <StatusPill tone="green" icon={CheckCircle2}>{t("tracks.completed", "Completed")}</StatusPill>}
-                      {item.state === "in_progress" && <StatusPill tone="brand" icon={PlayCircle}>{t("tracks.inProgress", "In progress · {{percent}}%", { percent: item.progress })}</StatusPill>}
+                      {item.state === "in_progress" && <StatusPill tone="brand" icon={PlayCircle}>{item.progress > 0 ? t("tracks.inProgress", "In progress · {{percent}}%", { percent: item.progress }) : t("tracks.started", "In progress")}</StatusPill>}
                     </div>
                     {course.summary && <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">{course.summary}</p>}
                     {entry.milestone && <p className="mt-2 flex items-start gap-1.5 text-sm text-forest"><Target className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />{entry.milestone}</p>}

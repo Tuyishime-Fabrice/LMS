@@ -78,7 +78,7 @@ export default function AdminInsights() {
                   <h2 className="text-card-title">{title}</h2>
                   {rows.length === 0 && !question?.suppressed ? <p className="mt-3 text-sm text-muted-foreground">{t("insights.noAnswers", "No answers yet.")}</p> : (
                     <table className="mt-3 w-full text-sm">
-                      <thead className="sr-only"><tr><th>{t("insights.answer", "Answer")}</th><th>{t("insights.learners", "Learners")}</th></tr></thead>
+                      <thead className="sr-only"><tr><th>{t("insights.answerCol", "Answer")}</th><th>{t("insights.learners", "Learners")}</th></tr></thead>
                       <tbody className="divide-y">
                         {rows.map(([answer, count]) => (
                           <tr key={answer}><td className="py-2">{answerLabel(key, answer)}</td><td className="tabular py-2 text-right font-medium text-forest">{count}</td></tr>

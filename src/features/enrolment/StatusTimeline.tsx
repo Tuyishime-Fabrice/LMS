@@ -59,7 +59,7 @@ export function StatusTimeline({ steps, className }: { steps: TimelineStep[]; cl
                 <Marker step={step} index={index} />
                 {!last && (
                   <span aria-hidden className={cn(
-                    "w-px flex-1 sm:h-px sm:w-auto sm:flex-1 sm:mx-2 min-h-5",
+                    "min-h-5 w-px flex-1 sm:mx-2 sm:h-px sm:min-h-0 sm:w-auto",
                     step.state === "done" ? "bg-forest/70" : "border-l border-dashed border-border sm:border-l-0 sm:border-t sm:bg-transparent",
                   )} />
                 )}

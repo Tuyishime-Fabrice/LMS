@@ -4,6 +4,9 @@ import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { RubricEditor } from "@/features/rubrics/RubricEditor";
+import { RubricScorer } from "@/features/rubrics/RubricScorer";
+import { feedbackIsValid, MIN_FEEDBACK_LENGTH, parseRubric, parseScores, type RubricScores } from "@/features/rubrics/rubric";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +74,8 @@ const TeacherAssignments = () => {
   const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>([]);
   const [editGrades, setEditGrades] = useState<Record<string, string>>({});
   const [editFeedback, setEditFeedback] = useState<Record<string, string>>({});
+  const [editRubric, setEditRubric] = useState<Record<string, RubricScores>>({});
+  const [assignmentLessons, setAssignmentLessons] = useState<{ id: string; title: string; rubric: unknown }[]>([]);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
 
@@ -147,16 +152,15 @@ const TeacherAssignments = () => {
       // Fetch submissions for BOTH regular assignments AND capstone projects
       
       // 1. Get regular assignment lesson IDs from course_lessons
-      const { data: courseLessons } = await supabase
+      const lessonQuery = (columns: string) => supabase
         .from("course_lessons")
-        .select(`
-          id,
-          course_chapters!inner (
-            course_id
-          )
-        `)
+        .select(`${columns}, course_chapters!inner ( course_id )`)
         .eq("content_type", "assignment")
         .eq("course_chapters.course_id", selectedCourseId);
+      let lessonResult = await lessonQuery("id, title, rubric");
+      if (lessonResult.error) lessonResult = await lessonQuery("id, title");
+      const courseLessons = (lessonResult.data || []) as unknown as { id: string; title: string; rubric?: unknown }[];
+      setAssignmentLessons(courseLessons.map((lesson) => ({ id: lesson.id, title: lesson.title, rubric: lesson.rubric ?? null })));
 
       const lessonIds = courseLessons?.map(l => l.id) || [];
 
@@ -314,6 +318,12 @@ const TeacherAssignments = () => {
     setEditGrades((prev) => ({ ...prev, [submissionId]: value }));
   };
 
+  const rubricFor = (submission: Submission) => {
+    const lessonId = (submission as { lesson_id?: string }).lesson_id;
+    if (lessonId) return parseRubric(assignmentLessons.find((lesson) => lesson.id === lessonId)?.rubric);
+    return parseRubric((capstoneProject as { rubric?: unknown } | null)?.rubric);
+  };
+
   const handleFeedbackChange = (submissionId: string, value: string) => {
     setEditFeedback((prev) => ({ ...prev, [submissionId]: value }));
   };
@@ -340,6 +350,12 @@ const TeacherAssignments = () => {
         toast.error(t("teacherAssignments.submissionNotFound", "Submission not found"));
         return;
       }
+      // A mark is never published without a meaningful written comment (enforced again by the database).
+      const effectiveFeedback = feedbackText?.trim() || submission.feedback || "";
+      if ((grade !== undefined || submission.grade !== null) && !feedbackIsValid(effectiveFeedback)) {
+        toast.error(t("teacherAssignments.feedbackRequired", "Write feedback of at least {{n}} characters before publishing a mark.", { n: MIN_FEEDBACK_LENGTH }));
+        return;
+      }
 
       // Determine table based on which ID field exists
       const isAssignment = 'lesson_id' in submission;
@@ -350,13 +366,20 @@ const TeacherAssignments = () => {
       const updatePayload: any = { graded_at: new Date().toISOString() };
       if (grade !== undefined) updatePayload.grade = grade;
       if (feedbackText?.trim()) updatePayload.feedback = feedbackText.trim();
+      if (editRubric[submissionId]) updatePayload.rubric_scores = editRubric[submissionId];
 
       const { error } = await supabase
         .from(tableName)
         .update(updatePayload)
         .eq("id", submissionId);
       
-      if (error) throw error;
+      if (error) {
+        if (error.code === "23514") {
+          toast.error(t("teacherAssignments.feedbackRequired", "Write feedback of at least {{n}} characters before publishing a mark.", { n: MIN_FEEDBACK_LENGTH }));
+          return;
+        }
+        throw error;
+      }
       
       setSubmissions((prev) => prev.map((s) => {
         if (s.id !== submissionId) return s;
@@ -477,6 +500,25 @@ const TeacherAssignments = () => {
                     </Card>
                   </div>
 
+                  {assignmentLessons.length > 0 && (
+                    <section className="surface p-4 sm:p-5" aria-labelledby="rubrics-heading">
+                      <h2 id="rubrics-heading" className="text-card-title">{t("teacherAssignments.rubricsTitle", "Assignment rubrics")}</h2>
+                      <p className="mt-1 text-meta">{t("teacherAssignments.rubricsBody", "Learners see the rubric in the lesson before they submit. Major assignments should always have one.")}</p>
+                      <ul className="mt-3 divide-y">
+                        {assignmentLessons.map((lesson) => (
+                          <li key={lesson.id} className="flex items-center justify-between gap-3 py-2.5">
+                            <span className="min-w-0 truncate text-sm font-medium text-forest">{lesson.title}</span>
+                            <span className="flex shrink-0 items-center gap-2">
+                              {!parseRubric(lesson.rubric) && <Badge variant="outline" className="border-warning/30 text-warning">{t("teacherAssignments.noRubric", "No rubric")}</Badge>}
+                              <RubricEditor target="course_lessons" id={lesson.id} name={lesson.title} current={lesson.rubric}
+                                onSaved={(rubric) => setAssignmentLessons((list) => list.map((item) => item.id === lesson.id ? { ...item, rubric } : item))} />
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
                   {/* Assignment Details */}
                   {capstoneProject ? (
                     <Card>
@@ -489,6 +531,13 @@ const TeacherAssignments = () => {
                             </CardDescription>
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
+                            <RubricEditor
+                              target="capstone_projects"
+                              id={capstoneProject.id}
+                              name={capstoneProject.title}
+                              current={(capstoneProject as { rubric?: unknown }).rubric}
+                              onSaved={(rubric) => setCapstoneProject((current) => current && ({ ...current, rubric } as typeof current))}
+                            />
                             {capstoneProject.due_date && (
                               <Badge variant="outline" className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -633,13 +682,29 @@ const TeacherAssignments = () => {
                                         <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {rubricFor(submission) && (
+                                            <div className="mb-3">
+                                              <RubricScorer
+                                                rubric={rubricFor(submission)!}
+                                                value={editRubric[submission.id] ?? parseScores((submission as { rubric_scores?: unknown }).rubric_scores)}
+                                                onChange={(scores, mark) => {
+                                                  setEditRubric((prev) => ({ ...prev, [submission.id]: scores }));
+                                                  if (mark !== null) handleInlineGradeChange(submission.id, String(mark));
+                                                }}
+                                              />
+                                            </div>
+                                          )}
                                           <Textarea
                                             placeholder={t("teacherAssignments.writeYourFeedbackHereEG", "Write your feedback here... (e.g. Great work on the UI! Consider improving error handling.)")}
                                             value={editFeedback[submission.id] ?? (submission.feedback || "")}
                                             onChange={(e) => handleFeedbackChange(submission.id, e.target.value)}
-                                            rows={2}
+                                            rows={3}
                                             className="text-sm resize-none"
+                                            aria-describedby={`feedback-hint-${submission.id}`}
                                           />
+                                          <p id={`feedback-hint-${submission.id}`} className={`mt-1 text-xs ${feedbackIsValid(editFeedback[submission.id] ?? submission.feedback) ? "text-muted-foreground" : "text-warning"}`}>
+                                            {t("teacherAssignments.feedbackHint", "Required with a mark: at least {{n}} characters ({{count}} so far). The learner sees this with their grade.", { n: MIN_FEEDBACK_LENGTH, count: (editFeedback[submission.id] ?? submission.feedback ?? "").trim().length })}
+                                          </p>
                                         </div>
                                       </div>
                                       {submission.feedback && !editFeedback[submission.id] && (
@@ -811,13 +876,29 @@ const TeacherAssignments = () => {
                                         <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {rubricFor(submission) && (
+                                            <div className="mb-3">
+                                              <RubricScorer
+                                                rubric={rubricFor(submission)!}
+                                                value={editRubric[submission.id] ?? parseScores((submission as { rubric_scores?: unknown }).rubric_scores)}
+                                                onChange={(scores, mark) => {
+                                                  setEditRubric((prev) => ({ ...prev, [submission.id]: scores }));
+                                                  if (mark !== null) handleInlineGradeChange(submission.id, String(mark));
+                                                }}
+                                              />
+                                            </div>
+                                          )}
                                           <Textarea
                                             placeholder={t("teacherAssignments.writeYourFeedbackHereEG", "Write your feedback here... (e.g. Great work on the UI! Consider improving error handling.)")}
                                             value={editFeedback[submission.id] ?? (submission.feedback || "")}
                                             onChange={(e) => handleFeedbackChange(submission.id, e.target.value)}
-                                            rows={2}
+                                            rows={3}
                                             className="text-sm resize-none"
+                                            aria-describedby={`feedback-hint-${submission.id}`}
                                           />
+                                          <p id={`feedback-hint-${submission.id}`} className={`mt-1 text-xs ${feedbackIsValid(editFeedback[submission.id] ?? submission.feedback) ? "text-muted-foreground" : "text-warning"}`}>
+                                            {t("teacherAssignments.feedbackHint", "Required with a mark: at least {{n}} characters ({{count}} so far). The learner sees this with their grade.", { n: MIN_FEEDBACK_LENGTH, count: (editFeedback[submission.id] ?? submission.feedback ?? "").trim().length })}
+                                          </p>
                                         </div>
                                       </div>
                                       {submission.feedback && !editFeedback[submission.id] && (

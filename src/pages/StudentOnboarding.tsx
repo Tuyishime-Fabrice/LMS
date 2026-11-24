@@ -108,10 +108,10 @@ const StudentOnboarding = () => {
   }, [loading, user, profile, navigate]);
 
   const steps = [
-    t("onboarding.step.you", "You"),
-    t("onboarding.step.goals", "Goals"),
-    t("onboarding.step.plan", "How you learn"),
-    t("onboarding.step.privacy", "Privacy"),
+    t("onboarding.stepName.you", "You"),
+    t("onboarding.stepName.goals", "Goals"),
+    t("onboarding.stepName.plan", "How you learn"),
+    t("onboarding.stepName.privacy", "Privacy"),
   ];
   const nameValid = answers.fullName.trim().length >= 2;
 
@@ -187,7 +187,7 @@ const StudentOnboarding = () => {
           {step === 1 && (
             <>
               <h1 className="text-page-title">{t("onboarding.goalsTitle", "What brings you here?")}</h1>
-              <Question id="goal" title={t("onboarding.goal", "Your main reason for learning")} optional>
+              <Question id="goal" title={t("onboarding.goalQ", "Your main reason for learning")} optional>
                 <Choices name="goal" value={answers.goal} onChange={(value) => set("goal", value)} options={[
                   { value: "start_career", label: t("onboarding.goal.start", "Start a career in data") },
                   { value: "change_career", label: t("onboarding.goal.change", "Change career") },
@@ -197,7 +197,7 @@ const StudentOnboarding = () => {
                   { value: "other", label: t("onboarding.goal.other", "Something else") },
                 ]} />
               </Question>
-              <Question id="level" title={t("onboarding.level", "Your experience with data so far")} optional>
+              <Question id="level" title={t("onboarding.levelQ", "Your experience with data so far")} optional>
                 <Choices name="level" columns={3} value={answers.level} onChange={(value) => set("level", value)} options={[
                   { value: "new", label: t("onboarding.level.new", "New to it"), hint: t("onboarding.level.newHint", "Little or no experience") },
                   { value: "some", label: t("onboarding.level.some", "Some"), hint: t("onboarding.level.someHint", "Spreadsheets, basic reports") },
@@ -218,14 +218,14 @@ const StudentOnboarding = () => {
           {step === 2 && (
             <>
               <h1 className="text-page-title">{t("onboarding.planTitle", "How would you like to learn?")}</h1>
-              <Question id="mode" title={t("onboarding.mode", "Preferred way of learning")} optional>
+              <Question id="mode" title={t("onboarding.modeQ", "Preferred way of learning")} optional>
                 <Choices name="mode" columns={3} value={answers.mode} onChange={(value) => set("mode", value)} options={[
                   { value: "self_paced", label: t("onboarding.mode.self", "Self-paced"), hint: t("onboarding.mode.selfHint", "In my own time") },
                   { value: "cohort", label: t("onboarding.mode.cohort", "With a cohort"), hint: t("onboarding.mode.cohortHint", "Schedule, instructor, peers") },
                   { value: "either", label: t("onboarding.mode.either", "Either"), hint: t("onboarding.mode.eitherHint", "Depends on the course") },
                 ]} />
               </Question>
-              <Question id="hours" title={t("onboarding.hours", "Realistic time per week")} optional>
+              <Question id="hours" title={t("onboarding.hoursQ", "Realistic time per week")} optional>
                 <Choices name="hours" value={answers.hours} onChange={(value) => set("hours", value)} options={[
                   { value: "lt3", label: t("onboarding.hours.lt3", "Under 3 hours") },
                   { value: "3to5", label: t("onboarding.hours.3to5", "3 to 5 hours") },
@@ -233,7 +233,7 @@ const StudentOnboarding = () => {
                   { value: "gt10", label: t("onboarding.hours.gt10", "More than 10 hours") },
                 ]} />
               </Question>
-              <Question id="access" title={t("onboarding.access", "Who is paying for your learning?")}>
+              <Question id="access" title={t("onboarding.accessQ", "Who is paying for your learning?")}>
                 <Choices name="access" value={answers.access} onChange={(value) => set("access", value)} options={[
                   { value: "individual", label: t("onboarding.access.individual", "I am"), hint: t("onboarding.access.individualHint", "Individual access") },
                   { value: "organisation", label: t("onboarding.access.org", "My organisation"), hint: t("onboarding.access.orgHint", "Employer, NGO or programme sponsor") },

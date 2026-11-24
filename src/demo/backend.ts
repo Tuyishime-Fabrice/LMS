@@ -7,7 +7,7 @@
  */
 import { createSeed, DEMO_PASSWORD, type Row, type Tables } from "./seed";
 
-const STORE_KEY = "dataplus-demo-db-v1";
+const STORE_KEY = "dataplus-demo-db-v2";
 const AUTH_KEY = "dataplus-demo-auth-v1";
 export const DEMO_SUPABASE_URL = "https://demo.dataplus.invalid";
 
@@ -650,6 +650,46 @@ async function handleRpc(request: Request, fn: string): Promise<Response> {
 
     case "get_all_profiles":
       return ok(table("profiles"));
+
+    case "get_competition_leaderboard": {
+      const competition = table("competitions").find((row) => row.id === args.p_competition_id);
+      if (!competition?.results_published_at || String(competition.results_published_at) > nowIso()) return ok([]);
+      const best = new Map<string, number>();
+      table("competition_submissions").filter((row) => row.competition_id === competition.id && row.status === "scored" && row.score != null)
+        .forEach((row) => best.set(String(row.user_id), Math.max(best.get(String(row.user_id)) ?? -Infinity, Number(row.score))));
+      const sorted = Array.from(best.entries()).sort((a, b) => b[1] - a[1]);
+      return ok(sorted.map(([user, score]) => {
+        const parts = profileName(user).trim().split(/\s+/);
+        return { rank: sorted.findIndex((entry) => entry[1] === score) + 1, display_name: parts[1] ? `${parts[0]} ${parts[1][0]}.` : parts[0] || "Participant", score };
+      }));
+    }
+
+    case "competition_registration_open":
+      return ok(true);
+
+    case "get_onboarding_insights": {
+      const min = 5;
+      const all = table("learner_preferences");
+      const consenting = all.filter((row) => row.research_consent);
+      const questions: Record<string, { counts: Record<string, number>; suppressed: number }> = {};
+      const add = (question: string, answer: unknown) => {
+        if (answer == null) return;
+        const bucket = (questions[question] ||= { counts: {}, suppressed: 0 });
+        bucket.counts[String(answer)] = (bucket.counts[String(answer)] || 0) + 1;
+      };
+      consenting.forEach((row) => {
+        add("goal", row.learning_goal); add("level", row.experience_level); add("mode", row.preferred_mode);
+        add("hours", row.weekly_hours); add("access", row.access_route);
+        ((row.interests as string[]) || []).forEach((value) => add("interest", value));
+        ((row.tools as string[]) || []).forEach((value) => add("tool", value));
+      });
+      Object.values(questions).forEach((bucket) => {
+        Object.entries(bucket.counts).forEach(([answer, count]) => {
+          if (count < min) { bucket.suppressed += count; delete bucket.counts[answer]; }
+        });
+      });
+      return ok({ minimum_group_size: min, learners_with_answers: all.length, consenting_learners: consenting.length, questions });
+    }
 
     case "get_admin_dashboard_stats": {
       const profiles = table("profiles");
