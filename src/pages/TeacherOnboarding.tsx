@@ -204,7 +204,7 @@ const TeacherOnboarding = () => {
             alt="DATA+ Academy"
             className="w-10 h-10 object-contain"
           />
-          <span className="text-2xl font-bold text-white">{t("teacherOnboarding.dataplusLabs", "DataPlus Labs")}</span>
+          <span className="text-2xl font-bold text-white">DATA+ Academy</span>
         </div>
 
         {/* Step Indicator */}
@@ -221,7 +221,7 @@ const TeacherOnboarding = () => {
         </div>
 
         <div className="text-white/60 text-sm">
-          {t("teacherOnboarding.allRightsReservedDataplusLabs", "All rights reserved @DataPlus Labs")}
+          © {new Date().getFullYear()} DATA+ Consultant Ltd
         </div>
       </div>
 

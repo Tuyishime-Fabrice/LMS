@@ -1,34 +1,29 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Brand } from "@/components/shell/Brand";
+import { useQuery } from "@tanstack/react-query";
 import { corporateUrl } from "@/lib/siteConfig";
-
-const social = [
-  { href: "https://www.linkedin.com/company/data-consultant-ltd/", label: "LinkedIn" },
-  { href: "https://x.com/dataplusco", label: "X" },
-  { href: "https://www.instagram.com/dataplus_rwanda/", label: "Instagram" },
-];
+import { siteFacts } from "@/content/site-facts";
+import { fetchLandingBundle } from "./landing-data";
+import { useSiteLinks } from "./siteLinks";
 
 /** Navy footer shared by the public pages. */
 export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
-  const { t } = useTranslation();
-  const columns = [
+  const { t, i18n } = useTranslation();
+  const learnLinks = useSiteLinks();
+  const bundle = useQuery({ queryKey: ["landing-bundle"], queryFn: fetchLandingBundle, staleTime: 5 * 60_000 });
+  const { contact, social, brand } = siteFacts;
+  const columns: { title: string; links: ({ to: string; label: string } | { href: string; label: string })[] }[] = [
     {
       title: t("site.footer.learn", "Learn"),
-      links: [
-        { to: "/courses", label: t("site.nav.courses", "Courses") },
-        { to: "/tracks", label: t("site.nav.tracks", "Skill & career tracks") },
-        { to: "/competitions", label: t("site.nav.competitions", "Competitions") },
-        { to: "/exhibition", label: t("site.nav.exhibition", "Student projects") },
-        { to: "/verify", label: t("site.footer.verify", "Verify a certificate") },
-      ],
+      links: learnLinks.map((link) => ({ to: link.to, label: t(link.key, link.label) })),
     },
     {
       title: t("site.footer.academy", "Academy"),
       links: [
-        { to: "/bundles", label: t("site.footer.bundles", "Course bundles") },
+        ...(bundle.data ? [{ to: "/bundles", label: t("site.footer.bundles", "Course bundles") }] : []),
         { to: "/signup?role=teacher", label: t("site.footer.teach", "Teach with us") },
-        { href: corporateUrl("/"), label: t("site.footer.company", "About DATA+") },
+        { href: corporateUrl("/"), label: t("site.footer.parent", "DATA+ Rwanda") },
       ],
     },
   ];
@@ -38,7 +33,7 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
         <div className="max-w-sm">
           <Brand tone="light" />
           <p className="mt-4 text-sm leading-6 text-white/65">
-            {t("site.footer.mission", "Practical data, AI and project management skills for Africa's workforce, taught in English and French from Kigali.")}
+            {t("site.footer.mission2", "The learning platform of DATA+ Rwanda: courses in data analysis, monitoring and evaluation, research and AI, online and in Kigali.")}
           </p>
           {onPartner && (
             <button type="button" onClick={onPartner} className="mt-4 text-sm font-semibold text-flame hover:underline">
@@ -63,20 +58,26 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">{t("site.footer.contact", "Contact")}</h2>
           <ul className="mt-4 space-y-2.5 text-sm text-white/80">
-            <li>KG 5 Kimihurura, Kigali</li>
-            <li><a href="tel:+250784857317" className="hover:text-white">+250 784 857 317</a></li>
-            <li><a href="mailto:info@dataplusrwanda.com" className="hover:text-white">info@dataplusrwanda.com</a></li>
+            <li>{contact.address}</li>
+            <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="hover:text-white">{contact.phone}</a></li>
+            <li><a href={`mailto:${contact.email}`} className="hover:text-white">{contact.email}</a></li>
+            {contact.whatsapp && (
+              <li><a href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-white">{t("site.footer.whatsapp", "WhatsApp")}</a></li>
+            )}
+            {contact.hours && <li>{i18n.language?.startsWith("fr") ? contact.hours.fr : contact.hours.en}</li>}
           </ul>
-          <ul className="mt-4 flex gap-4 text-sm">
-            {social.map((item) => (
-              <li key={item.href}><a href={item.href} target="_blank" rel="noreferrer" className="text-white/70 hover:text-white">{item.label}</a></li>
-            ))}
-          </ul>
+          {social.length > 0 && (
+            <ul className="mt-4 flex gap-4 text-sm">
+              {social.map((item) => (
+                <li key={item.url}><a href={item.url} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">{item.network}</a></li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>© {new Date().getFullYear()} DataPlus Labs. {t("site.footer.rights", "All rights reserved.")}</p>
+          <p>© {new Date().getFullYear()} {brand.legalName}. {t("site.footer.rights", "All rights reserved.")}</p>
           <p className="flex gap-4">
             <Link to="/privacy-policy" className="hover:text-white">{t("site.footer.privacy", "Privacy policy")}</Link>
             <Link to="/terms-of-service" className="hover:text-white">{t("site.footer.terms", "Terms of service")}</Link>

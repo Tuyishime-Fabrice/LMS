@@ -446,7 +446,7 @@ export function PurchaseDialog({
                                         <p className="text-xs text-muted-foreground/60">
                                             {CARD_PAYMENT_ENABLED
                                                 ? t("purchaseDialog.visaMastercardViaXentripay", "Visa, Mastercard via XentriPay")
-                                                : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon — use MoMo for now")}
+                                                : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon. Use MoMo for now")}
                                         </p>
                                     </div>
                                     {!CARD_PAYMENT_ENABLED && (
@@ -479,7 +479,7 @@ export function PurchaseDialog({
                                     <p className="text-xs text-muted-foreground">
                                         {paymentMethod === "momo"
                                             ? t("purchaseDialog.rwandaMtnAirtelNumberOnlyE", "Rwanda MTN/Airtel number only (e.g. 0788123456 or +250788123456)")
-                                            : t("purchaseDialog.anyPhoneNumberLocalOrInternational", "Any phone number — local or international (e.g. +1 555 123 4567)")}
+                                            : t("purchaseDialog.anyPhoneNumberLocalOrInternational", "Any phone number, local or international (e.g. +1 555 123 4567)")}
                                     </p>
                                 </div>
                             )}

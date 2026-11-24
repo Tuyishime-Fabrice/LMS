@@ -8,6 +8,9 @@ import {
   Presentation, Smartphone, Sparkles, UsersRound, Route, BriefcaseBusiness, Trophy, Gauge, ExternalLink,
 } from "lucide-react";
 import { corporateUrl } from "@/lib/siteConfig";
+import { usePageMeta } from "@/lib/pageMeta";
+import { useTracks } from "@/features/tracks/api";
+import { useCompetitions } from "@/features/competitions/api";
 import { Button } from "@/components/ui/button";
 import { CourseThumb } from "@/features/learning/CourseThumb";
 import { useDateLocale } from "@/features/learning/hooks";
@@ -123,38 +126,51 @@ const Index = () => {
   });
   const bundle = useQuery({ queryKey: ["landing-bundle"], queryFn: fetchLandingBundle, staleTime: 5 * 60_000 });
   const cohort = useQuery({ queryKey: ["landing-cohort"], queryFn: fetchNextCohort, staleTime: 5 * 60_000 });
+  const tracks = useTracks();
+  const competitions = useCompetitions();
+  const hasSkillTracks = (tracks.data?.tracks || []).some((track) => track.kind === "skill");
+  const hasCareerTracks = (tracks.data?.tracks || []).some((track) => track.kind === "career");
+  const hasCompetitions = (competitions.data?.competitions || []).length > 0;
+  const anyFree = (courses.data || []).some((course) => course.isFree);
+  const anyEarlyBird = (courses.data || []).some((course) => course.earlyBird !== null);
+  const anyScholarship = (courses.data || []).some((course) => course.scholarshipOpen);
 
   const paid = (courses.data || []).filter((course) => !course.isFree);
   const lowest = paid.length ? paid.reduce((min, course) => Math.min(min, course.earlyBird ?? course.price), Infinity) : null;
   const currency = paid[0]?.currency || "RWF";
   const featured = (courses.data || []).slice(0, 3);
+  usePageMeta({
+    path: "/",
+    description: t("meta.home", "Courses in data analysis, monitoring and evaluation, research and AI from DATA+ Rwanda, with live cohorts online and in Kigali. Pay by Mobile Money."),
+  });
 
+  // Every line here must hold for every listed course (see docs/product/DECISION_LOG.md D-23).
   const benefits = [
     { icon: Presentation, title: t("landing.benefits.live", "Live cohorts and workshops"), body: t("landing.benefits.liveBody", "Evening classes online and hands-on Saturday workshops in Kigali, with an instructor who knows your name.") },
-    { icon: BookOpenCheck, title: t("landing.benefits.practical", "Practical from day one"), body: t("landing.benefits.practicalBody", "Most of your time is spent in Excel, Power BI, SQL, Python and R on real datasets from shops, clinics and cooperatives.") },
-    { icon: Award, title: t("landing.benefits.capstone", "A capstone you can show"), body: t("landing.benefits.capstoneBody", "Finish with a solved problem and a portfolio piece, not only a certificate.") },
-    { icon: LineChart, title: t("landing.benefits.progress", "Progress you can see"), body: t("landing.benefits.progressBody", "Resume where you stopped, track every lesson and grade, and get your certificate automatically when you pass.") },
-    { icon: MessageCircleQuestion, title: t("landing.benefits.tutor", "Help in every lesson"), body: t("landing.benefits.tutorBody", "Ask the AI tutor at any hour, and talk with your cohort and facilitators in your course's Discord community.") },
-    { icon: Languages, title: t("landing.benefits.language", "English or French"), body: t("landing.benefits.languageBody", "The whole platform works in both languages, so you learn in the one you think in.") },
+    { icon: BookOpenCheck, title: t("landing.benefits.practical", "Practical from day one"), body: t("landing.benefits.practicalBody2", "You practise on real datasets from shops, clinics and cooperatives, in the tools each course teaches.") },
+    { icon: Award, title: t("landing.benefits.capstone2", "Capstone projects"), body: t("landing.benefits.capstoneBody2", "Courses with a capstone end with a real problem worked through the five-step framework and marked by your instructor.") },
+    { icon: LineChart, title: t("landing.benefits.progress", "Progress you can see"), body: t("landing.benefits.progressBody2", "Resume where you stopped and follow every lesson and grade. Certificates carry a code anyone can check online.") },
+    { icon: MessageCircleQuestion, title: t("landing.benefits.feedback", "Written feedback"), body: t("landing.benefits.feedbackBody", "Marked work comes back with comments from your instructor, not only a number.") },
+    { icon: Languages, title: t("landing.benefits.language2", "English or French interface"), body: t("landing.benefits.languageBody2", "Menus, pages and messages are in both languages. Each course page states the language it is taught in.") },
   ];
 
   const ways = [
-    { to: "/courses", icon: BookOpenCheck, title: t("landing.ways.courses", "Courses"), body: t("landing.ways.coursesBody", "A structured curriculum with lessons, quizzes, assignments and a certificate."), cta: t("landing.ways.coursesCta", "Browse courses") },
-    { to: "/tracks?kind=skill", icon: Route, title: t("landing.ways.skill", "Skill tracks"), body: t("landing.ways.skillBody", "A short sequence of courses and projects that builds one skill, such as SQL for analysis."), cta: t("landing.ways.skillCta", "See skill tracks") },
-    { to: "/tracks?kind=career", icon: BriefcaseBusiness, title: t("landing.ways.career", "Career tracks"), body: t("landing.ways.careerBody", "A longer pathway toward a role, with the competencies, courses and applied projects it needs."), cta: t("landing.ways.careerCta", "See career tracks") },
-    { to: "/competitions", icon: Trophy, title: t("landing.ways.competitions", "Competitions"), body: t("landing.ways.competitionsBody", "Time-boxed data challenges with their own rules, timeline and results."), cta: t("landing.ways.competitionsCta", "See competitions") },
-  ];
+    { to: "/courses", icon: BookOpenCheck, title: t("landing.ways.courses", "Courses"), body: t("landing.ways.coursesBody2", "Lessons in order, the work each course sets, and a certificate anyone can check."), cta: t("landing.ways.coursesCta", "Browse courses"), show: true },
+    { to: "/tracks?kind=skill", icon: Route, title: t("landing.ways.skill", "Skill tracks"), body: t("landing.ways.skillBody", "A short sequence of courses and projects that builds one skill, such as SQL for analysis."), cta: t("landing.ways.skillCta", "See skill tracks"), show: hasSkillTracks },
+    { to: "/tracks?kind=career", icon: BriefcaseBusiness, title: t("landing.ways.career", "Career tracks"), body: t("landing.ways.careerBody", "A longer pathway toward a role, with the competencies, courses and applied projects it needs."), cta: t("landing.ways.careerCta", "See career tracks"), show: hasCareerTracks },
+    { to: "/competitions", icon: Trophy, title: t("landing.ways.competitions", "Competitions"), body: t("landing.ways.competitionsBody", "Time-boxed data challenges with their own rules, timeline and results."), cta: t("landing.ways.competitionsCta", "See competitions"), show: hasCompetitions },
+  ].filter((way) => way.show);
 
   const modes = [
-    { icon: Gauge, title: t("landing.modes.self", "Self-paced"), body: t("landing.modes.selfBody", "Start when you are ready and move through the course at your own speed. Same lessons, same assessments, same certificate.") },
-    { icon: UsersRound, title: t("landing.modes.cohort", "Instructor-led cohort"), body: t("landing.modes.cohortBody", "Join a group with a schedule, live sessions, deadlines, instructor feedback and a cohort community on Discord.") },
+    { icon: Gauge, title: t("landing.modes.self", "Self-paced"), body: t("landing.modes.selfBody2", "Start once you have access and move through the lessons at your own speed.") },
+    { icon: UsersRound, title: t("landing.modes.cohort", "Instructor-led cohort"), body: t("landing.modes.cohortBody2", "Join a group with a schedule, live sessions, deadlines and feedback from your instructor.") },
   ];
 
   const steps = [
-    { title: t("landing.steps.enrol", "Enrol"), body: t("landing.steps.enrolBody", "Pick a course and pay with Mobile Money, in full or in two instalments.") },
-    { title: t("landing.steps.learn", "Learn with your cohort"), body: t("landing.steps.learnBody", "Watch lessons, join live sessions and practise with quizzes and assignments.") },
-    { title: t("landing.steps.build", "Build your capstone"), body: t("landing.steps.buildBody", "Apply the five-step framework to a real problem, with feedback from your instructor.") },
-    { title: t("landing.steps.certify", "Get certified"), body: t("landing.steps.certifyBody", "Score 65% or more on the capstone and receive a certificate anyone can verify online.") },
+    { title: t("landing.steps.enrol", "Enrol"), body: t("landing.steps.enrolBody2", "Pick a course and pay by Mobile Money, in full or, where the course offers it, in two instalments.") },
+    { title: t("landing.steps.learn2", "Learn"), body: t("landing.steps.learnBody2", "Work through the lessons, join live sessions if your course has them, and complete the work it sets.") },
+    { title: t("landing.steps.build", "Build your capstone"), body: t("landing.steps.buildBody2", "If your course has a capstone, apply the five-step framework to a real problem, with feedback from your instructor.") },
+    { title: t("landing.steps.certify", "Get certified"), body: t("landing.steps.certifyBody2", "Meet the course's pass requirements (65% on the capstone, where there is one) and receive a certificate anyone can verify online.") },
   ];
 
   return (
@@ -171,27 +187,25 @@ const Index = () => {
           <div aria-hidden className="absolute right-40 top-0 hidden h-40 w-40 bg-forest-2 lg:block" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:pb-24 lg:pt-20">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/80">
-                <CalendarClock className="h-3.5 w-3.5 text-flame" />
-                {cohort.data
-                  ? t("landing.hero.nextCohort", "{{name}} starts {{date}}", { name: cohort.data.name, date: format(new Date(cohort.data.startDate), "d MMMM", { locale }) })
-                  : t("landing.hero.enrolling", "Now enrolling: data, AI and M&E courses")}
-              </p>
-              <h1 id="hero-title" className="text-poster mt-6 text-[3.25rem] sm:text-7xl lg:text-[5.5rem]">
-                {t("landing.hero.title1", "Build data skills.")}
-                <br />
-                {t("landing.hero.title2", "Unlock your future.")}
+              {cohort.data && (
+                <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/80">
+                  <CalendarClock className="h-3.5 w-3.5 text-flame" />
+                  {t("landing.hero.nextCohort", "{{name}} starts {{date}}", { name: cohort.data.name, date: format(new Date(cohort.data.startDate), "d MMMM", { locale }) })}
+                </p>
+              )}
+              <h1 id="hero-title" className="text-poster text-4xl sm:text-5xl lg:text-[3.5rem]">
+                {t("landing.hero.heading", "Data, M&E and AI training from the people who do this work across Rwanda and the region.")}
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-white/75">
-                {t("landing.hero.body", "Expert-led courses in data analysis, AI, monitoring and evaluation and project management, built for Africa's workforce and taught in English and French.")}
+                {t("landing.hero.body2", "Live cohorts online and in Kigali. The platform is in English and French, and each course shows the language it is taught in.")}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <Button asChild size="lg" className="h-12 px-6 text-base">
                   <Link to="/courses">{t("landing.hero.cta", "Explore courses")}</Link>
                 </Button>
-                <Link to="/bundles" className="text-sm font-semibold text-white underline decoration-flame decoration-2 underline-offset-[6px] hover:text-flame">
-                  {t("landing.hero.paths", "View learning paths")}
-                </Link>
+                <a href="#organisations" className="text-sm font-semibold text-white underline decoration-flame decoration-2 underline-offset-[6px] hover:text-flame">
+                  {t("landing.hero.team", "Train your team")}
+                </a>
               </div>
               <ul className="mt-10 grid max-w-xl gap-3 text-sm text-white/75 sm:grid-cols-3">
                 {[
@@ -208,13 +222,6 @@ const Index = () => {
               <div className="relative overflow-hidden rounded-xl border border-white/10 bg-forest-2">
                 <img src="/image3.jpg" alt={t("landing.hero.photo", "An instructor teaching at a DATA+ workshop in Kigali")} className="aspect-[4/5] w-full object-cover sm:aspect-[5/5]" />
               </div>
-              <div className="absolute -bottom-6 left-4 right-4 flex items-center gap-3 rounded-xl bg-card p-4 text-foreground shadow-[0_18px_40px_-20px_rgba(0,0,0,0.6)] sm:left-auto sm:right-[-1.5rem] sm:w-72">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-leaf text-leaf-foreground"><Sparkles className="h-5 w-5" /></span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold text-forest">{t("landing.hero.cardTitle", "Capstone graded 65%+")}</span>
-                  <span className="block text-xs text-muted-foreground">{t("landing.hero.cardBody", "Certificate issued automatically, with a QR code")}</span>
-                </span>
-              </div>
             </div>
           </div>
         </section>
@@ -224,8 +231,8 @@ const Index = () => {
           <SectionTitle
             id="ways-title"
             eyebrow={t("landing.ways.eyebrow", "Ways to learn")}
-            title={t("landing.ways.title", "One academy, four ways to grow")}
-            body={t("landing.ways.body", "Take a single course, follow a track that builds one skill or prepares you for a role, or test yourself in a competition.")}
+            title={t("landing.ways.title2", "Choose how you learn")}
+            body={t("landing.ways.body2", "Take a course on its own, or join a cohort with a schedule and live sessions.")}
           />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ways.map((way) => (
@@ -258,7 +265,7 @@ const Index = () => {
             id="courses-title"
             eyebrow={t("landing.courses.eyebrow", "Courses")}
             title={t("landing.courses.title", "Featured courses")}
-            body={t("landing.courses.body", "Start with the skills employers ask for most. Every course ends with a project you can show.")}
+            body={t("landing.courses.body2", "Each course page lists its lessons, how you are assessed and how the certificate is earned.")}
             action={<Link to="/courses" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">{t("landing.courses.all", "See all courses")} <ArrowRight className="h-4 w-4" /></Link>}
           />
           {courses.isLoading ? (
@@ -277,7 +284,7 @@ const Index = () => {
             light
             eyebrow={t("landing.benefits.eyebrow", "Why DATA+ Academy")}
             title={t("landing.benefits.title", "Learning that fits a working life")}
-            body={t("landing.benefits.body", "Built for professionals, students and NGO teams across Rwanda and Francophone Africa.")}
+            body={t("landing.benefits.body2", "Built for working professionals, students and NGO teams.")}
           />
           <ul className="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((item) => (
@@ -323,7 +330,7 @@ const Index = () => {
               id="instructors-title"
               eyebrow={t("landing.instructors.eyebrow", "Instructors")}
               title={t("landing.instructors.title", "Learn from people who do the work")}
-              body={t("landing.instructors.body", "Our instructors lead data teams, research projects and M&E systems.")}
+              body={t("landing.instructors.body2", "The people who teach the courses in the catalogue.")}
             />
             <ul className={cn("grid gap-5 sm:grid-cols-2", instructors.data!.length > 2 ? "lg:grid-cols-4" : "max-w-3xl")}>
               {instructors.data!.map((person) => (
@@ -350,12 +357,12 @@ const Index = () => {
             id="pricing-title"
             eyebrow={t("landing.pricing.eyebrow", "Pricing")}
             title={t("landing.pricing.title", "Pay for what you learn")}
-            body={t("landing.pricing.body", "No subscription. Pay per course or save with a learning path, by Mobile Money.")}
+            body={bundle.data ? t("landing.pricing.bodyBundle", "No subscription. Pay per course or for a bundle of courses, by Mobile Money.") : t("landing.pricing.body2", "No subscription. Pay per course, by Mobile Money.")}
           />
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className={cn("grid gap-5", bundle.data && "md:grid-cols-2")}>
             <div className="flex flex-col rounded-xl border bg-card p-7">
               <h3 className="text-xl font-bold text-forest">{t("landing.pricing.single", "Single course")}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{t("landing.pricing.singleBody", "One course with its cohort, sessions, capstone and certificate.")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{t("landing.pricing.singleBody2", "One course with its lessons, assessments and certificate.")}</p>
               <p className="mt-6 text-sm text-muted-foreground">
                 {lowest !== null
                   ? <>{t("landing.pricing.from", "From")} <span className="text-poster text-4xl text-forest">{formatAmount(lowest, currency, i18n.language)}</span></>
@@ -365,45 +372,38 @@ const Index = () => {
                 {[
                   t("landing.pricing.momo", "MTN Mobile Money or Airtel Money"),
                   t("landing.pricing.instalments", "Two instalments on cohort courses"),
-                  t("landing.pricing.earlyBird", "Early-bird prices before a cohort starts"),
-                  t("landing.pricing.freeCourses", "Some introductory courses are free"),
-                ].map((line) => <li key={line} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{line}</li>)}
+                  anyEarlyBird ? t("landing.pricing.earlyBird", "Early-bird prices before a cohort starts") : null,
+                  anyFree ? t("landing.pricing.freeCourses", "Some introductory courses are free") : null,
+                  anyScholarship ? t("landing.pricing.scholarship2", "Scholarships on courses that offer them, shown on the course page") : null,
+                ].filter((line): line is string => Boolean(line)).map((line) => <li key={line} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{line}</li>)}
               </ul>
               <Button asChild className="mt-8 h-11"><Link to="/courses">{t("landing.pricing.browse", "Browse courses")}</Link></Button>
             </div>
 
-            <div className="relative flex flex-col rounded-xl border-2 border-royal/40 bg-leaf p-7">
-              <span className="absolute -top-3 left-7 rounded-full bg-royal px-3 py-1 text-xs font-semibold text-white">{t("landing.pricing.save", "Best value")}</span>
-              <h3 className="text-xl font-bold text-forest">{bundle.data?.title || t("landing.pricing.path", "Learning path")}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {bundle.data?.description || t("landing.pricing.pathBody", "Several courses that build on each other, at a lower price than buying them one by one.")}
-              </p>
-              <p className="mt-6 flex flex-wrap items-baseline gap-x-3 text-sm text-muted-foreground">
-                {bundle.data ? (
-                  <>
-                    <span className="text-poster text-4xl text-forest">{formatAmount(bundle.data.price, bundle.data.currency, i18n.language)}</span>
-                    {bundle.data.original > bundle.data.price && (
-                      <span>{t("landing.pricing.instead", "instead of {{price}}", { price: formatAmount(bundle.data.original, bundle.data.currency, i18n.language) })}</span>
-                    )}
-                  </>
-                ) : <span className="text-poster text-4xl text-forest">{t("landing.pricing.bundle", "Bundle price")}</span>}
-              </p>
-              <ul className="mt-6 flex-1 space-y-3 text-sm">
-                {[
-                  bundle.data?.courses
-                    ? t("landing.pricing.courses", "{{count}} courses in one payment", { count: bundle.data.courses })
-                    : t("landing.pricing.coursesGeneric", "Several courses in one payment"),
-                  t("landing.pricing.certs", "A certificate for each course you complete"),
-                  t("landing.pricing.scholarship", "Scholarships of up to 50% for students and NGO staff"),
-                ].map((line) => <li key={line} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-royal" />{line}</li>)}
-              </ul>
-              <Button asChild className="mt-8 h-11"><Link to="/bundles">{t("landing.pricing.viewPaths", "View learning paths")}</Link></Button>
-            </div>
+            {bundle.data && (
+              <div className="flex flex-col rounded-xl border bg-leaf p-7">
+                <h3 className="text-xl font-bold text-forest">{bundle.data.title}</h3>
+                {bundle.data.description && <p className="mt-1 text-sm text-muted-foreground">{bundle.data.description}</p>}
+                <p className="mt-6 flex flex-wrap items-baseline gap-x-3 text-sm text-muted-foreground">
+                  <span className="text-poster text-4xl text-forest">{formatAmount(bundle.data.price, bundle.data.currency, i18n.language)}</span>
+                  {bundle.data.original > bundle.data.price && (
+                    <span>{t("landing.pricing.instead", "instead of {{price}}", { price: formatAmount(bundle.data.original, bundle.data.currency, i18n.language) })}</span>
+                  )}
+                </p>
+                <ul className="mt-6 flex-1 space-y-3 text-sm">
+                  {[
+                    t("landing.pricing.courses", "{{count}} courses in one payment", { count: bundle.data.courses }),
+                    t("landing.pricing.certs", "A certificate for each course you complete"),
+                  ].map((line) => <li key={line} className="flex gap-2.5"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{line}</li>)}
+                </ul>
+                <Button asChild className="mt-8 h-11"><Link to="/bundles">{t("landing.pricing.viewBundles", "View course bundles")}</Link></Button>
+              </div>
+            )}
           </div>
         </Section>
 
         {/* Organisations -------------------------------------------------- */}
-        <Section tone="paper" labelledBy="teams-title" className="border-y">
+        <Section id="organisations" tone="paper" labelledBy="teams-title" className="border-y scroll-mt-16">
           <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
               <h2 id="teams-title" className="text-2xl font-bold tracking-tight text-forest sm:text-[1.75rem]">{t("landing.teams.title", "Sponsoring learners from your organisation?")}</h2>
@@ -423,8 +423,8 @@ const Index = () => {
           <div aria-hidden className="absolute -left-10 bottom-0 h-28 w-28 bg-forest-2" />
           <div aria-hidden className="absolute left-14 bottom-14 h-10 w-10 bg-royal" />
           <div className="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
-            <h2 id="cta-title" className="text-poster text-5xl sm:text-6xl lg:text-7xl">{t("landing.cta.title", "Your next chapter starts here.")}</h2>
-            <p className="mx-auto mt-4 max-w-xl text-white/70">{t("landing.cta.body", "Join the next cohort and build skills you can use at work on Monday.")}</p>
+            <h2 id="cta-title" className="text-poster text-5xl sm:text-6xl lg:text-7xl">{t("landing.cta.title2", "Find the course that fits your work.")}</h2>
+            <p className="mx-auto mt-4 max-w-xl text-white/70">{t("landing.cta.body2", "Browse the catalogue, or create a free account and enrol when you are ready.")}</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" className="h-12 px-6 text-base"><Link to="/courses">{t("landing.hero.cta", "Explore courses")}</Link></Button>
               <Button asChild size="lg" variant="outline" className="h-12 border-white/25 bg-transparent px-6 text-base text-white hover:bg-white/10 hover:text-white">

@@ -524,7 +524,9 @@
     "checkYourEmailToVerifyYour": "Consultez votre boîte mail pour valider votre compte et continuer.",
     "accountCreatedCompleteYourProfileTo": "Compte créé ! Complétez votre profil pour continuer.",
     "anErrorOccurredDuringSignup": "Une erreur est survenue lors de l'inscription",
-    "studentsLearningTogether": "Des apprenants qui travaillent ensemble"
+    "studentsLearningTogether": "Des apprenants qui travaillent ensemble",
+    "connectPeers": "Vos cours, vos notes et vos certificats au même endroit.",
+    "tagline": "Cours en données, suivi-évaluation et IA par DATA+ Rwanda."
   },
   "certificates": {
     "certificates": "Certificats",
@@ -575,7 +577,9 @@
     "welcomeAdmin": "Bienvenue Admin !",
     "signedInSuccess": "Connexion réussie !",
     "joinCommunity": "Rejoignez notre communauté d'apprentissage",
-    "connectWorldwide": "Connectez-vous avec des étudiants et enseignants du monde entier"
+    "connectWorldwide": "Connectez-vous avec des étudiants et enseignants du monde entier",
+    "connectPeers": "Vos cours, vos notes et vos certificats au même endroit.",
+    "tagline": "Cours en données, suivi-évaluation et IA par DATA+ Rwanda."
   },
   "onboarding": {
     "welcome": "Bienvenue sur DATA+ Academy",
@@ -1887,7 +1891,13 @@
     "noChaptersFoundForThisCourse": "Aucun chapitre trouvé pour ce cours",
     "locked": "Verrouillé",
     "freePreviewChaptersCanBeAccessed": "Les chapitres en aperçu gratuit sont accessibles à tous. Les chapitres verrouillés nécessitent un achat.",
-    "courses_one": "{{count}} cours"
+    "courses_one": "{{count}} cours",
+    "listed": "Visible",
+    "listedError": "Impossible de modifier la visibilité. La dernière mise à jour de la base de données manque peut-être.",
+    "listedLabel": "Visible dans le catalogue public",
+    "listedNeedsUpdate": "Nécessite la mise à jour de la base de données du 2026-11-27",
+    "nowListed": "Visible dans le catalogue public",
+    "nowUnlisted": "Masqué : accessible uniquement par lien direct"
   },
   "adminCoupons": {
     "error": "Erreur",
@@ -2277,7 +2287,11 @@
     "updateProject": "Mettre à jour le projet",
     "deleteProject": "Supprimer le projet",
     "areYouSureYouWantTo": "Voulez-vous vraiment supprimer « {{projectTitle}} » ? Cette action est irréversible.",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "unverified": "Résultats masqués sur la page publique",
+    "verified": "Résultats affichés sur la page publique",
+    "verifiedLabel": "Résultats vérifiés",
+    "verifyError": "Impossible de modifier la vérification. La dernière mise à jour de la base de données manque peut-être."
   },
   "adminBundles": {
     "error": "Erreur",
@@ -2379,7 +2393,12 @@
       "coursesGeneric": "Plusieurs cours en un seul paiement",
       "certs": "Un certificat pour chaque cours terminé",
       "scholarship": "Bourses jusqu'à 50 % pour les étudiants et le personnel d'ONG",
-      "viewPaths": "Voir les parcours"
+      "viewPaths": "Voir les parcours",
+      "body2": "Pas d'abonnement. Payez par cours, via Mobile Money.",
+      "bodyBundle": "Pas d'abonnement. Payez par cours ou pour un lot de cours, via Mobile Money.",
+      "scholarship2": "Bourses pour les cours qui en proposent, indiquées sur la page du cours",
+      "singleBody2": "Un cours avec ses leçons, ses évaluations et son certificat.",
+      "viewBundles": "Voir les lots de cours"
     },
     "free": "Gratuit",
     "level": {
@@ -2403,9 +2422,18 @@
       "tutorBody": "Posez vos questions au tuteur IA à toute heure, et échangez avec votre cohorte et vos facilitateurs dans la communauté Discord du cours.",
       "language": "En français ou en anglais",
       "languageBody": "Toute la plateforme fonctionne dans les deux langues : apprenez dans celle où vous pensez.",
-      "eyebrow": "Pourquoi DataPlus",
+      "eyebrow": "Pourquoi DATA+ Academy",
       "title": "Une formation compatible avec votre travail",
-      "body": "Conçu pour les professionnels, les étudiants et les équipes d'ONG du Rwanda et de l'Afrique francophone."
+      "body": "Conçu pour les professionnels, les étudiants et les équipes d'ONG du Rwanda et de l'Afrique francophone.",
+      "body2": "Conçu pour les professionnels, les étudiants et les équipes d'ONG.",
+      "capstone2": "Projets finaux",
+      "capstoneBody2": "Les cours avec un projet final se terminent par un vrai problème traité avec le cadre en cinq étapes et noté par votre formateur.",
+      "feedback": "Commentaires écrits",
+      "feedbackBody": "Chaque travail noté revient avec les commentaires de votre formateur, pas seulement une note.",
+      "language2": "Interface en anglais ou en français",
+      "languageBody2": "Les menus, les pages et les messages existent dans les deux langues. Chaque page de cours indique la langue d'enseignement.",
+      "practicalBody2": "Vous vous exercez sur de vraies données de commerces, de centres de santé et de coopératives, avec les outils enseignés dans chaque cours.",
+      "progressBody2": "Reprenez là où vous vous êtes arrêté et suivez chaque leçon et chaque note. Les certificats portent un code vérifiable en ligne par tous."
     },
     "steps": {
       "enrol": "Inscrivez-vous",
@@ -2418,7 +2446,12 @@
       "certifyBody": "Obtenez 65 % ou plus au projet final et recevez un certificat vérifiable en ligne.",
       "photo": "Des apprenants travaillant sur leurs ordinateurs pendant une séance",
       "eyebrow": "Comment ça marche",
-      "title": "De la première leçon au certificat"
+      "title": "De la première leçon au certificat",
+      "buildBody2": "Si votre cours comporte un projet final, appliquez le cadre en cinq étapes à un vrai problème, avec les commentaires de votre formateur.",
+      "certifyBody2": "Remplissez les conditions de réussite du cours (65 % au projet final, s'il y en a un) et recevez un certificat vérifiable en ligne par tous.",
+      "enrolBody2": "Choisissez un cours et payez via Mobile Money, en une fois ou, si le cours le permet, en deux versements.",
+      "learn2": "Apprendre",
+      "learnBody2": "Suivez les leçons, participez aux sessions en direct si votre cours en propose, et réalisez les travaux demandés."
     },
     "hero": {
       "nextCohort": "{{name}} : début le {{date}}",
@@ -2431,9 +2464,12 @@
       "momo": "Paiement par MoMo",
       "cohorts": "Cohortes en direct",
       "verified": "Certificats vérifiables",
-      "photo": "Un formateur lors d'un atelier DataPlus à Kigali",
+      "photo": "Un formateur lors d'un atelier DATA+ à Kigali",
       "cardTitle": "Projet final noté 65 % ou plus",
-      "cardBody": "Certificat délivré automatiquement, avec un code QR"
+      "cardBody": "Certificat délivré automatiquement, avec un code QR",
+      "body2": "Cohortes en direct, en ligne et à Kigali. La plateforme est en anglais et en français, et chaque cours indique sa langue d'enseignement.",
+      "heading": "Formations en données, suivi-évaluation et IA, par des praticiens qui font ce travail au Rwanda et dans la région.",
+      "team": "Former votre équipe"
     },
     "partners": "Partenaires",
     "trusted": "Ils travaillent avec nous",
@@ -2442,13 +2478,15 @@
       "title": "Cours à la une",
       "body": "Commencez par les compétences les plus demandées. Chaque cours se termine par un projet à montrer.",
       "all": "Voir tous les cours",
-      "none": "De nouveaux cours sont en préparation. Revenez bientôt."
+      "none": "De nouveaux cours sont en préparation. Revenez bientôt.",
+      "body2": "Chaque page de cours présente ses leçons, le mode d'évaluation et les conditions d'obtention du certificat."
     },
     "instructors": {
       "eyebrow": "Formateurs",
       "title": "Apprenez auprès de professionnels du terrain",
       "body": "Nos formateurs dirigent des équipes data, des projets de recherche et des systèmes de suivi-évaluation.",
-      "role": "Formateur"
+      "role": "Formateur",
+      "body2": "Les personnes qui enseignent les cours du catalogue."
     },
     "success": {
       "eyebrow": "Réussites",
@@ -2463,13 +2501,17 @@
     "cta": {
       "title": "Votre prochain chapitre commence ici.",
       "body": "Rejoignez la prochaine cohorte et développez des compétences utiles au travail dès lundi.",
-      "signup": "Créer un compte gratuit"
+      "signup": "Créer un compte gratuit",
+      "body2": "Parcourez le catalogue, ou créez un compte gratuit et inscrivez-vous quand vous êtes prêt.",
+      "title2": "Trouvez le cours adapté à votre travail."
     },
     "modes": {
       "cohort": "Cohorte avec formateur",
       "cohortBody": "Rejoignez un groupe avec un calendrier, des sessions en direct, des échéances, les commentaires d'un formateur et une communauté de cohorte sur Discord.",
       "self": "À votre rythme",
-      "selfBody": "Commencez quand vous êtes prêt et avancez à votre vitesse. Mêmes leçons, mêmes évaluations, même certificat."
+      "selfBody": "Commencez quand vous êtes prêt et avancez à votre vitesse. Mêmes leçons, mêmes évaluations, même certificat.",
+      "cohortBody2": "Rejoignez un groupe avec un calendrier, des sessions en direct, des échéances et les commentaires de votre formateur.",
+      "selfBody2": "Commencez dès que vous avez accès et avancez dans les leçons à votre rythme."
     },
     "ways": {
       "body": "Suivez un cours, un parcours qui développe une compétence ou prépare à un métier, ou testez-vous lors d'une compétition.",
@@ -2486,14 +2528,17 @@
       "skill": "Parcours de compétences",
       "skillBody": "Une courte suite de cours et de projets qui développe une compétence, comme SQL pour l'analyse.",
       "skillCta": "Voir les parcours de compétences",
-      "title": "Une académie, quatre façons de progresser"
+      "title": "Une académie, quatre façons de progresser",
+      "body2": "Suivez un cours seul, ou rejoignez une cohorte avec un calendrier et des sessions en direct.",
+      "coursesBody2": "Des leçons dans l'ordre, les travaux demandés par chaque cours et un certificat vérifiable par tous.",
+      "title2": "Choisissez votre façon d'apprendre"
     }
   },
   "partner": {
     "failed": "Votre demande n'a pas été envoyée. Veuillez réessayer.",
     "sentTitle": "Demande reçue",
     "sentBody": "Notre équipe vous contactera sous deux jours ouvrables.",
-    "title": "Formez votre équipe avec DataPlus",
+    "title": "Formez votre équipe avec DATA+ Academy",
     "body": "Parlez-nous de votre organisation. Nous proposons des formations sur mesure et un accompagnement en suivi-évaluation, recherche et tableaux de bord.",
     "name": "Nom complet",
     "organization": "Organisation",
@@ -2533,7 +2578,10 @@
       "privacy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation",
       "bundles": "Packs de cours",
-      "company": "À propos de DATA+"
+      "company": "À propos de DATA+",
+      "mission2": "La plateforme de formation de DATA+ Rwanda : cours en analyse de données, suivi-évaluation, recherche et IA, en ligne et à Kigali.",
+      "parent": "DATA+ Rwanda",
+      "whatsapp": "WhatsApp"
     },
     "skip": "Aller au contenu"
   },
@@ -2775,7 +2823,8 @@
     "courseProgress": "Progression dans les cours",
     "courseComplete": "Cours terminé !",
     "keepGoingYouReMakingGreat": "Continuez, vous progressez très bien !",
-    "aboutThisLesson": "À propos de cette leçon"
+    "aboutThisLesson": "À propos de cette leçon",
+    "selectALessonToStart": "Choisissez une leçon dans le programme pour commencer."
   },
   "verifyEmail": {
     "weCouldnTFindTheEmail": "Adresse e-mail introuvable pour le renvoi. Réinscrivez-vous ou reconnectez-vous.",
@@ -2879,10 +2928,10 @@
     "address": "Adresse",
     "phone": "Téléphone",
     "workingHours": "Heures d'ouverture",
-    "monFri": "Lun.–ven. :",
-    "n830am530pm": "8 h 30 – 17 h 30",
+    "monFri": "Lun. à ven. :",
+    "n830am530pm": "8 h 30 à 17 h 30",
     "sat": "Sam. :",
-    "n900am100pm": "9 h 00 – 13 h 00",
+    "n900am100pm": "9 h 00 à 13 h 00",
     "sun": "Dim. :",
     "closed": "Fermé",
     "getStartedToday": "Commencer aujourd'hui",
@@ -2911,7 +2960,7 @@
     "failedToUpdatePassword": "Échec de la mise à jour du mot de passe",
     "backToLogin": "Retour à la connexion",
     "createANewPassword": "Créez un nouveau mot de passe",
-    "chooseANewPasswordForYour": "Choisissez un nouveau mot de passe pour votre compte DataPlus.",
+    "chooseANewPasswordForYour": "Choisissez un nouveau mot de passe pour votre compte DATA+ Academy.",
     "verifyingResetLink": "Vérification du lien…",
     "resetLinkUnavailable": "Lien de réinitialisation indisponible",
     "requestANewResetLink": "Demander un nouveau lien",
@@ -3302,7 +3351,10 @@
     "purchaseSuccessful": "Achat réussi !",
     "youNowHaveFullAccessTo": "Vous avez maintenant accès à tout le cours",
     "chapters_one": "{{count}} chapitre",
-    "hoursShort": "{{count}} h"
+    "hoursShort": "{{count}} h",
+    "capstoneWorkspaceLocked": "L'espace du projet final s'ouvre après l'achat",
+    "getCapstoneAccess": "Accéder au projet final",
+    "paidLessonNote": "Cette leçon fait partie du contenu payant. Achetez ce cours pour ouvrir tous les modules et toutes les leçons."
   },
   "teacherPendingApproval": {
     "yourAccountHasBeenApproved": "Votre compte a été validé !",
@@ -3948,5 +4000,60 @@
     "submit": "Soumettre pour approbation",
     "submitted": "Envoyé au formateur pour approbation",
     "title": "Titre"
+  },
+  "meta": {
+    "bundles": {
+      "description": "Des groupes de cours DATA+ Academy proposés ensemble à un prix unique.",
+      "title": "Lots de cours"
+    },
+    "competitions": {
+      "description": "Les défis de données organisés par DATA+ Academy, avec leurs règles, leur calendrier et leurs résultats.",
+      "title": "Compétitions"
+    },
+    "courses": {
+      "description": "Parcourez les cours DATA+ Academy en analyse de données, suivi-évaluation, recherche et IA. Consultez le niveau, le format, la langue et le prix de chaque cours.",
+      "title": "Cours"
+    },
+    "forgot": {
+      "title": "Réinitialiser votre mot de passe"
+    },
+    "home": "Cours en analyse de données, suivi-évaluation, recherche et IA par DATA+ Rwanda, avec des cohortes en direct en ligne et à Kigali. Paiement via Mobile Money.",
+    "notFound": {
+      "title": "Page introuvable"
+    },
+    "privacy": {
+      "description": "Comment DATA+ Academy collecte, utilise et protège vos données personnelles.",
+      "title": "Politique de confidentialité"
+    },
+    "projects": {
+      "description": "Projets finaux des apprenants de DATA+ Academy.",
+      "title": "Projets des apprenants"
+    },
+    "reset": {
+      "title": "Choisir un nouveau mot de passe"
+    },
+    "signIn": {
+      "description": "Connectez-vous à DATA+ Academy pour poursuivre vos cours.",
+      "title": "Connexion"
+    },
+    "signUp": {
+      "description": "Créez un compte DATA+ Academy gratuit pour vous inscrire aux cours.",
+      "title": "Créer un compte"
+    },
+    "terms": {
+      "description": "Les conditions d'utilisation de DATA+ Academy.",
+      "title": "Conditions d'utilisation"
+    },
+    "tracks": {
+      "description": "Des suites ordonnées de cours DATA+ Academy pour développer une compétence ou préparer un métier.",
+      "title": "Parcours de compétences et de carrière"
+    },
+    "verify": {
+      "description": "Vérifiez l'authenticité d'un certificat DATA+ Academy avec le code qui y figure.",
+      "title": "Vérifier un certificat"
+    },
+    "verifyEmail": {
+      "title": "Consultez vos e-mails"
+    }
   }
 }

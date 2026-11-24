@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { isMissingSchema } from "@/features/community/api";
 
 export type LandingCourse = {
   id: string;
@@ -15,10 +16,10 @@ export type LandingCourse = {
   earlyBird: number | null;
   teacherId: string | null;
   teacherName: string | null;
+  scholarshipOpen: boolean;
 };
 
 export type LandingInstructor = { id: string; name: string; avatarUrl: string | null; role: string | null; courses: string[] };
-export type LandingTestimonial = { id: string; name: string; quote: string; profession: string | null; impact: string | null; photo: string | null; course: string | null };
 export type LandingBundle = { id: string; title: string; description: string | null; price: number; original: number; currency: string; courses: number };
 
 function earlyBirdPrice(row: Record<string, unknown>): number | null {
@@ -27,30 +28,39 @@ function earlyBirdPrice(row: Record<string, unknown>): number | null {
   return String(row.early_bird_start) <= now && now <= String(row.early_bird_end) ? Number(row.early_bird_price) : null;
 }
 
-/** Approved courses, featured first. */
+/**
+ * Approved courses that are listed in the public catalogue, featured first.
+ * An unlisted course (courses.listed = false, set by an admin for client-only
+ * programmes) is left out here but still opens from a direct link.
+ */
 export async function fetchLandingCourses(): Promise<LandingCourse[]> {
-  const { data, error } = await supabase.from("courses")
-    .select("id, title, summary, description, thumbnail_url, category, level, duration, language, price, currency, is_free, is_featured, early_bird_price, early_bird_start, early_bird_end, teacher_id, created_at, profiles ( full_name )")
+  const columns = "id, title, summary, description, thumbnail_url, category, level, duration, language, price, currency, is_free, is_featured, early_bird_price, early_bird_start, early_bird_end, teacher_id, created_at, scholarship_open, profiles ( full_name )";
+  const query = (select: string) => supabase.from("courses").select(select)
     .eq("approval_status", "approved")
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
-    .limit(12);
-  if (error) throw error;
-  return (data || []).map((row) => ({
-    id: row.id,
-    title: row.title,
-    summary: row.summary || row.description,
-    thumbnailUrl: row.thumbnail_url,
-    category: row.category,
-    level: row.level,
-    duration: row.duration,
-    language: row.language,
+    .limit(24);
+  // `listed` arrives with the 2026-11-27 migration; read without it before that.
+  let result = await query(`${columns}, listed`);
+  if (result.error && isMissingSchema(result.error)) result = await query(columns);
+  if (result.error) throw result.error;
+  const rows = (result.data || []) as unknown as (Record<string, unknown> & { profiles: { full_name: string | null } | null })[];
+  return rows.filter((row) => row.listed !== false).slice(0, 12).map((row) => ({
+    id: row.id as string,
+    title: row.title as string,
+    summary: (row.summary || row.description) as string | null,
+    thumbnailUrl: row.thumbnail_url as string | null,
+    category: row.category as string | null,
+    level: row.level as string | null,
+    duration: row.duration as string | null,
+    language: row.language as string | null,
     price: Number(row.price) || 0,
-    currency: row.currency || "RWF",
+    currency: (row.currency as string) || "RWF",
     isFree: Boolean(row.is_free) || !Number(row.price),
-    earlyBird: earlyBirdPrice(row as unknown as Record<string, unknown>),
-    teacherId: row.teacher_id,
-    teacherName: (row.profiles as { full_name: string | null } | null)?.full_name ?? null,
+    earlyBird: earlyBirdPrice(row),
+    teacherId: row.teacher_id as string | null,
+    teacherName: row.profiles?.full_name ?? null,
+    scholarshipOpen: Boolean(row.scholarship_open),
   }));
 }
 
@@ -73,16 +83,6 @@ export async function fetchLandingInstructors(courses: LandingCourse[]): Promise
     .slice(0, 4);
 }
 
-export async function fetchLandingTestimonials(): Promise<LandingTestimonial[]> {
-  const { data, error } = await supabase.from("testimonials")
-    .select("id, student_name, testimonial_text, profession, career_impact, student_image_url, course_name, display_order")
-    .eq("is_featured", true).order("display_order", { ascending: true }).limit(3);
-  if (error) return [];
-  return (data || []).map((row) => ({
-    id: row.id, name: row.student_name, quote: row.testimonial_text, profession: row.profession,
-    impact: row.career_impact, photo: row.student_image_url, course: row.course_name,
-  }));
-}
 
 export async function fetchLandingBundle(): Promise<LandingBundle | null> {
   const { data, error } = await supabase.from("course_bundles")

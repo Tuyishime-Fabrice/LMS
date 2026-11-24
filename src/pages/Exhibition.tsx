@@ -1,4 +1,6 @@
 import { PageBand } from "@/features/site/PageBand";
+import { ContentTodo } from "@/components/ContentTodo";
+import { usePageMeta } from "@/lib/pageMeta";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
 import { SiteFooter } from "@/features/site/SiteFooter";
@@ -36,6 +38,8 @@ type ExhibitionProject = {
   technologies: string[];
   project_link: string | null;
   is_featured: boolean;
+  /** Undefined before the 2026-11-27 migration: treated as not verified. */
+  outcomes_verified?: boolean;
   display_order: number;
   // Capstone Framework Fields
   problem_definition: string | null;
@@ -47,6 +51,7 @@ type ExhibitionProject = {
 
 const Exhibition = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.projects.title", "Student projects"), description: t("meta.projects.description", "Capstone projects by DATA+ Academy learners."), path: "/exhibition" });
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -199,11 +204,13 @@ const Exhibition = () => {
                         </div>
                       </div>
 
-                      {/* Score Badge */}
+                      {/* Score: public only once an admin has verified the outcomes */}
                       <div className="flex items-center justify-between">
-                        <div className="bg-card px-4 py-2 rounded-full">
-                          <span className="text-forest font-bold">{t("exhibition.courseScore", "Course Score: {{courseScore}}%", { courseScore: project.course_score })}</span>
-                        </div>
+                        {project.outcomes_verified ? (
+                          <div className="bg-card px-4 py-2 rounded-full">
+                            <span className="text-forest font-bold">{t("exhibition.courseScore", "Course Score: {{courseScore}}%", { courseScore: project.course_score })}</span>
+                          </div>
+                        ) : <span />}
                         <GraduationCap className="w-8 h-8 text-white" />
                       </div>
                     </div>
@@ -215,7 +222,7 @@ const Exhibition = () => {
                       </h4>
 
                       <p className="text-foreground text-sm mb-4 leading-relaxed">
-                        {project.project_description}
+                        {project.outcomes_verified ? project.project_description : null}
                       </p>
 
                       {/* Technologies */}
@@ -236,7 +243,8 @@ const Exhibition = () => {
                       )}
 
                       {/* Achievements */}
-                      {project.achievements && project.achievements.length > 0 && (
+                      {!project.outcomes_verified && <ContentTodo className="mb-4" label="Outcomes for this project are hidden until an admin verifies them (Admin, Student projects)" />}
+                      {project.outcomes_verified && project.achievements && project.achievements.length > 0 && (
                         <div className="mb-4">
                           <p className="text-xs font-semibold text-muted-foreground mb-2">{t("exhibition.achievements", "ACHIEVEMENTS")}</p>
                           <div className="space-y-2">
@@ -262,7 +270,7 @@ const Exhibition = () => {
                             </div>
                           )}
 
-                          {project.data_evidence && (
+                          {project.outcomes_verified && project.data_evidence && (
                             <div>
                               <p className="text-xs font-bold text-info mb-1">{t("exhibition.n2DataEvidence", "2. Data / Evidence")}</p>
                               <p className="text-sm text-foreground">{project.data_evidence}</p>
@@ -276,14 +284,14 @@ const Exhibition = () => {
                             </div>
                           )}
 
-                          {project.analysis && (
+                          {project.outcomes_verified && project.analysis && (
                             <div>
                               <p className="text-xs font-bold text-warning mb-1">{t("exhibition.n4Analysis", "4. Analysis")}</p>
                               <p className="text-sm text-foreground">{project.analysis}</p>
                             </div>
                           )}
 
-                          {project.recommendations && (
+                          {project.outcomes_verified && project.recommendations && (
                             <div>
                               <p className="text-xs font-bold text-primary mb-1">{t("exhibition.n5Recommendations", "5. Recommendations")}</p>
                               <p className="text-sm text-foreground">{project.recommendations}</p>

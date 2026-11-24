@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from "@/lib/browserStorage";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -19,6 +20,7 @@ const PENDING_VERIFICATION_EMAIL_KEY = "pendingVerificationEmail";
 const SignUp = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.signUp.title", "Create an account"), description: t("meta.signUp.description", "Create a free DATA+ Academy account to enrol in courses."), path: "/signup" });
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const [selectedRole, setSelectedRole] = useState<UserRole>(searchParams.get("role") === "teacher" ? "teacher" : "student");
@@ -163,7 +165,7 @@ const SignUp = () => {
           {/* Header */}
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-forest leading-tight">
-              {t('signUp.masterSkills')}
+              {t('signUp.tagline', 'Data, M&E and AI courses by DATA+ Rwanda.')}
             </h1>
             <p className="text-muted-foreground text-sm">{t('signUp.signUpToStart')}</p>
           </div>
@@ -358,7 +360,7 @@ const SignUp = () => {
         <div className="absolute inset-0 to-transparent" />
         <div className="absolute bottom-8 left-8 text-white z-10">
           <h3 className="text-2xl font-bold mb-2">{t('signUp.joinCommunity')}</h3>
-          <p className="text-lg opacity-90">{t('signUp.connectWorldwide')}</p>
+          <p className="text-lg opacity-90">{t('signUp.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
         </div>
       </div>
     </div>

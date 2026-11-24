@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage } from "@/lib/browserStorage";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ const AUTH_METHOD_KEY = "lastAuthMethod";
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.signIn.title", "Sign in"), description: t("meta.signIn.description", "Sign in to DATA+ Academy to continue your courses."), path: "/auth" });
   const { user, profile, loading: authLoading } = useAppAuth();
   const [formLoading, setFormLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +126,7 @@ const Auth = () => {
           {/* Header */}
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-forest leading-tight">
-              {t('login.masterSkills')}
+              {t('login.tagline', 'Data, M&E and AI courses by DATA+ Rwanda.')}
             </h1>
             <p className="text-muted-foreground text-sm">{t('login.signInToStart')}</p>
           </div>
@@ -263,7 +265,7 @@ const Auth = () => {
         <div className="absolute inset-0 to-transparent" />
         <div className="absolute bottom-8 left-8 text-white z-10">
           <h3 className="text-2xl font-bold mb-2">{t('login.joinCommunity')}</h3>
-          <p className="text-lg opacity-90">{t('login.connectWorldwide')}</p>
+          <p className="text-lg opacity-90">{t('login.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
         </div>
       </div>
     </div>

@@ -1248,6 +1248,7 @@ export type Database = {
           last_approved_at: string | null;
           learning_outcomes: string[] | null;
           level: "beginner" | "intermediate" | "advanced" | null;
+          listed: boolean;
           mode: string | null;
           pending_update: boolean | null;
           price: number | null;
@@ -1286,6 +1287,7 @@ export type Database = {
           last_approved_at?: string | null;
           learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
+          listed?: boolean;
           mode?: string | null;
           pending_update?: boolean | null;
           price?: number | null;
@@ -1324,6 +1326,7 @@ export type Database = {
           last_approved_at?: string | null;
           learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
+          listed?: boolean;
           mode?: string | null;
           pending_update?: boolean | null;
           price?: number | null;
@@ -1388,6 +1391,7 @@ export type Database = {
           display_order: number;
           id: string;
           is_featured: boolean;
+          outcomes_verified: boolean;
           problem_definition: string | null;
           project_description: string;
           project_link: string | null;
@@ -1408,6 +1412,7 @@ export type Database = {
           display_order?: number;
           id?: string;
           is_featured?: boolean;
+          outcomes_verified?: boolean;
           problem_definition?: string | null;
           project_description?: string;
           project_link?: string | null;
@@ -1428,6 +1433,7 @@ export type Database = {
           display_order?: number;
           id?: string;
           is_featured?: boolean;
+          outcomes_verified?: boolean;
           problem_definition?: string | null;
           project_description?: string;
           project_link?: string | null;

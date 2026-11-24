@@ -1,9 +1,11 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
 const NotFound = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.notFound.title", "Page not found"), noindex: true });
   const location = useLocation();
 
   useEffect(() => {

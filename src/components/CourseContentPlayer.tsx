@@ -252,7 +252,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
               </div>
               <h3 className="text-2xl font-bold text-forest mb-2">{t("courseContentPlayer.readyToLearn", "Ready to Learn?")}</h3>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                {t("courseContentPlayer.selectALessonFromTheCurriculum", "Select a lesson from the curriculum to start your learning journey")}
+                {t("courseContentPlayer.selectALessonToStart", "Select a lesson from the curriculum to start.")}
               </p>
               <div className="mt-6 flex items-center justify-center gap-2 text-sm text-primary">
                 <Sparkles className="h-4 w-4" />

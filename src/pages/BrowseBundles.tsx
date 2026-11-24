@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
@@ -32,6 +33,7 @@ interface Bundle {
 
 export default function BrowseBundles() {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.bundles.title", "Course bundles"), description: t("meta.bundles.description", "Groups of DATA+ Academy courses offered together at one price."), path: "/bundles" });
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();

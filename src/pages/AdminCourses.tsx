@@ -20,6 +20,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 
 interface Course {
   id: string;
+  /** Public catalogue listing (2026-11-27). Undefined before that migration. */
+  listed?: boolean;
   title: string;
   description: string | null;
   summary: string | null;
@@ -164,6 +166,20 @@ const AdminCourses = () => {
     }
   };
 
+  // Client-only programmes stay reachable by link but leave the public catalogue.
+  const toggleListed = async (course: Course) => {
+    const next = course.listed === false;
+    setProcessing(true);
+    const { error } = await supabase.from("courses").update({ listed: next }).eq("id", course.id);
+    setProcessing(false);
+    if (error) {
+      toast.error(t("adminCourses.listedError", "Could not change the listing. The latest database update may be missing."));
+      return;
+    }
+    toast.success(next ? t("adminCourses.nowListed", "Listed in the public catalogue") : t("adminCourses.nowUnlisted", "Unlisted: reachable by direct link only"));
+    fetchCourses();
+  };
+
   const approveCourse = async (courseId: string) => {
     setProcessing(true);
     try {
@@ -236,7 +252,7 @@ const AdminCourses = () => {
 
       if (error) throw error;
       if (!data || data.length === 0) {
-        toast.error(t("adminCourses.updateBlockedCheckAdminPermissionsRls", "Update blocked — check admin permissions (RLS policy may be missing)"));
+        toast.error(t("adminCourses.updateBlockedCheckAdminPermissionsRls", "Update blocked: check admin permissions (RLS policy may be missing)"));
         return;
       }
       toast.success(t("adminCourses.pricingUpdated", "Pricing updated"));
@@ -319,7 +335,7 @@ const AdminCourses = () => {
     }
 
     if (!data || data.length === 0) {
-      toast.error(t("adminCourses.updateBlockedRunTheAdminRls", "Update blocked — run the admin RLS fix migration in Supabase SQL Editor"));
+      toast.error(t("adminCourses.updateBlockedRunTheAdminRls", "Update blocked: run the admin RLS fix migration in the Supabase SQL Editor"));
       return;
     }
 
@@ -385,6 +401,7 @@ const AdminCourses = () => {
                         <TableHead>{t("adminCourses.price", "Price")}</TableHead>
                         <TableHead>{t("adminCourses.status", "Status")}</TableHead>
                         <TableHead>{t("adminCourses.featured", "Featured")}</TableHead>
+                        <TableHead>{t("adminCourses.listed", "Listed")}</TableHead>
                         <TableHead>{t("adminCourses.created", "Created")}</TableHead>
                         <TableHead>{t("adminCourses.actions", "Actions")}</TableHead>
                       </TableRow>
@@ -566,6 +583,15 @@ const AdminCourses = () => {
                               />
                             </Button>
                           </TableCell>
+                          <TableCell>
+                            <Switch
+                              checked={course.listed !== false}
+                              onCheckedChange={() => void toggleListed(course)}
+                              disabled={processing || course.listed === undefined}
+                              aria-label={t("adminCourses.listedLabel", "Listed in the public catalogue")}
+                              title={course.listed === undefined ? t("adminCourses.listedNeedsUpdate", "Needs the 2026-11-27 database update") : undefined}
+                            />
+                          </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
                             {new Date(course.created_at).toLocaleDateString()}
                           </TableCell>
@@ -656,7 +682,7 @@ const AdminCourses = () => {
           <DialogHeader>
             <DialogTitle>{t("adminCourses.manageChapterAccess", "Manage Chapter Access")}</DialogTitle>
             <DialogDescription>
-              {t("adminCourses.toggleWhichChaptersAreFreeTo", "{{title}} — Toggle which chapters are free to preview", { title: selectedCourseForChapters?.title })}
+              {t("adminCourses.toggleWhichChaptersAreFreeTo", "{{title}}: toggle which chapters are free to preview", { title: selectedCourseForChapters?.title })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 max-h-[400px] overflow-y-auto">

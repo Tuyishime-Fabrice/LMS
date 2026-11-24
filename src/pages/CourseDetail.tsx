@@ -1,3 +1,4 @@
+import { courseJsonLd, usePageMeta } from "@/lib/pageMeta";
 import { CourseAtAGlance } from "@/features/enrolment/CourseAtAGlance";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
@@ -115,6 +116,12 @@ export default function CourseDetail() {
   const [cohortCheckoutId, setCohortCheckoutId] = useState<string | null>(null);
   const [hasAutoOpenedPaymentStep, setHasAutoOpenedPaymentStep] = useState(false);
   const [searchParams] = useSearchParams();
+  usePageMeta({
+    title: course?.title,
+    description: course?.description ? course.description.slice(0, 160) : undefined,
+    path: id ? `/course/${id}` : undefined,
+    jsonLd: course ? courseJsonLd({ id: course.id, title: course.title, description: course.description, language: course.language, price: course.price, currency: course.currency, isFree: course.is_free === true }) : null,
+  });
 
   // Check if user is a student (not teacher/admin)
   const isStudent = userRole === 'student';
@@ -1025,7 +1032,7 @@ export default function CourseDetail() {
                   </div>
                   <h3 className="text-xl font-bold text-forest">{t("courseDetail.contentLocked", "Content Locked")}</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">
-                    {t("courseDetail.thisLessonIsPartOfThe", "This lesson is part of the paid content. Purchase this course to unlock all chapters and lessons.")}
+                    {t("courseDetail.paidLessonNote", "This lesson is part of the paid content. Buy this course to open every module and lesson.")}
                   </p>
                   {course && (
                     <div className="text-2xl font-bold text-forest">{formattedPrice()}</div>
@@ -1156,7 +1163,7 @@ export default function CourseDetail() {
                     className="w-full"
                     variant={capstoneLocked ? "default" : "outline"}
                   >
-                    {capstoneLocked ? t("courseDetail.unlockCapstone", "Unlock Capstone") : t("courseDetail.openCapstoneWorkspace", "Open Capstone Workspace")}
+                    {capstoneLocked ? t("courseDetail.getCapstoneAccess", "Get capstone access") : t("courseDetail.openCapstoneWorkspace", "Open Capstone Workspace")}
                   </Button>
                 </CardContent>
               </Card>
@@ -1223,7 +1230,7 @@ export default function CourseDetail() {
                           <Lock className="h-8 w-8 text-primary" />
                         </div>
                         <div className="space-y-2">
-                          <h3 className="text-xl font-bold text-forest">{t("courseDetail.unlockTheCapstoneWorkspace", "Unlock the Capstone Workspace")}</h3>
+                          <h3 className="text-xl font-bold text-forest">{t("courseDetail.capstoneWorkspaceLocked", "The capstone workspace opens after purchase")}</h3>
                           <p className="mx-auto max-w-2xl text-muted-foreground">
                             {t("courseDetail.purchaseThisCourseToViewThe", "Purchase this course to view the complete capstone instructions and submit the links and notes required by your teacher.")}
                           </p>

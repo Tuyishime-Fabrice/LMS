@@ -524,7 +524,9 @@
     "checkYourEmailToVerifyYour": "Check your email to verify your account and continue.",
     "accountCreatedCompleteYourProfileTo": "Account created! Complete your profile to continue.",
     "anErrorOccurredDuringSignup": "An error occurred during signup",
-    "studentsLearningTogether": "Students learning together"
+    "studentsLearningTogether": "Students learning together",
+    "connectPeers": "Your courses, marks and certificates in one place.",
+    "tagline": "Data, M&E and AI courses by DATA+ Rwanda."
   },
   "certificates": {
     "certificates": "Certificates",
@@ -575,7 +577,9 @@
     "welcomeAdmin": "Welcome Admin!",
     "signedInSuccess": "Signed in successfully!",
     "joinCommunity": "Join Our Learning Community",
-    "connectWorldwide": "Connect with students and teachers worldwide"
+    "connectWorldwide": "Connect with students and teachers worldwide",
+    "connectPeers": "Your courses, marks and certificates in one place.",
+    "tagline": "Data, M&E and AI courses by DATA+ Rwanda."
   },
   "onboarding": {
     "welcome": "Welcome to DATA+ Academy",
@@ -1842,13 +1846,13 @@
     "courseApproved": "Course approved",
     "failedToApproveCourse": "Failed to approve course",
     "failedToDeleteCourse": "Failed to delete course",
-    "updateBlockedCheckAdminPermissionsRls": "Update blocked — check admin permissions (RLS policy may be missing)",
+    "updateBlockedCheckAdminPermissionsRls": "Update blocked: check admin permissions (RLS policy may be missing)",
     "pricingUpdated": "Pricing updated",
     "failedToUpdatePricing": "Failed to update pricing",
     "failedToUpdateInstalmentPlan": "Failed to update instalment plan",
     "failedToLoadChapters": "Failed to load chapters",
     "failedToUpdateChapter": "Failed to update chapter",
-    "updateBlockedRunTheAdminRls": "Update blocked — run the admin RLS fix migration in Supabase SQL Editor",
+    "updateBlockedRunTheAdminRls": "Update blocked: run the admin RLS fix migration in the Supabase SQL Editor",
     "courseManagement": "Course Management",
     "manageAndApproveCourses": "Manage and approve courses",
     "courses": "{{count}} Courses",
@@ -1882,12 +1886,18 @@
     "cancel": "Cancel",
     "deleting": "Deleting...",
     "manageChapterAccess": "Manage Chapter Access",
-    "toggleWhichChaptersAreFreeTo": "{{title}} — Toggle which chapters are free to preview",
+    "toggleWhichChaptersAreFreeTo": "{{title}}: toggle which chapters are free to preview",
     "loadingChapters": "Loading chapters...",
     "noChaptersFoundForThisCourse": "No chapters found for this course",
     "locked": "Locked",
     "freePreviewChaptersCanBeAccessed": "Free preview chapters can be accessed by anyone. Locked chapters require purchase.",
-    "courses_one": "{{count}} Course"
+    "courses_one": "{{count}} Course",
+    "listed": "Listed",
+    "listedError": "Could not change the listing. The latest database update may be missing.",
+    "listedLabel": "Listed in the public catalogue",
+    "listedNeedsUpdate": "Needs the 2026-11-27 database update",
+    "nowListed": "Listed in the public catalogue",
+    "nowUnlisted": "Unlisted: reachable by direct link only"
   },
   "adminCoupons": {
     "error": "Error",
@@ -2117,12 +2127,12 @@
     "setDifferentPricesPerLearnerCategory": "Set different prices per learner category. Assign users a tier in their profile.",
     "paidCourse": "Paid course",
     "selectCourse": "Select course",
-    "standard": "{{title}} — {{formatPrice}} (standard)",
+    "standard": "{{title}}: {{formatPrice}} (standard)",
     "tier": "Tier",
     "price": "Price ({{currency}})",
     "addTierPrice": "Add tier price",
     "price2": "Price",
-    "noTierPricesStandardPriceApplies": "No tier prices — standard price applies to all users"
+    "noTierPricesStandardPriceApplies": "No tier prices, so the standard price applies to all users"
   },
   "adminCertificates": {
     "accessDenied": "Access denied",
@@ -2277,7 +2287,11 @@
     "updateProject": "Update Project",
     "deleteProject": "Delete Project",
     "areYouSureYouWantTo": "Are you sure you want to delete \"{{projectTitle}}\"? This action cannot be undone.",
-    "delete": "Delete"
+    "delete": "Delete",
+    "unverified": "Outcomes hidden from the public page",
+    "verified": "Outcomes shown on the public page",
+    "verifiedLabel": "Outcomes verified",
+    "verifyError": "Could not change verification. The latest database update may be missing."
   },
   "adminBundles": {
     "error": "Error",
@@ -2379,7 +2393,12 @@
       "coursesGeneric": "Several courses in one payment",
       "certs": "A certificate for each course you complete",
       "scholarship": "Scholarships of up to 50% for students and NGO staff",
-      "viewPaths": "View learning paths"
+      "viewPaths": "View learning paths",
+      "body2": "No subscription. Pay per course, by Mobile Money.",
+      "bodyBundle": "No subscription. Pay per course or for a bundle of courses, by Mobile Money.",
+      "scholarship2": "Scholarships on courses that offer them, shown on the course page",
+      "singleBody2": "One course with its lessons, assessments and certificate.",
+      "viewBundles": "View course bundles"
     },
     "free": "Free",
     "level": {
@@ -2405,7 +2424,16 @@
       "languageBody": "The whole platform works in both languages, so you learn in the one you think in.",
       "eyebrow": "Why DATA+ Academy",
       "title": "Learning that fits a working life",
-      "body": "Built for professionals, students and NGO teams across Rwanda and Francophone Africa."
+      "body": "Built for professionals, students and NGO teams across Rwanda and Francophone Africa.",
+      "body2": "Built for working professionals, students and NGO teams.",
+      "capstone2": "Capstone projects",
+      "capstoneBody2": "Courses with a capstone end with a real problem worked through the five-step framework and marked by your instructor.",
+      "feedback": "Written feedback",
+      "feedbackBody": "Marked work comes back with comments from your instructor, not only a number.",
+      "language2": "English or French interface",
+      "languageBody2": "Menus, pages and messages are in both languages. Each course page states the language it is taught in.",
+      "practicalBody2": "You practise on real datasets from shops, clinics and cooperatives, in the tools each course teaches.",
+      "progressBody2": "Resume where you stopped and follow every lesson and grade. Certificates carry a code anyone can check online."
     },
     "steps": {
       "enrol": "Enrol",
@@ -2418,7 +2446,12 @@
       "certifyBody": "Score 65% or more on the capstone and receive a certificate anyone can verify online.",
       "photo": "Learners working on laptops during a session",
       "eyebrow": "How it works",
-      "title": "From your first lesson to a certificate"
+      "title": "From your first lesson to a certificate",
+      "buildBody2": "If your course has a capstone, apply the five-step framework to a real problem, with feedback from your instructor.",
+      "certifyBody2": "Meet the course's pass requirements (65% on the capstone, where there is one) and receive a certificate anyone can verify online.",
+      "enrolBody2": "Pick a course and pay by Mobile Money, in full or, where the course offers it, in two instalments.",
+      "learn2": "Learn",
+      "learnBody2": "Work through the lessons, join live sessions if your course has them, and complete the work it sets."
     },
     "hero": {
       "nextCohort": "{{name}} starts {{date}}",
@@ -2433,7 +2466,10 @@
       "verified": "Verifiable certificates",
       "photo": "An instructor teaching at a DATA+ workshop in Kigali",
       "cardTitle": "Capstone graded 65%+",
-      "cardBody": "Certificate issued automatically, with a QR code"
+      "cardBody": "Certificate issued automatically, with a QR code",
+      "body2": "Live cohorts online and in Kigali. The platform is in English and French, and each course shows the language it is taught in.",
+      "heading": "Data, M&E and AI training from the people who do this work across Rwanda and the region.",
+      "team": "Train your team"
     },
     "partners": "Partners",
     "trusted": "Working with",
@@ -2442,13 +2478,15 @@
       "title": "Featured courses",
       "body": "Start with the skills employers ask for most. Every course ends with a project you can show.",
       "all": "See all courses",
-      "none": "New courses are being prepared. Check back soon."
+      "none": "New courses are being prepared. Check back soon.",
+      "body2": "Each course page lists its lessons, how you are assessed and how the certificate is earned."
     },
     "instructors": {
       "eyebrow": "Instructors",
       "title": "Learn from people who do the work",
       "body": "Our instructors lead data teams, research projects and M&E systems.",
-      "role": "Instructor"
+      "role": "Instructor",
+      "body2": "The people who teach the courses in the catalogue."
     },
     "success": {
       "eyebrow": "Student success",
@@ -2463,13 +2501,17 @@
     "cta": {
       "title": "Your next chapter starts here.",
       "body": "Join the next cohort and build skills you can use at work on Monday.",
-      "signup": "Create a free account"
+      "signup": "Create a free account",
+      "body2": "Browse the catalogue, or create a free account and enrol when you are ready.",
+      "title2": "Find the course that fits your work."
     },
     "modes": {
       "cohort": "Instructor-led cohort",
       "cohortBody": "Join a group with a schedule, live sessions, deadlines, instructor feedback and a cohort community on Discord.",
       "self": "Self-paced",
-      "selfBody": "Start when you are ready and move through the course at your own speed. Same lessons, same assessments, same certificate."
+      "selfBody": "Start when you are ready and move through the course at your own speed. Same lessons, same assessments, same certificate.",
+      "cohortBody2": "Join a group with a schedule, live sessions, deadlines and feedback from your instructor.",
+      "selfBody2": "Start once you have access and move through the lessons at your own speed."
     },
     "ways": {
       "body": "Take a single course, follow a track that builds one skill or prepares you for a role, or test yourself in a competition.",
@@ -2486,7 +2528,10 @@
       "skill": "Skill tracks",
       "skillBody": "A short sequence of courses and projects that builds one skill, such as SQL for analysis.",
       "skillCta": "See skill tracks",
-      "title": "One academy, four ways to grow"
+      "title": "One academy, four ways to grow",
+      "body2": "Take a course on its own, or join a cohort with a schedule and live sessions.",
+      "coursesBody2": "Lessons in order, the work each course sets, and a certificate anyone can check.",
+      "title2": "Choose how you learn"
     }
   },
   "partner": {
@@ -2533,7 +2578,10 @@
       "privacy": "Privacy policy",
       "terms": "Terms of service",
       "bundles": "Course bundles",
-      "company": "About DATA+"
+      "company": "About DATA+",
+      "mission2": "The learning platform of DATA+ Rwanda: courses in data analysis, monitoring and evaluation, research and AI, online and in Kigali.",
+      "parent": "DATA+ Rwanda",
+      "whatsapp": "WhatsApp"
     },
     "skip": "Skip to content"
   },
@@ -2699,12 +2747,12 @@
     "rwandaMomoAirtelRwfOnly": "Rwanda MoMo / Airtel (RWF only)",
     "cardPayment": "Card Payment",
     "visaMastercardViaXentripay": "Visa, Mastercard via XentriPay",
-    "comingSoonUseMomoForNow": "Coming soon — use MoMo for now",
+    "comingSoonUseMomoForNow": "Coming soon. Use MoMo for now",
     "soon": "Soon",
     "mtnMomoPhoneNumber": "MTN MoMo Phone Number",
     "phoneNumber": "Phone Number",
     "rwandaMtnAirtelNumberOnlyE": "Rwanda MTN/Airtel number only (e.g. 0788123456 or +250788123456)",
-    "anyPhoneNumberLocalOrInternational": "Any phone number — local or international (e.g. +1 555 123 4567)",
+    "anyPhoneNumberLocalOrInternational": "Any phone number, local or international (e.g. +1 555 123 4567)",
     "confirmFreeEnrolment": "Confirm Free Enrolment",
     "confirmYourPayment2": "Confirm your payment",
     "aPaymentPromptHasBeenSent": "A payment prompt has been sent to your phone.",
@@ -2775,7 +2823,8 @@
     "courseProgress": "Course Progress",
     "courseComplete": "Course Complete!",
     "keepGoingYouReMakingGreat": "Keep going! You're making great progress.",
-    "aboutThisLesson": "About This Lesson"
+    "aboutThisLesson": "About This Lesson",
+    "selectALessonToStart": "Select a lesson from the curriculum to start."
   },
   "verifyEmail": {
     "weCouldnTFindTheEmail": "We couldn't find the email address to resend to. Please try signing up or signing in again.",
@@ -3170,7 +3219,7 @@
     "thumbnailPreview": "Thumbnail preview",
     "uploading": "Uploading...",
     "clickToUploadThumbnail": "Click to upload thumbnail",
-    "jpgPngOrWebpMax1mb": "JPG, PNG or WebP — Max 1MB",
+    "jpgPngOrWebpMax1mb": "JPG, PNG or WebP, max 1 MB",
     "maxFileSize1mbUse": "⚠️ Max file size: 1MB. Use",
     "toCompressYourImage": "to compress your image.",
     "requirements": "Requirements",
@@ -3302,7 +3351,10 @@
     "purchaseSuccessful": "Purchase Successful!",
     "youNowHaveFullAccessTo": "You now have full access to this course",
     "chapters_one": "{{count}} Chapter",
-    "hoursShort": "{{count}} h"
+    "hoursShort": "{{count}} h",
+    "capstoneWorkspaceLocked": "The capstone workspace opens after purchase",
+    "getCapstoneAccess": "Get capstone access",
+    "paidLessonNote": "This lesson is part of the paid content. Buy this course to open every module and lesson."
   },
   "teacherPendingApproval": {
     "yourAccountHasBeenApproved": "Your account has been approved!",
@@ -3918,5 +3970,60 @@
     "submit": "Submit for approval",
     "submitted": "Sent to the instructor for approval",
     "title": "Title"
+  },
+  "meta": {
+    "bundles": {
+      "description": "Groups of DATA+ Academy courses offered together at one price.",
+      "title": "Course bundles"
+    },
+    "competitions": {
+      "description": "Data challenges run by DATA+ Academy, with their rules, timeline and results.",
+      "title": "Competitions"
+    },
+    "courses": {
+      "description": "Browse DATA+ Academy courses in data analysis, monitoring and evaluation, research and AI. See the level, format, language and price of each course.",
+      "title": "Courses"
+    },
+    "forgot": {
+      "title": "Reset your password"
+    },
+    "home": "Courses in data analysis, monitoring and evaluation, research and AI from DATA+ Rwanda, with live cohorts online and in Kigali. Pay by Mobile Money.",
+    "notFound": {
+      "title": "Page not found"
+    },
+    "privacy": {
+      "description": "How DATA+ Academy collects, uses and protects your personal data.",
+      "title": "Privacy policy"
+    },
+    "projects": {
+      "description": "Capstone projects by DATA+ Academy learners.",
+      "title": "Student projects"
+    },
+    "reset": {
+      "title": "Choose a new password"
+    },
+    "signIn": {
+      "description": "Sign in to DATA+ Academy to continue your courses.",
+      "title": "Sign in"
+    },
+    "signUp": {
+      "description": "Create a free DATA+ Academy account to enrol in courses.",
+      "title": "Create an account"
+    },
+    "terms": {
+      "description": "The terms for using DATA+ Academy.",
+      "title": "Terms of service"
+    },
+    "tracks": {
+      "description": "Ordered sequences of DATA+ Academy courses that build one skill or prepare you for a role.",
+      "title": "Skill and career tracks"
+    },
+    "verify": {
+      "description": "Check that a DATA+ Academy certificate is genuine using the code printed on it.",
+      "title": "Verify a certificate"
+    },
+    "verifyEmail": {
+      "title": "Check your email"
+    }
   }
 }

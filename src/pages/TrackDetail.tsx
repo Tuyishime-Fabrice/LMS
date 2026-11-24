@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, Circle, Info, PlayCircle, Target } from "lucide-react";
@@ -20,6 +21,7 @@ export default function TrackDetail() {
   const enrolments = useMyEnrolments();
   const levelLabel = useLevelLabel();
   const track = tracks.data?.tracks.find((item) => item.slug === slug);
+  usePageMeta({ title: track?.title || t("meta.tracks.title", "Skill and career tracks"), description: track?.summary || undefined, path: `/tracks/${slug}` });
 
   if (tracks.isLoading) return <DiscoveryLayout><SkeletonBlock className="h-40" /><SkeletonBlock className="mt-6 h-96" /></DiscoveryLayout>;
   if (tracks.isError) return <DiscoveryLayout><ErrorState title={t("tracks.error", "Tracks could not be loaded")} onRetry={() => void tracks.refetch()} /></DiscoveryLayout>;

@@ -871,7 +871,7 @@ export default function CreateCourse() {
                             <p className="text-sm font-medium text-muted-foreground">
                               {uploadingThumbnail ? t("createCourse.uploading", "Uploading...") : t("createCourse.clickToUploadThumbnail", "Click to upload thumbnail")}
                             </p>
-                            <p className="text-xs text-muted-foreground/60 mt-1">{t("createCourse.jpgPngOrWebpMax1mb", "JPG, PNG or WebP — Max 1MB")}</p>
+                            <p className="text-xs text-muted-foreground/60 mt-1">{t("createCourse.jpgPngOrWebpMax1mb", "JPG, PNG or WebP, max 1 MB")}</p>
                           </div>
                           <input
                             type="file"

@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage } from "@/lib/browserStorage";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ const PENDING_VERIFICATION_EMAIL_KEY = "pendingVerificationEmail";
 
 const VerifyEmail = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.verifyEmail.title", "Check your email"), noindex: true });
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [resending, setResending] = useState(false);

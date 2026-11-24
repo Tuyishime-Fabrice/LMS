@@ -8,14 +8,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { useAppAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-
-export const siteLinks = [
-  { to: "/courses", key: "site.nav.courses", label: "Courses" },
-  { to: "/tracks", key: "site.nav.tracks", label: "Skill & career tracks" },
-  { to: "/competitions", key: "site.nav.competitions", label: "Competitions" },
-  { to: "/exhibition", key: "site.nav.exhibition", label: "Student projects" },
-  { to: "/verify", key: "site.nav.verify", label: "Verify a certificate" },
-];
+import { useSiteLinks } from "./siteLinks";
 
 /** Navy header shared by the public pages. */
 export function SiteHeader({ className }: { className?: string }) {
@@ -23,6 +16,7 @@ export function SiteHeader({ className }: { className?: string }) {
   const navigate = useNavigate();
   const { user, profile } = useAppAuth();
   const [open, setOpen] = useState(false);
+  const links = useSiteLinks();
   const home = profile ? homePath[profile.role as AppRole] || "/student/dashboard" : null;
 
   return (
@@ -33,7 +27,7 @@ export function SiteHeader({ className }: { className?: string }) {
         </Link>
 
         <nav aria-label={t("site.mainNav", "Main")} className="hidden flex-1 items-center gap-1 lg:flex">
-          {siteLinks.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -81,7 +75,7 @@ export function SiteHeader({ className }: { className?: string }) {
       {open && (
         <div id="site-menu" className="border-t border-white/10 bg-forest lg:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-4 py-3 sm:px-6" aria-label={t("site.mainNav", "Main")}>
-            {siteLinks.map((link) => (
+            {links.map((link) => (
               <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-base font-medium text-white/85 hover:bg-white/5">
                 {t(link.key, link.label)}
               </NavLink>

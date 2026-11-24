@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -34,7 +35,7 @@ export default function VerifyCertificate() {
   const [input, setInput] = useState(code ? formatCode(code) : "");
 
   useEffect(() => { setInput(code ? formatCode(code) : ""); }, [code]);
-  useEffect(() => { document.title = "Verify a certificate | DATA+ Academy"; }, []);
+  usePageMeta({ title: t("meta.verify.title", "Verify a certificate"), description: t("meta.verify.description", "Check that a DATA+ Academy certificate is genuine using the code printed on it."), path: "/verify" });
 
   const result = useQuery({
     queryKey: ["verify-certificate", code],

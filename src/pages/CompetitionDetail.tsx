@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -38,6 +39,7 @@ export default function CompetitionDetail() {
   const { user } = useAppAuth();
   const competitions = useCompetitions();
   const competition = competitions.data?.competitions.find((item) => item.slug === slug);
+  usePageMeta({ title: competition?.title || t("meta.competitions.title", "Competitions"), description: competition?.summary || undefined, path: `/competitions/${slug}` });
   const mine = useMyCompetition(competition?.id);
   const published = competition ? resultsPublished(competition) : false;
   const leaderboard = useLeaderboard(competition?.id, published);

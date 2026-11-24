@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ type Filter = "current" | "mine" | "past";
 
 export default function Competitions() {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.competitions.title", "Competitions"), description: t("meta.competitions.description", "Data challenges run by DATA+ Academy, with their rules, timeline and results."), path: "/competitions" });
   const locale = useDateLocale();
   const { user } = useAppAuth();
   const competitions = useCompetitions();

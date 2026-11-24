@@ -9,7 +9,7 @@ access → learn → assessments, assignments, capstone → feedback → certifi
 and career tracks and competitions.
 
 ## What it is not
-- Not the company website (dataplus.com owns about, team, contact, partners, campaigns).
+- Not the company website (dataplusrwanda.com owns about, team, contact, partners, campaigns).
 - Not a chat product (Discord hosts cohort discussion).
 - Not a code-execution platform (practice runs in Colab/JupyterLite, linked out).
 - Not a job-placement service (career tracks prepare; they do not promise employment).

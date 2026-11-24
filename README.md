@@ -72,6 +72,7 @@ npm run build
 | `20261124000000_academy_experience.sql` | Discord links, skill/career tracks, competitions, onboarding preferences with research consent, rubrics, written feedback required with every mark, grade history. After this, a mark cannot be saved without a 20-character comment |
 | `20261125000000_facilitators.sql` | Facilitators assigned per course or cohort, provisional reviews for instructors, and a fix so only course staff can post course announcements. Apply after the previous one |
 | `20261126000000_drafts_and_cohort_announcements.sql` | Announcements for one cohort (only that cohort reads and is notified), facilitator assignment drafts that the instructor approves or returns, and announcement edits limited to where the author may post. Apply after the facilitators migration |
+| `20261127000000_listing_and_verification.sql` | `courses.listed` (admin-only switch that hides a course from the public catalogue and landing) and `exhibition_projects.outcomes_verified` (admin-only switch that shows scores and outcome text on the public projects page). Existing courses stay listed; existing projects start unverified |
 
 The app tolerates a database where the first two are not applied yet (the new features stay hidden or fall back), but the redesigned learner pages need them to work fully.
 

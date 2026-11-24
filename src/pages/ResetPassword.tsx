@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.reset.title", "Choose a new password"), noindex: true });
   const navigate = useNavigate();
   const [checkingSession, setCheckingSession] = useState(true);
   const [hasRecoverySession, setHasRecoverySession] = useState(false);

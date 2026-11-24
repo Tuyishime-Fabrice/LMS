@@ -4,7 +4,7 @@
 `/` home · `/courses` catalogue · `/course/:id` course · `/tracks`, `/tracks/:slug` · `/competitions`,
 `/competitions/:slug` · `/bundles` course bundles (pricing packages, footer only) · `/exhibition` student projects ·
 `/verify[/:code]` certificate check · `/auth`, `/signup`, `/forgot-password`, `/verify-email` · legal pages.
-`/about`, `/contact` → redirect to `VITE_CORPORATE_SITE_URL` (default https://dataplus.com).
+`/about`, `/contact` → redirect to `VITE_CORPORATE_SITE_URL` (default https://dataplusrwanda.com).
 
 ## Learner shell
 **Learn**: Home · My learning (`/learn/*`) · Assignments · Grades · Calendar · Certificates

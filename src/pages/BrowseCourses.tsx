@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { SiteFooter } from "@/features/site/SiteFooter";
@@ -34,6 +35,7 @@ type EnrollmentCount = {
 const BrowseCourses = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.courses.title", "Courses"), description: t("meta.courses.description", "Browse DATA+ Academy courses in data analysis, monitoring and evaluation, research and AI. See the level, format, language and price of each course."), path: "/courses" });
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [enrollmentCounts, setEnrollmentCounts] = useState<Map<string, number>>(new Map());
@@ -92,7 +94,8 @@ const BrowseCourses = () => {
         setEnrollmentCounts(counts);
       }
 
-      setCourses(coursesData || []);
+      // Client-only programmes (listed = false) stay out of the public catalogue.
+      setCourses((coursesData || []).filter((course: { listed?: boolean | null }) => course.listed !== false));
     } catch (error: any) {
       console.error("Error fetching courses:", error);
       toast.error(t('browseCourses.failedToLoad'));

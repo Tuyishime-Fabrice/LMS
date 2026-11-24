@@ -1,7 +1,7 @@
 # DATA+ Academy LMS — project rules
 
 This repository is **dataplusacademy.com**, the learning platform. The corporate site
-(dataplus.com, WordPress) owns company pages; never rebuild About/Contact/marketing here.
+(dataplusrwanda.com, WordPress) owns company pages; never rebuild About/Contact/marketing here.
 Read `docs/product/` before changing behaviour; it is the source of truth.
 
 ## Stack
@@ -39,4 +39,4 @@ Supabase (auth, Postgres + RLS, storage), i18next (en/fr), Vercel functions in `
 ## Where things are
 `src/features/*` domain modules (enrolment, tracks, competitions, community, rubrics,
 preferences, discovery, learning, facilitation) · `src/components/shell` app shell + navigation ·
-`src/pages` one file per route · `supabase/migrations` (latest: `20261126000000_drafts_and_cohort_announcements.sql`).
+`src/pages` one file per route · `supabase/migrations` (latest: `20261127000000_listing_and_verification.sql`).

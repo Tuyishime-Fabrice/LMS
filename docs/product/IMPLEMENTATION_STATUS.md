@@ -38,3 +38,6 @@ Labels: **verified in code**, **observed at runtime** (demo mode, Playwright, no
 | `npm run lint` | 210 problems (151 errors, 59 warnings), baseline 212 (152/60); no new file flagged |
 | `vite build` | pass |
 | `scripts/check-supabase-setup.sh` | setup.sql in one transaction; security 35, ai_tutor 7, lesson_files 16, academy_experience 30, facilitators 29, drafts_and_cohort_announcements 28 checks pass (145) |
+
+## Landing redesign
+Phase 1 (credibility fixes) done; see `LANDING_REDESIGN.md`. Needs `20261127000000_listing_and_verification.sql` for the Listed and Outcomes verified switches (the pages work without it).

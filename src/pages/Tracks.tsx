@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, BriefcaseBusiness, Clock, Layers, Route } from "lucide-react";
@@ -54,6 +55,7 @@ function TrackCard({ track }: { track: Track }) {
 
 export default function Tracks() {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.tracks.title", "Skill and career tracks"), description: t("meta.tracks.description", "Ordered sequences of DATA+ Academy courses that build one skill or prepare you for a role."), path: "/tracks" });
   const [params, setParams] = useSearchParams();
   const kind = params.get("kind") === "career" ? "career" : "skill";
   const tracks = useTracks();
