@@ -155,7 +155,7 @@ const SignUp = () => {
           <div className="flex items-center gap-2">
             <img
               src="/images/dataplus_logggg-removebg-preview.png"
-              alt="DataPlus Academy"
+              alt="DATA+ Academy"
               className="w-10 h-10 object-contain"
             />
           </div>

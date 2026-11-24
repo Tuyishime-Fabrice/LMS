@@ -53,7 +53,7 @@ export function PartnerDialog({ open, onOpenChange }: { open: boolean; onOpenCha
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>{t("partner.title", "Train your team with DataPlus")}</DialogTitle>
+              <DialogTitle>{t("partner.title", "Train your team with DATA+ Academy")}</DialogTitle>
               <DialogDescription>
                 {t("partner.body", "Tell us about your organisation. We run tailored training and help with M&E systems, research and dashboards.")}
               </DialogDescription>

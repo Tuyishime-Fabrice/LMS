@@ -34,7 +34,7 @@ export default function VerifyCertificate() {
   const [input, setInput] = useState(code ? formatCode(code) : "");
 
   useEffect(() => { setInput(code ? formatCode(code) : ""); }, [code]);
-  useEffect(() => { document.title = "Verify a certificate | DataPlus Academy"; }, []);
+  useEffect(() => { document.title = "Verify a certificate | DATA+ Academy"; }, []);
 
   const result = useQuery({
     queryKey: ["verify-certificate", code],
@@ -59,14 +59,14 @@ export default function VerifyCertificate() {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-8">
-        <Link to="/" aria-label="DataPlus Academy"><Brand /></Link>
+        <Link to="/" aria-label="DATA+ Academy"><Brand /></Link>
         <LanguageSelector />
       </header>
 
       <main className="mx-auto w-full max-w-xl flex-1 px-4 py-10 sm:py-16">
         <h1 className="text-page-title">{t("verify.title", "Verify a certificate")}</h1>
         <p className="mt-2 text-[0.9375rem] leading-6 text-muted-foreground">
-          {t("verify.description", "Enter the verification code printed on a DataPlus Academy certificate, or scan its QR code.")}
+          {t("verify.description", "Enter the verification code printed on a DATA+ Academy certificate, or scan its QR code.")}
         </p>
 
         <form onSubmit={submit} className="mt-6 flex gap-2">
@@ -97,7 +97,7 @@ export default function VerifyCertificate() {
               <CircleX className="h-8 w-8 text-destructive" />
               <p className="mt-3 text-card-title">{t("verify.notFound.title", "No certificate matches this code")}</p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                {t("verify.notFound.body", "Check the code for typing mistakes. If it still does not match, this certificate was not issued by DataPlus Academy.")}
+                {t("verify.notFound.body", "Check the code for typing mistakes. If it still does not match, this certificate was not issued by DATA+ Academy.")}
               </p>
             </div>
           ) : (
@@ -114,7 +114,7 @@ export default function VerifyCertificate() {
                   [t("verify.course", "Programme"), record.course_title],
                   [t("verify.issued", "Date of issue"), date ? format(new Date(date), "d MMMM yyyy", { locale }) : null],
                   [t("verify.number", "Certificate number"), record.certificate_number],
-                  [t("verify.issuer", "Issued by"), "DataPlus Academy"],
+                  [t("verify.issuer", "Issued by"), "DATA+ Academy"],
                 ].filter(([, value]) => value).map(([label, value]) => (
                   <div key={label as string} className="grid grid-cols-[9.5rem_1fr] gap-3 px-6 py-3">
                     <dt className="text-muted-foreground">{label}</dt>
@@ -128,7 +128,7 @@ export default function VerifyCertificate() {
       </main>
 
       <footer className="border-t px-4 py-5 text-center text-xs text-muted-foreground">
-        DataPlus Academy, Kigali, Rwanda
+        DATA+ Academy, Kigali, Rwanda
       </footer>
     </div>
   );

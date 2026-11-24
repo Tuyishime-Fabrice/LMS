@@ -540,6 +540,33 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION public.competition_can_submit(p_competition_id uuid, p_user_id uuid) RETURNS boolean
+    LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.competitions c
+    JOIN public.competition_registrations r ON r.competition_id = c.id AND r.user_id = p_user_id AND r.status = 'registered'
+    WHERE c.id = p_competition_id
+      AND c.status = 'open'
+      AND (c.starts_at IS NULL OR c.starts_at <= now())
+      AND (c.submission_deadline IS NULL OR c.submission_deadline > now())
+  );
+$$;
+
+CREATE FUNCTION public.competition_registration_open(p_competition_id uuid) RETURNS boolean
+    LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.competitions c
+    WHERE c.id = p_competition_id
+      AND c.status IN ('upcoming', 'open')
+      AND (c.registration_opens_at IS NULL OR c.registration_opens_at <= now())
+      AND (c.registration_closes_at IS NULL OR c.registration_closes_at > now())
+  );
+$$;
+
 CREATE FUNCTION public.create_instalment_enrollment(p_student_id uuid, p_course_id uuid, p_total_amount numeric, p_currency text DEFAULT 'RWF'::text, p_cohort_id uuid DEFAULT NULL::uuid) RETURNS jsonb
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
@@ -897,6 +924,27 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION public.get_competition_leaderboard(p_competition_id uuid) RETURNS TABLE(rank bigint, display_name text, score numeric)
+    LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+  WITH best AS (
+    SELECT s.user_id, max(s.score) AS score
+    FROM public.competition_submissions s
+    JOIN public.competitions c ON c.id = s.competition_id
+    WHERE s.competition_id = p_competition_id
+      AND s.status = 'scored' AND s.score IS NOT NULL
+      AND c.results_published_at IS NOT NULL AND c.results_published_at <= now()
+    GROUP BY s.user_id
+  )
+  SELECT rank() OVER (ORDER BY b.score DESC),
+         coalesce(split_part(btrim(p.full_name), ' ', 1) || coalesce(' ' || left(nullif(split_part(btrim(p.full_name), ' ', 2), ''), 1) || '.', ''), 'Participant'),
+         b.score
+  FROM best b JOIN public.profiles p ON p.id = b.user_id
+  ORDER BY b.score DESC
+  LIMIT 100;
+$$;
+
 CREATE FUNCTION public.get_coupon_redemption_stats() RETURNS TABLE(coupon_id uuid, code text, coupon_type text, discount_type text, discount_value numeric, max_uses integer, uses_count integer, redemption_count bigint, total_discount numeric, is_active boolean)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
@@ -1093,6 +1141,50 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION public.get_onboarding_insights() RETURNS jsonb
+    LANGUAGE plpgsql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+DECLARE
+  v_min constant integer := 5;
+  v_result jsonb;
+BEGIN
+  IF NOT public.is_admin(auth.uid()) THEN
+    RAISE EXCEPTION 'Only administrators can read onboarding insights' USING ERRCODE = '42501';
+  END IF;
+
+  WITH consenting AS (
+    SELECT * FROM public.learner_preferences WHERE research_consent
+  ),
+  answers AS (
+    SELECT 'goal' AS question, learning_goal AS answer FROM consenting WHERE learning_goal IS NOT NULL
+    UNION ALL SELECT 'level', experience_level FROM consenting WHERE experience_level IS NOT NULL
+    UNION ALL SELECT 'mode', preferred_mode FROM consenting WHERE preferred_mode IS NOT NULL
+    UNION ALL SELECT 'hours', weekly_hours FROM consenting WHERE weekly_hours IS NOT NULL
+    UNION ALL SELECT 'access', access_route FROM consenting
+    UNION ALL SELECT 'interest', unnest(interests) FROM consenting
+    UNION ALL SELECT 'tool', unnest(tools) FROM consenting
+  ),
+  counted AS (
+    SELECT question, answer, count(*)::integer AS n FROM answers GROUP BY question, answer
+  ),
+  grouped AS (
+    SELECT question,
+      coalesce(jsonb_object_agg(answer, n) FILTER (WHERE n >= v_min), '{}'::jsonb) AS shown,
+      coalesce(sum(n) FILTER (WHERE n < v_min), 0)::integer AS suppressed
+    FROM counted GROUP BY question
+  )
+  SELECT jsonb_build_object(
+    'minimum_group_size', v_min,
+    'learners_with_answers', (SELECT count(*) FROM public.learner_preferences),
+    'consenting_learners', (SELECT count(*) FROM consenting),
+    'questions', coalesce((SELECT jsonb_object_agg(question, jsonb_build_object('counts', shown, 'suppressed', suppressed)) FROM grouped), '{}'::jsonb)
+  ) INTO v_result;
+
+  RETURN v_result;
+END;
+$$;
+
 CREATE FUNCTION public.get_pending_course_updates() RETURNS TABLE(course_id uuid, course_title text, teacher_id uuid, teacher_name text, update_submitted_at timestamp with time zone, update_notes text, thumbnail_url text)
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
@@ -1268,6 +1360,33 @@ BEGIN
   RETURN EXISTS (
     SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
   );
+END;
+$$;
+
+CREATE FUNCTION public.is_valid_rubric(p_rubric jsonb) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE
+    AS $$
+DECLARE
+  v_criterion jsonb;
+  v_level jsonb;
+BEGIN
+  IF p_rubric IS NULL THEN RETURN true; END IF;
+  IF jsonb_typeof(p_rubric) <> 'object' OR jsonb_typeof(p_rubric -> 'criteria') <> 'array' THEN RETURN false; END IF;
+  IF jsonb_array_length(p_rubric -> 'criteria') NOT BETWEEN 1 AND 20 THEN RETURN false; END IF;
+  FOR v_criterion IN SELECT * FROM jsonb_array_elements(p_rubric -> 'criteria') LOOP
+    IF jsonb_typeof(v_criterion -> 'id') <> 'string' OR jsonb_typeof(v_criterion -> 'title') <> 'string'
+       OR length(btrim(v_criterion ->> 'title')) = 0 OR jsonb_typeof(v_criterion -> 'levels') <> 'array'
+       OR jsonb_array_length(v_criterion -> 'levels') NOT BETWEEN 1 AND 8 THEN
+      RETURN false;
+    END IF;
+    FOR v_level IN SELECT * FROM jsonb_array_elements(v_criterion -> 'levels') LOOP
+      IF jsonb_typeof(v_level -> 'label') <> 'string' OR jsonb_typeof(v_level -> 'points') <> 'number'
+         OR (v_level ->> 'points')::numeric < 0 THEN
+        RETURN false;
+      END IF;
+    END LOOP;
+  END LOOP;
+  RETURN true;
 END;
 $$;
 
@@ -1758,6 +1877,24 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION public.protect_competition_judging() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+BEGIN
+  IF public.is_privileged_context() THEN
+    RETURN NEW;
+  END IF;
+  NEW.status := 'submitted';
+  NEW.score := NULL;
+  NEW.judge_feedback := NULL;
+  NEW.scored_by := NULL;
+  NEW.scored_at := NULL;
+  NEW.submitted_at := now();
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION public.protect_profile_privileged_columns() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
@@ -1854,6 +1991,58 @@ BEGIN
       NEW.graded_by := OLD.graded_by;
     END IF;
   END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION public.protect_submission_rubric_scores() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+DECLARE
+  v_is_staff boolean;
+BEGIN
+  IF public.is_privileged_context() THEN
+    RETURN NEW;
+  END IF;
+  IF TG_TABLE_NAME = 'capstone_submissions' THEN
+    SELECT EXISTS (
+      SELECT 1 FROM public.capstone_projects cp JOIN public.courses c ON c.id = cp.course_id
+      WHERE cp.id = NEW.capstone_project_id AND c.teacher_id = auth.uid()
+    ) INTO v_is_staff;
+  ELSE
+    SELECT EXISTS (
+      SELECT 1 FROM public.course_lessons l
+      JOIN public.course_chapters ch ON ch.id = l.chapter_id
+      JOIN public.courses c ON c.id = ch.course_id
+      WHERE l.id = NEW.lesson_id AND c.teacher_id = auth.uid()
+    ) INTO v_is_staff;
+  END IF;
+  IF NOT v_is_staff THEN
+    NEW.rubric_scores := CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE OLD.rubric_scores END;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION public.record_grade_history() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+BEGIN
+  IF NEW.grade IS NULL THEN
+    RETURN NEW;
+  END IF;
+  IF TG_OP = 'UPDATE' AND NEW.grade IS NOT DISTINCT FROM OLD.grade
+     AND NEW.feedback IS NOT DISTINCT FROM OLD.feedback
+     AND NEW.rubric_scores IS NOT DISTINCT FROM OLD.rubric_scores THEN
+    RETURN NEW;
+  END IF;
+  INSERT INTO public.grade_history (submission_type, submission_id, student_id, grade, feedback, rubric_scores, graded_by)
+  VALUES (
+    CASE WHEN TG_TABLE_NAME = 'capstone_submissions' THEN 'capstone' ELSE 'assignment' END,
+    NEW.id, NEW.student_id, NEW.grade, NEW.feedback, NEW.rubric_scores, auth.uid()
+  );
   RETURN NEW;
 END;
 $$;
@@ -2065,6 +2254,20 @@ $$;
 
 COMMENT ON FUNCTION public.reject_teacher(p_teacher_id uuid, p_rejection_reason text) IS 'Reject a teacher account with reason (admin only)';
 
+CREATE FUNCTION public.require_grade_feedback() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW.grade IS NOT NULL
+     AND (TG_OP = 'INSERT' OR NEW.grade IS DISTINCT FROM OLD.grade OR NEW.feedback IS DISTINCT FROM OLD.feedback)
+     AND length(btrim(coalesce(NEW.feedback, ''))) < 20 THEN
+    RAISE EXCEPTION 'A mark must be published with written feedback of at least 20 characters'
+      USING ERRCODE = '23514', HINT = 'feedback_required';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION public.revoke_certificate(p_certificate_id uuid, p_reason text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
@@ -2080,6 +2283,20 @@ BEGIN
   SET status = 'revoked', revoked_at = now(), revoked_by = auth.uid(),
       revoked_reason = p_reason, updated_at = now()
   WHERE id = p_certificate_id;
+END;
+$$;
+
+CREATE FUNCTION public.stamp_learner_preferences() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW.updated_at := now();
+  IF NEW.research_consent AND (TG_OP = 'INSERT' OR NOT OLD.research_consent) THEN
+    NEW.research_consent_at := now();
+  ELSIF NOT NEW.research_consent THEN
+    NEW.research_consent_at := NULL;
+  END IF;
+  RETURN NEW;
 END;
 $$;
 
@@ -2650,6 +2867,7 @@ CREATE TABLE public.assignment_submissions (
     graded_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now(),
+    rubric_scores jsonb,
     CONSTRAINT assignment_submissions_grade_check CHECK (((grade >= 0) AND (grade <= 100)))
 );
 
@@ -2685,7 +2903,9 @@ CREATE TABLE public.capstone_projects (
     due_date timestamp with time zone,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    file_url text
+    file_url text,
+    rubric jsonb,
+    CONSTRAINT capstone_projects_rubric_valid CHECK (public.is_valid_rubric(rubric))
 );
 
 COMMENT ON TABLE public.capstone_projects IS 'Course final capstone projects';
@@ -2703,7 +2923,8 @@ CREATE TABLE public.capstone_submissions (
     feedback text,
     graded_at timestamp with time zone,
     graded_by uuid,
-    file_url text
+    file_url text,
+    rubric_scores jsonb
 );
 
 COMMENT ON TABLE public.capstone_submissions IS 'Student submissions for capstone projects';
@@ -2773,8 +2994,71 @@ CREATE TABLE public.cohorts (
     instalment_enabled boolean DEFAULT false NOT NULL,
     instalment_count integer DEFAULT 2,
     instalment_deposit_percent numeric DEFAULT 50,
+    discord_url text,
+    CONSTRAINT cohorts_discord_url_format CHECK (((discord_url IS NULL) OR (discord_url ~ '^https://(discord\.gg|discord\.com|www\.discord\.com)/[A-Za-z0-9/_-]+$'::text))),
     CONSTRAINT cohorts_instalment_count_check CHECK (((instalment_count IS NULL) OR (instalment_count = ANY (ARRAY[2, 3])))),
     CONSTRAINT cohorts_instalment_deposit_percent_check CHECK (((instalment_deposit_percent IS NULL) OR ((instalment_deposit_percent > (0)::numeric) AND (instalment_deposit_percent < (100)::numeric))))
+);
+
+COMMENT ON COLUMN public.cohorts.discord_url IS 'Invite or channel URL for this cohort on Discord; overrides courses.discord_url.';
+
+CREATE TABLE public.competition_registrations (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    competition_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    team_name text,
+    status text DEFAULT 'registered'::text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT competition_registrations_status_check CHECK ((status = ANY (ARRAY['registered'::text, 'withdrawn'::text, 'disqualified'::text])))
+);
+
+CREATE TABLE public.competition_submissions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    competition_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    title text NOT NULL,
+    description text,
+    submission_url text NOT NULL,
+    status text DEFAULT 'submitted'::text NOT NULL,
+    score numeric,
+    judge_feedback text,
+    scored_by uuid,
+    scored_at timestamp with time zone,
+    submitted_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT competition_submissions_score_check CHECK (((score IS NULL) OR (score >= (0)::numeric))),
+    CONSTRAINT competition_submissions_status_check CHECK ((status = ANY (ARRAY['submitted'::text, 'under_review'::text, 'scored'::text, 'rejected'::text]))),
+    CONSTRAINT competition_submissions_submission_url_check CHECK ((submission_url ~ '^https://'::text)),
+    CONSTRAINT competition_submissions_title_check CHECK ((length(btrim(title)) > 0))
+);
+
+CREATE TABLE public.competitions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    slug text NOT NULL,
+    title text NOT NULL,
+    summary text,
+    description text,
+    eligibility text,
+    rules text,
+    prizes text,
+    submission_instructions text,
+    dataset_url text,
+    discord_url text,
+    status text DEFAULT 'draft'::text NOT NULL,
+    open_to_public boolean DEFAULT true NOT NULL,
+    registration_opens_at timestamp with time zone,
+    registration_closes_at timestamp with time zone,
+    starts_at timestamp with time zone,
+    submission_deadline timestamp with time zone,
+    results_published_at timestamp with time zone,
+    created_by uuid,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT competitions_dataset_url_check CHECK (((dataset_url IS NULL) OR (dataset_url ~ '^https://'::text))),
+    CONSTRAINT competitions_discord_url_check CHECK (((discord_url IS NULL) OR (discord_url ~ '^https://(discord\.gg|discord\.com|www\.discord\.com)/[A-Za-z0-9/_-]+$'::text))),
+    CONSTRAINT competitions_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text)),
+    CONSTRAINT competitions_status_check CHECK ((status = ANY (ARRAY['draft'::text, 'upcoming'::text, 'open'::text, 'judging'::text, 'closed'::text]))),
+    CONSTRAINT competitions_title_check CHECK ((length(btrim(title)) > 0))
 );
 
 CREATE TABLE public.conversations (
@@ -3003,7 +3287,9 @@ CREATE TABLE public.course_lessons (
     is_preview boolean DEFAULT false,
     due_date timestamp with time zone,
     learning_objectives text[],
-    CONSTRAINT course_lessons_content_type_check CHECK ((content_type = ANY (ARRAY['video'::text, 'pdf'::text, 'document'::text, 'url'::text, 'quiz'::text, 'assignment'::text])))
+    rubric jsonb,
+    CONSTRAINT course_lessons_content_type_check CHECK ((content_type = ANY (ARRAY['video'::text, 'pdf'::text, 'document'::text, 'url'::text, 'quiz'::text, 'assignment'::text]))),
+    CONSTRAINT course_lessons_rubric_valid CHECK (public.is_valid_rubric(rubric))
 );
 
 COMMENT ON TABLE public.course_lessons IS 'Lessons supporting 6 content types: video, pdf, document, url, quiz, assignment';
@@ -3089,7 +3375,9 @@ CREATE TABLE public.courses (
     early_bird_max_seats integer,
     early_bird_seats_used integer DEFAULT 0 NOT NULL,
     learning_outcomes text[],
+    discord_url text,
     CONSTRAINT courses_approval_status_check CHECK ((approval_status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text]))),
+    CONSTRAINT courses_discord_url_format CHECK (((discord_url IS NULL) OR (discord_url ~ '^https://(discord\.gg|discord\.com|www\.discord\.com)/[A-Za-z0-9/_-]+$'::text))),
     CONSTRAINT courses_level_check CHECK ((level = ANY (ARRAY['beginner'::text, 'intermediate'::text, 'advanced'::text])))
 );
 
@@ -3102,6 +3390,8 @@ COMMENT ON COLUMN public.courses.welcome_video_url IS 'URL to course welcome/int
 COMMENT ON COLUMN public.courses.level IS 'Course difficulty level: beginner, intermediate, or advanced';
 
 COMMENT ON COLUMN public.courses.language IS 'Language of instruction (e.g., English, Spanish, French)';
+
+COMMENT ON COLUMN public.courses.discord_url IS 'Invite or channel URL for the course community on Discord. Replaces in-platform chat.';
 
 CREATE TABLE public.exhibition_projects (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -3125,6 +3415,19 @@ CREATE TABLE public.exhibition_projects (
     CONSTRAINT exhibition_projects_course_score_check CHECK (((course_score >= (0)::numeric) AND (course_score <= (100)::numeric)))
 );
 
+CREATE TABLE public.grade_history (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    submission_type text NOT NULL,
+    submission_id uuid NOT NULL,
+    student_id uuid NOT NULL,
+    grade numeric,
+    feedback text,
+    rubric_scores jsonb,
+    graded_by uuid,
+    recorded_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT grade_history_submission_type_check CHECK ((submission_type = ANY (ARRAY['assignment'::text, 'capstone'::text])))
+);
+
 CREATE TABLE public.instalment_schedules (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     enrollment_id uuid NOT NULL,
@@ -3138,6 +3441,65 @@ CREATE TABLE public.instalment_schedules (
     CONSTRAINT instalment_schedules_amount_check CHECK ((amount >= (0)::numeric)),
     CONSTRAINT instalment_schedules_instalment_number_check CHECK ((instalment_number >= 1)),
     CONSTRAINT instalment_schedules_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'paid'::text, 'overdue'::text, 'waived'::text])))
+);
+
+CREATE TABLE public.learner_preferences (
+    user_id uuid NOT NULL,
+    learning_goal text,
+    experience_level text,
+    interests text[] DEFAULT '{}'::text[] NOT NULL,
+    tools text[] DEFAULT '{}'::text[] NOT NULL,
+    career_goal text,
+    preferred_mode text,
+    weekly_hours text,
+    access_route text DEFAULT 'individual'::text NOT NULL,
+    sponsor_organisation text,
+    research_consent boolean DEFAULT false NOT NULL,
+    research_consent_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT learner_preferences_access_route_check CHECK ((access_route = ANY (ARRAY['individual'::text, 'organisation'::text]))),
+    CONSTRAINT learner_preferences_career_goal_check CHECK (((career_goal IS NULL) OR (length(career_goal) <= 200))),
+    CONSTRAINT learner_preferences_experience_level_check CHECK ((experience_level = ANY (ARRAY['new'::text, 'some'::text, 'experienced'::text]))),
+    CONSTRAINT learner_preferences_learning_goal_check CHECK ((learning_goal = ANY (ARRAY['start_career'::text, 'change_career'::text, 'grow_in_role'::text, 'team_project'::text, 'personal_interest'::text, 'other'::text]))),
+    CONSTRAINT learner_preferences_preferred_mode_check CHECK ((preferred_mode = ANY (ARRAY['self_paced'::text, 'cohort'::text, 'either'::text]))),
+    CONSTRAINT learner_preferences_sponsor_organisation_check CHECK (((sponsor_organisation IS NULL) OR (length(sponsor_organisation) <= 160))),
+    CONSTRAINT learner_preferences_weekly_hours_check CHECK ((weekly_hours = ANY (ARRAY['lt3'::text, '3to5'::text, '6to10'::text, 'gt10'::text])))
+);
+
+CREATE TABLE public.learning_path_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    path_id uuid NOT NULL,
+    course_id uuid NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL,
+    is_required boolean DEFAULT true NOT NULL,
+    milestone text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE public.learning_paths (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    slug text NOT NULL,
+    kind text NOT NULL,
+    title text NOT NULL,
+    summary text,
+    description text,
+    outcomes text[] DEFAULT '{}'::text[] NOT NULL,
+    target_role text,
+    competencies text[] DEFAULT '{}'::text[] NOT NULL,
+    level text,
+    estimated_hours integer,
+    language text,
+    is_published boolean DEFAULT false NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    created_by uuid,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT learning_paths_estimated_hours_check CHECK (((estimated_hours IS NULL) OR (estimated_hours > 0))),
+    CONSTRAINT learning_paths_kind_check CHECK ((kind = ANY (ARRAY['skill'::text, 'career'::text]))),
+    CONSTRAINT learning_paths_level_check CHECK ((level = ANY (ARRAY['beginner'::text, 'intermediate'::text, 'advanced'::text]))),
+    CONSTRAINT learning_paths_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text)),
+    CONSTRAINT learning_paths_title_check CHECK ((length(btrim(title)) > 0))
 );
 
 CREATE TABLE public.lesson_quiz_questions (
@@ -3451,6 +3813,18 @@ CREATE TABLE public.tutor_messages (
 --
 
 --
+-- Data for Name: competition_registrations; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- Data for Name: competition_submissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- Data for Name: competitions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
 -- Data for Name: conversations; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3515,7 +3889,23 @@ CREATE TABLE public.tutor_messages (
 --
 
 --
+-- Data for Name: grade_history; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
 -- Data for Name: instalment_schedules; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- Data for Name: learner_preferences; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- Data for Name: learning_path_items; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+--
+-- Data for Name: learning_paths; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 --
@@ -3578,10 +3968,10 @@ CREATE TABLE public.tutor_messages (
 -- Data for Name: system_settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('db2648a1-904d-4c3e-bae6-61e34d957ba4', 'site_name', '"DataPlus Learning"', 'Platform name', NULL, '2026-11-18 09:44:40.657001+00');
-INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('e5aa46d0-50b9-49a0-b26c-1d3d8eed7e56', 'require_teacher_approval', 'true', 'Require admin approval for new teachers', NULL, '2026-11-18 09:44:40.657001+00');
-INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('bc468305-127a-4ca3-b6a2-77daba6a88ff', 'require_course_approval', 'false', 'Require admin approval for new courses', NULL, '2026-11-18 09:44:40.657001+00');
-INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('7fde2a72-1e30-4d71-869b-da6e6cbc7bc9', 'maintenance_mode', 'false', 'Enable maintenance mode', NULL, '2026-11-18 09:44:40.657001+00');
+INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('cbb135ff-51bf-4f85-88f3-a92ccfe6aab6', 'site_name', '"DataPlus Learning"', 'Platform name', NULL, '2026-11-24 00:37:55.1414+00');
+INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('2adc3f49-7807-4ba9-962e-830dbb94a8e8', 'require_teacher_approval', 'true', 'Require admin approval for new teachers', NULL, '2026-11-24 00:37:55.1414+00');
+INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('62bb22c8-2a41-432c-aa2d-d91b2a8dbf2c', 'require_course_approval', 'false', 'Require admin approval for new courses', NULL, '2026-11-24 00:37:55.1414+00');
+INSERT INTO public.system_settings (id, key, value, description, updated_by, updated_at) VALUES ('fc1b38c1-f530-4e0d-b2ca-e6f41f7078ef', 'maintenance_mode', 'false', 'Enable maintenance mode', NULL, '2026-11-24 00:37:55.1414+00');
 
 --
 -- Data for Name: teacher_announcements; Type: TABLE DATA; Schema: public; Owner: -
@@ -3651,6 +4041,21 @@ ALTER TABLE ONLY public.cohort_join_requests
 ALTER TABLE ONLY public.cohorts
     ADD CONSTRAINT cohorts_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.competition_registrations
+    ADD CONSTRAINT competition_registrations_competition_id_user_id_key UNIQUE (competition_id, user_id);
+
+ALTER TABLE ONLY public.competition_registrations
+    ADD CONSTRAINT competition_registrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.competition_submissions
+    ADD CONSTRAINT competition_submissions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT competitions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT competitions_slug_key UNIQUE (slug);
+
 ALTER TABLE ONLY public.conversations
     ADD CONSTRAINT conversations_pkey PRIMARY KEY (id);
 
@@ -3714,11 +4119,29 @@ ALTER TABLE ONLY public.direct_messages
 ALTER TABLE ONLY public.exhibition_projects
     ADD CONSTRAINT exhibition_projects_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.grade_history
+    ADD CONSTRAINT grade_history_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.instalment_schedules
     ADD CONSTRAINT instalment_schedules_enrollment_id_instalment_number_key UNIQUE (enrollment_id, instalment_number);
 
 ALTER TABLE ONLY public.instalment_schedules
     ADD CONSTRAINT instalment_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.learner_preferences
+    ADD CONSTRAINT learner_preferences_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY public.learning_path_items
+    ADD CONSTRAINT learning_path_items_path_id_course_id_key UNIQUE (path_id, course_id);
+
+ALTER TABLE ONLY public.learning_path_items
+    ADD CONSTRAINT learning_path_items_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.learning_paths
+    ADD CONSTRAINT learning_paths_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.learning_paths
+    ADD CONSTRAINT learning_paths_slug_key UNIQUE (slug);
 
 ALTER TABLE ONLY public.lesson_quiz_questions
     ADD CONSTRAINT lesson_quiz_questions_pkey PRIMARY KEY (id);
@@ -3787,7 +4210,11 @@ CREATE UNIQUE INDEX certificates_number_key ON public.certificates USING btree (
 
 CREATE UNIQUE INDEX certificates_verification_code_key ON public.certificates USING btree (verification_code);
 
+CREATE INDEX competition_submissions_user_idx ON public.competition_submissions USING btree (competition_id, user_id);
+
 CREATE INDEX exhibition_projects_display_order_idx ON public.exhibition_projects USING btree (display_order);
+
+CREATE INDEX grade_history_submission_idx ON public.grade_history USING btree (submission_type, submission_id, recorded_at);
 
 CREATE INDEX idx_activity_logs_action ON public.activity_logs USING btree (action);
 
@@ -3951,6 +4378,8 @@ CREATE INDEX idx_tutor_messages_thread ON public.tutor_messages USING btree (use
 
 CREATE INDEX idx_tutor_messages_usage ON public.tutor_messages USING btree (user_id, created_at DESC) WHERE (role = 'user'::text);
 
+CREATE INDEX learning_path_items_path_idx ON public.learning_path_items USING btree (path_id, "position");
+
 CREATE TRIGGER certificates_assign_identifiers BEFORE INSERT OR UPDATE ON public.certificates FOR EACH ROW EXECUTE FUNCTION public.certificates_assign_identifiers();
 
 CREATE TRIGGER notify_on_application AFTER INSERT OR UPDATE ON public.cohort_join_requests FOR EACH ROW EXECUTE FUNCTION public.notify_on_application();
@@ -3977,11 +4406,27 @@ CREATE TRIGGER on_suspension_change AFTER UPDATE ON public.profiles FOR EACH ROW
 
 COMMENT ON TRIGGER on_suspension_change ON public.profiles IS 'Automatically logs suspension status changes';
 
+CREATE TRIGGER protect_competition_judging BEFORE INSERT OR UPDATE ON public.competition_submissions FOR EACH ROW EXECUTE FUNCTION public.protect_competition_judging();
+
 CREATE TRIGGER protect_profile_privileged_columns BEFORE INSERT OR UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.protect_profile_privileged_columns();
 
 CREATE TRIGGER protect_submission_grade BEFORE INSERT OR UPDATE ON public.assignment_submissions FOR EACH ROW EXECUTE FUNCTION public.protect_submission_grade();
 
 CREATE TRIGGER protect_submission_grade BEFORE INSERT OR UPDATE ON public.capstone_submissions FOR EACH ROW EXECUTE FUNCTION public.protect_submission_grade();
+
+CREATE TRIGGER protect_submission_rubric_scores BEFORE INSERT OR UPDATE ON public.assignment_submissions FOR EACH ROW EXECUTE FUNCTION public.protect_submission_rubric_scores();
+
+CREATE TRIGGER protect_submission_rubric_scores BEFORE INSERT OR UPDATE ON public.capstone_submissions FOR EACH ROW EXECUTE FUNCTION public.protect_submission_rubric_scores();
+
+CREATE TRIGGER record_grade_history AFTER INSERT OR UPDATE ON public.assignment_submissions FOR EACH ROW EXECUTE FUNCTION public.record_grade_history();
+
+CREATE TRIGGER record_grade_history AFTER INSERT OR UPDATE ON public.capstone_submissions FOR EACH ROW EXECUTE FUNCTION public.record_grade_history();
+
+CREATE TRIGGER require_grade_feedback BEFORE INSERT OR UPDATE ON public.assignment_submissions FOR EACH ROW EXECUTE FUNCTION public.require_grade_feedback();
+
+CREATE TRIGGER require_grade_feedback BEFORE INSERT OR UPDATE ON public.capstone_submissions FOR EACH ROW EXECUTE FUNCTION public.require_grade_feedback();
+
+CREATE TRIGGER stamp_learner_preferences BEFORE INSERT OR UPDATE ON public.learner_preferences FOR EACH ROW EXECUTE FUNCTION public.stamp_learner_preferences();
 
 CREATE TRIGGER teacher_announcements_updated_at BEFORE UPDATE ON public.teacher_announcements FOR EACH ROW EXECUTE FUNCTION public.update_teacher_announcements_updated_at();
 
@@ -4075,6 +4520,24 @@ ALTER TABLE ONLY public.cohorts
 ALTER TABLE ONLY public.cohorts
     ADD CONSTRAINT cohorts_teacher_id_fkey FOREIGN KEY (teacher_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.competition_registrations
+    ADD CONSTRAINT competition_registrations_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES public.competitions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.competition_registrations
+    ADD CONSTRAINT competition_registrations_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.competition_submissions
+    ADD CONSTRAINT competition_submissions_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES public.competitions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.competition_submissions
+    ADD CONSTRAINT competition_submissions_scored_by_fkey FOREIGN KEY (scored_by) REFERENCES public.profiles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.competition_submissions
+    ADD CONSTRAINT competition_submissions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.competitions
+    ADD CONSTRAINT competitions_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.profiles(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.conversations
     ADD CONSTRAINT conversations_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
 
@@ -4164,6 +4627,18 @@ ALTER TABLE ONLY public.instalment_schedules
 
 ALTER TABLE ONLY public.instalment_schedules
     ADD CONSTRAINT instalment_schedules_payment_id_fkey FOREIGN KEY (payment_id) REFERENCES public.payments(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.learner_preferences
+    ADD CONSTRAINT learner_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.learning_path_items
+    ADD CONSTRAINT learning_path_items_course_id_fkey FOREIGN KEY (course_id) REFERENCES public.courses(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.learning_path_items
+    ADD CONSTRAINT learning_path_items_path_id_fkey FOREIGN KEY (path_id) REFERENCES public.learning_paths(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.learning_paths
+    ADD CONSTRAINT learning_paths_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.profiles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.lesson_quiz_questions
     ADD CONSTRAINT lesson_quiz_questions_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES public.course_lessons(id) ON DELETE CASCADE;
@@ -4398,11 +4873,15 @@ CREATE POLICY "Admins can view partner requests" ON public.partner_requests FOR 
    FROM public.profiles
   WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::public.user_role)))));
 
+CREATE POLICY "Admins judge submissions" ON public.competition_submissions TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
+
 CREATE POLICY "Admins manage all scholarship applications" ON public.scholarship_applications USING ((EXISTS ( SELECT 1
    FROM public.profiles
   WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::public.user_role))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM public.profiles
   WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::public.user_role)))));
+
+CREATE POLICY "Admins manage competitions" ON public.competitions TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
 
 CREATE POLICY "Admins manage course price tiers" ON public.course_price_tiers USING ((EXISTS ( SELECT 1
    FROM public.profiles
@@ -4430,11 +4909,19 @@ CREATE POLICY "Admins manage instalment schedules" ON public.instalment_schedule
    FROM public.profiles
   WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::public.user_role)))));
 
+CREATE POLICY "Admins manage registrations" ON public.competition_registrations TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
+
+CREATE POLICY "Admins manage track items" ON public.learning_path_items TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
+
+CREATE POLICY "Admins manage tracks" ON public.learning_paths TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));
+
 CREATE POLICY "Admins read all tutor conversations" ON public.tutor_messages FOR SELECT TO authenticated USING (public.is_admin(auth.uid()));
 
 CREATE POLICY "Allow activity log inserts" ON public.activity_logs FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow reading teacher profiles for chat" ON public.profiles FOR SELECT USING (((auth.uid() = id) OR (role = 'teacher'::public.user_role) OR (public.get_user_role(auth.uid()) = ANY (ARRAY['teacher'::text, 'admin'::text]))));
+
+CREATE POLICY "Announced competitions are public" ON public.competitions FOR SELECT USING (((status <> 'draft'::text) OR public.is_admin(auth.uid())));
 
 CREATE POLICY "Anyone can read active course price tiers" ON public.course_price_tiers FOR SELECT USING ((is_active = true));
 
@@ -4482,6 +4969,17 @@ CREATE POLICY "Course staff manage certificate rules" ON public.course_certifica
    FROM public.profiles p
   WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::public.user_role))))));
 
+CREATE POLICY "Course staff read grade history" ON public.grade_history FOR SELECT TO authenticated USING ((public.is_admin(auth.uid()) OR ((submission_type = 'assignment'::text) AND (EXISTS ( SELECT 1
+   FROM (((public.assignment_submissions s
+     JOIN public.course_lessons l ON ((l.id = s.lesson_id)))
+     JOIN public.course_chapters ch ON ((ch.id = l.chapter_id)))
+     JOIN public.courses c ON ((c.id = ch.course_id)))
+  WHERE ((s.id = grade_history.submission_id) AND (c.teacher_id = auth.uid()))))) OR ((submission_type = 'capstone'::text) AND (EXISTS ( SELECT 1
+   FROM ((public.capstone_submissions s
+     JOIN public.capstone_projects cp ON ((cp.id = s.capstone_project_id)))
+     JOIN public.courses c ON ((c.id = cp.course_id)))
+  WHERE ((s.id = grade_history.submission_id) AND (c.teacher_id = auth.uid())))))));
+
 CREATE POLICY "Enrolled students and teachers can view quiz questions" ON public.quiz_questions FOR SELECT USING (((EXISTS ( SELECT 1
    FROM (public.quizzes q
      JOIN public.courses c ON ((q.course_id = c.id)))
@@ -4504,7 +5002,27 @@ CREATE POLICY "Enrolled students can view quizzes" ON public.quizzes FOR SELECT 
    FROM public.course_enrollments
   WHERE (course_enrollments.student_id = auth.uid()))));
 
+CREATE POLICY "Items of published tracks are public" ON public.learning_path_items FOR SELECT USING ((public.is_admin(auth.uid()) OR (EXISTS ( SELECT 1
+   FROM public.learning_paths p
+  WHERE ((p.id = learning_path_items.path_id) AND p.is_published)))));
+
+CREATE POLICY "Learners manage their own preferences" ON public.learner_preferences TO authenticated USING ((user_id = auth.uid())) WITH CHECK ((user_id = auth.uid()));
+
+CREATE POLICY "Learners read their own grade history" ON public.grade_history FOR SELECT TO authenticated USING ((student_id = auth.uid()));
+
 CREATE POLICY "Learners read their tutor conversation" ON public.tutor_messages FOR SELECT TO authenticated USING ((user_id = auth.uid()));
+
+CREATE POLICY "Participants read own registration" ON public.competition_registrations FOR SELECT TO authenticated USING (((user_id = auth.uid()) OR public.is_admin(auth.uid())));
+
+CREATE POLICY "Participants read own submissions" ON public.competition_submissions FOR SELECT TO authenticated USING (((user_id = auth.uid()) OR public.is_admin(auth.uid())));
+
+CREATE POLICY "Participants register while open" ON public.competition_registrations FOR INSERT TO authenticated WITH CHECK (((user_id = auth.uid()) AND (status = 'registered'::text) AND public.competition_registration_open(competition_id)));
+
+CREATE POLICY "Participants submit while open" ON public.competition_submissions FOR INSERT TO authenticated WITH CHECK (((user_id = auth.uid()) AND public.competition_can_submit(competition_id, auth.uid())));
+
+CREATE POLICY "Participants withdraw" ON public.competition_registrations FOR UPDATE TO authenticated USING (((user_id = auth.uid()) AND (status <> 'disqualified'::text))) WITH CHECK (((user_id = auth.uid()) AND (status = ANY (ARRAY['registered'::text, 'withdrawn'::text]))));
+
+CREATE POLICY "Published tracks are public" ON public.learning_paths FOR SELECT USING ((is_published OR public.is_admin(auth.uid())));
 
 CREATE POLICY "Staff can view all certificates" ON public.certificates FOR SELECT TO authenticated USING ((EXISTS ( SELECT 1
    FROM public.profiles
@@ -4787,6 +5305,12 @@ ALTER TABLE public.cohort_join_requests ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE public.cohorts ENABLE ROW LEVEL SECURITY;
 
+ALTER TABLE public.competition_registrations ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.competition_submissions ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.competitions ENABLE ROW LEVEL SECURITY;
+
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE public.coupon_redemptions ENABLE ROW LEVEL SECURITY;
@@ -4819,7 +5343,15 @@ ALTER TABLE public.direct_messages ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE public.exhibition_projects ENABLE ROW LEVEL SECURITY;
 
+ALTER TABLE public.grade_history ENABLE ROW LEVEL SECURITY;
+
 ALTER TABLE public.instalment_schedules ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.learner_preferences ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.learning_path_items ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.learning_paths ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE public.lesson_quiz_questions ENABLE ROW LEVEL SECURITY;
 
@@ -4920,6 +5452,14 @@ GRANT ALL ON FUNCTION public.check_course_access(p_user_id uuid, p_course_id uui
 GRANT ALL ON FUNCTION public.check_course_access(p_user_id uuid, p_course_id uuid) TO authenticated;
 GRANT ALL ON FUNCTION public.check_course_access(p_user_id uuid, p_course_id uuid) TO service_role;
 
+GRANT ALL ON FUNCTION public.competition_can_submit(p_competition_id uuid, p_user_id uuid) TO anon;
+GRANT ALL ON FUNCTION public.competition_can_submit(p_competition_id uuid, p_user_id uuid) TO authenticated;
+GRANT ALL ON FUNCTION public.competition_can_submit(p_competition_id uuid, p_user_id uuid) TO service_role;
+
+GRANT ALL ON FUNCTION public.competition_registration_open(p_competition_id uuid) TO anon;
+GRANT ALL ON FUNCTION public.competition_registration_open(p_competition_id uuid) TO authenticated;
+GRANT ALL ON FUNCTION public.competition_registration_open(p_competition_id uuid) TO service_role;
+
 REVOKE ALL ON FUNCTION public.create_instalment_enrollment(p_student_id uuid, p_course_id uuid, p_total_amount numeric, p_currency text, p_cohort_id uuid) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.create_instalment_enrollment(p_student_id uuid, p_course_id uuid, p_total_amount numeric, p_currency text, p_cohort_id uuid) TO anon;
 GRANT ALL ON FUNCTION public.create_instalment_enrollment(p_student_id uuid, p_course_id uuid, p_total_amount numeric, p_currency text, p_cohort_id uuid) TO authenticated;
@@ -4956,6 +5496,10 @@ GRANT ALL ON FUNCTION public.get_all_student_progress() TO anon;
 GRANT ALL ON FUNCTION public.get_all_student_progress() TO authenticated;
 GRANT ALL ON FUNCTION public.get_all_student_progress() TO service_role;
 
+GRANT ALL ON FUNCTION public.get_competition_leaderboard(p_competition_id uuid) TO anon;
+GRANT ALL ON FUNCTION public.get_competition_leaderboard(p_competition_id uuid) TO authenticated;
+GRANT ALL ON FUNCTION public.get_competition_leaderboard(p_competition_id uuid) TO service_role;
+
 GRANT ALL ON FUNCTION public.get_coupon_redemption_stats() TO anon;
 GRANT ALL ON FUNCTION public.get_coupon_redemption_stats() TO authenticated;
 GRANT ALL ON FUNCTION public.get_coupon_redemption_stats() TO service_role;
@@ -4978,6 +5522,10 @@ GRANT ALL ON FUNCTION public.get_lesson_quiz(p_lesson_id uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.get_lesson_quiz_review(p_lesson_id uuid) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.get_lesson_quiz_review(p_lesson_id uuid) TO authenticated;
 GRANT ALL ON FUNCTION public.get_lesson_quiz_review(p_lesson_id uuid) TO service_role;
+
+REVOKE ALL ON FUNCTION public.get_onboarding_insights() FROM PUBLIC;
+GRANT ALL ON FUNCTION public.get_onboarding_insights() TO authenticated;
+GRANT ALL ON FUNCTION public.get_onboarding_insights() TO service_role;
 
 GRANT ALL ON FUNCTION public.get_pending_course_updates() TO anon;
 GRANT ALL ON FUNCTION public.get_pending_course_updates() TO authenticated;
@@ -5010,6 +5558,10 @@ GRANT ALL ON FUNCTION public.is_admin(user_id uuid) TO service_role;
 GRANT ALL ON FUNCTION public.is_privileged_context() TO anon;
 GRANT ALL ON FUNCTION public.is_privileged_context() TO authenticated;
 GRANT ALL ON FUNCTION public.is_privileged_context() TO service_role;
+
+GRANT ALL ON FUNCTION public.is_valid_rubric(p_rubric jsonb) TO anon;
+GRANT ALL ON FUNCTION public.is_valid_rubric(p_rubric jsonb) TO authenticated;
+GRANT ALL ON FUNCTION public.is_valid_rubric(p_rubric jsonb) TO service_role;
 
 REVOKE ALL ON FUNCTION public.issue_certificate_if_eligible(p_student_id uuid, p_course_id uuid) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.issue_certificate_if_eligible(p_student_id uuid, p_course_id uuid) TO service_role;
@@ -5083,6 +5635,10 @@ GRANT ALL ON FUNCTION public.on_lesson_progress_change() TO anon;
 GRANT ALL ON FUNCTION public.on_lesson_progress_change() TO authenticated;
 GRANT ALL ON FUNCTION public.on_lesson_progress_change() TO service_role;
 
+GRANT ALL ON FUNCTION public.protect_competition_judging() TO anon;
+GRANT ALL ON FUNCTION public.protect_competition_judging() TO authenticated;
+GRANT ALL ON FUNCTION public.protect_competition_judging() TO service_role;
+
 GRANT ALL ON FUNCTION public.protect_profile_privileged_columns() TO anon;
 GRANT ALL ON FUNCTION public.protect_profile_privileged_columns() TO authenticated;
 GRANT ALL ON FUNCTION public.protect_profile_privileged_columns() TO service_role;
@@ -5090,6 +5646,14 @@ GRANT ALL ON FUNCTION public.protect_profile_privileged_columns() TO service_rol
 GRANT ALL ON FUNCTION public.protect_submission_grade() TO anon;
 GRANT ALL ON FUNCTION public.protect_submission_grade() TO authenticated;
 GRANT ALL ON FUNCTION public.protect_submission_grade() TO service_role;
+
+GRANT ALL ON FUNCTION public.protect_submission_rubric_scores() TO anon;
+GRANT ALL ON FUNCTION public.protect_submission_rubric_scores() TO authenticated;
+GRANT ALL ON FUNCTION public.protect_submission_rubric_scores() TO service_role;
+
+GRANT ALL ON FUNCTION public.record_grade_history() TO anon;
+GRANT ALL ON FUNCTION public.record_grade_history() TO authenticated;
+GRANT ALL ON FUNCTION public.record_grade_history() TO service_role;
 
 REVOKE ALL ON FUNCTION public.record_lesson_visit(p_lesson_id uuid, p_position integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.record_lesson_visit(p_lesson_id uuid, p_position integer) TO authenticated;
@@ -5118,9 +5682,17 @@ GRANT ALL ON FUNCTION public.reject_teacher(p_teacher_id uuid, p_rejection_reaso
 GRANT ALL ON FUNCTION public.reject_teacher(p_teacher_id uuid, p_rejection_reason text) TO authenticated;
 GRANT ALL ON FUNCTION public.reject_teacher(p_teacher_id uuid, p_rejection_reason text) TO service_role;
 
+GRANT ALL ON FUNCTION public.require_grade_feedback() TO anon;
+GRANT ALL ON FUNCTION public.require_grade_feedback() TO authenticated;
+GRANT ALL ON FUNCTION public.require_grade_feedback() TO service_role;
+
 REVOKE ALL ON FUNCTION public.revoke_certificate(p_certificate_id uuid, p_reason text) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.revoke_certificate(p_certificate_id uuid, p_reason text) TO authenticated;
 GRANT ALL ON FUNCTION public.revoke_certificate(p_certificate_id uuid, p_reason text) TO service_role;
+
+GRANT ALL ON FUNCTION public.stamp_learner_preferences() TO anon;
+GRANT ALL ON FUNCTION public.stamp_learner_preferences() TO authenticated;
+GRANT ALL ON FUNCTION public.stamp_learner_preferences() TO service_role;
 
 GRANT ALL ON FUNCTION public.submit_course_update(p_course_id uuid, p_update_notes text) TO anon;
 GRANT ALL ON FUNCTION public.submit_course_update(p_course_id uuid, p_update_notes text) TO authenticated;
@@ -5233,6 +5805,18 @@ GRANT ALL ON TABLE public.cohorts TO anon;
 GRANT ALL ON TABLE public.cohorts TO authenticated;
 GRANT ALL ON TABLE public.cohorts TO service_role;
 
+GRANT ALL ON TABLE public.competition_registrations TO anon;
+GRANT ALL ON TABLE public.competition_registrations TO authenticated;
+GRANT ALL ON TABLE public.competition_registrations TO service_role;
+
+GRANT ALL ON TABLE public.competition_submissions TO anon;
+GRANT ALL ON TABLE public.competition_submissions TO authenticated;
+GRANT ALL ON TABLE public.competition_submissions TO service_role;
+
+GRANT ALL ON TABLE public.competitions TO anon;
+GRANT ALL ON TABLE public.competitions TO authenticated;
+GRANT ALL ON TABLE public.competitions TO service_role;
+
 GRANT ALL ON TABLE public.conversations TO anon;
 GRANT ALL ON TABLE public.conversations TO authenticated;
 GRANT ALL ON TABLE public.conversations TO service_role;
@@ -5305,9 +5889,23 @@ GRANT ALL ON TABLE public.exhibition_projects TO anon;
 GRANT ALL ON TABLE public.exhibition_projects TO authenticated;
 GRANT ALL ON TABLE public.exhibition_projects TO service_role;
 
+GRANT ALL ON TABLE public.grade_history TO service_role;
+GRANT SELECT ON TABLE public.grade_history TO authenticated;
+
 GRANT ALL ON TABLE public.instalment_schedules TO anon;
 GRANT ALL ON TABLE public.instalment_schedules TO authenticated;
 GRANT ALL ON TABLE public.instalment_schedules TO service_role;
+
+GRANT ALL ON TABLE public.learner_preferences TO authenticated;
+GRANT ALL ON TABLE public.learner_preferences TO service_role;
+
+GRANT ALL ON TABLE public.learning_path_items TO anon;
+GRANT ALL ON TABLE public.learning_path_items TO authenticated;
+GRANT ALL ON TABLE public.learning_path_items TO service_role;
+
+GRANT ALL ON TABLE public.learning_paths TO anon;
+GRANT ALL ON TABLE public.learning_paths TO authenticated;
+GRANT ALL ON TABLE public.learning_paths TO service_role;
 
 GRANT ALL ON TABLE public.lesson_quiz_questions TO anon;
 GRANT ALL ON TABLE public.lesson_quiz_questions TO authenticated;
@@ -5482,6 +6080,9 @@ REVOKE ALL ON SEQUENCE public.certificate_number_seq FROM PUBLIC, anon, authenti
 REVOKE ALL ON TABLE public.certificates FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.certificates TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.certificates TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.certificates TO service_role;
 REVOKE ALL ON TABLE public.cohort_join_requests FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohort_join_requests TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohort_join_requests TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohort_join_requests TO service_role;
 REVOKE ALL ON TABLE public.cohorts FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohorts TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohorts TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.cohorts TO service_role;
+REVOKE ALL ON TABLE public.competition_registrations FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_registrations TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_registrations TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_registrations TO service_role;
+REVOKE ALL ON TABLE public.competition_submissions FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_submissions TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_submissions TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competition_submissions TO service_role;
+REVOKE ALL ON TABLE public.competitions FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competitions TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competitions TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.competitions TO service_role;
 REVOKE ALL ON TABLE public.conversations FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations TO service_role;
 REVOKE ALL ON TABLE public.conversations_with_details FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations_with_details TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations_with_details TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.conversations_with_details TO service_role;
 REVOKE ALL ON TABLE public.coupon_redemptions FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.coupon_redemptions TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.coupon_redemptions TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.coupon_redemptions TO service_role;
@@ -5499,7 +6100,11 @@ REVOKE ALL ON TABLE public.course_update_history FROM PUBLIC, anon, authenticate
 REVOKE ALL ON TABLE public.courses FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.courses TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.courses TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.courses TO service_role;
 REVOKE ALL ON TABLE public.direct_messages FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.direct_messages TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.direct_messages TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.direct_messages TO service_role;
 REVOKE ALL ON TABLE public.exhibition_projects FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.exhibition_projects TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.exhibition_projects TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.exhibition_projects TO service_role;
+REVOKE ALL ON TABLE public.grade_history FROM PUBLIC, anon, authenticated, service_role; GRANT SELECT ON TABLE public.grade_history TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.grade_history TO service_role;
 REVOKE ALL ON TABLE public.instalment_schedules FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.instalment_schedules TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.instalment_schedules TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.instalment_schedules TO service_role;
+REVOKE ALL ON TABLE public.learner_preferences FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learner_preferences TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learner_preferences TO service_role;
+REVOKE ALL ON TABLE public.learning_path_items FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_path_items TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_path_items TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_path_items TO service_role;
+REVOKE ALL ON TABLE public.learning_paths FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_paths TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_paths TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.learning_paths TO service_role;
 REVOKE ALL ON TABLE public.lesson_quiz_questions FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.lesson_quiz_questions TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.lesson_quiz_questions TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.lesson_quiz_questions TO service_role;
 REVOKE ALL ON TABLE public.notification_preferences FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notification_preferences TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notification_preferences TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notification_preferences TO service_role;
 REVOKE ALL ON TABLE public.notifications FROM PUBLIC, anon, authenticated, service_role; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notifications TO anon; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notifications TO authenticated; GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE ON TABLE public.notifications TO service_role;
@@ -5534,6 +6139,8 @@ REVOKE ALL ON FUNCTION public.can_manage_lesson_file(text) FROM PUBLIC, anon, au
 REVOKE ALL ON FUNCTION public.can_read_lesson_file(text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.can_read_lesson_file(text) TO anon; GRANT EXECUTE ON FUNCTION public.can_read_lesson_file(text) TO authenticated; GRANT EXECUTE ON FUNCTION public.can_read_lesson_file(text) TO service_role;
 REVOKE ALL ON FUNCTION public.certificates_assign_identifiers() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.certificates_assign_identifiers() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.certificates_assign_identifiers() TO anon; GRANT EXECUTE ON FUNCTION public.certificates_assign_identifiers() TO authenticated; GRANT EXECUTE ON FUNCTION public.certificates_assign_identifiers() TO service_role;
 REVOKE ALL ON FUNCTION public.check_course_access(uuid,uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.check_course_access(uuid,uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.check_course_access(uuid,uuid) TO anon; GRANT EXECUTE ON FUNCTION public.check_course_access(uuid,uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.check_course_access(uuid,uuid) TO service_role;
+REVOKE ALL ON FUNCTION public.competition_can_submit(uuid,uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.competition_can_submit(uuid,uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.competition_can_submit(uuid,uuid) TO anon; GRANT EXECUTE ON FUNCTION public.competition_can_submit(uuid,uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.competition_can_submit(uuid,uuid) TO service_role;
+REVOKE ALL ON FUNCTION public.competition_registration_open(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.competition_registration_open(uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.competition_registration_open(uuid) TO anon; GRANT EXECUTE ON FUNCTION public.competition_registration_open(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.competition_registration_open(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.create_instalment_enrollment(uuid,uuid,numeric,text,uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.create_instalment_enrollment(uuid,uuid,numeric,text,uuid) TO anon; GRANT EXECUTE ON FUNCTION public.create_instalment_enrollment(uuid,uuid,numeric,text,uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.create_instalment_enrollment(uuid,uuid,numeric,text,uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.create_payment_record(uuid,uuid,uuid,numeric,text,text,text,text,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.create_payment_record(uuid,uuid,uuid,numeric,text,text,text,text,text) TO service_role;
 REVOKE ALL ON FUNCTION public.create_payment_record(uuid,uuid,uuid,numeric,text,text,text,text,text,text,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.create_payment_record(uuid,uuid,uuid,numeric,text,text,text,text,text,text,text) TO service_role;
@@ -5544,12 +6151,14 @@ REVOKE ALL ON FUNCTION public.get_activity_logs(integer,integer) FROM PUBLIC, an
 REVOKE ALL ON FUNCTION public.get_admin_dashboard_stats() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_admin_dashboard_stats() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_admin_dashboard_stats() TO anon; GRANT EXECUTE ON FUNCTION public.get_admin_dashboard_stats() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_admin_dashboard_stats() TO service_role;
 REVOKE ALL ON FUNCTION public.get_all_profiles() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_all_profiles() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_all_profiles() TO anon; GRANT EXECUTE ON FUNCTION public.get_all_profiles() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_all_profiles() TO service_role;
 REVOKE ALL ON FUNCTION public.get_all_student_progress() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_all_student_progress() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_all_student_progress() TO anon; GRANT EXECUTE ON FUNCTION public.get_all_student_progress() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_all_student_progress() TO service_role;
+REVOKE ALL ON FUNCTION public.get_competition_leaderboard(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_competition_leaderboard(uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_competition_leaderboard(uuid) TO anon; GRANT EXECUTE ON FUNCTION public.get_competition_leaderboard(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.get_competition_leaderboard(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.get_coupon_redemption_stats() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_coupon_redemption_stats() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_coupon_redemption_stats() TO anon; GRANT EXECUTE ON FUNCTION public.get_coupon_redemption_stats() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_coupon_redemption_stats() TO service_role;
 REVOKE ALL ON FUNCTION public.get_course_approvals() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_course_approvals() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_course_approvals() TO anon; GRANT EXECUTE ON FUNCTION public.get_course_approvals() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_course_approvals() TO service_role;
 REVOKE ALL ON FUNCTION public.get_course_completions(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_course_completions(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.get_instalment_tracker() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_instalment_tracker() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_instalment_tracker() TO anon; GRANT EXECUTE ON FUNCTION public.get_instalment_tracker() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_instalment_tracker() TO service_role;
 REVOKE ALL ON FUNCTION public.get_lesson_quiz(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_lesson_quiz(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.get_lesson_quiz(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.get_lesson_quiz_review(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_lesson_quiz_review(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.get_lesson_quiz_review(uuid) TO service_role;
+REVOKE ALL ON FUNCTION public.get_onboarding_insights() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_onboarding_insights() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_onboarding_insights() TO service_role;
 REVOKE ALL ON FUNCTION public.get_pending_course_updates() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_pending_course_updates() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_pending_course_updates() TO anon; GRANT EXECUTE ON FUNCTION public.get_pending_course_updates() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_pending_course_updates() TO service_role;
 REVOKE ALL ON FUNCTION public.get_student_pending_instalments(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_student_pending_instalments(uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_student_pending_instalments(uuid) TO anon; GRANT EXECUTE ON FUNCTION public.get_student_pending_instalments(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.get_student_pending_instalments(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.get_system_settings() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.get_system_settings() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.get_system_settings() TO anon; GRANT EXECUTE ON FUNCTION public.get_system_settings() TO authenticated; GRANT EXECUTE ON FUNCTION public.get_system_settings() TO service_role;
@@ -5558,6 +6167,7 @@ REVOKE ALL ON FUNCTION public.get_user_role(uuid) FROM PUBLIC, anon, authenticat
 REVOKE ALL ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.handle_new_user() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.handle_new_user() TO anon; GRANT EXECUTE ON FUNCTION public.handle_new_user() TO authenticated; GRANT EXECUTE ON FUNCTION public.handle_new_user() TO service_role;
 REVOKE ALL ON FUNCTION public.is_admin(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.is_admin(uuid) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.is_admin(uuid) TO anon; GRANT EXECUTE ON FUNCTION public.is_admin(uuid) TO authenticated; GRANT EXECUTE ON FUNCTION public.is_admin(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.is_privileged_context() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.is_privileged_context() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.is_privileged_context() TO anon; GRANT EXECUTE ON FUNCTION public.is_privileged_context() TO authenticated; GRANT EXECUTE ON FUNCTION public.is_privileged_context() TO service_role;
+REVOKE ALL ON FUNCTION public.is_valid_rubric(jsonb) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.is_valid_rubric(jsonb) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.is_valid_rubric(jsonb) TO anon; GRANT EXECUTE ON FUNCTION public.is_valid_rubric(jsonb) TO authenticated; GRANT EXECUTE ON FUNCTION public.is_valid_rubric(jsonb) TO service_role;
 REVOKE ALL ON FUNCTION public.issue_certificate_if_eligible(uuid,uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.issue_certificate_if_eligible(uuid,uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.issue_pending_certificates() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.issue_pending_certificates() TO authenticated; GRANT EXECUTE ON FUNCTION public.issue_pending_certificates() TO service_role;
 REVOKE ALL ON FUNCTION public.lesson_file_ref_matches(text,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.lesson_file_ref_matches(text,text) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.lesson_file_ref_matches(text,text) TO anon; GRANT EXECUTE ON FUNCTION public.lesson_file_ref_matches(text,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.lesson_file_ref_matches(text,text) TO service_role;
@@ -5577,8 +6187,11 @@ REVOKE ALL ON FUNCTION public.notify_user(uuid,text,text,text,text,jsonb,boolean
 REVOKE ALL ON FUNCTION public.on_capstone_graded() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.on_capstone_graded() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.on_capstone_graded() TO anon; GRANT EXECUTE ON FUNCTION public.on_capstone_graded() TO authenticated; GRANT EXECUTE ON FUNCTION public.on_capstone_graded() TO service_role;
 REVOKE ALL ON FUNCTION public.on_lesson_completed_check_certificate() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.on_lesson_completed_check_certificate() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.on_lesson_completed_check_certificate() TO anon; GRANT EXECUTE ON FUNCTION public.on_lesson_completed_check_certificate() TO authenticated; GRANT EXECUTE ON FUNCTION public.on_lesson_completed_check_certificate() TO service_role;
 REVOKE ALL ON FUNCTION public.on_lesson_progress_change() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.on_lesson_progress_change() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.on_lesson_progress_change() TO anon; GRANT EXECUTE ON FUNCTION public.on_lesson_progress_change() TO authenticated; GRANT EXECUTE ON FUNCTION public.on_lesson_progress_change() TO service_role;
+REVOKE ALL ON FUNCTION public.protect_competition_judging() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.protect_competition_judging() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.protect_competition_judging() TO anon; GRANT EXECUTE ON FUNCTION public.protect_competition_judging() TO authenticated; GRANT EXECUTE ON FUNCTION public.protect_competition_judging() TO service_role;
 REVOKE ALL ON FUNCTION public.protect_profile_privileged_columns() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.protect_profile_privileged_columns() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.protect_profile_privileged_columns() TO anon; GRANT EXECUTE ON FUNCTION public.protect_profile_privileged_columns() TO authenticated; GRANT EXECUTE ON FUNCTION public.protect_profile_privileged_columns() TO service_role;
 REVOKE ALL ON FUNCTION public.protect_submission_grade() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.protect_submission_grade() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.protect_submission_grade() TO anon; GRANT EXECUTE ON FUNCTION public.protect_submission_grade() TO authenticated; GRANT EXECUTE ON FUNCTION public.protect_submission_grade() TO service_role;
+REVOKE ALL ON FUNCTION public.protect_submission_rubric_scores() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.protect_submission_rubric_scores() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.protect_submission_rubric_scores() TO anon; GRANT EXECUTE ON FUNCTION public.protect_submission_rubric_scores() TO authenticated; GRANT EXECUTE ON FUNCTION public.protect_submission_rubric_scores() TO service_role;
+REVOKE ALL ON FUNCTION public.record_grade_history() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.record_grade_history() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.record_grade_history() TO anon; GRANT EXECUTE ON FUNCTION public.record_grade_history() TO authenticated; GRANT EXECUTE ON FUNCTION public.record_grade_history() TO service_role;
 REVOKE ALL ON FUNCTION public.record_lesson_visit(uuid,integer) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.record_lesson_visit(uuid,integer) TO authenticated; GRANT EXECUTE ON FUNCTION public.record_lesson_visit(uuid,integer) TO service_role;
 REVOKE ALL ON FUNCTION public.redeem_coupon_for_payment(uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.redeem_coupon_for_payment(uuid) TO service_role;
 REVOKE ALL ON FUNCTION public.refresh_enrollment_progress(uuid,uuid) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.refresh_enrollment_progress(uuid,uuid) TO service_role;
@@ -5586,7 +6199,9 @@ REVOKE ALL ON FUNCTION public.reinstate_certificate(uuid) FROM PUBLIC, anon, aut
 REVOKE ALL ON FUNCTION public.reject_course_update(uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.reject_course_update(uuid,text) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.reject_course_update(uuid,text) TO anon; GRANT EXECUTE ON FUNCTION public.reject_course_update(uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.reject_course_update(uuid,text) TO service_role;
 REVOKE ALL ON FUNCTION public.reject_scholarship_application(uuid,uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.reject_scholarship_application(uuid,uuid,text) TO anon; GRANT EXECUTE ON FUNCTION public.reject_scholarship_application(uuid,uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.reject_scholarship_application(uuid,uuid,text) TO service_role;
 REVOKE ALL ON FUNCTION public.reject_teacher(uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.reject_teacher(uuid,text) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.reject_teacher(uuid,text) TO anon; GRANT EXECUTE ON FUNCTION public.reject_teacher(uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.reject_teacher(uuid,text) TO service_role;
+REVOKE ALL ON FUNCTION public.require_grade_feedback() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.require_grade_feedback() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.require_grade_feedback() TO anon; GRANT EXECUTE ON FUNCTION public.require_grade_feedback() TO authenticated; GRANT EXECUTE ON FUNCTION public.require_grade_feedback() TO service_role;
 REVOKE ALL ON FUNCTION public.revoke_certificate(uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.revoke_certificate(uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.revoke_certificate(uuid,text) TO service_role;
+REVOKE ALL ON FUNCTION public.stamp_learner_preferences() FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.stamp_learner_preferences() TO PUBLIC; GRANT EXECUTE ON FUNCTION public.stamp_learner_preferences() TO anon; GRANT EXECUTE ON FUNCTION public.stamp_learner_preferences() TO authenticated; GRANT EXECUTE ON FUNCTION public.stamp_learner_preferences() TO service_role;
 REVOKE ALL ON FUNCTION public.submit_course_update(uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.submit_course_update(uuid,text) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.submit_course_update(uuid,text) TO anon; GRANT EXECUTE ON FUNCTION public.submit_course_update(uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.submit_course_update(uuid,text) TO service_role;
 REVOKE ALL ON FUNCTION public.submit_lesson_quiz(uuid,jsonb) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.submit_lesson_quiz(uuid,jsonb) TO authenticated; GRANT EXECUTE ON FUNCTION public.submit_lesson_quiz(uuid,jsonb) TO service_role;
 REVOKE ALL ON FUNCTION public.suspend_user(uuid,text) FROM PUBLIC, anon, authenticated, service_role; GRANT EXECUTE ON FUNCTION public.suspend_user(uuid,text) TO PUBLIC; GRANT EXECUTE ON FUNCTION public.suspend_user(uuid,text) TO anon; GRANT EXECUTE ON FUNCTION public.suspend_user(uuid,text) TO authenticated; GRANT EXECUTE ON FUNCTION public.suspend_user(uuid,text) TO service_role;

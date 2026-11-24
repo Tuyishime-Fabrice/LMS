@@ -17,7 +17,7 @@ export default {
         sans: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
         display: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
         body: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
-        poster: ['"Bebas Neue"', '"Arial Narrow"', 'Impact', 'sans-serif'],
+        poster: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

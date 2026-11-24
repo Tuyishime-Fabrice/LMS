@@ -5,15 +5,16 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
   ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Clock, Download, ExternalLink,
-  FileText, GraduationCap, Link2, ListChecks, MessageSquare, PanelLeft, PlayCircle, Send, X, type LucideIcon,
+  FileText, GraduationCap, Link2, ListChecks, PanelLeft, PlayCircle, X, type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppAuth } from "@/contexts/AuthContext";
 import { TutorPanel } from "@/features/tutor/TutorPanel";
+import { CommunityCard } from "@/features/community/CommunityCard";
+import { useCommunityLinks } from "@/features/community/hooks";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Brand } from "@/components/shell/Brand";
 import { ErrorState, ProgressBar, SkeletonBlock, StatusPill } from "@/components/shell/page";
@@ -182,39 +183,9 @@ function HelpPanel({ outline, lesson, fileUrl, canAsk }: {
 }) {
   const { t } = useTranslation();
   const { user } = useAppAuth();
-  const [question, setQuestion] = useState("");
-  const [sending, setSending] = useState(false);
+  const communityLinks = useCommunityLinks();
+  const community = canAsk ? communityLinks.data?.find((link) => link.courseId === outline.course.id) : undefined;
   const teacher = outline.teacher;
-
-  const ask = async () => {
-    if (!user || !teacher || !question.trim()) return;
-    setSending(true);
-    try {
-      const existing = await supabase.from("conversations").select("id")
-        .eq("student_id", user.id).eq("teacher_id", teacher.id).maybeSingle();
-      let conversationId = existing.data?.id;
-      if (!conversationId) {
-        const created = await supabase.from("conversations")
-          .insert({ student_id: user.id, teacher_id: teacher.id }).select("id").single();
-        if (created.error) throw created.error;
-        conversationId = created.data.id;
-      }
-      const context = lesson ? `${outline.course.title} › ${lesson.title}` : outline.course.title;
-      const { error } = await supabase.from("direct_messages").insert({
-        conversation_id: conversationId,
-        sender_id: user.id,
-        message_text: `[${context}]\n${question.trim()}`,
-      });
-      if (error) throw error;
-      setQuestion("");
-      toast.success(t("room.help.sent", "Question sent. The reply will arrive in Messages."));
-    } catch (error) {
-      console.error("Could not send question", error);
-      toast.error(t("room.help.sendError", "Your question could not be sent. Try again."));
-    } finally {
-      setSending(false);
-    }
-  };
 
   return (
     <div className="space-y-6 p-5">
@@ -222,9 +193,16 @@ function HelpPanel({ outline, lesson, fileUrl, canAsk }: {
         <TutorPanel lessonId={lesson.id} graded={lesson.type === "quiz" || lesson.type === "assignment"} />
       )}
 
+      {community && (
+        <div>
+          <h3 className="text-eyebrow">{t("room.help.community", "Ask your cohort")}</h3>
+          <CommunityCard link={community} compact className="mt-2 shadow-none" />
+        </div>
+      )}
+
       {teacher && (
         <section>
-          <h3 className="text-xs font-medium text-muted-foreground">{t("room.help.instructor", "Your instructor")}</h3>
+          <h3 className="text-eyebrow">{t("room.help.instructor", "Your instructor")}</h3>
           <div className="mt-2 flex items-center gap-3">
             <Avatar className="h-10 w-10">
               {teacher.avatarUrl && <AvatarImage src={teacher.avatarUrl} alt="" />}
@@ -234,32 +212,9 @@ function HelpPanel({ outline, lesson, fileUrl, canAsk }: {
             </Avatar>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-forest">{teacher.name || t("room.help.instructorFallback", "Course instructor")}</p>
-              <Link to="/student/chat" className="text-sm font-medium text-primary hover:underline">
-                {t("room.help.openMessages", "Open messages")}
-              </Link>
+              <p className="text-meta">{t("room.help.instructorNote", "Feedback on your work arrives with your grades.")}</p>
             </div>
           </div>
-        </section>
-      )}
-
-      {canAsk && teacher && (
-        <section>
-          <label htmlFor="lesson-question" className="text-card-title">{t("room.help.askTitle", "Ask about this lesson")}</label>
-          <p className="mt-1 text-meta">
-            {t("room.help.askBody", "Your instructor sees which lesson you are asking about.")}
-          </p>
-          <Textarea
-            id="lesson-question"
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            placeholder={t("room.help.placeholder", "What is unclear?")}
-            rows={4}
-            className="mt-3 resize-none bg-card"
-          />
-          <Button onClick={() => void ask()} disabled={sending || !question.trim()} className="mt-3 w-full">
-            <Send />
-            {sending ? t("room.help.sending", "Sending…") : t("room.help.send", "Send question")}
-          </Button>
         </section>
       )}
 
@@ -274,16 +229,7 @@ function HelpPanel({ outline, lesson, fileUrl, canAsk }: {
               </a>
             </li>
           )}
-          {outline.course.whatsappLink && (
-            <li>
-              <a href={outline.course.whatsappLink} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg px-2 py-2 font-medium text-forest hover:bg-forest/[0.05]">
-                <MessageSquare className="h-4 w-4 text-primary" />
-                {t("room.help.group", "Course WhatsApp group")}
-                <ExternalLink className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
-              </a>
-            </li>
-          )}
-          {!fileUrl && !outline.course.whatsappLink && (
+          {!fileUrl && (
             <li className="text-meta">{t("room.help.noResources", "This lesson has no extra resources.")}</li>
           )}
         </ul>

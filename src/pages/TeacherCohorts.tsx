@@ -16,6 +16,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Users, Plus, Trash2, Eye, Bell, Check, X, BookOpen, Calendar, Send, UserPlus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -39,6 +40,7 @@ interface Cohort {
   instalment_enabled?: boolean;
   courses?: { title: string } | null;
   student_count?: number;
+  discord_url?: string | null;
 }
 
 interface CohortStudent {
@@ -587,6 +589,13 @@ const TeacherCohorts = () => {
                                 <Eye className="h-4 w-4 mr-1" />
                                 {t("teacher.cohorts.viewStudents")}
                               </Button>
+                              <CommunityLinkEditor
+                                target="cohorts"
+                                id={cohort.id}
+                                name={cohort.name}
+                                current={cohort.discord_url}
+                                onSaved={(url) => setCohorts((list) => list.map((item) => item.id === cohort.id ? { ...item, discord_url: url } : item))}
+                              />
                               <Button
                                 size="sm"
                                 variant="outline"

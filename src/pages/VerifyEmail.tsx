@@ -97,7 +97,7 @@ const VerifyEmail = () => {
                 <p className="pt-0.5">
                   <span className="font-medium text-foreground">{t("verifyEmail.checkYourEmailInbox", "Check your email inbox")}</span>
                   <br />
-                  <span className="text-xs">{t("verifyEmail.lookForAnEmailFromDataplus", "Look for an email from DataPlus Academy")}</span>
+                  <span className="text-xs">{t("verifyEmail.lookForAnEmailFromDataplus", "Look for an email from DATA+ Academy")}</span>
                 </p>
               </div>
               <div className="flex items-start gap-3">

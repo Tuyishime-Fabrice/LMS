@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shell/page";
+import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
 import { AppShell } from "@/components/shell/AppShell";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -293,6 +294,13 @@ const TeacherDashboard = () => {
                                   </StatusPill>
                                 )}
                               </div>
+                              <CommunityLinkEditor
+                                target="courses"
+                                id={course.id}
+                                name={course.title}
+                                current={course.discord_url}
+                                onSaved={(url) => setCourses((list) => list.map((item) => item.id === course.id ? { ...item, discord_url: url } : item))}
+                              />
                               <Button asChild variant="outline" size="sm">
                                 <Link to={`/create-course?edit=${course.id}`}><Pencil />{t("common.edit", "Edit")}</Link>
                               </Button>

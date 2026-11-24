@@ -11,10 +11,10 @@ import { SuspensionDialog } from "@/components/SuspensionDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { corporateUrl } from "@/lib/siteConfig";
 
 const Index = lazy(() => import("./pages/Index"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
+const ExternalRedirect = lazy(() => import("./components/ExternalRedirect"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -28,8 +28,7 @@ const CreateCourse = lazy(() => import("./pages/CreateCourse"));
 const Exhibition = lazy(() => import("./pages/Exhibition"));
 const StudentOnboarding = lazy(() => import("./pages/StudentOnboarding"));
 const TeacherOnboarding = lazy(() => import("./pages/TeacherOnboarding"));
-const TeacherChat = lazy(() => import("./pages/TeacherChat"));
-const StudentChat = lazy(() => import("./pages/StudentChat"));
+const StudentCommunity = lazy(() => import("./pages/StudentCommunity"));
 const StudentSchedule = lazy(() => import("./pages/StudentSchedule"));
 const StudentCertificates = lazy(() => import("./pages/StudentCertificates"));
 const BrowseCourses = lazy(() => import("./pages/BrowseCourses"));
@@ -97,8 +96,9 @@ const App = () => (
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+            {/* Company pages live on the corporate site (see src/lib/siteConfig.ts). */}
+            <Route path="/about" element={<ExternalRedirect to={corporateUrl("/about")} />} />
+            <Route path="/contact" element={<ExternalRedirect to={corporateUrl("/contact")} />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
@@ -106,7 +106,9 @@ const App = () => (
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/student/dashboard" element={student(<StudentDashboard />)} />
-            <Route path="/student/chat" element={student(<StudentChat />)} />
+            {/* In-platform chat is retired: cohort discussion happens on Discord. Old links land on the community page. */}
+            <Route path="/student/chat" element={<Navigate to="/student/community" replace />} />
+            <Route path="/student/community" element={student(<StudentCommunity />)} />
             <Route path="/student/schedule" element={student(<StudentSchedule />)} />
             <Route path="/student/certificates" element={student(<StudentCertificates />)} />
             <Route path="/student/my-courses" element={student(<MyCourses />)} />
@@ -117,7 +119,7 @@ const App = () => (
             <Route path="/student/subscription" element={<Navigate to="/student/payments" replace />} />
             <Route path="/teacher/dashboard" element={teacher(<TeacherDashboard />)} />
             <Route path="/teacher/schedule" element={teacher(<TeacherSchedule />)} />
-            <Route path="/teacher/chat" element={teacher(<TeacherChat />)} />
+            <Route path="/teacher/chat" element={<Navigate to="/teacher/announcements" replace />} />
             <Route path="/teacher/students" element={teacher(<TeacherStudents />)} />
             <Route path="/teacher/assignments" element={teacher(<TeacherAssignments />)} />
             <Route path="/teacher/grades" element={teacher(<TeacherGrades />)} />

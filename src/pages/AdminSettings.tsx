@@ -19,7 +19,7 @@ const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
-    siteName: "DataPlus Learning",
+    siteName: "DATA+ Academy",
     requireTeacherApproval: true,
     requireCourseApproval: false,
     maintenanceMode: false,
@@ -70,7 +70,7 @@ const AdminSettings = () => {
       });
 
       setSettings({
-        siteName: settingsMap.site_name || "DataPlus Learning",
+        siteName: settingsMap.site_name || "DATA+ Academy",
         requireTeacherApproval: settingsMap.require_teacher_approval || true,
         requireCourseApproval: settingsMap.require_course_approval || false,
         maintenanceMode: settingsMap.maintenance_mode || false,

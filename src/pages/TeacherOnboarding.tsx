@@ -201,7 +201,7 @@ const TeacherOnboarding = () => {
         <div className="flex items-center gap-3 mb-12">
           <img
             src="/images/dataplus_logggg-removebg-preview.png"
-            alt="DataPlus Academy"
+            alt="DATA+ Academy"
             className="w-10 h-10 object-contain"
           />
           <span className="text-2xl font-bold text-white">{t("teacherOnboarding.dataplusLabs", "DataPlus Labs")}</span>

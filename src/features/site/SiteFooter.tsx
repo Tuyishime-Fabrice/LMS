@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Brand } from "@/components/shell/Brand";
+import { corporateUrl } from "@/lib/siteConfig";
 
 const social = [
   { href: "https://www.linkedin.com/company/data-consultant-ltd/", label: "LinkedIn" },
@@ -16,7 +17,8 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
       title: t("site.footer.learn", "Learn"),
       links: [
         { to: "/courses", label: t("site.nav.courses", "Courses") },
-        { to: "/bundles", label: t("site.nav.paths", "Learning paths") },
+        { to: "/tracks", label: t("site.nav.tracks", "Skill & career tracks") },
+        { to: "/competitions", label: t("site.nav.competitions", "Competitions") },
         { to: "/exhibition", label: t("site.nav.exhibition", "Student projects") },
         { to: "/verify", label: t("site.footer.verify", "Verify a certificate") },
       ],
@@ -24,9 +26,9 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
     {
       title: t("site.footer.academy", "Academy"),
       links: [
-        { to: "/about", label: t("site.nav.about", "About") },
-        { to: "/contact", label: t("site.nav.contact", "Contact") },
+        { to: "/bundles", label: t("site.footer.bundles", "Course bundles") },
         { to: "/signup?role=teacher", label: t("site.footer.teach", "Teach with us") },
+        { href: corporateUrl("/"), label: t("site.footer.company", "About DATA+") },
       ],
     },
   ];
@@ -49,7 +51,11 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
             <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">{column.title}</h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {column.links.map((link) => (
-                <li key={link.to}><Link to={link.to} className="text-white/80 hover:text-white">{link.label}</Link></li>
+                <li key={link.label}>
+                  {"href" in link
+                    ? <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">{link.label}</a>
+                    : <Link to={link.to} className="text-white/80 hover:text-white">{link.label}</Link>}
+                </li>
               ))}
             </ul>
           </nav>

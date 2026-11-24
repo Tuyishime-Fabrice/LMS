@@ -7,79 +7,82 @@
 @import "@fontsource/inter/latin-ext-600.css";
 @import "@fontsource/inter/latin-700.css";
 @import "@fontsource/inter/latin-ext-700.css";
-@import "@fontsource/bebas-neue/latin-400.css";
-@import "@fontsource/bebas-neue/latin-ext-400.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
- * DataPlus Academy design tokens (2026 identity: midnight navy, flame
- * orange, royal blue on warm paper). Every colour in the product comes
- * from here as HSL triplets, so Tailwind opacity modifiers keep working.
+ * DATA+ Academy design tokens (2026-11 refresh, see docs/product/DESIGN_SYSTEM.md).
+ * Every colour in the product comes from here as HSL triplets, so Tailwind
+ * opacity modifiers keep working. Token names are historical; read them as:
  *
- *   forest   #060C2E  midnight navy: bands, headings, navigation ink
- *   primary  #C9501F  orange for buttons and links (AA on white)
- *   flame    #E4683A  bright orange for icons and accents on navy
- *   royal    #2442E4  royal blue: focus, information, small accents
- *   leaf     #ECEEF8  lavender tint behind highlighted content
- *   paper    #F2F1EC  app background     surface #FFFFFF cards
- *   success  #1E7A4C  completed, paid, passed (never the brand colour)
+ *   primary  #4B6929  DATA+ green (from the logo): primary actions, links,
+ *                     active navigation, progress. Used sparingly.
+ *   forest   #1F271C  ink: headings, dark surfaces (green-tinted charcoal)
+ *   flame    #A6CB6A  bright green: accents on dark surfaces only
+ *   royal    #1F64B8  blue: focus rings and informational states
+ *   leaf     #EEF3E6  green tint behind selected or highlighted content
+ *   paper    #F5F5F2  application canvas     card #FFFFFF panels
+ *   success  #1A7051  completed, paid, passed (emerald, distinct from brand)
  */
 @layer base {
   :root {
-    --background: 50 19% 94%;
-    --foreground: 230 57% 13%;
+    --background: 60 8% 96%;
+    --foreground: 100 16% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 230 57% 13%;
+    --card-foreground: 100 16% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 230 57% 13%;
+    --popover-foreground: 100 16% 13%;
 
-    --primary: 17 73% 45%;
+    --primary: 88 44% 29%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 17 75% 39%;
-    --flame: 16 76% 56%;
-    --royal: 231 78% 52%;
+    --primary-hover: 88 46% 23%;
+    --flame: 82 47% 61%;
+    --royal: 213 71% 42%;
 
-    --forest: 231 77% 10%;
-    --forest-foreground: 50 19% 94%;
-    --forest-2: 232 50% 19%;
-    --leaf: 230 46% 95%;
-    --leaf-foreground: 232 68% 33%;
+    --forest: 100 16% 13%;
+    --forest-foreground: 60 8% 96%;
+    --forest-2: 98 16% 21%;
+    --leaf: 84 38% 93%;
+    --leaf-foreground: 88 46% 23%;
 
-    --secondary: 230 46% 95%;
-    --secondary-foreground: 232 68% 33%;
-    --muted: 51 13% 90%;
-    --muted-foreground: 228 12% 40%;
-    --accent: 230 46% 95%;
-    --accent-foreground: 232 68% 33%;
+    --secondary: 60 6% 93%;
+    --secondary-foreground: 100 16% 13%;
+    --muted: 60 6% 92%;
+    --muted-foreground: 100 5% 37%;
+    --accent: 84 38% 93%;
+    --accent-foreground: 88 46% 23%;
 
-    --success: 150 61% 30%;
-    --success-surface: 146 35% 92%;
-    --warning: 35 100% 30%;
-    --warning-surface: 38 89% 93%;
-    --destructive: 2 63% 46%;
+    --success: 156 62% 27%;
+    --success-surface: 150 40% 93%;
+    --warning: 34 92% 30%;
+    --warning-surface: 40 90% 93%;
+    --destructive: 2 64% 46%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 7 68% 95%;
-    --info: 231 78% 52%;
-    --info-surface: 228 83% 95%;
+    --info: 213 71% 42%;
+    --info-surface: 213 80% 95%;
 
-    --border: 230 11% 89%;
-    --input: 229 12% 83%;
-    --ring: 231 78% 52%;
+    --border: 70 8% 88%;
+    --input: 70 7% 80%;
+    --ring: 213 71% 42%;
 
     --radius: 0.625rem;
 
-    --sidebar-background: 50 19% 94%;
-    --sidebar-foreground: 230 30% 24%;
-    --sidebar-primary: 17 73% 45%;
+    --sidebar-background: 60 8% 96%;
+    --sidebar-foreground: 100 8% 26%;
+    --sidebar-primary: 88 44% 29%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 231 77% 10%;
-    --sidebar-border: 230 11% 89%;
-    --sidebar-ring: 231 78% 52%;
+    --sidebar-accent-foreground: 100 16% 13%;
+    --sidebar-border: 70 8% 88%;
+    --sidebar-ring: 213 71% 42%;
+
+    /* Elevation: hairline first, shadow only for floating layers. */
+    --shadow-raised: 0 1px 2px hsl(100 16% 13% / 0.04), 0 1px 1px hsl(100 16% 13% / 0.03);
+    --shadow-float: 0 12px 32px -12px hsl(100 16% 13% / 0.22);
 
     /* Motion: short, purposeful, and switched off for reduced-motion users. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -88,48 +91,48 @@
   }
 
   .dark {
-    --background: 231 60% 7%;
-    --foreground: 50 19% 94%;
-    --card: 232 45% 11%;
-    --card-foreground: 50 19% 94%;
-    --popover: 232 45% 11%;
-    --popover-foreground: 50 19% 94%;
-    --primary: 16 76% 56%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 16 80% 62%;
-    --flame: 16 80% 62%;
-    --royal: 230 85% 68%;
-    --forest: 231 77% 10%;
-    --forest-foreground: 50 19% 94%;
-    --forest-2: 232 50% 19%;
-    --leaf: 232 40% 18%;
-    --leaf-foreground: 230 80% 85%;
-    --secondary: 232 40% 18%;
-    --secondary-foreground: 230 80% 85%;
-    --muted: 232 30% 15%;
-    --muted-foreground: 230 15% 68%;
-    --accent: 232 40% 18%;
-    --accent-foreground: 230 80% 85%;
-    --success: 150 50% 55%;
-    --success-surface: 150 40% 14%;
+    --background: 100 12% 7%;
+    --foreground: 60 8% 94%;
+    --card: 100 10% 10%;
+    --card-foreground: 60 8% 94%;
+    --popover: 100 10% 10%;
+    --popover-foreground: 60 8% 94%;
+    --primary: 84 45% 52%;
+    --primary-foreground: 100 16% 10%;
+    --primary-hover: 84 50% 60%;
+    --flame: 82 55% 66%;
+    --royal: 213 85% 68%;
+    --forest: 60 8% 94%;
+    --forest-foreground: 100 12% 7%;
+    --forest-2: 98 12% 16%;
+    --leaf: 88 25% 16%;
+    --leaf-foreground: 84 50% 78%;
+    --secondary: 100 8% 15%;
+    --secondary-foreground: 60 8% 94%;
+    --muted: 100 8% 14%;
+    --muted-foreground: 80 6% 66%;
+    --accent: 88 25% 16%;
+    --accent-foreground: 84 50% 78%;
+    --success: 152 50% 55%;
+    --success-surface: 152 35% 13%;
     --warning: 38 90% 60%;
     --warning-surface: 38 50% 14%;
     --destructive: 4 70% 60%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 4 40% 14%;
-    --info: 230 85% 68%;
-    --info-surface: 230 40% 16%;
-    --border: 232 25% 20%;
-    --input: 232 25% 26%;
-    --ring: 230 85% 68%;
-    --sidebar-background: 231 60% 7%;
-    --sidebar-foreground: 230 15% 80%;
-    --sidebar-primary: 16 76% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 232 45% 11%;
-    --sidebar-accent-foreground: 50 19% 94%;
-    --sidebar-border: 232 25% 20%;
-    --sidebar-ring: 230 85% 68%;
+    --info: 213 85% 68%;
+    --info-surface: 213 40% 16%;
+    --border: 90 8% 19%;
+    --input: 90 8% 26%;
+    --ring: 213 85% 68%;
+    --sidebar-background: 100 12% 7%;
+    --sidebar-foreground: 80 6% 78%;
+    --sidebar-primary: 84 45% 52%;
+    --sidebar-primary-foreground: 100 16% 10%;
+    --sidebar-accent: 100 10% 10%;
+    --sidebar-accent-foreground: 60 8% 94%;
+    --sidebar-border: 90 8% 19%;
+    --sidebar-ring: 213 85% 68%;
   }
 }
 
@@ -147,7 +150,7 @@
     font-feature-settings: "tnum" 0;
   }
 
-  /* Inter carries text and headings; Bebas Neue is for poster headlines only. */
+  /* Inter is the one typeface: text, headings and numbers. */
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
     text-wrap: balance;
@@ -162,20 +165,22 @@
 @layer components {
   /* Page titles and section titles, one scale for the whole product. */
   .text-page-title { @apply font-display text-2xl font-bold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
-  /* Condensed poster headline (landing page, banners). */
-  .text-poster { @apply font-poster uppercase leading-[0.92] tracking-[0.01em]; }
+  /* Display headline (public discovery pages only, never inside the app). */
+  .text-poster { @apply font-display font-bold leading-[1.04] tracking-[-0.025em]; }
   .text-section-title { @apply font-display text-lg font-semibold tracking-tight text-forest; }
   .text-card-title { @apply font-display text-base font-semibold text-forest; }
   .text-meta { @apply text-[0.8125rem] leading-5 text-muted-foreground; }
 
-  /* The one surface style: white, hairline, no shadow. */
-  .surface { @apply rounded-xl border border-border bg-card; }
+  /* The one surface style: white, hairline, a whisper of elevation. */
+  .surface { @apply rounded-xl border border-border bg-card; box-shadow: var(--shadow-raised); }
+  /* Small uppercase label above a group (sidebar groups, stat labels). */
+  .text-eyebrow { @apply text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground; }
   .surface-interactive {
     @apply surface transition-[border-color,box-shadow,transform] duration-200;
   }
   .surface-interactive:hover {
     border-color: hsl(var(--primary) / 0.45);
-    box-shadow: 0 6px 20px -12px hsl(var(--forest) / 0.35);
+    box-shadow: var(--shadow-float);
   }
 }
 

@@ -949,7 +949,7 @@
     },
     "more": "+{{count}} de plus",
     "next": "Suivant",
-    "noCourse": "DataPlus Academy",
+    "noCourse": "DATA+ Academy",
     "online": "En ligne",
     "open": "Ouvrir",
     "openAssignment": "Ouvrir le devoir",
@@ -1255,7 +1255,7 @@
   "verify": {
     "codeLabel": "Code de vérification",
     "course": "Programme",
-    "description": "Saisissez le code de vérification imprimé sur un certificat DataPlus Academy, ou scannez son code QR.",
+    "description": "Saisissez le code de vérification imprimé sur un certificat DATA+ Academy, ou scannez son code QR.",
     "error": {
       "body": "Le certificat n'est pas en cause. Réessayez dans un instant.",
       "title": "La vérification est indisponible pour le moment"
@@ -1264,7 +1264,7 @@
     "issued": "Date de délivrance",
     "issuer": "Délivré par",
     "notFound": {
-      "body": "Vérifiez qu'il n'y a pas d'erreur de saisie. Si le code ne correspond toujours pas, ce certificat n'a pas été délivré par DataPlus Academy.",
+      "body": "Vérifiez qu'il n'y a pas d'erreur de saisie. Si le code ne correspond toujours pas, ce certificat n'a pas été délivré par DATA+ Academy.",
       "title": "Aucun certificat ne correspond à ce code"
     },
     "number": "Numéro du certificat",
@@ -1386,7 +1386,7 @@
     "sending": "Envoi…",
     "signOut": {
       "title": "Déconnexion",
-      "body": "Se déconnecter de DataPlus Academy sur cet appareil.",
+      "body": "Se déconnecter de DATA+ Academy sur cet appareil.",
       "action": "Se déconnecter",
       "confirmTitle": "Se déconnecter ?",
       "confirmBody": "Votre progression est enregistrée. Vous pouvez vous reconnecter à tout moment.",
@@ -2377,7 +2377,7 @@
     "send": "Envoyer la demande"
   },
   "site": {
-    "home": "Accueil DataPlus Academy",
+    "home": "Accueil DATA+ Academy",
     "mainNav": "Principal",
     "myAccount": "Mon espace",
     "signIn": "Se connecter",
@@ -2653,7 +2653,7 @@
     "weVeSentAVerificationEmail": "Nous vous avons envoyé un e-mail de validation. Cliquez sur le lien qu'il contient pour valider votre compte.",
     "whatHappensNext": "Et ensuite ?",
     "checkYourEmailInbox": "Consultez votre boîte de réception",
-    "lookForAnEmailFromDataplus": "Cherchez un e-mail de DataPlus Academy",
+    "lookForAnEmailFromDataplus": "Cherchez un e-mail de DATA+ Academy",
     "clickTheVerificationLink": "Cliquez sur le lien de validation",
     "thisWillVerifyYourEmailAddress": "Cela validera votre adresse e-mail",
     "completeYourProfile": "Complétez votre profil",
@@ -2796,7 +2796,7 @@
     "title": "Conditions d'utilisation",
     "updated": "Dernière mise à jour : février 2026",
     "introduction": "Introduction",
-    "welcomeToDataplusLearningTheseTerms": "Bienvenue sur DataPlus Learning. Les présentes conditions d'utilisation (les « Conditions ») régissent votre accès à notre plateforme d'apprentissage et son utilisation, y compris les contenus, fonctionnalités et services proposés sur notre site. En accédant à la plateforme ou en l'utilisant, vous acceptez d'être lié par ces Conditions.",
+    "welcomeToDataplusLearningTheseTerms": "Bienvenue sur DATA+ Academy. Les présentes conditions d'utilisation (les « Conditions ») régissent votre accès à notre plateforme d'apprentissage et son utilisation, y compris les contenus, fonctionnalités et services proposés sur notre site. En accédant à la plateforme ou en l'utilisant, vous acceptez d'être lié par ces Conditions.",
     "pleaseReadTheseTermsCarefullyBefore": "Lisez attentivement ces conditions avant d'utiliser nos services. Si vous n'acceptez pas l'une d'elles, vous ne pouvez pas accéder à notre plateforme ni l'utiliser.",
     "accountRegistration": "Création de compte",
     "toAccessCertainFeaturesOfOur": "Certaines fonctionnalités nécessitent un compte. En vous inscrivant, vous acceptez de :",
@@ -2810,7 +2810,7 @@
     "enrollment": "Inscription",
     "whenYouEnrollInACourse": "En vous inscrivant à un cours ou en achetant un parcours, vous obtenez une licence limitée, non exclusive et non cessible pour consulter le contenu à des fins éducatives personnelles et non commerciales.",
     "courseContent": "Contenu du cours",
-    "allCourseMaterialsAreTheIntellectual": "Tous les supports de cours sont la propriété intellectuelle de DataPlus Learning ou des formateurs concernés",
+    "allCourseMaterialsAreTheIntellectual": "Tous les supports de cours sont la propriété intellectuelle de DATA+ Academy ou des formateurs concernés",
     "youMayNotReproduceDistributeModify": "Vous ne pouvez pas reproduire, diffuser, modifier notre contenu ni en créer des œuvres dérivées",
     "accessToCourseContentMayBe": "L'accès au contenu peut être limité dans le temps selon votre type d'inscription",
     "weReserveTheRightToUpdate": "Nous pouvons mettre à jour, modifier ou retirer du contenu à tout moment",
@@ -2839,7 +2839,7 @@
     "ifYouRegisterAsATeacher": "Si vous vous inscrivez en tant que formateur, les conditions supplémentaires suivantes s'appliquent :",
     "teacherAccountsAreSubjectToAn": "Les comptes formateurs sont soumis à une validation par notre administration",
     "youAreResponsibleForTheAccuracy": "Vous êtes responsable de l'exactitude et de la qualité des contenus que vous créez et publiez",
-    "youGrantDataplusLearningALicense": "Vous accordez à DataPlus Learning une licence pour afficher, diffuser et promouvoir votre contenu sur la plateforme",
+    "youGrantDataplusLearningALicense": "Vous accordez à DATA+ Academy une licence pour afficher, diffuser et promouvoir votre contenu sur la plateforme",
     "youRetainOwnershipOfYourOriginal": "Vous restez propriétaire de vos contenus originaux mais acceptez qu'ils soient utilisés pour la plateforme",
     "youMustComplyWithOurContent": "Vous devez respecter nos règles de contenu et répondre aux apprenants dans des délais raisonnables",
     "limitationOfLiability": "Limitation de responsabilité",
@@ -2865,7 +2865,7 @@
     "title": "Politique de confidentialité",
     "updated": "Dernière mise à jour : janvier 2025",
     "introduction": "Introduction",
-    "welcomeToDataplusLearningWeAre": "Bienvenue sur DataPlus Learning. Nous nous engageons à protéger vos informations personnelles et votre droit à la vie privée. Cette politique explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre plateforme d'apprentissage.",
+    "welcomeToDataplusLearningWeAre": "Bienvenue sur DATA+ Academy. Nous nous engageons à protéger vos informations personnelles et votre droit à la vie privée. Cette politique explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre plateforme d'apprentissage.",
     "informationWeCollect": "Informations collectées",
     "personalInformation": "Informations personnelles",
     "weCollectInformationThatYouProvide": "Nous collectons les informations que vous nous fournissez directement, notamment :",

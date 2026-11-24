@@ -11,10 +11,10 @@ import { cn } from "@/lib/utils";
 
 export const siteLinks = [
   { to: "/courses", key: "site.nav.courses", label: "Courses" },
-  { to: "/bundles", key: "site.nav.paths", label: "Learning paths" },
+  { to: "/tracks", key: "site.nav.tracks", label: "Skill & career tracks" },
+  { to: "/competitions", key: "site.nav.competitions", label: "Competitions" },
   { to: "/exhibition", key: "site.nav.exhibition", label: "Student projects" },
-  { to: "/about", key: "site.nav.about", label: "About" },
-  { to: "/contact", key: "site.nav.contact", label: "Contact" },
+  { to: "/verify", key: "site.nav.verify", label: "Verify a certificate" },
 ];
 
 /** Navy header shared by the public pages. */
@@ -28,7 +28,7 @@ export function SiteHeader({ className }: { className?: string }) {
   return (
     <header className={cn("sticky top-0 z-40 bg-forest text-white", className)}>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="rounded-lg focus-visible:outline-white" aria-label={t("site.home", "DataPlus Academy home")}>
+        <Link to="/" className="rounded-lg focus-visible:outline-white" aria-label={t("site.home", "DATA+ Academy home")}>
           <Brand tone="light" />
         </Link>
 

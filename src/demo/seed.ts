@@ -525,7 +525,7 @@ export function createSeed(assetBase: string): Tables {
     { id: id(2303), user_id: DEMO_IDS.student, action: "login", entity_type: null, entity_id: null, details: {}, ip_address: null, user_agent: null, created_at: at(-1) },
   ];
   const system_settings = [
-    { id: id(2400), key: "site_name", value: JSON.stringify("DataPlus Academy"), description: "Site name", updated_at: at(-30), updated_by: DEMO_IDS.admin },
+    { id: id(2400), key: "site_name", value: JSON.stringify("DATA+ Academy"), description: "Site name", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2401), key: "require_teacher_approval", value: JSON.stringify(true), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2402), key: "require_course_approval", value: JSON.stringify(true), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2403), key: "maintenance_mode", value: JSON.stringify(false), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },

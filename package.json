@@ -13,7 +13,7 @@
     "build:vercel": "node scripts/vercel-build.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/*.test.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "build:demo": "node scripts/build-demo.mjs"
   },

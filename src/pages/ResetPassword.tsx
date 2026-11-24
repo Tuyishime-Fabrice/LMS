@@ -118,7 +118,7 @@ const ResetPassword = () => {
           <div className="space-y-1">
             <CardTitle className="text-2xl">{t("resetPassword.createANewPassword", "Create a new password")}</CardTitle>
             <CardDescription>
-              {t("resetPassword.chooseANewPasswordForYour", "Choose a new password for your DataPlus account.")}
+              {t("resetPassword.chooseANewPasswordForYour", "Choose a new password for your DATA+ Academy account.")}
             </CardDescription>
           </div>
         </CardHeader>
