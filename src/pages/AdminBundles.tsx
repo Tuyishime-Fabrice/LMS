@@ -413,7 +413,7 @@ export default function AdminBundles() {
                             </div>
                         )}
 
-                        <Button onClick={handleSaveBundle} className="w-full bg-primary hover:bg-primary-hover">
+                        <Button onClick={handleSaveBundle} className="w-full bg-action hover:bg-action-hover">
                             {editingBundle ? t("adminBundles.updateBundle", "Update Bundle") : t("adminBundles.createBundle", "Create Bundle")}
                         </Button>
                     </div>

@@ -1,3 +1,4 @@
+import { Brand } from "@/components/shell/Brand";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -199,12 +200,7 @@ const TeacherOnboarding = () => {
       {/* Left Sidebar - Green */}
       <div className="w-80 p-8 flex flex-col bg-forest">
         <div className="flex items-center gap-3 mb-12">
-          <img
-            src="/images/dataplus_logggg-removebg-preview.png"
-            alt="DATA+ Academy"
-            className="w-10 h-10 object-contain"
-          />
-          <span className="text-2xl font-bold text-white">DATA+ Academy</span>
+          <Brand tone="light" />
         </div>
 
         {/* Step Indicator */}
@@ -334,7 +330,7 @@ const TeacherOnboarding = () => {
               <Button
                 onClick={handleComplete}
                 disabled={loading}
-                className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
+                className="bg-action hover:bg-action-hover text-action-foreground font-medium h-12 px-8"
               >
                 {loading ? t("teacherOnboarding.saving", "Saving...") : t("teacherOnboarding.completeSetup", "Complete Setup")}
               </Button>

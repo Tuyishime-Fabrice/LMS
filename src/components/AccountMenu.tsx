@@ -178,7 +178,7 @@ export function AccountMenu({ profile, fallback = "U", className, onProfileUpdat
               <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>
                 {t("accountMenu.cancel", "Cancel")}
               </Button>
-              <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary-hover text-white">
+              <Button type="submit" disabled={saving} className="bg-action hover:bg-action-hover text-white">
                 {saving ? t("accountMenu.saving", "Saving...") : t("accountMenu.saveChanges", "Save changes")}
               </Button>
             </DialogFooter>

@@ -473,7 +473,7 @@ const TeacherCohorts = () => {
         description={t("teacher.cohorts.subtitle")}
         actions={<><Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t("teacher.cohorts.createCohort")}
@@ -533,7 +533,7 @@ const TeacherCohorts = () => {
                         <Users className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">{t("teacher.cohorts.noCohorts")}</h3>
                         <p className="text-muted-foreground mb-4">{t("teacher.cohorts.createFirst")}</p>
-                        <Button onClick={() => setShowCreateDialog(true)} className="bg-primary hover:bg-primary-hover">
+                        <Button onClick={() => setShowCreateDialog(true)} className="bg-action hover:bg-action-hover">
                           <Plus className="h-4 w-4 mr-2" />
                           {t("teacher.cohorts.createCohort")}
                         </Button>
@@ -682,7 +682,7 @@ const TeacherCohorts = () => {
                                   size="sm"
                                   onClick={() => handleApproveRequest(request)}
                                   disabled={processing}
-                                  className="bg-primary hover:bg-primary-hover"
+                                  className="bg-action hover:bg-action-hover"
                                 >
                                   <Check className="h-4 w-4 mr-1" />
                                   {t("teacher.cohorts.approve")}
@@ -805,7 +805,7 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleCreateCohort}
                 disabled={processing}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 {processing ? t("common.loading") : t("common.create")}
               </Button>
@@ -900,7 +900,7 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleSendAnnouncement}
                 disabled={processing}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 <Send className="h-4 w-4 mr-2" />
                 {processing ? t("common.sending") : t("teacher.cohorts.send")}

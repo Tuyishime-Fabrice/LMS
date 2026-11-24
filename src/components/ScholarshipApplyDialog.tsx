@@ -137,7 +137,7 @@ export function ScholarshipApplyDialog({
                     </div>
 
                     <Button
-                        className="w-full bg-primary hover:bg-primary-hover"
+                        className="w-full bg-action hover:bg-action-hover"
                         onClick={handleSubmit}
                         disabled={loading}
                     >

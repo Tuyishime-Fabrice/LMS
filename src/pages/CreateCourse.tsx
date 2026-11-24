@@ -736,7 +736,7 @@ export default function CreateCourse() {
                 <Eye className="h-4 w-4 mr-2" />
                 {t("createCourse.preview", "Preview")}
               </Button>
-              <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
+              <Button onClick={handleSubmit} disabled={loading} className="bg-action hover:bg-action-hover">
                 <Save className="h-4 w-4 mr-2" />
                 {loading ? t("createCourse.saving", "Saving...") : t("createCourse.saveCourse", "Save Course")}
               </Button>
@@ -900,7 +900,7 @@ export default function CreateCourse() {
               </Card>
 
               <div className="flex justify-end">
-                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-action hover:bg-action-hover">
                   {t("createCourse.continueToContent", "Continue to Content")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -929,7 +929,7 @@ export default function CreateCourse() {
                     <Layers className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
                     <h3 className="font-medium text-forest mb-1">{t("createCourse.noChaptersYet", "No chapters yet")}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{t("createCourse.startBuildingYourCourseStructure", "Start building your course structure")}</p>
-                    <Button onClick={addChapter} className="bg-primary hover:bg-primary-hover">
+                    <Button onClick={addChapter} className="bg-action hover:bg-action-hover">
                       <Plus className="h-4 w-4 mr-2" />
                       {t("createCourse.addFirstChapter", "Add First Chapter")}
                     </Button>
@@ -1230,7 +1230,7 @@ export default function CreateCourse() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={() => setActiveStep(2)} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={() => setActiveStep(2)} className="bg-action hover:bg-action-hover">
                   {t("createCourse.continueToCapstone", "Continue to Capstone")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -1389,7 +1389,7 @@ export default function CreateCourse() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={handleSubmit} disabled={loading} className="bg-action hover:bg-action-hover">
                   <Save className="h-4 w-4 mr-2" />
                   {loading ? t("createCourse.saving", "Saving...") : (isEditMode ? t("createCourse.updateCourse", "Update Course") : t("createCourse.createCourse", "Create Course"))}
                 </Button>
@@ -1548,7 +1548,7 @@ export default function CreateCourse() {
                         </div>
                       )}
                       <div className="p-4">
-                        <Button className="w-full bg-primary hover:bg-primary-hover">
+                        <Button className="w-full bg-action hover:bg-action-hover">
                           {t("createCourse.enrollNow", "Enroll Now")}
                         </Button>
                       </div>

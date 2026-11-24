@@ -173,7 +173,7 @@ const TeacherStudents = () => {
         description={t('teacher.students.manageStudents')}
         actions={<><Button 
               onClick={() => navigate("/teacher/cohorts")}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Layers className="h-4 w-4 mr-2" />
               {t('teacher.students.manageCohorts')}

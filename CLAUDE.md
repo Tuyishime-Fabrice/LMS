@@ -25,8 +25,10 @@ Supabase (auth, Postgres + RLS, storage), i18next (en/fr), Vercel functions in `
 - **Privacy.** Onboarding answers (`learner_preferences`) are owner-only; admins get
   aggregates of consenting learners via `get_onboarding_insights()` only.
 - **Tolerate unapplied migrations.** Reads of new columns fall back (`isMissingSchema`).
-- **Tokens, not colours.** Colours live in `src/index.css`; use `primary`, `forest`,
-  `leaf`, `success`… Never hard-code hex in components. One typeface: Inter.
+- **Tokens, not colours.** Colours live in `src/index.css`; use `action` (buttons and progress
+  fills only), `primary`, `forest`, `brand-*`, `leaf`, `success`… Never hard-code hex in components.
+  League Spartan for headings, Inter for everything else. One 8 px radius.
+- **The plus motif** (`<PlusMotif>`) appears only in the places listed in `docs/product/DESIGN_SYSTEM.md`.
 - **Both languages.** Every `t(key, fallback)` needs an entry in `en.json` and `fr.json`.
 - Never apply migrations to production from here; never commit secrets.
 

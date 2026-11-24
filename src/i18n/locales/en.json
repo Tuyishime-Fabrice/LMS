@@ -4025,5 +4025,17 @@
     "verifyEmail": {
       "title": "Check your email"
     }
+  },
+  "cover": {
+    "family": {
+      "ai": "AI for professionals",
+      "data": "Data analysis",
+      "geo": "Geospatial",
+      "me": "Monitoring and evaluation",
+      "research": "Research and proposals"
+    }
+  },
+  "intro": {
+    "skip": "Skip intro"
   }
 }

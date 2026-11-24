@@ -139,7 +139,7 @@ const ResetPassword = () => {
               </Alert>
               <Button
                 type="button"
-                className="w-full bg-primary hover:bg-primary-hover text-white"
+                className="w-full bg-action hover:bg-action-hover text-white"
                 onClick={() => navigate("/forgot-password")}
               >
                 {t("resetPassword.requestANewResetLink", "Request a new reset link")}
@@ -198,7 +198,7 @@ const ResetPassword = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-hover text-white"
+                className="w-full bg-action hover:bg-action-hover text-white"
               >
                 {loading ? t("resetPassword.updating", "Updating...") : t("resetPassword.updatePassword", "Update password")}
               </Button>

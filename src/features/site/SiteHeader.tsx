@@ -21,7 +21,7 @@ export function SiteHeader({ className }: { className?: string }) {
 
   return (
     <header className={cn("sticky top-0 z-40 bg-forest text-white", className)}>
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-site items-center gap-6 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="rounded-lg focus-visible:outline-white" aria-label={t("site.home", "DATA+ Academy home")}>
           <Brand tone="light" />
         </Link>
@@ -74,7 +74,7 @@ export function SiteHeader({ className }: { className?: string }) {
 
       {open && (
         <div id="site-menu" className="border-t border-white/10 bg-forest lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-4 py-3 sm:px-6" aria-label={t("site.mainNav", "Main")}>
+          <nav className="mx-auto flex max-w-site flex-col px-4 py-3 sm:px-6" aria-label={t("site.mainNav", "Main")}>
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-base font-medium text-white/85 hover:bg-white/5">
                 {t(link.key, link.label)}

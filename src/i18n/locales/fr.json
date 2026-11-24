@@ -4055,5 +4055,17 @@
     "verifyEmail": {
       "title": "Consultez vos e-mails"
     }
+  },
+  "cover": {
+    "family": {
+      "ai": "IA pour les professionnels",
+      "data": "Analyse de données",
+      "geo": "Géospatial",
+      "me": "Suivi et évaluation",
+      "research": "Recherche et propositions"
+    }
+  },
+  "intro": {
+    "skip": "Passer l'intro"
   }
 }

@@ -332,7 +332,7 @@ const AdminExhibition = () => {
                   resetForm();
                   setDialogOpen(true);
                 }}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 {t("adminExhibition.addProject", "Add Project")}
@@ -406,7 +406,7 @@ const AdminExhibition = () => {
                     <Trophy className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-forest mb-2">{t("adminExhibition.noProjectsYet", "No projects yet")}</h3>
                     <p className="text-muted-foreground mb-4">{t("adminExhibition.addYourFirstExhibitionProjectTo", "Add your first exhibition project to showcase on the landing page")}</p>
-                    <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
+                    <Button onClick={() => setDialogOpen(true)} className="bg-action hover:bg-action-hover">
                       <Plus className="w-4 h-4 mr-2" />
                       {t("adminExhibition.addProject", "Add Project")}
                     </Button>
@@ -760,7 +760,7 @@ const AdminExhibition = () => {
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 {t("adminExhibition.cancel", "Cancel")}
               </Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-hover">
+              <Button type="submit" className="bg-action hover:bg-action-hover">
                 {selectedProject ? t("adminExhibition.updateProject", "Update Project") : t("adminExhibition.addProject", "Add Project")}
               </Button>
             </div>

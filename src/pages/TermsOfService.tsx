@@ -221,7 +221,7 @@ const TermsOfService = () => {
                     <div className="pt-6 border-t">
                         <Button
                             onClick={() => navigate(-1)}
-                            className="bg-primary hover:bg-primary-hover text-white"
+                            className="bg-action hover:bg-action-hover text-white"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             {t("termsOfService.goBack", "Go Back")}

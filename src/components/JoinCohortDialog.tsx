@@ -357,7 +357,7 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                   <Button
                     onClick={handleJoinRequest}
                     disabled={submitting}
-                    className="bg-primary hover:bg-primary-hover"
+                    className="bg-action hover:bg-action-hover"
                   >
                     {submitting ? (
                       <>

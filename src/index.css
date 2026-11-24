@@ -7,53 +7,80 @@
 @import "@fontsource/inter/latin-ext-600.css";
 @import "@fontsource/inter/latin-700.css";
 @import "@fontsource/inter/latin-ext-700.css";
+/* Headings: League Spartan 600 and 700, as on dataplusrwanda.com. */
+@import "@fontsource/league-spartan/latin-600.css";
+@import "@fontsource/league-spartan/latin-ext-600.css";
+@import "@fontsource/league-spartan/latin-700.css";
+@import "@fontsource/league-spartan/latin-ext-700.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
- * DATA+ Academy design tokens (2026-11 refresh, see docs/product/DESIGN_SYSTEM.md).
+ * DATA+ Academy design tokens (2026-11-24 brand brief, see docs/product/DESIGN_SYSTEM.md).
  * Every colour in the product comes from here as HSL triplets, so Tailwind
  * opacity modifiers keep working. Token names are historical; read them as:
  *
- *   primary  #4B6929  DATA+ green (from the logo): primary actions, links,
- *                     active navigation, progress. Used sparingly.
- *   forest   #1F271C  ink: headings, dark surfaces (green-tinted charcoal)
- *   flame    #A6CB6A  bright green: accents on dark surfaces only
- *   royal    #1F64B8  blue: focus rings and informational states
- *   leaf     #EEF3E6  green tint behind selected or highlighted content
- *   paper    #F5F5F2  application canvas     card #FFFFFF panels
- *   success  #1A7051  completed, paid, passed (emerald, distinct from brand)
+ *   action   #C9501F  Academy orange: buttons and progress fills only (4.5:1 with white)
+ *   primary  #03722E  green-700: links, selected and active states, focus
+ *   forest   #004225  green-900: headings on cream, dark feature sections
+ *   forest-2 #00311B  green-950: footer, deepest bands, player frames
+ *   brand-*           green-950/900/800/700/500, the plus-motif greens (500 is motif only)
+ *   olive-ink #3F4130 body text      olive #4E5B35 small accents and icons
+ *   cream    #F7F4EA  page canvas    card #FFFFFF panels    mint #ECF7EC highlights
+ *   flame             mint: accents on dark surfaces
+ *   success  #1A7051  completed, paid, passed
  */
 @layer base {
   :root {
-    --background: 60 8% 96%;
-    --foreground: 100 16% 13%;
+    --background: 46.2 44.8% 94.3%;
+    --foreground: 67.1 15% 22.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 100 16% 13%;
+    --card-foreground: 67.1 15% 22.2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 100 16% 13%;
+    --popover-foreground: 67.1 15% 22.2%;
 
-    --primary: 88 44% 29%;
+    --action: 17.3 73.3% 45.5%;
+    --action-hover: 16.5 73.2% 38%;
+    --action-foreground: 0 0% 100%;
+
+    --primary: 143.2 94.9% 22.9%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 88 46% 23%;
-    --flame: 82 47% 61%;
-    --royal: 213 71% 42%;
+    --primary-hover: 149.6 95.2% 16.3%;
+    --flame: 120 40.7% 94.7%;
+    --royal: 143.2 94.9% 22.9%;
 
-    --forest: 100 16% 13%;
-    --forest-foreground: 60 8% 96%;
-    --forest-2: 98 16% 21%;
-    --leaf: 84 38% 93%;
-    --leaf-foreground: 88 46% 23%;
+    --brand-950: 153.1 100% 9.6%;
+    --brand-900: 153.6 100% 12.9%;
+    --brand-800: 149.6 95.2% 16.3%;
+    --brand-700: 143.2 94.9% 22.9%;
+    --brand-500: 116.3 83.5% 38%;
+    --olive-ink: 67.1 15% 22.2%;
+    --olive: 80.5 26.4% 28.2%;
+    --cream: 46.2 44.8% 94.3%;
+    --mint: 120 40.7% 94.7%;
 
-    --secondary: 60 6% 93%;
-    --secondary-foreground: 100 16% 13%;
-    --muted: 60 6% 92%;
-    --muted-foreground: 100 5% 37%;
-    --accent: 84 38% 93%;
-    --accent-foreground: 88 46% 23%;
+    /* Generated course covers: one tint per subject family, all from the green range. */
+    --cover-data: 153.6 100% 12.9%;
+    --cover-me: 120 38% 87%;
+    --cover-ai: 153.1 100% 9.6%;
+    --cover-research: 143.2 94.9% 22.9%;
+    --cover-geo: 84 32% 82%;
+
+    --forest: 153.6 100% 12.9%;
+    --forest-foreground: 46.2 44.8% 94.3%;
+    --forest-2: 153.1 100% 9.6%;
+    --leaf: 120 40.7% 94.7%;
+    --leaf-foreground: 153.6 100% 12.9%;
+
+    --secondary: 46.7 36% 90.2%;
+    --secondary-foreground: 67.1 15% 22.2%;
+    --muted: 45 38.1% 91.8%;
+    --muted-foreground: 60 7.5% 39%;
+    --accent: 120 40.7% 94.7%;
+    --accent-foreground: 153.6 100% 12.9%;
 
     --success: 156 62% 27%;
     --success-surface: 150 40% 93%;
@@ -62,27 +89,28 @@
     --destructive: 2 64% 46%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 7 68% 95%;
-    --info: 213 71% 42%;
-    --info-surface: 213 80% 95%;
+    --info: 205 70% 34%;
+    --info-surface: 205 60% 94%;
 
-    --border: 70 8% 88%;
-    --input: 70 7% 80%;
-    --ring: 213 71% 42%;
+    --border: 45 26.3% 85.1%;
+    --input: 45 22.6% 79.2%;
+    --ring: 143.2 94.9% 22.9%;
 
-    --radius: 0.625rem;
+    /* One corner radius (8 px) for cards, inputs and buttons; pills stay round. */
+    --radius: 0.5rem;
 
-    --sidebar-background: 60 8% 96%;
-    --sidebar-foreground: 100 8% 26%;
-    --sidebar-primary: 88 44% 29%;
+    --sidebar-background: 46.2 44.8% 94.3%;
+    --sidebar-foreground: 67.1 15% 28%;
+    --sidebar-primary: 143.2 94.9% 22.9%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 100 16% 13%;
-    --sidebar-border: 70 8% 88%;
-    --sidebar-ring: 213 71% 42%;
+    --sidebar-accent-foreground: 153.6 100% 12.9%;
+    --sidebar-border: 45 26.3% 85.1%;
+    --sidebar-ring: 143.2 94.9% 22.9%;
 
-    /* Elevation: hairline first, shadow only for floating layers. */
-    --shadow-raised: 0 1px 2px hsl(100 16% 13% / 0.04), 0 1px 1px hsl(100 16% 13% / 0.03);
-    --shadow-float: 0 12px 32px -12px hsl(100 16% 13% / 0.22);
+    /* Elevation: hairlines on the page; a shadow only on layers that float (menus, dialogs). */
+    --shadow-raised: none;
+    --shadow-float: 0 12px 32px -12px hsl(153 100% 10% / 0.22);
 
     /* Motion: short, purposeful, and switched off for reduced-motion users. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -97,9 +125,12 @@
     --card-foreground: 60 8% 94%;
     --popover: 100 10% 10%;
     --popover-foreground: 60 8% 94%;
-    --primary: 84 45% 52%;
-    --primary-foreground: 100 16% 10%;
-    --primary-hover: 84 50% 60%;
+    --action: 18 80% 62%;
+    --action-hover: 18 85% 68%;
+    --action-foreground: 20 60% 8%;
+    --primary: 130 50% 55%;
+    --primary-foreground: 150 60% 8%;
+    --primary-hover: 130 55% 62%;
     --flame: 82 55% 66%;
     --royal: 213 85% 68%;
     --forest: 60 8% 94%;
@@ -150,9 +181,17 @@
     font-feature-settings: "tnum" 0;
   }
 
-  /* Inter is the one typeface: text, headings and numbers. */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+  body { line-height: 1.6; }
+
+  /* League Spartan for the three heading levels; Inter for everything else. */
+  h1, h2, h3 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  h4, h5, h6 {
+    @apply font-sans tracking-tight;
     text-wrap: balance;
   }
 
@@ -166,9 +205,9 @@
   /* Page titles and section titles, one scale for the whole product. */
   .text-page-title { @apply font-display text-2xl font-bold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
   /* Display headline (public discovery pages only, never inside the app). */
-  .text-poster { @apply font-display font-bold leading-[1.04] tracking-[-0.025em]; }
+  .text-poster { @apply font-display font-bold leading-[1.05] tracking-[-0.015em]; }
   .text-section-title { @apply font-display text-lg font-semibold tracking-tight text-forest; }
-  .text-card-title { @apply font-display text-base font-semibold text-forest; }
+  .text-card-title { @apply font-sans text-base font-semibold text-forest; }
   .text-meta { @apply text-[0.8125rem] leading-5 text-muted-foreground; }
 
   /* The one surface style: white, hairline, a whisper of elevation. */
@@ -188,6 +227,8 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .tabular { font-variant-numeric: tabular-nums; }
+  /* The public 12-column grid: 4 columns on phones, 8 on tablets, 12 from 1024 px. */
+  .site-grid { @apply grid grid-cols-4 gap-x-4 gap-y-8 md:grid-cols-8 md:gap-x-6 lg:grid-cols-12; }
   .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
@@ -213,6 +254,28 @@
 }
 .animate-confirm { animation: confirm 320ms var(--ease-out) both; }
 
+/* Plus motif: layers draw in once (inner first), or loop while loading. */
+@keyframes plus-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes plus-loop {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  55% { stroke-dashoffset: 0; opacity: 1; }
+  85% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.35; }
+}
+.plus-draw .plus-layer {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: plus-draw 900ms var(--ease-out) forwards;
+}
+.plus-loop .plus-layer {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: plus-loop 1200ms ease-in-out infinite;
+}
+
 /* Landing page marquees (unchanged behaviour). */
 @keyframes scroll-left {
   0% { transform: translateX(0); }
@@ -226,11 +289,6 @@
 }
 .animate-scroll-rtl { animation: scroll-rtl 15s linear infinite; }
 .animate-scroll-rtl:hover { animation-play-state: paused; }
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-.animate-float { animation: float 3s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -392,7 +392,7 @@ const AdminDashboard = () => {
                           size="sm"
                           variant={timePeriod === "week" ? "default" : "outline"}
                           onClick={() => setTimePeriod("week")}
-                          className={timePeriod === "week" ? "bg-primary hover:bg-primary-hover" : ""}
+                          className={timePeriod === "week" ? "bg-action hover:bg-action-hover" : ""}
                         >
                           {t("adminDashboard.week", "Week")}
                         </Button>
@@ -400,7 +400,7 @@ const AdminDashboard = () => {
                           size="sm"
                           variant={timePeriod === "month" ? "default" : "outline"}
                           onClick={() => setTimePeriod("month")}
-                          className={timePeriod === "month" ? "bg-primary hover:bg-primary-hover" : ""}
+                          className={timePeriod === "month" ? "bg-action hover:bg-action-hover" : ""}
                         >
                           {t("adminDashboard.month", "Month")}
                         </Button>
@@ -408,7 +408,7 @@ const AdminDashboard = () => {
                           size="sm"
                           variant={timePeriod === "year" ? "default" : "outline"}
                           onClick={() => setTimePeriod("year")}
-                          className={timePeriod === "year" ? "bg-primary hover:bg-primary-hover" : ""}
+                          className={timePeriod === "year" ? "bg-action hover:bg-action-hover" : ""}
                         >
                           {t("adminDashboard.year", "Year")}
                         </Button>

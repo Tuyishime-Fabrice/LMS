@@ -200,7 +200,7 @@ export default function TeacherAnnouncements() {
         description={t('teacher.announcements.subtitle')}
         actions={<><Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t('teacher.announcements.newAnnouncement')}
@@ -259,7 +259,7 @@ export default function TeacherAnnouncements() {
                       </p>
                       <Button
                         onClick={() => setShowCreateDialog(true)}
-                        className="bg-primary hover:bg-primary-hover"
+                        className="bg-action hover:bg-action-hover"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         {t('teacher.announcements.createAnnouncement')}
@@ -398,7 +398,7 @@ export default function TeacherAnnouncements() {
             <Button
               onClick={handleCreate}
               disabled={processing || !title.trim() || !message.trim()}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               {processing ? t('teacher.announcements.sending') : t('teacher.announcements.sendAnnouncement')}
             </Button>

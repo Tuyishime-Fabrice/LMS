@@ -1,3 +1,4 @@
+import { Brand } from "@/components/shell/Brand";
 import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from "@/lib/browserStorage";
 import { useState, useEffect } from "react";
@@ -155,11 +156,7 @@ const SignUp = () => {
         <div className="w-full max-w-md space-y-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img
-              src="/images/dataplus_logggg-removebg-preview.png"
-              alt="DATA+ Academy"
-              className="w-10 h-10 object-contain"
-            />
+            <Brand />
           </div>
 
           {/* Header */}
@@ -177,7 +174,7 @@ const SignUp = () => {
               variant={selectedRole === "student" ? "default" : "outline"}
               onClick={() => setSelectedRole("student")}
               className={`w-full h-10 text-sm font-medium rounded-lg transition-colors duration-300 group ${selectedRole === "student"
-                ? "bg-primary hover:bg-primary-hover text-white"
+                ? "bg-action hover:bg-action-hover text-white"
                 : "bg-card border border-border hover:bg-muted"
                 }`}
             >
@@ -191,7 +188,7 @@ const SignUp = () => {
               variant={selectedRole === "teacher" ? "default" : "outline"}
               onClick={() => setSelectedRole("teacher")}
               className={`w-full h-10 text-sm font-medium rounded-lg transition-colors duration-300 group ${selectedRole === "teacher"
-                ? "bg-primary hover:bg-primary-hover text-white"
+                ? "bg-action hover:bg-action-hover text-white"
                 : "bg-card border border-border hover:bg-muted"
                 }`}
             >
@@ -321,7 +318,7 @@ const SignUp = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className={`w-full h-11 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors duration-300 ${
+                className={`w-full h-11 bg-action hover:bg-action-hover text-white font-medium rounded-lg transition-colors duration-300 ${
                   lastAuthMethod === "email" ? "ring-2 ring-primary ring-offset-2" : ""
                 }`}
               >

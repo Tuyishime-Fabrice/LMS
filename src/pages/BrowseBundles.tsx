@@ -124,7 +124,7 @@ export default function BrowseBundles() {
                         <Package className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
                         <h2 className="text-xl font-semibold text-muted-foreground mb-2">{t("browseBundles.noBundlesAvailable", "No bundles available")}</h2>
                         <p className="text-muted-foreground">{t("browseBundles.checkBackLaterForSpecialOffers", "Check back later for special offers!")}</p>
-                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-primary hover:bg-primary-hover">
+                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-action hover:bg-action-hover">
                             {t("browseBundles.browseIndividualCourses", "Browse Individual Courses")}
                         </Button>
                     </div>
@@ -182,7 +182,7 @@ export default function BrowseBundles() {
 
                                         {/* CTA */}
                                         <Button
-                                            className="w-full bg-primary hover:bg-primary-hover text-white h-11"
+                                            className="w-full bg-action hover:bg-action-hover text-white h-11"
                                             onClick={() => {
                                                 if (!user) {
                                                     navigate(beginPaymentSignUp(`/bundles?bundle=${bundle.id}`));

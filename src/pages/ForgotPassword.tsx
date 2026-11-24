@@ -93,7 +93,7 @@ const ForgotPassword = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary-hover text-white"
+              className="w-full bg-action hover:bg-action-hover text-white"
             >
               {loading ? t("forgotPassword.sending", "Sending...") : t("forgotPassword.sendResetLink", "Send reset link")}
             </Button>

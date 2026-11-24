@@ -173,7 +173,7 @@ export default function AdminAnnouncements() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>{t("adminAnnouncements.cancel", "Cancel")}</Button>
-            <Button onClick={handleCreate} disabled={processing || !title.trim() || !message.trim()} className="bg-primary hover:bg-primary-hover">{processing ? t("adminAnnouncements.creating", "Creating...") : t("adminAnnouncements.create", "Create")}</Button>
+            <Button onClick={handleCreate} disabled={processing || !title.trim() || !message.trim()} className="bg-action hover:bg-action-hover">{processing ? t("adminAnnouncements.creating", "Creating...") : t("adminAnnouncements.create", "Create")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

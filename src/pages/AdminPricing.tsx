@@ -178,7 +178,7 @@ export default function AdminPricing() {
                                         onChange={(e) => setNewPrice(e.target.value)}
                                     />
                                 </div>
-                                <Button onClick={addTier} className="bg-primary hover:bg-primary-hover">
+                                <Button onClick={addTier} className="bg-action hover:bg-action-hover">
                                     <Plus className="h-4 w-4 mr-1" />{" "}{t("adminPricing.addTierPrice", "Add tier price")}
                                 </Button>
                             </div>

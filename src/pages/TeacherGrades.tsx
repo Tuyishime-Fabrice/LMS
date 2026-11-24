@@ -631,7 +631,7 @@ const TeacherGrades = () => {
                       <p className="text-muted-foreground">{t('teacher.grades.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
-                        className="mt-4 bg-primary hover:bg-primary-hover"
+                        className="mt-4 bg-action hover:bg-action-hover"
                       >
                         {t('teacher.grades.createFirstCourse')}
                       </Button>
@@ -852,7 +852,7 @@ const TeacherGrades = () => {
               <X className="h-4 w-4 mr-1" />
               {t("teacherGrades.cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSaveGrade} disabled={saving} className="bg-primary hover:bg-primary-hover">
+            <Button onClick={handleSaveGrade} disabled={saving} className="bg-action hover:bg-action-hover">
               <Save className="h-4 w-4 mr-1" />
               {saving ? t("teacherGrades.saving", "Saving...") : t("teacherGrades.saveGrade", "Save Grade")}
             </Button>

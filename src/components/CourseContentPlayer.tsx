@@ -348,7 +348,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                       <p className="text-sm text-muted-foreground mb-6 max-w-sm break-all">{urlToOpen}</p>
                       <Button 
                         onClick={() => window.open(urlToOpen, "_blank")}
-                        className="bg-primary hover:bg-primary-hover rounded-xl px-6"
+                        className="bg-action hover:bg-action-hover rounded-xl px-6"
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />{" "}{t("courseContentPlayer.openDocument", "Open Document")}
                       </Button>
@@ -370,7 +370,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                 <p className="text-sm text-muted-foreground mb-6 max-w-sm break-all">{lesson.content_url}</p>
                 <Button 
                   onClick={() => window.open(lesson.content_url, "_blank")}
-                  className="bg-primary hover:bg-primary-hover rounded-xl px-6"
+                  className="bg-action hover:bg-action-hover rounded-xl px-6"
                 > 
                   <ExternalLink className="h-4 w-4 mr-2" />{" "}{t("courseContentPlayer.openLink", "Open Link")}
                 </Button>
@@ -413,7 +413,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
                     "rounded-xl px-6 transition-all",
                     lesson.is_completed 
                       ? "bg-leaf text-primary hover:bg-leaf cursor-default" 
-                      : "bg-primary hover:bg-primary-hover shadow-primary/20 hover:scale-[1.02]"
+                      : "bg-action hover:bg-action-hover shadow-primary/20 hover:scale-[1.02]"
                   )}
                 >
                   {lesson.is_completed ? (

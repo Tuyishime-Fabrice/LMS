@@ -161,7 +161,7 @@ const TeacherSchedule = () => {
               <div className="flex justify-end">
                 <Button 
                   size="lg" 
-                  className="gap-2 bg-primary hover:bg-primary-hover text-white"
+                  className="gap-2 bg-action hover:bg-action-hover text-white"
                   onClick={() => setShowForm(!showForm)}
                 >
                   <Plus className="h-5 w-5" />
@@ -257,7 +257,7 @@ const TeacherSchedule = () => {
                       </div>
 
                       <div className="flex gap-3 pt-4">
-                        <Button type="submit" className="bg-primary hover:bg-primary-hover text-white px-8">
+                        <Button type="submit" className="bg-action hover:bg-action-hover text-white px-8">
                           {t('teacher.schedule.scheduleClass')}
                         </Button>
                         <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
@@ -280,7 +280,7 @@ const TeacherSchedule = () => {
                         <Video className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-forest mb-2">{t('teacher.schedule.noClassesScheduled')}</h3>
                         <p className="text-muted-foreground mb-6">{t('teacher.schedule.startScheduling')}</p>
-                        <Button onClick={() => setShowForm(true)} className="bg-primary hover:bg-primary-hover">
+                        <Button onClick={() => setShowForm(true)} className="bg-action hover:bg-action-hover">
                           <Plus className="h-4 w-4 mr-2" />
                           {t('teacher.schedule.scheduleClass')}
                         </Button>

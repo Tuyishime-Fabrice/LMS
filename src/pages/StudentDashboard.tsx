@@ -66,7 +66,7 @@ function ContinueLearning({ course }: { course: EnrolledCourse }) {
             </Link>
           </Button>
         </div>
-        <CourseThumb src={course.thumbnailUrl} title={course.title} className="hidden aspect-[4/3] w-64 rounded-xl ring-1 ring-white/10 md:block lg:w-72" />
+        <CourseThumb title={course.title} className="hidden aspect-[4/3] w-64 rounded-xl ring-1 ring-white/10 md:block lg:w-72" />
       </div>
     </section>
   );
@@ -77,7 +77,7 @@ function CourseRow({ course }: { course: EnrolledCourse }) {
   return (
     <li>
       <Link to={resumeHref(course)} className="surface-interactive flex items-center gap-4 p-3 pr-4">
-        <CourseThumb src={course.thumbnailUrl} title={course.title} className="h-16 w-24 shrink-0" />
+        <CourseThumb compact title={course.title} className="h-16 w-24 shrink-0" />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-card-title">{course.title}</span>
           <span className="mt-0.5 block truncate text-meta">

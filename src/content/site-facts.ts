@@ -15,6 +15,14 @@ export const siteFacts = {
     parentUrl: "https://dataplusrwanda.com",
     legalName: "DATA+ Consultant Ltd",
     siteUrl: "https://dataplusacademy.com",
+    // Brand intro (docs/product/DESIGN_SYSTEM.md). The poster is in public/brand/intro; the two
+    // videos have not been supplied yet. Set `ready` to true once both files are in that folder.
+    intro: {
+      ready: false,
+      webm: "/brand/intro/dataplus-academy-intro.webm",
+      mp4: "/brand/intro/dataplus-academy-intro.mp4",
+      poster: "/brand/intro/intro-poster.jpg",
+    },
   },
   contact: {
     // Confirmed in the 2026-11 brief (matches dataplusrwanda.com).

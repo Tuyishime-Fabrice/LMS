@@ -51,7 +51,7 @@ export function Recommendations({ enrolledCourseIds, className }: { enrolledCour
         {picks.map(({ course, interest }) => (
           <li key={course.id}>
             <Link to={`/course/${course.id}`} className="surface-interactive group flex h-full gap-3 p-3">
-              <CourseThumb src={course.thumbnailUrl} title={course.title} className="h-16 w-20 shrink-0" />
+              <CourseThumb compact title={course.title} className="h-16 w-20 shrink-0" />
               <span className="min-w-0 flex-1">
                 <span className="line-clamp-2 text-sm font-semibold text-forest group-hover:text-primary">{course.title}</span>
                 <span className="mt-1 block text-xs text-muted-foreground">{t("recommend.because", "Matches your interest in {{interest}}", { interest: label(interest).toLowerCase() })}</span>

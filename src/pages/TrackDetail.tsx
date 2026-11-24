@@ -105,7 +105,7 @@ export default function TrackDetail() {
                       </p>
                     )}
                   </div>
-                  <CourseThumb src={course.thumbnailUrl} title={course.title} className="hidden h-16 w-24 shrink-0 sm:block" />
+                  <CourseThumb compact title={course.title} className="hidden h-16 w-24 shrink-0 sm:block" />
                 </li>
               );
             })}

@@ -23,8 +23,9 @@ export const LanguageSelector = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 gap-1.5 px-2.5 text-muted-foreground hover:text-forest" aria-label={t("shell.language", "Language")}>
-          <Languages className="!size-[1.125rem]" />
+        <Button variant="ghost" size="sm" className="h-9 gap-1.5 px-2.5 text-muted-foreground hover:text-forest">
+          <Languages className="!size-[1.125rem]" aria-hidden />
+          <span className="sr-only">{t("shell.language", "Language")}: </span>
           <span className="text-xs font-semibold uppercase">{current}</span>
         </Button>
       </DropdownMenuTrigger>

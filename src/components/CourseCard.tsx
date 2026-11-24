@@ -1,3 +1,6 @@
+import { CourseThumb } from "@/features/learning/CourseThumb";
+import { PlusLevel } from "@/components/brand/PlusMotif";
+import { isCourseLevel, type CourseLevel } from "@/components/brand/courseLevel";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +16,7 @@ interface CourseCardProps {
     description?: string | null;
     summary?: string | null;
     thumbnail_url?: string | null;
+    category?: string | null;
     level?: string;
     price?: number;
     is_free?: boolean;
@@ -32,7 +36,7 @@ interface CourseCardProps {
   onBuy?: () => void; // Callback for buy action (student view)
 }
 
-export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = false, columnIndex = 0, isEnrolled = false, showEnrollButton = false, onEnroll, onEdit, onBuy }: CourseCardProps) => {
+export const CourseCard = ({ course, onClick, showTeacher = false, columnIndex = 0, isEnrolled = false, showEnrollButton = false, onEnroll, onEdit, onBuy }: CourseCardProps) => {
   const { t } = useTranslation();
   const [showHoverCard, setShowHoverCard] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -72,36 +76,18 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
       onMouseLeave={handleMouseLeave}
     >
       <Card
-        className="group transition-all duration-300 border border-black cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden h-full flex flex-col"
+        className="group transition-all duration-300 border border-border hover:border-forest/30 cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden h-full flex flex-col"
         onClick={onClick}
       >
         <CardContent className="p-0 flex flex-col h-full">
           {/* Course Image */}
-          <div className={`relative h-28 sm:h-40 ${gradient} overflow-hidden`}>
-            {course.thumbnail_url ? (
-              <img
-                src={course.thumbnail_url}
-                alt={course.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <BookOpen className="h-8 w-8 sm:h-12 sm:w-12 text-white/30" />
-              </div>
-            )}
-            {/* Level Badge */}
-            {course.level && (
-              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
-                <Badge
-                  className={`text-xs sm:text-sm ${course.level === "beginner"
-                    ? "bg-primary"
-                    : course.level === "intermediate"
-                      ? "bg-warning"
-                      : "bg-destructive"
-                    } text-white`}
-                >
-                  {t(`level.${String(course.level).toLowerCase()}`, String(course.level).charAt(0).toUpperCase() + String(course.level).slice(1))}
-                </Badge>
+          <div className="relative h-28 overflow-hidden sm:h-40">
+            <CourseThumb title={course.title} category={course.category} className="h-full w-full rounded-none" />
+            {/* Level: lit plus layers, with the level named for everyone */}
+            {isCourseLevel(String(course.level).toLowerCase()) && (
+              <div className="absolute right-2 top-2 flex items-center gap-1.5 rounded-full bg-card/95 py-1 pl-1.5 pr-2.5 text-xs font-medium text-forest sm:right-3 sm:top-3">
+                <PlusLevel level={String(course.level).toLowerCase() as CourseLevel} label="" size={16} />
+                {t(`level.${String(course.level).toLowerCase()}`, String(course.level).charAt(0).toUpperCase() + String(course.level).slice(1))}
               </div>
             )}
             {/* Edit Button */}
@@ -114,20 +100,6 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
                 <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
               </button>
             )}
-            {/* Price Badge */}
-            {course.is_free === false && course.price && course.price > 0 ? (
-              <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-                <Badge className="bg-flame text-white text-xs sm:text-sm font-bold">
-                  {formatPrice(course.price, course.currency || 'RWF')}
-                </Badge>
-              </div>
-            ) : course.is_free !== undefined ? (
-              <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-                <Badge className="bg-primary text-white text-xs sm:text-sm">
-                  {t("courseCard.free", "Free")}
-                </Badge>
-              </div>
-            ) : null}
           </div>
 
           {/* Course Info */}
@@ -135,6 +107,11 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
             <h3 className="font-bold text-sm sm:text-lg mb-1 sm:mb-2 line-clamp-2 transition-colors">
               {course.title}
             </h3>
+            {course.is_free === false && course.price && course.price > 0 ? (
+              <p className="tabular mb-2 text-sm font-semibold text-forest">{formatPrice(course.price, course.currency || 'RWF')}</p>
+            ) : course.is_free !== undefined ? (
+              <p className="mb-2 text-sm font-semibold text-forest">{t("courseCard.free", "Free")}</p>
+            ) : null}
 
             <div className="mt-auto space-y-1.5 sm:space-y-2">
               {showTeacher && course.profiles && (
@@ -170,7 +147,7 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
                       e.stopPropagation();
                       if (onBuy) onBuy();
                     }}
-                    className="flex-1 bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm"
+                    className="flex-1 bg-action hover:bg-action-hover text-white text-xs sm:text-sm"
                     size="sm"
                   >
                     <ShoppingCart className="h-3 w-3 mr-1" />
@@ -183,7 +160,7 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
                     e.stopPropagation();
                     onEnroll();
                   }}
-                  className="w-full bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm"
+                  className="w-full bg-action hover:bg-action-hover text-white text-xs sm:text-sm"
                   size="sm"
                 >
                   {t('courseCard.enrollNow')}
@@ -264,7 +241,7 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
               {/* CTA Buttons */}
               <div className="flex gap-2">
                 <Button
-                  className="flex-1 bg-primary hover:bg-primary-hover text-white"
+                  className="flex-1 bg-action hover:bg-action-hover text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                     onClick();
@@ -287,7 +264,7 @@ export const CourseCard = ({ course, onClick, gradient = " ", showTeacher = fals
                 )}
                 {onBuy && !isEnrolled && course.is_free === false && (
                   <Button
-                    className="bg-primary hover:bg-primary-hover text-white"
+                    className="bg-action hover:bg-action-hover text-white"
                     onClick={(e) => {
                       e.stopPropagation();
                       onBuy();

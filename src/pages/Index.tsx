@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { CourseThumb } from "@/features/learning/CourseThumb";
 import { useDateLocale } from "@/features/learning/hooks";
 import { SiteHeader } from "@/features/site/SiteHeader";
+import { BrandIntro } from "@/features/site/BrandIntro";
 import { SiteFooter } from "@/features/site/SiteFooter";
 import { PartnerDialog } from "@/features/site/PartnerDialog";
 import {
@@ -41,7 +42,7 @@ function Section({ id, tone = "white", className, children, labelledBy }: {
         className,
       )}
     >
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">{children}</div>
+      <div className="mx-auto max-w-site px-4 py-16 sm:px-6 sm:py-20 lg:px-8">{children}</div>
     </section>
   );
 }
@@ -88,7 +89,7 @@ function CourseCard({ course }: { course: LandingCourse }) {
   return (
     <li className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-[border-color,box-shadow] hover:border-forest/30 hover:shadow-[0_12px_30px_-18px_hsl(var(--forest)/0.45)]">
       <Link to={`/course/${course.id}`} className="block" tabIndex={-1} aria-hidden>
-        <CourseThumb src={course.thumbnailUrl} title={course.title} className="aspect-[16/10] rounded-none" />
+        <CourseThumb title={course.title} category={course.category} className="aspect-[16/10] rounded-none" />
       </Link>
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
@@ -178,14 +179,13 @@ const Index = () => {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-card focus:px-4 focus:py-2">
         {t("site.skip", "Skip to content")}
       </a>
+      <BrandIntro />
       <SiteHeader />
 
       <main id="main">
         {/* Hero ------------------------------------------------------------ */}
         <section className="relative overflow-hidden bg-forest text-white" aria-labelledby="hero-title">
-          <div aria-hidden className="absolute -right-24 top-10 hidden h-72 w-72 bg-royal lg:block" />
-          <div aria-hidden className="absolute right-40 top-0 hidden h-40 w-40 bg-forest-2 lg:block" />
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:pb-24 lg:pt-20">
+          <div className="relative mx-auto grid max-w-site items-center gap-12 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:pb-24 lg:pt-20">
             <div>
               {cohort.data && (
                 <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/80">
@@ -303,7 +303,6 @@ const Index = () => {
         <Section labelledBy="steps-title" tone="white">
           <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="relative order-2 lg:order-1">
-              <div aria-hidden className="absolute -left-4 -top-4 h-24 w-24 bg-royal" />
               <img src="/image1.jpg" alt={t("landing.steps.photo", "Learners working on laptops during a session")} className="relative aspect-[4/5] w-full rounded-xl object-cover" loading="lazy" />
             </div>
             <div className="order-1 lg:order-2">
@@ -420,9 +419,7 @@ const Index = () => {
 
         {/* Closing call to action ------------------------------------------ */}
         <section className="relative overflow-hidden bg-forest text-white" aria-labelledby="cta-title">
-          <div aria-hidden className="absolute -left-10 bottom-0 h-28 w-28 bg-forest-2" />
-          <div aria-hidden className="absolute left-14 bottom-14 h-10 w-10 bg-royal" />
-          <div className="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
+          <div className="relative mx-auto max-w-site px-4 py-20 text-center sm:px-6 lg:px-8">
             <h2 id="cta-title" className="text-poster text-5xl sm:text-6xl lg:text-7xl">{t("landing.cta.title2", "Find the course that fits your work.")}</h2>
             <p className="mx-auto mt-4 max-w-xl text-white/70">{t("landing.cta.body2", "Browse the catalogue, or create a free account and enrol when you are ready.")}</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">

@@ -1,3 +1,4 @@
+import { Brand } from "@/components/shell/Brand";
 import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage } from "@/lib/browserStorage";
 import { useEffect, useState } from "react";
@@ -111,11 +112,7 @@ const Auth = () => {
         <div className="w-full max-w-md space-y-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img
-              src="/images/dataplus_logggg-removebg-preview.png"
-              alt="DATA+ Academy"
-              className="w-10 h-10 object-contain"
-            />
+            <Brand />
           </div>
 
           {/* Language Selector */}
@@ -226,7 +223,7 @@ const Auth = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full h-11 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors duration-300 ${
+                className={`w-full h-11 bg-action hover:bg-action-hover text-white font-medium rounded-lg transition-colors duration-300 ${
                   lastAuthMethod === "email" ? "ring-2 ring-primary ring-offset-2" : ""
                 }`}
               >

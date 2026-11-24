@@ -303,7 +303,7 @@ const Exhibition = () => {
                       {/* View Project Link */}
                       <Button
                         onClick={() => project.project_link && window.open(project.project_link, '_blank')}
-                        className="w-full bg-primary hover:bg-primary-hover text-white font-medium mt-4"
+                        className="w-full bg-action hover:bg-action-hover text-white font-medium mt-4"
                         disabled={!project.project_link}
                       >
                         <span>{t("exhibition.viewFullProjectDetails", "View Full Project Details")}</span>
@@ -332,7 +332,7 @@ const Exhibition = () => {
               <Button
                 size="lg"
                 onClick={() => navigate("/signup")}
-                className="bg-primary hover:bg-primary-hover text-white px-8 py-4 text-lg font-medium"
+                className="bg-action hover:bg-action-hover text-white px-8 py-4 text-lg font-medium"
               >
                 {t("exhibition.enrollNow", "Enroll Now")}
               </Button>

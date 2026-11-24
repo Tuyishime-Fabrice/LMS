@@ -602,7 +602,7 @@ export function CapstoneSubmission({ capstoneProject, studentId }: CapstoneSubmi
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full bg-primary hover:bg-primary-hover"
+            className="w-full bg-action hover:bg-action-hover"
           >
             {isSubmitting ? t("capstoneSubmission.submitting", "Submitting...") : submission ? t("capstoneSubmission.updateSubmission", "Update Submission") : t("capstoneSubmission.submitProject", "Submit Project")}
           </Button>

@@ -491,7 +491,7 @@ export function PurchaseDialog({
                             )}
 
                             <Button
-                                className="w-full bg-primary hover:bg-primary-hover text-white h-12 text-base"
+                                className="w-full bg-action hover:bg-action-hover text-white h-12 text-base"
                                 onClick={handleInitiatePayment}
                                 disabled={authLoading}
                             >
@@ -562,7 +562,7 @@ export function PurchaseDialog({
                                 {t("purchaseDialog.youHaveBeenEnrolledInThe", "You have been enrolled in the {{type}}. You can now access all course content.", { type: type })}
                             </p>
                             <Button
-                                className="w-full bg-primary hover:bg-primary-hover text-white"
+                                className="w-full bg-action hover:bg-action-hover text-white"
                                 onClick={() => {
                                     onOpenChange(false);
                                     onSuccess?.();
@@ -597,7 +597,7 @@ export function PurchaseDialog({
                                     {t("purchaseDialog.cancel", "Cancel")}
                                 </Button>
                                 <Button
-                                    className="flex-1 bg-primary hover:bg-primary-hover text-white"
+                                    className="flex-1 bg-action hover:bg-action-hover text-white"
                                     onClick={() => {
                                         setStep("method");
                                         setError(null);

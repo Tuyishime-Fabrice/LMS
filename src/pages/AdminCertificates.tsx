@@ -401,7 +401,7 @@ export default function AdminCertificates() {
                             <Button
                               size="sm"
                               onClick={() => handleUploadClick(s)}
-                              className={s.certificate_status === "approved" ? "bg-info hover:bg-info/90" : "bg-primary hover:bg-primary-hover"}
+                              className={s.certificate_status === "approved" ? "bg-info hover:bg-info/90" : "bg-action hover:bg-action-hover"}
                             >
                               <Upload className="h-4 w-4 mr-1" />
                               {s.certificate_status === "approved" ? t("adminCertificates.update", "Update") : t("adminCertificates.issue", "Issue")}
@@ -523,7 +523,7 @@ export default function AdminCertificates() {
             <Button
               onClick={handleIssueCertificate}
               disabled={processing || !certificateUrl.trim() || uploading}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               {processing ? t("adminCertificates.issuing", "Issuing...") : selectedStudent?.certificate_status === "approved" ? t("adminCertificates.updateCertificate", "Update Certificate") : t("adminCertificates.issueCertificate", "Issue Certificate")}
             </Button>

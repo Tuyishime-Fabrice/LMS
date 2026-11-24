@@ -193,7 +193,7 @@ const AdminTeacherApprovals = () => {
                           <Button
                             onClick={() => handleApprove(teacher)}
                             disabled={processing}
-                            className="flex-1 bg-primary hover:bg-primary-hover"
+                            className="flex-1 bg-action hover:bg-action-hover"
                           >
                             <Check className="h-4 w-4 mr-2" />
                             {t("adminTeacherApprovals.approve", "Approve")}

@@ -273,7 +273,7 @@ const TeacherDashboard = () => {
                           <BookOpen className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
                           <h3 className="font-medium text-forest mb-1">{t('teacher.dashboard.noCourses')}</h3>
                           <p className="text-sm text-muted-foreground mb-4">{t('teacher.dashboard.createFirst')}</p>
-                          <Button onClick={() => navigate("/create-course")} className="bg-primary hover:bg-primary-hover">
+                          <Button onClick={() => navigate("/create-course")} className="bg-action hover:bg-action-hover">
                             <Plus className="h-4 w-4 mr-2" />
                             {t('courses.createCourse')}
                           </Button>
@@ -282,7 +282,7 @@ const TeacherDashboard = () => {
                         <ul className="divide-y">
                           {courses.map((course) => (
                             <li key={course.id} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
-                              <CourseThumb src={course.thumbnail_url} title={course.title} className="h-14 w-20 shrink-0" />
+                              <CourseThumb compact title={course.title} className="h-14 w-20 shrink-0" />
                               <div className="min-w-0 flex-1">
                                 <Link to={`/course/${course.id}`} className="block truncate text-[0.9375rem] font-medium text-forest hover:text-primary">
                                   {course.title}

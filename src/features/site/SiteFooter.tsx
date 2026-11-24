@@ -29,7 +29,7 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
   ];
   return (
     <footer className="bg-forest text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
+      <div className="mx-auto grid max-w-site gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div className="max-w-sm">
           <Brand tone="light" />
           <p className="mt-4 text-sm leading-6 text-white/65">
@@ -43,7 +43,7 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
         </div>
         {columns.map((column) => (
           <nav key={column.title} aria-label={column.title}>
-            <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">{column.title}</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">{column.title}</h2>
             <ul className="mt-4 space-y-2.5 text-sm">
               {column.links.map((link) => (
                 <li key={link.label}>
@@ -56,7 +56,7 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
           </nav>
         ))}
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">{t("site.footer.contact", "Contact")}</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">{t("site.footer.contact", "Contact")}</h2>
           <ul className="mt-4 space-y-2.5 text-sm text-white/80">
             <li>{contact.address}</li>
             <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="hover:text-white">{contact.phone}</a></li>
@@ -76,7 +76,7 @@ export function SiteFooter({ onPartner }: { onPartner?: () => void }) {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-site flex-col gap-2 px-4 py-5 text-xs text-white/75 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p>© {new Date().getFullYear()} {brand.legalName}. {t("site.footer.rights", "All rights reserved.")}</p>
           <p className="flex gap-4">
             <Link to="/privacy-policy" className="hover:text-white">{t("site.footer.privacy", "Privacy policy")}</Link>

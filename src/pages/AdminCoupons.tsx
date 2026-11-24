@@ -608,7 +608,7 @@ export default function AdminCoupons() {
                             <Button variant="outline" className="flex-1" onClick={() => setDialogOpen(false)}>
                                 {t("adminCoupons.cancel", "Cancel")}
                             </Button>
-                            <Button className="flex-1 bg-primary hover:bg-primary-hover" onClick={handleSave}>
+                            <Button className="flex-1 bg-action hover:bg-action-hover" onClick={handleSave}>
                                 {editingCoupon ? t("adminCoupons.saveChanges", "Save Changes") : t("adminCoupons.createCoupon", "Create Coupon")}
                             </Button>
                         </div>

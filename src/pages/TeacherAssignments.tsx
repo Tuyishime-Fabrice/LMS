@@ -437,7 +437,7 @@ const TeacherAssignments = () => {
                       <p className="text-muted-foreground">{t('teacher.assignments.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
-                        className="mt-4 bg-primary hover:bg-primary-hover"
+                        className="mt-4 bg-action hover:bg-action-hover"
                       >
                         {t('teacher.assignments.createFirstCourse')}
                       </Button>
@@ -557,7 +557,7 @@ const TeacherAssignments = () => {
                             )}
                             <Button
                               onClick={() => navigate(`/create-course?edit=${selectedCourseId}`)}
-                              className="bg-primary hover:bg-primary-hover"
+                              className="bg-action hover:bg-action-hover"
                             >
                               {t('teacher.assignments.editAssignment')}
                             </Button>
@@ -673,7 +673,7 @@ const TeacherAssignments = () => {
                                           <Button 
                                             size="sm" 
                                             onClick={() => handleSaveInlineGrade(submission.id)}
-                                            className="bg-primary hover:bg-primary-hover mt-5"
+                                            className="bg-action hover:bg-action-hover mt-5"
                                           >
                                             <Send className="h-3.5 w-3.5 mr-1" />
                                             {t("teacherAssignments.save", "Save")}
@@ -804,7 +804,7 @@ const TeacherAssignments = () => {
                           </div>
                           <Button
                             onClick={() => navigate(`/create-course?edit=${selectedCourseId}`)}
-                            className="bg-primary hover:bg-primary-hover"
+                            className="bg-action hover:bg-action-hover"
                           >
                             {t("teacherAssignments.manageCourse", "Manage Course")}
                           </Button>
@@ -888,7 +888,7 @@ const TeacherAssignments = () => {
                                           <Button 
                                             size="sm" 
                                             onClick={() => handleSaveInlineGrade(submission.id)}
-                                            className="bg-primary hover:bg-primary-hover mt-5"
+                                            className="bg-action hover:bg-action-hover mt-5"
                                           >
                                             <Send className="h-3.5 w-3.5 mr-1" />
                                             {t("teacherAssignments.save", "Save")}

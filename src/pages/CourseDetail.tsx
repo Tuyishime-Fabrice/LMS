@@ -479,7 +479,7 @@ export default function CourseDetail() {
   }) => {
     const buyClass =
       options?.buyClassName ||
-      "w-full h-11 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl";
+      "w-full h-11 bg-action hover:bg-action-hover text-white font-semibold text-sm rounded-xl";
     const iconClass = options?.iconClassName || "h-4 w-4";
     const wrapperClass = options?.stacked === false ? "flex flex-wrap gap-2" : "space-y-2";
 
@@ -914,7 +914,7 @@ export default function CourseDetail() {
                     renderPaidCourseActions()
                   ) : (
                     <Button
-                      className="w-full h-11 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl transition-all"
+                      className="w-full h-11 bg-action hover:bg-action-hover text-white font-semibold text-sm rounded-xl transition-all"
                       onClick={handleStartLearning}
                     >
                       <Zap className="h-4 w-4 mr-2" />
@@ -1038,7 +1038,7 @@ export default function CourseDetail() {
                     <div className="text-2xl font-bold text-forest">{formattedPrice()}</div>
                   )}
                   {renderPaidCourseActions({
-                    buyClassName: "bg-primary hover:bg-primary-hover text-white px-8 py-3 text-lg",
+                    buyClassName: "bg-action hover:bg-action-hover text-white px-8 py-3 text-lg",
                     iconClassName: "h-5 w-5",
                     stacked: false,
                   })}
@@ -1102,7 +1102,7 @@ export default function CourseDetail() {
                   </div>
                   <Button
                     onClick={() => navigate('/student/assignments')}
-                    className="w-full bg-primary hover:bg-primary-hover text-white"
+                    className="w-full bg-action hover:bg-action-hover text-white"
                   >
                     {t("courseDetail.submitYourAssignment", "Submit Your Assignment")}
                   </Button>
@@ -1236,7 +1236,7 @@ export default function CourseDetail() {
                           </p>
                         </div>
                         {renderPaidCourseActions({
-                          buyClassName: "bg-primary hover:bg-primary-hover text-white px-8",
+                          buyClassName: "bg-action hover:bg-action-hover text-white px-8",
                           stacked: false,
                         })}
                       </CardContent>

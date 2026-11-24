@@ -14,6 +14,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { corporateUrl } from "@/lib/siteConfig";
 
 const Index = lazy(() => import("./pages/Index"));
+const BrandReference = lazy(() => import("./pages/BrandReference"));
 const ExternalRedirect = lazy(() => import("./components/ExternalRedirect"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -107,6 +108,8 @@ const App = () => (
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             <Route path="/" element={<Index />} />
+            {/* Design-system reference: development and demo builds only. */}
+            {(import.meta.env.DEV || DEMO_MODE) && <Route path="/brand" element={<BrandReference />} />}
             {/* Company pages live on the corporate site (see src/lib/siteConfig.ts). */}
             <Route path="/about" element={<ExternalRedirect to={corporateUrl("/about")} />} />
             <Route path="/contact" element={<ExternalRedirect to={corporateUrl("/contact")} />} />

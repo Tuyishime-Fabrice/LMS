@@ -29,7 +29,7 @@ function CourseCard({ course }: { course: EnrolledCourse }) {
   return (
     <li className="surface-interactive flex flex-col overflow-hidden">
       <Link to={href} className="block" tabIndex={-1} aria-hidden>
-        <CourseThumb src={course.thumbnailUrl} title={course.title} className="aspect-[16/9] rounded-none" />
+        <CourseThumb title={course.title} className="aspect-[16/9] rounded-none" />
       </Link>
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex flex-wrap gap-1.5">
