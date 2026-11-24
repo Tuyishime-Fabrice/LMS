@@ -7,7 +7,7 @@
  */
 import { createSeed, DEMO_PASSWORD, type Row, type Tables } from "./seed";
 
-const STORE_KEY = "dataplus-demo-db-v2";
+const STORE_KEY = "dataplus-demo-db-v3";
 const AUTH_KEY = "dataplus-demo-auth-v1";
 export const DEMO_SUPABASE_URL = "https://demo.dataplus.invalid";
 
@@ -666,6 +666,39 @@ async function handleRpc(request: Request, fn: string): Promise<Response> {
 
     case "competition_registration_open":
       return ok(true);
+
+    /* Facilitation (mirrors 20261125000000_facilitators.sql for the signed-in demo user). */
+    case "get_facilitated_learners": {
+      const staff = table("course_staff").filter((row) => row.user_id === uid);
+      const cohorts = table("cohorts");
+      const rows = table("course_enrollments").filter((e) => staff.some((s) => s.course_id === e.course_id && (
+        !s.cohort_id || e.cohort_id === s.cohort_id || (!e.cohort_id && e.cohort_name === cohorts.find((c) => c.id === s.cohort_id)?.name))));
+      return ok(rows.map((e) => {
+        const person = table("profiles").find((p) => p.id === e.student_id);
+        return {
+          course_id: e.course_id, student_id: e.student_id, full_name: person?.full_name ?? null, avatar_url: person?.avatar_url ?? null,
+          cohort_name: e.cohort_name, progress_percentage: e.progress_percentage, completed: Boolean(e.completed), last_activity_at: e.last_activity_at, enrolled_at: e.enrolled_at,
+        };
+      }));
+    }
+    case "set_cohort_discord_url": {
+      const cohort = table("cohorts").find((row) => row.id === args.p_cohort_id);
+      const allowed = cohort && (cohort.teacher_id === uid || table("course_staff").some((s) => s.user_id === uid && s.course_id === cohort.course_id && (!s.cohort_id || s.cohort_id === cohort.id)));
+      if (!cohort || !allowed) return pgError(403, "42501", "You cannot change this cohort");
+      cohort.discord_url = String(args.p_url || "").trim() || null;
+      save();
+      return ok(null);
+    }
+    case "find_staffing_candidate": {
+      const email = String(args.p_email || "").trim().toLowerCase();
+      const person = table("profiles").find((row) => String(row.email).toLowerCase() === email && row.role !== "admin");
+      return ok(person ? [{ id: person.id, full_name: person.full_name, role: person.role }] : []);
+    }
+    case "get_course_staff":
+      return ok(table("course_staff").filter((row) => row.course_id === args.p_course_id).map((row) => {
+        const person = table("profiles").find((p) => p.id === row.user_id);
+        return { id: row.id, user_id: row.user_id, cohort_id: row.cohort_id, full_name: person?.full_name ?? null, email: person?.email ?? "", created_at: row.created_at };
+      }));
 
     case "get_onboarding_insights": {
       const min = 5;

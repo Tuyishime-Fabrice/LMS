@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 
 export type AppRole = "student" | "teacher" | "admin";
+/** Shells. "facilitator" is not an account role: it is the workspace of anyone assigned to facilitate. */
+export type ShellRole = AppRole | "facilitator";
 
 export type NavItem = {
   /** i18n key; `label` is the English fallback. */
@@ -15,12 +17,14 @@ export type NavItem = {
   icon: LucideIcon;
   /** Extra paths that should also highlight this item. */
   match?: string[];
+  /** Highlight only on this exact path (for a section root such as /facilitate). */
+  exact?: boolean;
   badge?: "pendingTeachers" | "pendingCourses" | "pendingCertificates";
 };
 
 export type NavGroup = { key: string; label?: string; items: NavItem[] };
 
-export const navigation: Record<AppRole, NavGroup[]> = {
+export const navigation: Record<ShellRole, NavGroup[]> = {
   student: [
     {
       key: "learn",
@@ -83,6 +87,16 @@ export const navigation: Record<AppRole, NavGroup[]> = {
       key: "account",
       label: "Account",
       items: [{ key: "shell.nav.settings", label: "Settings", to: "/teacher/settings", icon: Settings }],
+    },
+  ],
+  facilitator: [
+    {
+      key: "facilitate",
+      items: [
+        { key: "shell.nav.facilitationOverview", label: "Overview", to: "/facilitate", icon: LayoutDashboard, exact: true },
+        { key: "shell.nav.review", label: "Review work", to: "/facilitate/review", icon: ClipboardCheck },
+        { key: "shell.nav.learners", label: "Learners", to: "/facilitate/learners", icon: Users },
+      ],
     },
   ],
   admin: [
@@ -151,7 +165,8 @@ export const settingsPath: Record<AppRole, string> = {
   admin: "/admin/settings",
 };
 
-export const homePath: Record<AppRole, string> = {
+export const homePath: Record<ShellRole, string> = {
+  facilitator: "/facilitate",
   student: "/student/dashboard",
   teacher: "/teacher/dashboard",
   admin: "/admin/dashboard",

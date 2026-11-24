@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { FacilitatorsDialog } from "@/features/facilitation/FacilitatorsDialog";
 import { Search, Star, Check, Trash2, Eye, Lock, Unlock, Pencil } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -570,6 +571,7 @@ const AdminCourses = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
+                              <FacilitatorsDialog courseId={course.id} courseTitle={course.title} />
                               {course.approval_status === "pending" && (
                                 <Button
                                   size="sm"

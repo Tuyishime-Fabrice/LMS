@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shell/page";
+import { FacilitatorsDialog } from "@/features/facilitation/FacilitatorsDialog";
 import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
 import { AppShell } from "@/components/shell/AppShell";
 import { Link, useNavigate } from "react-router-dom";
@@ -294,6 +295,7 @@ const TeacherDashboard = () => {
                                   </StatusPill>
                                 )}
                               </div>
+                              <FacilitatorsDialog courseId={course.id} courseTitle={course.title} />
                               <CommunityLinkEditor
                                 target="courses"
                                 id={course.id}

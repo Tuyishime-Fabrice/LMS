@@ -26,6 +26,20 @@ announcements / teacher_announcements / notifications · conversations/direct_me
 | trigger `require_grade_feedback` | mark needs ≥ 20-char feedback when mark/feedback changes | — | all writers, incl. admin |
 | `grade_history` | append-only copy of every published mark | learner own; course teacher; admin | trigger only (no grants) |
 
+## Added by `20261125000000_facilitators.sql`
+| Object | Purpose | Read | Write |
+|---|---|---|---|
+| `course_staff` (course, optional cohort, user, role `facilitator`) | facilitator assignments | own row; course instructor; admin | insert/delete: course instructor, admin (trigger: cohort must belong to course; never the instructor or an admin; `assigned_by` = caller) |
+| `facilitates_learner(course, student)` | scope check used by every policy below | — | — |
+| policies on `course_enrollments`, `assignment_submissions`, `capstone_submissions`, `cohorts` | facilitator **read** of assigned learners | — | unchanged (no write) |
+| storage policy + `facilitator_can_read_file()` | open assigned learners' submission files | — | — |
+| `can_access_lesson()` (replaced) | facilitators open every lesson of their course | — | — |
+| `get_facilitated_learners()` | roster with names and progress, no email/phone | facilitator | — |
+| `submission_reviews` | provisional review per submission per reviewer | reviewer (while assigned); course instructor; admin; **never learners** | reviewer, only for submissions in scope |
+| `set_cohort_discord_url()` | change only `discord_url` of an assigned cohort | — | cohort teacher, admin, facilitator in scope |
+| `find_staffing_candidate(email)`, `get_course_staff(course)` | assign by exact email; list staff | instructors/admins | — |
+| `teacher_announcements` insert policy (replaced) | **fixes** any-user posting; now instructor, admin or course-wide facilitator | — | — |
+
 ## Retention and deletion
 `learner_preferences` cascades with the profile; learners can delete their row any time. Grade history follows the
 submission's student; deletion policy for academic records needs a DATA+ decision (see DECISION_LOG D-12).
@@ -39,3 +53,4 @@ submission's student; deletion policy for academic records needs a DATA+ decisio
 `supabase/tests/academy_experience.sql` against a **scratch** copy. 4. Set `VITE_CORPORATE_SITE_URL` in Vercel.
 5. Add Discord links per course/cohort. 6. Create tracks/competitions in Admin.
 **Note:** after step 2, instructors can no longer save a mark without written feedback.
+7. Then run `20261125000000_facilitators.sql` (needs the previous migration) and assign facilitators from the instructor Overview.

@@ -9,7 +9,8 @@ import { useAppAuth } from "@/contexts/AuthContext";
 import { useActivityTracker } from "@/hooks/useActivityTracker";
 import { RoleSidebar } from "./RoleSidebar";
 import { TeacherCourseList } from "./TeacherCourseList";
-import { studentTabBar, type AppRole } from "./navigation";
+import { studentTabBar, type ShellRole } from "./navigation";
+import { FacilitationSidebarLink } from "@/features/facilitation/FacilitationSidebarLink";
 import { cn } from "@/lib/utils";
 
 /** The bar every signed-in page shares: menu, page context, language, notifications, account. */
@@ -75,7 +76,7 @@ export function AppShell({
   sidebarExtra,
   badges,
 }: {
-  role: AppRole;
+  role: ShellRole;
   /** Small context shown in the top bar (breadcrumb, course name). */
   topBar?: ReactNode;
   children: ReactNode;
@@ -90,6 +91,7 @@ export function AppShell({
     <SidebarProvider>
       <RoleSidebar role={role} badges={badges}>
         {sidebarExtra ?? (role === "teacher" ? <TeacherCourseList /> : null)}
+        {(role === "student" || role === "teacher") && <FacilitationSidebarLink />}
       </RoleSidebar>
       <SidebarInset className="min-w-0 bg-background">
         <AppTopBar>{topBar}</AppTopBar>

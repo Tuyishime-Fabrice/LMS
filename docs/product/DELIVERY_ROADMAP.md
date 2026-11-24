@@ -7,7 +7,7 @@ grade history · demo data · 37 unit tests + 30 DB checks.
 
 ## Next (P1)
 1. Apply the migration to staging, regenerate types, smoke-test with real Supabase.
-2. Facilitator role: `course_staff` table, `is_course_staff()`, provisional marks, UI for assignment.
+2. ~~Facilitator role~~ done 2026-11-25; next: cohort-scoped announcements, facilitator-drafted assignments with instructor approval.
 3. Resubmission: keep previous files, `attempt` number, "resubmission allowed until" per assignment.
 4. Practice launcher: `practice_url`/`starter_url` on lessons; DATA+ JupyterLite build.
 5. Grade history view for instructors and learners.

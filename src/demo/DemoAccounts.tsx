@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GraduationCap, Presentation, ShieldCheck } from "lucide-react";
+import { GraduationCap, HeartHandshake, Presentation, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "./config";
 import { cn } from "@/lib/utils";
 
-const icons = { student: GraduationCap, teacher: Presentation, admin: ShieldCheck } as const;
+const icons = { student: GraduationCap, teacher: Presentation, admin: ShieldCheck, facilitator: HeartHandshake } as const;
 
 /** One-click sign-in as each demo person. Shown only in demo mode. */
 export function DemoAccounts({ className, onSignedIn }: { className?: string; onSignedIn?: (role: string) => void }) {
@@ -16,6 +16,7 @@ export function DemoAccounts({ className, onSignedIn }: { className?: string; on
     student: t("demo.role.student", "Learner"),
     teacher: t("demo.role.teacher", "Instructor"),
     admin: t("demo.role.admin", "Admin"),
+    facilitator: t("demo.role.facilitator", "Facilitator"),
   };
 
   const signIn = async (email: string, role: string) => {

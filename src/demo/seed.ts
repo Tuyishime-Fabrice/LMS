@@ -16,6 +16,7 @@ export const DEMO_IDS = {
   admin: id(3),
   teacher2: id(4),
   pendingTeacher: id(5),
+  facilitator: id(6),
 };
 
 export const DEMO_PASSWORD = "demo1234";
@@ -24,6 +25,7 @@ export const DEMO_ACCOUNTS = [
   { role: "student", email: "aline@dataplus-demo.test", name: "Aline Uwase", id: DEMO_IDS.student },
   { role: "teacher", email: "theo@dataplus-demo.test", name: "Théo Mugisha", id: DEMO_IDS.teacher },
   { role: "admin", email: "admin@dataplus-demo.test", name: "Grace Ingabire", id: DEMO_IDS.admin },
+  { role: "facilitator", email: "diane@dataplus-demo.test", name: "Diane Mutesi", id: DEMO_IDS.facilitator },
 ] as const;
 
 export function createSeed(assetBase: string): Tables {
@@ -69,6 +71,8 @@ export function createSeed(assetBase: string): Tables {
       teacher_approved: false, teacher_approval_status: "pending", teacher_approval_date: null,
       organization: "University of Rwanda", job_role: "Statistics lecturer", created_at: at(-2),
     }),
+    // A graduate of the Excel course who now facilitates Cohort 3 (account role stays "student").
+    person(6, "Diane Mutesi", "diane@dataplus-demo.test", "student", { avatar_url: avatar("3d-rendering-zoom-call-avatar.webp") }),
     ...learners,
   ];
 
@@ -605,6 +609,13 @@ export function createSeed(assetBase: string): Tables {
   }));
 
   return {
+    course_staff: [
+      { id: id(3500), course_id: excel.id, cohort_id: id(500), user_id: DEMO_IDS.facilitator, staff_role: "facilitator", assigned_by: DEMO_IDS.teacher, created_at: at(-28) },
+    ],
+    submission_reviews: [
+      { id: id(3600), submission_type: "assignment", submission_id: id(906), reviewer_id: DEMO_IDS.facilitator, suggested_grade: 76, rubric_scores: null,
+        notes: "Correct top product and a clear pivot table. The monthly totals in March double-count returns; ask Jean-Paul to filter them out.", created_at: at(-0.5), updated_at: at(-0.5) },
+    ],
     learning_paths, learning_path_items, competitions, competition_registrations, competition_submissions, learner_preferences, grade_history: [],
     profiles, courses, course_chapters: chapters, course_lessons: lessons, lesson_quiz_questions, capstone_projects, cohorts,
     course_enrollments, student_lesson_progress, student_quiz_attempts, assignment_submissions, capstone_submissions,

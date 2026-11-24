@@ -1101,6 +1101,36 @@ export type Database = {
         };
         Relationships: [{"foreignKeyName":"course_price_tiers_course_id_fkey","columns":["course_id"],"isOneToOne":false,"referencedRelation":"courses","referencedColumns":["id"]}];
       };
+      course_staff: {
+        Row: {
+          assigned_by: string | null;
+          cohort_id: string | null;
+          course_id: string;
+          created_at: string;
+          id: string;
+          staff_role: "facilitator";
+          user_id: string;
+        };
+        Insert: {
+          assigned_by?: string | null;
+          cohort_id?: string | null;
+          course_id: string;
+          created_at?: string;
+          id?: string;
+          staff_role?: "facilitator";
+          user_id: string;
+        };
+        Update: {
+          assigned_by?: string | null;
+          cohort_id?: string | null;
+          course_id?: string;
+          created_at?: string;
+          id?: string;
+          staff_role?: "facilitator";
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       course_update_history: {
         Row: {
           changes: Json | null;
@@ -2292,6 +2322,42 @@ export type Database = {
         };
         Relationships: [{"foreignKeyName":"student_quiz_attempts_student_id_fkey","columns":["student_id"],"isOneToOne":false,"referencedRelation":"profiles","referencedColumns":["id"]},{"foreignKeyName":"student_quiz_attempts_lesson_id_fkey","columns":["lesson_id"],"isOneToOne":false,"referencedRelation":"course_lessons","referencedColumns":["id"]}];
       };
+      submission_reviews: {
+        Row: {
+          created_at: string;
+          id: string;
+          notes: string | null;
+          reviewer_id: string;
+          rubric_scores: Json | null;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+          suggested_grade: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          notes?: string | null;
+          reviewer_id?: string;
+          rubric_scores?: Json | null;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+          suggested_grade?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          notes?: string | null;
+          reviewer_id?: string;
+          rubric_scores?: Json | null;
+          submission_id?: string;
+          submission_type?: "assignment" | "capstone";
+          suggested_grade?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       system_settings: {
         Row: {
           description: string | null;
@@ -2463,6 +2529,10 @@ export type Database = {
       get_onboarding_insights: { Args: Record<PropertyKey, never>; Returns: Json };
       get_competition_leaderboard: { Args: { p_competition_id: string }; Returns: { rank: number; display_name: string; score: number }[] };
       competition_registration_open: { Args: { p_competition_id: string }; Returns: boolean };
+      get_facilitated_learners: { Args: Record<PropertyKey, never>; Returns: { course_id: string; student_id: string; full_name: string | null; avatar_url: string | null; cohort_name: string | null; progress_percentage: number | null; completed: boolean; last_activity_at: string | null; enrolled_at: string }[] };
+      set_cohort_discord_url: { Args: { p_cohort_id: string; p_url: string }; Returns: undefined };
+      find_staffing_candidate: { Args: { p_email: string }; Returns: { id: string; full_name: string | null; role: string }[] };
+      get_course_staff: { Args: { p_course_id: string }; Returns: { id: string; user_id: string; cohort_id: string | null; full_name: string | null; email: string; created_at: string }[] };
       get_all_profiles: { Args: Record<PropertyKey, never>; Returns: { id: string; email: string; full_name: string; role: string; avatar_url: string; phone: string; pricing_tier: string; created_at: string; updated_at: string; teacher_approved: boolean; teacher_approval_status: string; is_suspended: boolean; suspension_reason: string; last_login: string; last_activity: string }[] };
       get_all_student_progress: { Args: Record<PropertyKey, never>; Returns: { student_id: string; student_name: string; student_email: string; student_phone: string; course_id: string; course_title: string; teacher_name: string; enrolled_at: string; total_lessons: number; completed_lessons: number; progress_percentage: number; last_activity: string }[] };
       get_coupon_redemption_stats: { Args: Record<PropertyKey, never>; Returns: { coupon_id: string; code: string; coupon_type: string; discount_type: string; discount_value: number; max_uses: number; uses_count: number; redemption_count: number; total_discount: number; is_active: boolean }[] };

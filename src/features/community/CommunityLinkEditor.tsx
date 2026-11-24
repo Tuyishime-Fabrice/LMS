@@ -14,8 +14,10 @@ import { safeDiscordUrl } from "./discord";
  * Lets course staff set the Discord invite for a course or a cohort.
  * Validated here for a clear message and again by a database constraint.
  */
-export function CommunityLinkEditor({ target, id, name, current, onSaved }: {
+export function CommunityLinkEditor({ target, id, name, current, onSaved, viaFunction = false }: {
   target: "courses" | "cohorts";
+  /** Facilitators save through set_cohort_discord_url, which can change nothing else. */
+  viaFunction?: boolean;
   id: string;
   name: string;
   current: string | null | undefined;
@@ -32,7 +34,9 @@ export function CommunityLinkEditor({ target, id, name, current, onSaved }: {
     if (!valid) return;
     setSaving(true);
     const url = trimmed ? safeDiscordUrl(trimmed) : null;
-    const { error } = await supabase.from(target).update({ discord_url: url }).eq("id", id);
+    const { error } = viaFunction && target === "cohorts"
+      ? await supabase.rpc("set_cohort_discord_url", { p_cohort_id: id, p_url: url ?? "" })
+      : await supabase.from(target).update({ discord_url: url }).eq("id", id);
     setSaving(false);
     if (error) {
       toast.error(isMissingSchema(error)

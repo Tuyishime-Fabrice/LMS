@@ -46,3 +46,11 @@ consent, delete answers). Admin: `/admin/insights` aggregates only, groups < 5 s
 `/student/community` lists Discord link per enrolled course (cohort channel overrides course server), with a
 note that announcements/grades stay in the LMS. Instructors set links from Overview (course) and Cohorts (cohort).
 Old `/student/chat` → community; `/teacher/chat` → announcements.
+
+## J10 Facilitate (facilitator, instructor)
+1. Instructor (or admin) opens **Facilitators** on a course → enters the person's account email → scope "All cohorts" or one cohort → Assign. The database refuses admins, the instructor themself, and cohorts of other courses.
+2. The facilitator sees **Facilitation workspace** in their sidebar → `/facilitate` lists each assignment with learner and review counts.
+3. **Review work**: opens files (signed URLs, allowed by a facilitator-only storage policy), scores the rubric or types a suggested mark, writes notes → Save review. Learners never see it.
+4. Instructor's grading queue shows "Facilitator review by … suggests N/100" with **Use as a starting point** (fills rubric, mark and, if empty, the feedback box). The instructor edits and publishes; the 20-character feedback rule and grade history apply as before.
+5. Cohort facilitators update their cohort's Discord link; course-wide facilitators can also post course announcements.
+Verified: 29 DB checks; demo run as Diane Mutesi → Théo Mugisha.

@@ -36,6 +36,9 @@ const CompetitionDetail = lazy(() => import("./pages/CompetitionDetail"));
 const AdminTracks = lazy(() => import("./pages/AdminTracks"));
 const AdminCompetitions = lazy(() => import("./pages/AdminCompetitions"));
 const AdminInsights = lazy(() => import("./pages/AdminInsights"));
+const FacilitationOverview = lazy(() => import("./pages/FacilitationOverview"));
+const FacilitationReview = lazy(() => import("./pages/FacilitationReview"));
+const FacilitationLearners = lazy(() => import("./pages/FacilitationLearners"));
 const StudentSchedule = lazy(() => import("./pages/StudentSchedule"));
 const StudentCertificates = lazy(() => import("./pages/StudentCertificates"));
 const BrowseCourses = lazy(() => import("./pages/BrowseCourses"));
@@ -169,6 +172,10 @@ const App = () => (
             <Route path="/admin/tracks" element={admin(<AdminTracks />)} />
             <Route path="/admin/competitions" element={admin(<AdminCompetitions />)} />
             <Route path="/admin/insights" element={admin(<AdminInsights />)} />
+            {/* Facilitation: any signed-in account with a course_staff assignment; scope enforced by RLS. */}
+            <Route path="/facilitate" element={signedIn(<FacilitationOverview />)} />
+            <Route path="/facilitate/review" element={signedIn(<FacilitationReview />)} />
+            <Route path="/facilitate/learners" element={signedIn(<FacilitationLearners />)} />
             <Route path="/learn/:courseId" element={signedIn(<LearningRoom />)} />
             <Route path="/learn/:courseId/:lessonId" element={signedIn(<LearningRoom />)} />
             <Route path="/admin/calendar" element={admin(<AdminCalendar />)} />

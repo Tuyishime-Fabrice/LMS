@@ -5,13 +5,15 @@ import {
   SidebarHeader, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarRail, useSidebar,
 } from "@/components/ui/sidebar";
 import { Brand } from "./Brand";
-import { homePath, navigation, type AppRole, type NavItem } from "./navigation";
+import { homePath, navigation, type ShellRole, type NavItem } from "./navigation";
 import { cn } from "@/lib/utils";
 
 type Badges = Partial<Record<NonNullable<NavItem["badge"]>, number>>;
 
 function isItemActive(pathname: string, item: NavItem) {
-  if (pathname === item.to || pathname.startsWith(`${item.to}/`)) return true;
+  if (pathname === item.to) return true;
+  if (item.exact) return false;
+  if (pathname.startsWith(`${item.to}/`)) return true;
   return (item.match || []).some((prefix) => pathname.startsWith(prefix));
 }
 
@@ -24,7 +26,7 @@ export function RoleSidebar({
   badges = {},
   children,
 }: {
-  role: AppRole;
+  role: ShellRole;
   badges?: Badges;
   /** Optional extra section (for example a teacher's course list). */
   children?: React.ReactNode;

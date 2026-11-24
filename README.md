@@ -70,6 +70,7 @@ npm run build
 | `20261118000100_realtime_tables.sql` | Live updates for messages, notifications and announcements |
 | `20261118000200_lesson_files_access.sql` | Lesson files follow lesson access: no longer readable by anyone signed out, by learners of other courses, or by unapproved teachers |
 | `20261124000000_academy_experience.sql` | Discord links, skill/career tracks, competitions, onboarding preferences with research consent, rubrics, written feedback required with every mark, grade history. After this, a mark cannot be saved without a 20-character comment |
+| `20261125000000_facilitators.sql` | Facilitators assigned per course or cohort, provisional reviews for instructors, and a fix so only course staff can post course announcements. Apply after the previous one |
 
 The app tolerates a database where the first two are not applied yet (the new features stay hidden or fall back), but the redesigned learner pages need them to work fully.
 
@@ -96,6 +97,7 @@ The app can run entirely in the browser with sample data, without Supabase or an
 | Learner (Aline Uwase) | `aline@dataplus-demo.test` | `demo1234` |
 | Instructor (Théo Mugisha) | `theo@dataplus-demo.test` | `demo1234` |
 | Admin (Grace Ingabire) | `admin@dataplus-demo.test` | `demo1234` |
+| Facilitator (Diane Mutesi, Cohort 3) | `diane@dataplus-demo.test` | `demo1234` |
 
 The sign-in page also has one-click buttons for each, and a **Demo** button in the corner switches account or resets the data.
 

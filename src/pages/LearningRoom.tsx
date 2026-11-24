@@ -13,6 +13,7 @@ import { useAppAuth } from "@/contexts/AuthContext";
 import { TutorPanel } from "@/features/tutor/TutorPanel";
 import { CommunityCard } from "@/features/community/CommunityCard";
 import { useCommunityLinks } from "@/features/community/hooks";
+import { useMyAssignments } from "@/features/facilitation/api";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -356,8 +357,11 @@ export default function LearningRoom() {
 
   const role = profile?.role;
   const isStudent = role === "student";
-  const isStaff = Boolean(outline && (role === "admin" || outline.course.teacherId === user?.id));
-  const preview = !isStudent;
+  const assignments = useMyAssignments();
+  const facilitating = Boolean(outline && assignments.data?.some((item) => item.courseId === outline.course.id));
+  const isStaff = Boolean(outline && (role === "admin" || outline.course.teacherId === user?.id || (facilitating && !outline.enrolled)));
+  // Facilitators who are not enrolled see the course read-only, like its instructor.
+  const preview = !isStudent || (facilitating && !outline?.enrolled);
 
   const lessons = useMemo(() => (outline ? flattenLessons(outline.chapters) : []), [outline]);
   const index = lessons.findIndex((lesson) => lesson.id === lessonId);

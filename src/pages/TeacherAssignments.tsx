@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { RubricEditor } from "@/features/rubrics/RubricEditor";
+import { fetchReviewsForInstructor } from "@/features/facilitation/api";
 import { RubricScorer } from "@/features/rubrics/RubricScorer";
 import { feedbackIsValid, MIN_FEEDBACK_LENGTH, parseRubric, parseScores, type RubricScores } from "@/features/rubrics/rubric";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,7 @@ const TeacherAssignments = () => {
   const [editGrades, setEditGrades] = useState<Record<string, string>>({});
   const [editFeedback, setEditFeedback] = useState<Record<string, string>>({});
   const [editRubric, setEditRubric] = useState<Record<string, RubricScores>>({});
+  const [suggestions, setSuggestions] = useState<Map<string, { suggestedGrade: number | null; notes: string | null; rubricScores: RubricScores; reviewerName: string }>>(new Map());
   const [assignmentLessons, setAssignmentLessons] = useState<{ id: string; title: string; rubric: unknown }[]>([]);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
@@ -226,6 +228,12 @@ const TeacherAssignments = () => {
       console.log("Total submissions:", allSubmissions.length);
       
       setSubmissions(allSubmissions);
+      // Provisional reviews by facilitators (staff-only; learners never see them).
+      const [assignmentReviews, capstoneReviews] = await Promise.all([
+        fetchReviewsForInstructor("assignment", assignmentSubmissions.map((row) => row.id)),
+        fetchReviewsForInstructor("capstone", capstoneSubmissions.map((row) => row.id)),
+      ]);
+      setSuggestions(new Map([...assignmentReviews, ...capstoneReviews]));
     } catch (error: any) {
       toast.error(t('teacher.assignments.failedToLoadSubmissions'));
       console.error(error);
@@ -682,6 +690,27 @@ const TeacherAssignments = () => {
                                         <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {suggestions.get(submission.id) && submission.grade === null && (() => {
+                                            const suggestion = suggestions.get(submission.id)!;
+                                            return (
+                                              <div className="mb-3 rounded-lg border border-info/20 bg-info-surface p-3 text-sm">
+                                                <p className="text-xs font-semibold text-info">
+                                                  {t("facilitation.suggestionFrom", "Facilitator review by {{name}}", { name: suggestion.reviewerName || t("facilitation.facilitator", "a facilitator") })}
+                                                  {suggestion.suggestedGrade !== null ? ` · ${t("facilitation.suggests", "suggests {{grade}}/100", { grade: suggestion.suggestedGrade })}` : ""}
+                                                </p>
+                                                {suggestion.notes && <p className="mt-1 whitespace-pre-line leading-6 text-forest">{suggestion.notes}</p>}
+                                                <Button type="button" size="sm" variant="outline" className="mt-2"
+                                                  onClick={() => {
+                                                    if (Object.keys(suggestion.rubricScores).length) setEditRubric((prev) => ({ ...prev, [submission.id]: suggestion.rubricScores }));
+                                                    if (suggestion.suggestedGrade !== null) handleInlineGradeChange(submission.id, String(suggestion.suggestedGrade));
+                                                    if (suggestion.notes && !(editFeedback[submission.id] ?? submission.feedback)) handleFeedbackChange(submission.id, suggestion.notes);
+                                                  }}>
+                                                  {t("facilitation.useSuggestion", "Use as a starting point")}
+                                                </Button>
+                                                <p className="mt-2 text-xs text-muted-foreground">{t("facilitation.youPublish", "You publish the mark; edit the feedback so it speaks to the learner.")}</p>
+                                              </div>
+                                            );
+                                          })()}
                                           {rubricFor(submission) && (
                                             <div className="mb-3">
                                               <RubricScorer
@@ -876,6 +905,27 @@ const TeacherAssignments = () => {
                                         <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {suggestions.get(submission.id) && submission.grade === null && (() => {
+                                            const suggestion = suggestions.get(submission.id)!;
+                                            return (
+                                              <div className="mb-3 rounded-lg border border-info/20 bg-info-surface p-3 text-sm">
+                                                <p className="text-xs font-semibold text-info">
+                                                  {t("facilitation.suggestionFrom", "Facilitator review by {{name}}", { name: suggestion.reviewerName || t("facilitation.facilitator", "a facilitator") })}
+                                                  {suggestion.suggestedGrade !== null ? ` · ${t("facilitation.suggests", "suggests {{grade}}/100", { grade: suggestion.suggestedGrade })}` : ""}
+                                                </p>
+                                                {suggestion.notes && <p className="mt-1 whitespace-pre-line leading-6 text-forest">{suggestion.notes}</p>}
+                                                <Button type="button" size="sm" variant="outline" className="mt-2"
+                                                  onClick={() => {
+                                                    if (Object.keys(suggestion.rubricScores).length) setEditRubric((prev) => ({ ...prev, [submission.id]: suggestion.rubricScores }));
+                                                    if (suggestion.suggestedGrade !== null) handleInlineGradeChange(submission.id, String(suggestion.suggestedGrade));
+                                                    if (suggestion.notes && !(editFeedback[submission.id] ?? submission.feedback)) handleFeedbackChange(submission.id, suggestion.notes);
+                                                  }}>
+                                                  {t("facilitation.useSuggestion", "Use as a starting point")}
+                                                </Button>
+                                                <p className="mt-2 text-xs text-muted-foreground">{t("facilitation.youPublish", "You publish the mark; edit the feedback so it speaks to the learner.")}</p>
+                                              </div>
+                                            );
+                                          })()}
                                           {rubricFor(submission) && (
                                             <div className="mb-3">
                                               <RubricScorer
