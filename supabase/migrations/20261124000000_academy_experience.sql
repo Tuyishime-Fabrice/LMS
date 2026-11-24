@@ -191,7 +191,7 @@ DROP POLICY IF EXISTS "Participants withdraw" ON public.competition_registration
 CREATE POLICY "Participants withdraw" ON public.competition_registrations
   FOR UPDATE TO authenticated
   USING (user_id = auth.uid() AND status <> 'disqualified')
-  WITH CHECK (user_id = auth.uid() AND status IN ('registered', 'withdrawn'));
+  WITH CHECK (user_id = auth.uid() AND (status = 'withdrawn' OR (status = 'registered' AND public.competition_registration_open(competition_id))));
 DROP POLICY IF EXISTS "Admins manage registrations" ON public.competition_registrations;
 CREATE POLICY "Admins manage registrations" ON public.competition_registrations
   FOR ALL TO authenticated USING (public.is_admin(auth.uid())) WITH CHECK (public.is_admin(auth.uid()));

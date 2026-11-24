@@ -14,6 +14,10 @@ import { useCalendarEvents, useCourseAnnouncements, useDateLocale, useEnrolledCo
 import type { EnrolledCourse } from "@/features/learning/api";
 import { eventTimeLabel, kindMeta, ModalityIcon } from "@/features/calendar/EventBits";
 import type { CalendarEvent } from "@/features/calendar/events";
+import { JourneyCard } from "@/features/enrolment/JourneyCard";
+import { useJourneys } from "@/features/enrolment/hooks";
+import { needsAttention } from "@/features/enrolment/journey";
+import { Recommendations } from "@/features/discovery/Recommendations";
 
 function resumeHref(course: EnrolledCourse) {
   return course.resumeLesson ? `/learn/${course.courseId}/${course.resumeLesson.id}` : `/learn/${course.courseId}`;
@@ -32,7 +36,7 @@ function ContinueLearning({ course }: { course: EnrolledCourse }) {
       />
       <div className="relative grid gap-6 p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
         <div className="min-w-0">
-          <p id="continue-heading" className="text-sm font-medium text-[hsl(140_45%_75%)]">
+          <p id="continue-heading" className="text-sm font-medium text-flame">
             {started ? t("home.continue.label", "Continue learning") : t("home.continue.startLabel", "Start learning")}
           </p>
           <h2 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-white sm:text-[1.75rem]">
@@ -155,6 +159,8 @@ const StudentDashboard = () => {
   const courses = useEnrolledCourses();
   const events = useCalendarEvents(range.from, range.to, "student");
   const announcements = useCourseAnnouncements(3);
+  const journeys = useJourneys();
+  const attention = (journeys.data || []).filter((item) => needsAttention(item.journey));
 
   const list = courses.data || [];
   const active = list.filter((course) => !course.completed);
@@ -179,6 +185,15 @@ const StudentDashboard = () => {
           </Button>
         }
       />
+
+      {attention.length > 0 && (
+        <section aria-labelledby="attention-heading" className="mb-8">
+          <SectionHeader title={<span id="attention-heading">{t("home.attention.title", "Needs your attention")}</span>} />
+          <div className="space-y-4">
+            {attention.map((item) => <JourneyCard key={item.course.id} item={item} />)}
+          </div>
+        </section>
+      )}
 
       {courses.isLoading ? (
         <SkeletonBlock className="h-64 rounded-2xl" />
@@ -279,6 +294,8 @@ const StudentDashboard = () => {
           )}
         </div>
       </div>
+
+      <Recommendations enrolledCourseIds={list.map((course) => course.courseId)} className="mt-10" />
 
       <JoinCohortDialog open={showJoinCohort} onOpenChange={setShowJoinCohort} />
     </AppShell>

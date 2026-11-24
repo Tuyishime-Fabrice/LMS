@@ -1,3 +1,4 @@
+import { CourseAtAGlance } from "@/features/enrolment/CourseAtAGlance";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
 import { SiteFooter } from "@/features/site/SiteFooter";
@@ -935,6 +936,8 @@ export default function CourseDetail() {
           </div>
         </div>
       </div>
+
+      <CourseAtAGlance courseId={course.id} counts={counts} hasCapstone={capstoneProjects.length > 0} />
 
       {/* Course Overview Section — Compact */}
       <div className="bg-card border-b">

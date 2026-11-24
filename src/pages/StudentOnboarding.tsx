@@ -1,555 +1,291 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { ArrowLeft, ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { Brand } from "@/components/shell/Brand";
+import { ProgressBar } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Building2, BookOpen, ChevronLeft, Image } from "lucide-react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppAuth } from "@/contexts/AuthContext";
+import { INTERESTS, normaliseInterests, type InterestId } from "@/features/discovery/interests";
+import { savePreferences, type PreferencesUpdate } from "@/features/preferences/api";
 import { authContinuationUrl, postAuthDestination } from "@/lib/coursePaymentReturn";
+import { cn } from "@/lib/utils";
 
+type Answers = {
+  fullName: string;
+  goal: PreferencesUpdate["learning_goal"];
+  level: PreferencesUpdate["experience_level"];
+  interests: InterestId[];
+  careerGoal: string;
+  mode: PreferencesUpdate["preferred_mode"];
+  hours: PreferencesUpdate["weekly_hours"];
+  access: "individual" | "organisation";
+  organisation: string;
+  research: boolean;
+};
+
+/** A row of large, keyboard-friendly choices (radio or checkbox semantics). */
+function Choices<T extends string>({ name, options, value, onChange, multiple = false, columns = 2 }: {
+  name: string;
+  options: { value: T; label: string; hint?: string }[];
+  value: T | T[] | null | undefined;
+  onChange: (value: T) => void;
+  multiple?: boolean;
+  columns?: 1 | 2 | 3;
+}) {
+  const selected = (option: T) => (Array.isArray(value) ? value.includes(option) : value === option);
+  return (
+    <div role={multiple ? "group" : "radiogroup"} aria-labelledby={`${name}-label`} className={cn("grid gap-2", columns === 2 && "sm:grid-cols-2", columns === 3 && "sm:grid-cols-3")}>
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          role={multiple ? "checkbox" : "radio"}
+          aria-checked={selected(option.value)}
+          onClick={() => onChange(option.value)}
+          className={cn(
+            "flex min-h-11 items-start gap-3 rounded-lg border bg-card px-3.5 py-3 text-left text-sm transition-colors duration-150",
+            selected(option.value) ? "border-primary bg-leaf text-forest" : "hover:border-forest/30",
+          )}
+        >
+          <span className={cn("mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border", multiple ? "rounded" : "rounded-full",
+            selected(option.value) ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card")}>
+            {selected(option.value) && <Check className="h-3 w-3" strokeWidth={3} />}
+          </span>
+          <span>
+            <span className="font-medium">{option.label}</span>
+            {option.hint && <span className="mt-0.5 block text-xs text-muted-foreground">{option.hint}</span>}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Question({ id, title, hint, optional, children }: { id: string; title: string; hint?: string; optional?: boolean; children: ReactNode }) {
+  const { t } = useTranslation();
+  return (
+    <fieldset className="space-y-3">
+      <legend id={`${id}-label`} className="text-sm font-semibold text-forest">
+        {title}{optional && <span className="ml-1.5 font-normal text-muted-foreground">{t("onboarding.optional", "(optional)")}</span>}
+      </legend>
+      {hint && <p className="-mt-1.5 text-meta">{hint}</p>}
+      {children}
+    </fieldset>
+  );
+}
 
 const StudentOnboarding = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { refreshProfile } = useAppAuth();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    telephone: "",
-    avatar: "",
-    organizationName: "",
-    industry: "",
-    role: "",
-    interests: [] as string[],
+  const { user, profile, loading, refreshProfile } = useAppAuth();
+  const [step, setStep] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [answers, setAnswers] = useState<Answers>({
+    fullName: "", goal: null, level: null, interests: [], careerGoal: "", mode: null, hours: null,
+    access: "individual", organisation: "", research: false,
   });
+  const set = <K extends keyof Answers>(key: K, value: Answers[K]) => setAnswers((current) => ({ ...current, [key]: value }));
 
-  const avatars = [
-    "/images/avators/1.webp",
-    "/images/avators/2.webp",
-    "/images/avators/3.webp",
-    "/images/avators/4 (1).webp",
-    "/images/avators/5.webp",
-    "/images/avators/6.webp",
-    "/images/avators/7.webp",
-    "/images/avators/8.webp",
-    "/images/avators/9.webp",
-    "/images/avators/10.webp",
-    "/images/avators/woman.webp",
-    "/images/avators/hacker.webp",
-    "/images/avators/3d-rendering-zoom-call-avatar.webp",
-    "/images/avators/androgynous-avatar-non-binary-queer-person.webp",
-  ];
-
+  // Same routing rules as before: signed-out visitors sign in, finished learners
+  // continue, instructors use their own onboarding.
   useEffect(() => {
-    checkUserAuth();
-  }, []);
-
-  const checkUserAuth = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate(authContinuationUrl("/auth"));
-        return;
-      }
-
-      // Check if user role matches this onboarding type
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("role, onboarding_completed")
-        .eq("id", user.id)
-        .single();
-
-      // If profile doesn't exist yet, wait and try again
-      if (error || !profile) {
-        console.log("Profile not found, waiting for creation...");
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const { data: retryProfile } = await supabase
-          .from("profiles")
-          .select("role, onboarding_completed")
-          .eq("id", user.id)
-          .single();
-
-        if (!retryProfile) {
-          console.log("Profile still not found, allowing onboarding to continue");
-          return; // Allow onboarding to continue
-        }
-
-        // Use the retry profile for checks
-        if (retryProfile.onboarding_completed) {
-          navigate(postAuthDestination(retryProfile), { replace: true });
-          return;
-        }
-
-        if (retryProfile.role === "teacher") {
-          navigate(authContinuationUrl("/teacher/onboarding"), { replace: true });
-          return;
-        }
-        return;
-      }
-
-      // If already completed onboarding, redirect to dashboard
-      if (profile.onboarding_completed) {
-        navigate(postAuthDestination(profile), { replace: true });
-        return;
-      }
-
-      // If teacher trying to access student onboarding, redirect to teacher onboarding
-      if (profile.role === "teacher") {
-        navigate(authContinuationUrl("/teacher/onboarding"), { replace: true });
-        return;
-      }
-    } catch (error) {
-      console.error("Error checking user auth:", error);
-      // Allow onboarding to continue even if there's an error
-    }
-  };
-
-  const industries = [
-    "Technology",
-    "Healthcare",
-    "Finance",
-    "Education",
-    "Manufacturing",
-    "Retail",
-    "Agriculture",
-    "Government",
-    "Non-profit",
-    "Other",
-  ];
-
-  const interestOptions = [
-    "Data Analyst",
-    "AI",
-    "Programming",
-    "Marketing",
-    "Accounting",
-    "Startup Courses",
-    "Tax",
-    "Product Management",
-    "Business Management",
-  ];
-
-  const handleNext = () => {
-    if (currentStep === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.telephone || !formData.avatar) {
-        toast.error(t("studentOnboarding.pleaseFillInAllFieldsAnd", "Please fill in all fields and select an avatar"));
-        return;
-      }
-    } else if (currentStep === 2) {
-      if (!formData.organizationName || !formData.industry || !formData.role) {
-        toast.error(t("studentOnboarding.pleaseFillInAllFields", "Please fill in all fields"));
-        return;
-      }
-    }
-
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleComplete();
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleComplete = async () => {
-    if (formData.interests.length === 0) {
-      toast.error(t("studentOnboarding.pleaseSelectAtLeastOneInterest", "Please select at least one interest"));
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        toast.error(t("studentOnboarding.userNotAuthenticated", "User not authenticated"));
-        navigate(authContinuationUrl("/auth"));
-        return;
-      }
-
-      // Update user profile with onboarding data
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          full_name: `${formData.firstName} ${formData.lastName}`,
-          avatar_url: formData.avatar,
-          phone: formData.telephone,
-          organization: formData.organizationName,
-          industry: formData.industry,
-          job_role: formData.role,
-          interests: formData.interests,
-          onboarding_completed: true,
-        })
-        .eq("id", user.id);
-
-      if (profileError) throw profileError;
-
-      await refreshProfile();
-
-      // Verify the update was successful
-      const { data: profile, error: fetchError } = await supabase
-        .from("profiles")
-        .select("role, onboarding_completed")
-        .eq("id", user.id)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      if (!profile?.onboarding_completed) {
-        throw new Error("Onboarding update failed");
-      }
-
-      toast.success(t("studentOnboarding.onboardingCompletedSuccessfully", "Onboarding completed successfully!"));
-
-      navigate(postAuthDestination(profile), { replace: true });
-    } catch (error: any) {
-      console.error("Error completing onboarding:", error);
-      toast.error(t("studentOnboarding.failedToCompleteOnboardingPleaseTry", "Failed to complete onboarding. Please try again."));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleInterest = (interest: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter((i) => i !== interest)
-        : [...prev.interests, interest],
+    if (loading) return;
+    if (!user) { navigate(authContinuationUrl("/auth"), { replace: true }); return; }
+    if (!profile) return;
+    if (profile.onboarding_completed) { navigate(postAuthDestination(profile), { replace: true }); return; }
+    if (profile.role === "teacher") { navigate(authContinuationUrl("/teacher/onboarding"), { replace: true }); return; }
+    setAnswers((current) => ({
+      ...current,
+      fullName: current.fullName || profile.full_name || "",
+      interests: current.interests.length ? current.interests : normaliseInterests((profile as { interests?: string[] | null }).interests || []),
     }));
+  }, [loading, user, profile, navigate]);
+
+  const steps = [
+    t("onboarding.step.you", "You"),
+    t("onboarding.step.goals", "Goals"),
+    t("onboarding.step.plan", "How you learn"),
+    t("onboarding.step.privacy", "Privacy"),
+  ];
+  const nameValid = answers.fullName.trim().length >= 2;
+
+  const finish = async () => {
+    if (!user || !nameValid) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("profiles").update({
+        full_name: answers.fullName.trim(),
+        interests: answers.interests,
+        organization: answers.access === "organisation" ? answers.organisation.trim() || null : null,
+        onboarding_completed: true,
+      }).eq("id", user.id);
+      if (error) throw error;
+      await savePreferences(user.id, {
+        learning_goal: answers.goal,
+        experience_level: answers.level,
+        interests: answers.interests,
+        career_goal: answers.careerGoal.trim() || null,
+        preferred_mode: answers.mode,
+        weekly_hours: answers.hours,
+        access_route: answers.access,
+        sponsor_organisation: answers.access === "organisation" ? answers.organisation.trim() || null : null,
+        research_consent: answers.research,
+      });
+      await refreshProfile();
+      toast.success(t("onboarding.done", "You are all set"));
+      navigate(postAuthDestination({ role: "student", onboarding_completed: true }), { replace: true });
+    } catch (error) {
+      console.error("Onboarding could not be saved", error);
+      toast.error(t("onboarding.error", "Your answers could not be saved. Check your connection and try again."));
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const next = () => (step < steps.length - 1 ? setStep(step + 1) : void finish());
+  const toggleInterest = (id: InterestId) => set("interests", answers.interests.includes(id) ? answers.interests.filter((item) => item !== id) : [...answers.interests, id]);
 
   return (
-    <div className="min-h-screen flex bg-muted/50">
-      {/* Left Sidebar - Green */}
-      <div className="w-80 p-8 flex flex-col bg-forest">
-        <div className="flex items-center gap-3 mb-12">
-          <img
-            src="/images/dataplus_logggg-removebg-preview.png"
-            alt="DATA+ Academy"
-            className="w-10 h-10 object-contain"
-          />
-          <span className="text-2xl font-bold text-white">{t("studentOnboarding.dataplusLabs", "DataPlus Labs")}</span>
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-4">
+          <Brand />
+          <span className="text-meta">{t("onboarding.stepOf", "Step {{n}} of {{total}}", { n: step + 1, total: steps.length })}</span>
         </div>
+      </header>
 
-        {/* Steps */}
-        <div className="flex-1 space-y-8">
-          {/* Step 1 */}
-          <div className="flex items-start gap-4">
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 1 ? "bg-card text-primary" : "bg-white/20 text-white"
-                }`}
-            >
-              <Image className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className={`font-bold ${currentStep >= 1 ? "text-white" : "text-white/60"}`}>
-                {t("studentOnboarding.profileAvatar", "Profile & Avatar")}
-              </h3>
-              <p className={`text-sm ${currentStep >= 1 ? "text-white/90" : "text-white/50"}`}>
-                {t("studentOnboarding.personalDetailsAndAvatar", "Personal details and avatar")}
-              </p>
-            </div>
-          </div>
+      <main className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
+        <ol className="mb-3 hidden grid-cols-4 gap-2 text-xs sm:grid" aria-label={t("onboarding.progress", "Progress")}>
+          {steps.map((label, index) => (
+            <li key={label} aria-current={index === step ? "step" : undefined} className={cn("font-medium", index <= step ? "text-forest" : "text-muted-foreground")}>{label}</li>
+          ))}
+        </ol>
+        <ProgressBar value={((step + 1) / steps.length) * 100} size="sm" label={t("onboarding.progress", "Progress")} />
 
-          {/* Step 2 */}
-          <div className="flex items-start gap-4">
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 2 ? "bg-card text-primary" : "bg-white/20 text-white"
-                }`}
-            >
-              <Building2 className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className={`font-bold ${currentStep >= 2 ? "text-white" : "text-white/60"}`}>
-                {t("studentOnboarding.organization", "Organization")}
-              </h3>
-              <p className={`text-sm ${currentStep >= 2 ? "text-white/90" : "text-white/50"}`}>
-                {t("studentOnboarding.organizationInformation", "Organization information")}
-              </p>
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="flex items-start gap-4">
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${currentStep >= 3 ? "bg-card text-primary" : "bg-white/20 text-white"
-                }`}
-            >
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className={`font-bold ${currentStep >= 3 ? "text-white" : "text-white/60"}`}>
-                {t("studentOnboarding.yourInterests", "Your Interests")}
-              </h3>
-              <p className={`text-sm ${currentStep >= 3 ? "text-white/90" : "text-white/50"}`}>
-                {t("studentOnboarding.selectYourLearningInterests", "Select your learning interests")}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-white/60 text-sm">
-          {t("studentOnboarding.allRightsReservedDataplusLabs", "All rights reserved @DataPlus Labs")}
-        </div>
-      </div>
-
-      {/* Right Content Area - White */}
-      <div className="flex-1 flex items-center justify-center p-12">
-        <div className="w-full max-w-2xl">
-          {/* Step 1: Profile & Avatar */}
-          {currentStep === 1 && (
-            <div className="space-y-6">
+        <form className="mt-8 space-y-8" onSubmit={(event) => { event.preventDefault(); if (step > 0 || nameValid) next(); }}>
+          {step === 0 && (
+            <>
               <div>
-                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step13", "Step 1/3")}</p>
-                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.profileAvatar", "Profile & Avatar")}</h1>
-                <p className="text-muted-foreground">
-                  {t("studentOnboarding.tellUsABitAboutYourself", "Tell us a bit about yourself and choose your avatar.")}
+                <h1 className="text-page-title">{t("onboarding.welcome", "Welcome to DATA+ Academy")}</h1>
+                <p className="mt-2 text-[0.9375rem] leading-7 text-muted-foreground">
+                  {t("onboarding.welcomeBody", "A few short questions help us suggest the right courses and tracks. Only your name is required; you can change any answer later in Settings.")}
                 </p>
               </div>
-
-              <div className="space-y-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-sm font-medium text-foreground">
-                      {t("studentOnboarding.firstName", "First name")}
-                    </Label>
-                    <Input
-                      id="firstName"
-                      placeholder={t("studentOnboarding.john", "John")}
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="h-12 border-border rounded-lg"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-sm font-medium text-foreground">
-                      {t("studentOnboarding.lastName", "Last name")}
-                    </Label>
-                    <Input
-                      id="lastName"
-                      placeholder={t("studentOnboarding.doe", "Doe")}
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="h-12 border-border rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="telephone" className="text-sm font-medium text-foreground">
-                    {t("studentOnboarding.telephoneNumber", "Telephone number")}
-                  </Label>
-                  <Input
-                    id="telephone"
-                    type="tel"
-                    placeholder="+250 788 123 456"
-                    value={formData.telephone}
-                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                    className="h-12 border-border rounded-lg"
-                  />
-                </div>
-
-                {/* Avatar Selection */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-foreground">
-                    {t("studentOnboarding.chooseYourAvatar", "Choose your avatar")}
-                  </Label>
-                  <div className="grid grid-cols-7 gap-3 max-h-64 overflow-y-auto p-2 border border-border rounded-lg">
-                    {avatars.map((avatar, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, avatar })}
-                        className={`relative rounded-full overflow-hidden border-4 transition-all hover:scale-110 ${formData.avatar === avatar
-                          ? "border-primary ring-4 ring-primary/30"
-                          : "border-border hover:border-primary/50"
-                          }`}
-                      >
-                        <img
-                          src={avatar}
-                          alt={`Avatar ${index + 1}`}
-                          className="w-full h-full object-cover aspect-square"
-                        />
-                        {formData.avatar === avatar && (
-                          <div className="absolute inset-0 bg-leaf flex items-center justify-center">
-                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                  {formData.avatar && (
-                    <p className="text-sm text-primary font-medium">{t("studentOnboarding.avatarSelected", "✓ Avatar selected")}</p>
-                  )}
-                </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="full-name">{t("onboarding.name", "Your name, as it should appear on certificates")}</Label>
+                <Input id="full-name" autoComplete="name" value={answers.fullName} onChange={(event) => set("fullName", event.target.value)} aria-invalid={answers.fullName.length > 0 && !nameValid} required />
               </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={handleNext}
-                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
-                >
-                  {t("studentOnboarding.next", "Next")}
-                </Button>
-              </div>
-            </div>
+            </>
           )}
 
-          {/* Step 2: Organization */}
-          {currentStep === 2 && (
-            <div className="space-y-6">
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step23", "Step 2/3")}</p>
-                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.organization", "Organization")}</h1>
-                <p className="text-muted-foreground">
-                  {t("studentOnboarding.tellUsAboutYourOrganizationIt", "Tell us about your organization. It helps us tailor your learning experience.")}
-                </p>
+          {step === 1 && (
+            <>
+              <h1 className="text-page-title">{t("onboarding.goalsTitle", "What brings you here?")}</h1>
+              <Question id="goal" title={t("onboarding.goal", "Your main reason for learning")} optional>
+                <Choices name="goal" value={answers.goal} onChange={(value) => set("goal", value)} options={[
+                  { value: "start_career", label: t("onboarding.goal.start", "Start a career in data") },
+                  { value: "change_career", label: t("onboarding.goal.change", "Change career") },
+                  { value: "grow_in_role", label: t("onboarding.goal.grow", "Do my current job better") },
+                  { value: "team_project", label: t("onboarding.goal.project", "A project at work or for my team") },
+                  { value: "personal_interest", label: t("onboarding.goal.personal", "Personal interest") },
+                  { value: "other", label: t("onboarding.goal.other", "Something else") },
+                ]} />
+              </Question>
+              <Question id="level" title={t("onboarding.level", "Your experience with data so far")} optional>
+                <Choices name="level" columns={3} value={answers.level} onChange={(value) => set("level", value)} options={[
+                  { value: "new", label: t("onboarding.level.new", "New to it"), hint: t("onboarding.level.newHint", "Little or no experience") },
+                  { value: "some", label: t("onboarding.level.some", "Some"), hint: t("onboarding.level.someHint", "Spreadsheets, basic reports") },
+                  { value: "experienced", label: t("onboarding.level.exp", "Experienced"), hint: t("onboarding.level.expHint", "I already analyse or code") },
+                ]} />
+              </Question>
+              <Question id="interests" title={t("onboarding.interests", "Areas you want to develop")} hint={t("onboarding.interestsHint", "Choose any. We use these to suggest courses and tracks.")} optional>
+                <Choices name="interests" multiple value={answers.interests} onChange={toggleInterest}
+                  options={INTERESTS.map((item) => ({ value: item.id, label: t(`interests.${item.id}`, item.label) }))} />
+              </Question>
+              <div className="space-y-1.5">
+                <Label htmlFor="career-goal">{t("onboarding.careerGoal", "A role or outcome you are aiming for")} <span className="font-normal text-muted-foreground">{t("onboarding.optional", "(optional)")}</span></Label>
+                <Input id="career-goal" maxLength={200} value={answers.careerGoal} onChange={(event) => set("careerGoal", event.target.value)} placeholder={t("onboarding.careerGoalPlaceholder", "For example: M&E officer, junior data analyst")} />
               </div>
-
-              <div className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="organizationName" className="text-sm font-medium text-foreground">
-                    {t("studentOnboarding.organizationName", "Organization name")}
-                  </Label>
-                  <Input
-                    id="organizationName"
-                    placeholder={t("studentOnboarding.enterOrganizationName", "Enter organization name")}
-                    value={formData.organizationName}
-                    onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-                    className="h-12 border-border rounded-lg"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="industry" className="text-sm font-medium text-foreground">
-                    {t("studentOnboarding.industry", "Industry")}
-                  </Label>
-                  <Select
-                    value={formData.industry}
-                    onValueChange={(value) => setFormData({ ...formData, industry: value })}
-                  >
-                    <SelectTrigger className="h-12 border-border rounded-lg">
-                      <SelectValue placeholder={t("studentOnboarding.selectIndustry", "Select industry")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {industries.map((industry) => (
-                        <SelectItem key={industry} value={industry}>
-                          {industry}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="role" className="text-sm font-medium text-foreground">
-                    {t("studentOnboarding.yourRole", "Your role")}
-                  </Label>
-                  <Input
-                    id="role"
-                    placeholder={t("studentOnboarding.eGStudentProfessionalManager", "e.g., Student, Professional, Manager")}
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="h-12 border-border rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={handleBack}
-                  variant="outline"
-                  className="h-12 px-6 border-border"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  {t("studentOnboarding.back", "Back")}
-                </Button>
-                <Button
-                  onClick={handleNext}
-                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
-                >
-                  {t("studentOnboarding.next", "Next")}
-                </Button>
-              </div>
-            </div>
+            </>
           )}
 
-          {/* Step 3: Interests */}
-          {currentStep === 3 && (
-            <div className="space-y-6">
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">{t("studentOnboarding.step33", "Step 3/3")}</p>
-                <h1 className="text-4xl font-bold text-forest mb-3">{t("studentOnboarding.yourInterests", "Your Interests")}</h1>
-                <p className="text-muted-foreground">
-                  {t("studentOnboarding.selectTheTopicsYouReInterested", "Select the topics you're interested in learning. You can choose multiple options.")}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {interestOptions.map((interest) => (
-                  <button
-                    key={interest}
-                    onClick={() => toggleInterest(interest)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${formData.interests.includes(interest)
-                      ? "border-primary bg-leaf"
-                      : "border-border hover:border-primary/50"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.interests.includes(interest)
-                          ? "border-primary bg-primary"
-                          : "border-border"
-                          }`}
-                      >
-                        {formData.interests.includes(interest) && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="font-medium text-forest">{interest}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={handleBack}
-                  variant="outline"
-                  className="h-12 px-6 border-border"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  {t("studentOnboarding.back", "Back")}
-                </Button>
-                <Button
-                  onClick={handleComplete}
-                  disabled={loading}
-                  className="bg-primary hover:bg-primary-hover text-forest font-medium h-12 px-8"
-                >
-                  {loading ? t("studentOnboarding.saving", "Saving...") : t("studentOnboarding.complete", "Complete")}
-                </Button>
-              </div>
-            </div>
+          {step === 2 && (
+            <>
+              <h1 className="text-page-title">{t("onboarding.planTitle", "How would you like to learn?")}</h1>
+              <Question id="mode" title={t("onboarding.mode", "Preferred way of learning")} optional>
+                <Choices name="mode" columns={3} value={answers.mode} onChange={(value) => set("mode", value)} options={[
+                  { value: "self_paced", label: t("onboarding.mode.self", "Self-paced"), hint: t("onboarding.mode.selfHint", "In my own time") },
+                  { value: "cohort", label: t("onboarding.mode.cohort", "With a cohort"), hint: t("onboarding.mode.cohortHint", "Schedule, instructor, peers") },
+                  { value: "either", label: t("onboarding.mode.either", "Either"), hint: t("onboarding.mode.eitherHint", "Depends on the course") },
+                ]} />
+              </Question>
+              <Question id="hours" title={t("onboarding.hours", "Realistic time per week")} optional>
+                <Choices name="hours" value={answers.hours} onChange={(value) => set("hours", value)} options={[
+                  { value: "lt3", label: t("onboarding.hours.lt3", "Under 3 hours") },
+                  { value: "3to5", label: t("onboarding.hours.3to5", "3 to 5 hours") },
+                  { value: "6to10", label: t("onboarding.hours.6to10", "6 to 10 hours") },
+                  { value: "gt10", label: t("onboarding.hours.gt10", "More than 10 hours") },
+                ]} />
+              </Question>
+              <Question id="access" title={t("onboarding.access", "Who is paying for your learning?")}>
+                <Choices name="access" value={answers.access} onChange={(value) => set("access", value)} options={[
+                  { value: "individual", label: t("onboarding.access.individual", "I am"), hint: t("onboarding.access.individualHint", "Individual access") },
+                  { value: "organisation", label: t("onboarding.access.org", "My organisation"), hint: t("onboarding.access.orgHint", "Employer, NGO or programme sponsor") },
+                ]} />
+              </Question>
+              {answers.access === "organisation" && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="org">{t("onboarding.org", "Organisation name")} <span className="font-normal text-muted-foreground">{t("onboarding.optional", "(optional)")}</span></Label>
+                  <Input id="org" maxLength={160} autoComplete="organization" value={answers.organisation} onChange={(event) => set("organisation", event.target.value)} />
+                  <p className="text-meta">{t("onboarding.orgHint", "This helps the Academy match you to a sponsored cohort. Sponsorship itself is confirmed by the Academy, not by this answer.")}</p>
+                </div>
+              )}
+            </>
           )}
-        </div>
-      </div>
+
+          {step === 3 && (
+            <>
+              <h1 className="text-page-title">{t("onboarding.privacyTitle", "Your answers and your privacy")}</h1>
+              <div className="surface space-y-3 p-5 text-sm leading-6">
+                <p className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{t("onboarding.privacy1", "Your answers personalise your dashboard and suggestions. Only you can see them. Instructors and facilitators do not see them.")}</p>
+                <p className="flex gap-2.5"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{t("onboarding.privacy2", "You can change or delete them at any time in Settings → Learning and privacy.")}</p>
+              </div>
+              <label className="flex cursor-pointer gap-3 rounded-lg border bg-card p-4">
+                <Checkbox checked={answers.research} onCheckedChange={(checked) => set("research", checked === true)} className="mt-0.5" />
+                <span className="text-sm leading-6">
+                  <span className="font-medium text-forest">{t("onboarding.research", "Help us plan better programmes (optional)")}</span>
+                  <span className="mt-1 block text-muted-foreground">
+                    {t("onboarding.researchBody", "Allow DATA+ Academy administrators to include your answers in anonymous totals used to plan courses and cohorts. Groups smaller than five people are never shown. Saying no changes nothing about your learning.")}
+                  </span>
+                </span>
+              </label>
+              <p className="text-meta">
+                {t("onboarding.policy", "Read more in our")} <Link to="/privacy-policy" target="_blank" className="font-medium text-primary hover:underline">{t("onboarding.policyLink", "privacy policy")}</Link>.
+              </p>
+            </>
+          )}
+
+          <div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center">
+            {step > 0 && (
+              <Button type="button" variant="ghost" onClick={() => setStep(step - 1)}><ArrowLeft />{t("onboarding.back", "Back")}</Button>
+            )}
+            <div className="flex-1" />
+            {(step === 1 || step === 2) && (
+              <Button type="button" variant="ghost" onClick={() => setStep(step + 1)}>{t("onboarding.skip", "Skip this step")}</Button>
+            )}
+            <Button type="submit" disabled={saving || (step === 0 && !nameValid)}>
+              {step === steps.length - 1 ? (saving ? t("onboarding.saving", "Saving…") : t("onboarding.finish", "Finish and start learning")) : t("onboarding.continue", "Continue")}
+              {step < steps.length - 1 && <ArrowRight />}
+            </Button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 };

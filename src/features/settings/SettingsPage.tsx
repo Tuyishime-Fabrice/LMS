@@ -17,6 +17,7 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { LearningPrivacySection } from "./LearningPrivacySection";
 
 type Role = "student" | "teacher";
 
@@ -315,6 +316,7 @@ export function SettingsPage({ role }: { role: Role }) {
         />
         <div className="space-y-5">
           <ProfileSection />
+          {role === "student" && <LearningPrivacySection />}
           <LanguageSection />
           <NotificationSection role={role} />
           <SecuritySection />
