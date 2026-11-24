@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Award, BadgeCheck, BarChart3, BookOpen, CalendarDays, ClipboardCheck, ClipboardList, Compass,
-  CreditCard, FileClock, GraduationCap, HandCoins, Handshake, Home, Layers, LayoutDashboard, Megaphone,
+  CreditCard, FileClock, FilePlus2, GraduationCap, HandCoins, Handshake, Home, Layers, LayoutDashboard, Megaphone,
   MessagesSquare, Package, PieChart, Presentation, Route, Settings, Tag, Trophy, UserCheck, Users, UsersRound,
 } from "lucide-react";
 
@@ -96,6 +96,7 @@ export const navigation: Record<ShellRole, NavGroup[]> = {
         { key: "shell.nav.facilitationOverview", label: "Overview", to: "/facilitate", icon: LayoutDashboard, exact: true },
         { key: "shell.nav.review", label: "Review work", to: "/facilitate/review", icon: ClipboardCheck },
         { key: "shell.nav.learners", label: "Learners", to: "/facilitate/learners", icon: Users },
+        { key: "shell.nav.drafts", label: "Assignment drafts", to: "/facilitate/assignments", icon: FilePlus2 },
       ],
     },
   ],

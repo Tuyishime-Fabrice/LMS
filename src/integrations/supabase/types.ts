@@ -96,6 +96,63 @@ export type Database = {
         };
         Relationships: [];
       };
+      assignment_drafts: {
+        Row: {
+          author_id: string;
+          chapter_id: string;
+          course_id: string;
+          created_at: string;
+          due_date: string | null;
+          id: string;
+          instructions: string | null;
+          lesson_id: string | null;
+          review_note: string | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          rubric: Json | null;
+          status: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          author_id?: string;
+          chapter_id: string;
+          course_id: string;
+          created_at?: string;
+          due_date?: string | null;
+          id?: string;
+          instructions?: string | null;
+          lesson_id?: string | null;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          rubric?: Json | null;
+          status?: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          author_id?: string;
+          chapter_id?: string;
+          course_id?: string;
+          created_at?: string;
+          due_date?: string | null;
+          id?: string;
+          instructions?: string | null;
+          lesson_id?: string | null;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          rubric?: Json | null;
+          status?: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       assignment_submissions: {
         Row: {
           created_at: string | null;
@@ -2387,6 +2444,7 @@ export type Database = {
       };
       teacher_announcements: {
         Row: {
+          cohort_id: string | null;
           course_id: string | null;
           created_at: string | null;
           id: string;
@@ -2397,6 +2455,7 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
+          cohort_id?: string | null;
           course_id?: string | null;
           created_at?: string | null;
           id?: string;
@@ -2407,6 +2466,7 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
+          cohort_id?: string | null;
           course_id?: string | null;
           created_at?: string | null;
           id?: string;
@@ -2533,6 +2593,8 @@ export type Database = {
       set_cohort_discord_url: { Args: { p_cohort_id: string; p_url: string }; Returns: undefined };
       find_staffing_candidate: { Args: { p_email: string }; Returns: { id: string; full_name: string | null; role: string }[] };
       get_course_staff: { Args: { p_course_id: string }; Returns: { id: string; user_id: string; cohort_id: string | null; full_name: string | null; email: string; created_at: string }[] };
+      approve_assignment_draft: { Args: { p_draft_id: string }; Returns: string };
+      return_assignment_draft: { Args: { p_draft_id: string; p_note: string }; Returns: undefined };
       get_all_profiles: { Args: Record<PropertyKey, never>; Returns: { id: string; email: string; full_name: string; role: string; avatar_url: string; phone: string; pricing_tier: string; created_at: string; updated_at: string; teacher_approved: boolean; teacher_approval_status: string; is_suspended: boolean; suspension_reason: string; last_login: string; last_activity: string }[] };
       get_all_student_progress: { Args: Record<PropertyKey, never>; Returns: { student_id: string; student_name: string; student_email: string; student_phone: string; course_id: string; course_title: string; teacher_name: string; enrolled_at: string; total_lessons: number; completed_lessons: number; progress_percentage: number; last_activity: string }[] };
       get_coupon_redemption_stats: { Args: Record<PropertyKey, never>; Returns: { coupon_id: string; code: string; coupon_type: string; discount_type: string; discount_value: number; max_uses: number; uses_count: number; redemption_count: number; total_discount: number; is_active: boolean }[] };

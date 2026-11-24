@@ -40,6 +40,15 @@ announcements / teacher_announcements / notifications · conversations/direct_me
 | `find_staffing_candidate(email)`, `get_course_staff(course)` | assign by exact email; list staff | instructors/admins | — |
 | `teacher_announcements` insert policy (replaced) | **fixes** any-user posting; now instructor, admin or course-wide facilitator | — | — |
 
+## Added by `20261126000000_drafts_and_cohort_announcements.sql`
+| Object | Purpose | Read | Write |
+|---|---|---|---|
+| `teacher_announcements.cohort_id` | announcement for one cohort | author; course instructor; admin; facilitators of that cohort/course; learners **in that cohort only** (`learner_in_cohort`) | insert and update through `can_post_announcement(course, cohort)`: instructor, admin, facilitator of that cohort; course-wide needs a course-wide facilitator |
+| `notify_on_teacher_announcement()` (replaced) | notifies only the cohort for cohort announcements | — | — |
+| `assignment_drafts` | facilitator-written assignments awaiting approval | author while assigned; course instructor; admin; never learners | author: insert, edit and submit while `draft`/`changes_requested` (trigger `guard_assignment_draft`); delete unless approved |
+| `approve_assignment_draft(id)` | creates the `course_lessons` row (assignment, rubric, due date, end of module) | — | course instructor, admin; only `submitted` drafts |
+| `return_assignment_draft(id, note)` | send back with a note (≥ 10 chars) | — | course instructor, admin |
+
 ## Retention and deletion
 `learner_preferences` cascades with the profile; learners can delete their row any time. Grade history follows the
 submission's student; deletion policy for academic records needs a DATA+ decision (see DECISION_LOG D-12).
@@ -54,3 +63,4 @@ submission's student; deletion policy for academic records needs a DATA+ decisio
 5. Add Discord links per course/cohort. 6. Create tracks/competitions in Admin.
 **Note:** after step 2, instructors can no longer save a mark without written feedback.
 7. Then run `20261125000000_facilitators.sql` (needs the previous migration) and assign facilitators from the instructor Overview.
+8. Then run `20261126000000_drafts_and_cohort_announcements.sql`.

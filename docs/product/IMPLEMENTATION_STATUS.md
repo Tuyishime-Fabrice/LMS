@@ -17,8 +17,9 @@ Labels: **verified in code**, **observed at runtime** (demo mode, Playwright, no
 | Competitions: hub, detail/workspace, register, submit, leaderboard, admin judge/publish | unit tests (3), DB tests (8), runtime |
 | Onboarding rewrite + consent; Settings learning & privacy; admin insights | DB tests (7), runtime (settings, insights) |
 | Rubrics (author, learner view, scorer), feedback ≥ 20 chars, grade history | unit tests (3), DB tests (7), runtime |
-| French and English for every new string (0 missing keys of 2,387) | script check |
+| French and English for every new string (0 missing keys of 2,441) | script check |
 | Facilitators: assignments, workspace (overview, review, learners), provisional reviews, suggestion in grading queue, cohort Discord, course-wide announcements; announcement policy fix | DB tests (29), runtime (demo: Diane Mutesi → Théo Mugisha, no console errors) |
+| Cohort announcements; facilitator assignment drafts with approve / request changes; announcement update fix | DB tests (28), runtime (draft returned, resubmitted, approved, visible to the learner; cohort announcement on learner Home) |
 
 ## Partial / mocked
 - Demo mode stores data in the browser; demo leaderboard and insights are computed in `src/demo/backend.ts`.
@@ -27,7 +28,7 @@ Labels: **verified in code**, **observed at runtime** (demo mode, Playwright, no
 
 ## Blocked / not built
 - Migration not applied to any real Supabase project (by design). Until applied, new features show empty/"needs update" states and core flows work as before.
-- Facilitator-created assignments, cohort-scoped announcements, resubmission workflow, exam policies, practice launcher, organisation manager view.
+- Resubmission workflow, exam policies, practice launcher, organisation manager view.
 
 ## Checks (final run)
 | Command | Result |
@@ -36,4 +37,4 @@ Labels: **verified in code**, **observed at runtime** (demo mode, Playwright, no
 | `npm test` | 37 pass, 0 fail (baseline 15) |
 | `npm run lint` | 210 problems (151 errors, 59 warnings), baseline 212 (152/60); no new file flagged |
 | `vite build` | pass |
-| `scripts/check-supabase-setup.sh` | setup.sql in one transaction; security 35, ai_tutor 7, lesson_files 16, academy_experience 30, facilitators 29 checks pass |
+| `scripts/check-supabase-setup.sh` | setup.sql in one transaction; security 35, ai_tutor 7, lesson_files 16, academy_experience 30, facilitators 29, drafts_and_cohort_announcements 28 checks pass (145) |

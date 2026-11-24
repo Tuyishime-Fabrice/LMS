@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shell/page";
 import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
+import { fetchCourseCohorts, postAnnouncement } from "@/features/announcements/api";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,15 @@ export default function TeacherAnnouncements() {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
+  const [selectedCohortId, setSelectedCohortId] = useState<string>("all");
+  const [courseCohorts, setCourseCohorts] = useState<{ id: string; name: string }[]>([]);
+  useEffect(() => {
+    setSelectedCohortId("all");
+    if (selectedCourseId === "all") { setCourseCohorts([]); return; }
+    let active = true;
+    void fetchCourseCohorts(selectedCourseId).then((rows) => { if (active) setCourseCohorts(rows); });
+    return () => { active = false; };
+  }, [selectedCourseId]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -120,15 +130,15 @@ export default function TeacherAnnouncements() {
 
     setProcessing(true);
     try {
-      const { error } = await supabase.from("teacher_announcements").insert({
-        title: title.trim(),
-        message: message.trim(),
-        course_id: selectedCourseId === "all" ? null : selectedCourseId,
-        teacher_id: user.id,
-        is_active: true
+      const cohort = courseCohorts.find((item) => item.id === selectedCohortId);
+      await postAnnouncement({
+        teacherId: user.id,
+        courseId: selectedCourseId === "all" ? null : selectedCourseId,
+        cohortId: cohort?.id ?? null,
+        cohortName: cohort?.name ?? null,
+        title,
+        message,
       });
-
-      if (error) throw error;
 
       toast.success(t("teacherAnnouncements.announcementSentToStudents", "Announcement sent to students!"));
       setShowCreateDialog(false);
@@ -366,6 +376,20 @@ export default function TeacherAnnouncements() {
                 </SelectContent>
               </Select>
             </div>
+            {courseCohorts.length > 0 && (
+              <div className="space-y-2">
+                <Label>{t("teacherAnnouncements.audience", "Audience")}</Label>
+                <Select value={selectedCohortId} onValueChange={setSelectedCohortId}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t("teacherAnnouncements.allCohorts", "Every learner of the course")}</SelectItem>
+                    {courseCohorts.map((cohort) => (
+                      <SelectItem key={cohort.id} value={cohort.id}>{t("teacherAnnouncements.onlyCohort", "Only {{cohort}}", { cohort: cohort.name })}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>

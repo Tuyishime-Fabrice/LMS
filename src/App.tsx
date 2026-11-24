@@ -39,6 +39,7 @@ const AdminInsights = lazy(() => import("./pages/AdminInsights"));
 const FacilitationOverview = lazy(() => import("./pages/FacilitationOverview"));
 const FacilitationReview = lazy(() => import("./pages/FacilitationReview"));
 const FacilitationLearners = lazy(() => import("./pages/FacilitationLearners"));
+const FacilitationAssignments = lazy(() => import("./pages/FacilitationAssignments"));
 const StudentSchedule = lazy(() => import("./pages/StudentSchedule"));
 const StudentCertificates = lazy(() => import("./pages/StudentCertificates"));
 const BrowseCourses = lazy(() => import("./pages/BrowseCourses"));
@@ -176,6 +177,7 @@ const App = () => (
             <Route path="/facilitate" element={signedIn(<FacilitationOverview />)} />
             <Route path="/facilitate/review" element={signedIn(<FacilitationReview />)} />
             <Route path="/facilitate/learners" element={signedIn(<FacilitationLearners />)} />
+            <Route path="/facilitate/assignments" element={signedIn(<FacilitationAssignments />)} />
             <Route path="/learn/:courseId" element={signedIn(<LearningRoom />)} />
             <Route path="/learn/:courseId/:lessonId" element={signedIn(<LearningRoom />)} />
             <Route path="/admin/calendar" element={admin(<AdminCalendar />)} />

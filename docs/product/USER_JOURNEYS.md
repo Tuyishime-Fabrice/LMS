@@ -52,5 +52,6 @@ Old `/student/chat` → community; `/teacher/chat` → announcements.
 2. The facilitator sees **Facilitation workspace** in their sidebar → `/facilitate` lists each assignment with learner and review counts.
 3. **Review work**: opens files (signed URLs, allowed by a facilitator-only storage policy), scores the rubric or types a suggested mark, writes notes → Save review. Learners never see it.
 4. Instructor's grading queue shows "Facilitator review by … suggests N/100" with **Use as a starting point** (fills rubric, mark and, if empty, the feedback box). The instructor edits and publishes; the 20-character feedback rule and grade history apply as before.
-5. Cohort facilitators update their cohort's Discord link; course-wide facilitators can also post course announcements.
-Verified: 29 DB checks; demo run as Diane Mutesi → Théo Mugisha.
+5. Cohort facilitators update their cohort's Discord link and announce to their cohort; course-wide facilitators choose the whole course or one cohort.
+6. **Assignment drafts** (`/facilitate/assignments`): choose course and module, write title, instructions, due date and rubric → Save draft or Submit for approval. The instructor's Grading queue shows "Assignment drafts from facilitators" → **Approve and publish** (creates the assignment lesson at the end of the module with its rubric and due date) or **Request changes** with a note (≥ 10 characters). The facilitator sees the note, revises and resubmits. Both sides are notified.
+Verified: 29 + 28 DB checks; demo run as Diane Mutesi → Théo Mugisha → Aline Uwase (draft returned, resubmitted, approved, visible to the learner; cohort announcement shown to the cohort).

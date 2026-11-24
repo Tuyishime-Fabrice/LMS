@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { RubricEditor } from "@/features/rubrics/RubricEditor";
 import { fetchReviewsForInstructor } from "@/features/facilitation/api";
+import { DraftApprovals } from "@/features/facilitation/DraftApprovals";
 import { RubricScorer } from "@/features/rubrics/RubricScorer";
 import { feedbackIsValid, MIN_FEEDBACK_LENGTH, parseRubric, parseScores, type RubricScores } from "@/features/rubrics/rubric";
 import { Button } from "@/components/ui/button";
@@ -507,6 +508,8 @@ const TeacherAssignments = () => {
                       </CardContent>
                     </Card>
                   </div>
+
+                  <DraftApprovals courseId={selectedCourseId} onApproved={() => void fetchSubmissions()} />
 
                   {assignmentLessons.length > 0 && (
                     <section className="surface p-4 sm:p-5" aria-labelledby="rubrics-heading">

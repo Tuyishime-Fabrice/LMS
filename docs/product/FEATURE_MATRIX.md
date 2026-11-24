@@ -26,6 +26,8 @@ Legend: ✅ end-to-end in code (and demo) · 🟡 partial · ⛔ not built · �
 | Community | Direct messages | removed from UI | tables kept |
 | Announcements | Course/cohort/academy | ✅ | |
 | Competitions | Hub, register, submit link, judge, leaderboard | ✅🧪 | file uploads not supported |
-| Roles | Facilitator (assign, workspace, provisional reviews, cohort Discord, course announcements) | ✅🧪 | needs `20261125000000_facilitators.sql`; facilitators cannot create assignments |
+| Roles | Facilitator (assign, workspace, provisional reviews, cohort Discord, announcements) | ✅🧪 | needs `20261125000000_facilitators.sql` |
+| Roles | Facilitator assignment drafts with instructor approval | ✅🧪 | needs `20261126000000_drafts_and_cohort_announcements.sql` |
+| Announcements | Cohort-only announcements (read + notifications scoped) | ✅🧪 | same migration; falls back to course-wide with a title prefix before it |
 | Organisations | Sponsor request → dedicated cohort | 🟡 | manual via Organisation requests |
 | Admin | Payments, pricing, certificates, logs | ✅ | unchanged |

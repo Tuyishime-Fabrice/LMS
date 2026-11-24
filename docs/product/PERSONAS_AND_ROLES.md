@@ -22,8 +22,9 @@
 | See learners and progress | – | assigned scope, names only | own | ✓ |
 | Open submissions and files | own | assigned scope | own | ✓ |
 | Edit course/curriculum | – | – | own | ✓ |
-| Post course announcement | – | course-wide only | own | ✓ |
-| Create assignment / rubric | – | – | own | ✓ |
+| Post announcement to the whole course | – | course-wide facilitators | own | ✓ |
+| Post announcement to one cohort | – | that cohort (or course-wide) | own | ✓ |
+| Create assignment / rubric | – | **draft** only; goes live when the instructor approves | own; approves drafts | ✓ |
 | Provisional review (suggested mark, rubric, notes) | – | assigned scope | reads | reads |
 | Publish final mark + feedback | – | **–** | own | ✓ |
 | Set cohort Discord link | – | assigned cohort (function `set_cohort_discord_url`) | own | ✓ |
@@ -34,5 +35,5 @@
 Facilitator rights come from `course_staff` (migration `20261125000000_facilitators.sql`), checked by
 `facilitates_learner()` in every policy. "Assigned scope" = the whole course, or only learners whose enrolment is in
 the assigned cohort. Facilitators are a workspace (`/facilitate`), not an account role: an approved instructor or a
-graduate learner can facilitate without gaining instructor rights elsewhere. Creating assignments is not delegated
-(D-18).
+graduate learner can facilitate without gaining instructor rights elsewhere. Facilitators draft assignments; only the
+instructor's approval (`approve_assignment_draft`) writes the lesson (D-18).

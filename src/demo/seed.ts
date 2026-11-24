@@ -371,6 +371,7 @@ export function createSeed(assetBase: string): Tables {
 
   /* Announcements and notifications ------------------------------------ */
   const teacher_announcements = [
+    { id: id(1203), teacher_id: DEMO_IDS.facilitator, course_id: excel.id, cohort_id: id(500), title: "Office hours tonight", message: "I am on the cohort Discord from 18:00 to 19:00 for questions on the monthly summary.", is_active: true, created_at: at(-0.2), updated_at: at(-0.2) },
     { id: id(1200), teacher_id: DEMO_IDS.teacher, course_id: excel.id, title: "Module 2 is open", message: "Pivot tables are up. Watch the video before Thursday's live session and bring your cleaned file.", is_active: true, created_at: at(-2), updated_at: at(-2) },
     { id: id(1201), teacher_id: DEMO_IDS.teacher, course_id: excel.id, title: "Workshop venue confirmed", message: "Saturday's Power BI workshop is in Kimihurura. Directions are in the cohort Discord.", is_active: true, created_at: at(-1), updated_at: at(-1) },
     { id: id(1202), teacher_id: DEMO_IDS.teacher2, course_id: sql.id, title: "Welcome to SQL for Data Analysts", message: "Install DB Browser for SQLite before the kickoff.", is_active: true, created_at: at(-4), updated_at: at(-4) },
@@ -609,6 +610,15 @@ export function createSeed(assetBase: string): Tables {
   }));
 
   return {
+    assignment_drafts: [
+      { id: id(3700), course_id: excel.id, chapter_id: ex3.id, author_id: DEMO_IDS.facilitator, title: "Exercise: one-page stock dashboard",
+        instructions: "Using the shop sales file, build one Power BI page that answers: which three products should the shop reorder first? Hand in the .pbix file and a screenshot.",
+        due_date: at(16, 23, 59), status: "submitted", review_note: null, reviewed_by: null, reviewed_at: null, lesson_id: null, submitted_at: at(-0.3),
+        rubric: { criteria: [
+          { id: "q", title: "Answers the question", levels: [{ label: "Clear", points: 10 }, { label: "Partly", points: 5 }, { label: "No", points: 0 }] },
+          { id: "v", title: "Readable visuals", levels: [{ label: "Readable", points: 5 }, { label: "Cluttered", points: 2 }] },
+        ] }, created_at: at(-1), updated_at: at(-0.3) },
+    ],
     course_staff: [
       { id: id(3500), course_id: excel.id, cohort_id: id(500), user_id: DEMO_IDS.facilitator, staff_role: "facilitator", assigned_by: DEMO_IDS.teacher, created_at: at(-28) },
     ],

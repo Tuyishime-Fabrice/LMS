@@ -7,7 +7,7 @@
  */
 import { createSeed, DEMO_PASSWORD, type Row, type Tables } from "./seed";
 
-const STORE_KEY = "dataplus-demo-db-v3";
+const STORE_KEY = "dataplus-demo-db-v4";
 const AUTH_KEY = "dataplus-demo-auth-v1";
 export const DEMO_SUPABASE_URL = "https://demo.dataplus.invalid";
 
@@ -694,6 +694,31 @@ async function handleRpc(request: Request, fn: string): Promise<Response> {
       const person = table("profiles").find((row) => String(row.email).toLowerCase() === email && row.role !== "admin");
       return ok(person ? [{ id: person.id, full_name: person.full_name, role: person.role }] : []);
     }
+    case "approve_assignment_draft": {
+      const draft = table("assignment_drafts").find((row) => row.id === args.p_draft_id);
+      const course = draft && table("courses").find((row) => row.id === draft.course_id);
+      if (!draft || !course || (course.teacher_id !== uid && table("profiles").find((row) => row.id === uid)?.role !== "admin")) return pgError(403, "42501", "Only the course instructor or an administrator can approve");
+      if (draft.status !== "submitted") return pgError(400, "23514", "Only submitted drafts can be approved");
+      const siblings = table("course_lessons").filter((row) => row.chapter_id === draft.chapter_id);
+      const lesson = {
+        id: uuid(), chapter_id: draft.chapter_id, title: draft.title, description: draft.instructions, content_type: "assignment", content_url: "",
+        file_url: null, duration: null, order_index: siblings.reduce((max, row) => Math.max(max, Number(row.order_index) + 1), 0),
+        is_preview: false, is_mandatory: true, learning_objectives: null, due_date: draft.due_date, rubric: draft.rubric, created_at: nowIso(), updated_at: nowIso(),
+      };
+      table("course_lessons").push(lesson);
+      Object.assign(draft, { status: "approved", lesson_id: lesson.id, reviewed_by: uid, reviewed_at: nowIso(), review_note: null, updated_at: nowIso() });
+      save();
+      return ok(lesson.id);
+    }
+    case "return_assignment_draft": {
+      const draft = table("assignment_drafts").find((row) => row.id === args.p_draft_id);
+      const note = String(args.p_note || "").trim();
+      if (!draft || draft.status !== "submitted" || note.length < 10) return pgError(400, "23514", "Say what needs to change");
+      Object.assign(draft, { status: "changes_requested", review_note: note, reviewed_by: uid, reviewed_at: nowIso(), updated_at: nowIso() });
+      save();
+      return ok(null);
+    }
+
     case "get_course_staff":
       return ok(table("course_staff").filter((row) => row.course_id === args.p_course_id).map((row) => {
         const person = table("profiles").find((p) => p.id === row.user_id);

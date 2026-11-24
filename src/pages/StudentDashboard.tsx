@@ -284,7 +284,7 @@ const StudentDashboard = () => {
                       <p className="text-sm font-semibold text-forest">{item.title}</p>
                       <p className="mt-0.5 line-clamp-2 text-sm leading-6 text-muted-foreground">{item.message}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {item.courseTitle ? `${item.courseTitle}, ` : ""}{format(new Date(item.createdAt), "d MMM", { locale })}
+                        {item.courseTitle ? `${item.courseTitle}, ` : ""}{item.cohortName ? `${item.cohortName}, ` : ""}{format(new Date(item.createdAt), "d MMM", { locale })}
                       </p>
                     </div>
                   </li>

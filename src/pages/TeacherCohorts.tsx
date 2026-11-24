@@ -17,6 +17,7 @@ import { Users, Plus, Trash2, Eye, Bell, Check, X, BookOpen, Calendar, Send, Use
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
+import { postAnnouncement } from "@/features/announcements/api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -440,17 +441,15 @@ const TeacherCohorts = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Create announcement using teacher_announcements table
-      // Include cohort name in title for identification
-      const { error } = await supabase.from("teacher_announcements").insert({
-        teacher_id: user.id,
-        course_id: selectedCohort.course_id || null,
-        title: `[${selectedCohort.name}] ${announcement.title}`,
+      // Only this cohort's learners read it and are notified (cohort_id, 2026-11-26).
+      await postAnnouncement({
+        teacherId: user.id,
+        courseId: selectedCohort.course_id || null,
+        cohortId: selectedCohort.course_id ? selectedCohort.id : null,
+        cohortName: selectedCohort.name,
+        title: announcement.title,
         message: announcement.message,
-        is_active: true,
       });
-
-      if (error) throw error;
 
       toast.success(t("teacher.cohorts.announcementSent"));
       setShowAnnouncementDialog(false);

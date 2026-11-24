@@ -16,9 +16,11 @@ const starter = (): Rubric => ({ criteria: [{ id: newId(), title: "", levels: [{
  * Course staff write the rubric for an assignment (course_lessons.rubric)
  * or a capstone (capstone_projects.rubric). Learners see it before they submit.
  */
-export function RubricEditor({ target, id, name, current, onSaved }: {
-  target: "course_lessons" | "capstone_projects";
-  id: string;
+export function RubricEditor({ target, id, name, current, onSaved, onApply }: {
+  target?: "course_lessons" | "capstone_projects";
+  id?: string;
+  /** Edit a rubric that is not stored yet (an assignment draft): no database write. */
+  onApply?: (rubric: Rubric | null) => void;
   name: string;
   current: unknown;
   onSaved?: (rubric: Rubric | null) => void;
@@ -34,6 +36,11 @@ export function RubricEditor({ target, id, name, current, onSaved }: {
     setDraft({ criteria: draft.criteria.map((criterion, i) => (i === index ? { ...criterion, ...patch } : criterion)) });
 
   const save = async (rubric: Rubric | null) => {
+    if (onApply || !target || !id) {
+      onApply?.(rubric);
+      setOpen(false);
+      return;
+    }
     setSaving(true);
     const { error } = await supabase.from(target).update({ rubric: rubric as never }).eq("id", id);
     setSaving(false);

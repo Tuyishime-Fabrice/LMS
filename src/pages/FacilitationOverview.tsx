@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, BookOpen, ClipboardCheck, Info, Users } from "lucide-react";
+import { ArrowRight, BookOpen, ClipboardCheck, FilePlus2, Info, Users } from "lucide-react";
 import { PageHeader, StatusPill } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
 import { homePath, type AppRole } from "@/components/shell/navigation";
@@ -59,7 +59,8 @@ function Overview({ assignments }: { assignments: Assignment[] }) {
                 <Button asChild size="sm" variant="outline"><Link to={`/facilitate/learners?course=${item.courseId}`}><Users />{t("facilitation.seeLearners", "Learners")}</Link></Button>
                 <Button asChild size="sm" variant="outline"><Link to={`/learn/${item.courseId}`}><BookOpen />{t("facilitation.openCourse", "Open course")}</Link></Button>
                 {item.cohortId && <CommunityLinkEditor target="cohorts" viaFunction id={item.cohortId} name={item.cohortName || item.courseTitle} current={item.cohortDiscordUrl} />}
-                {!item.cohortId && <AnnounceDialog courseId={item.courseId} courseTitle={item.courseTitle} />}
+                <AnnounceDialog courseId={item.courseId} courseTitle={item.courseTitle} cohortId={item.cohortId} cohortName={item.cohortName} />
+                <Button asChild size="sm" variant="outline"><Link to={`/facilitate/assignments?course=${item.courseId}`}><FilePlus2 />{t("facilitation.draftAssignment", "Draft an assignment")}</Link></Button>
               </div>
             </li>
           );
@@ -67,7 +68,7 @@ function Overview({ assignments }: { assignments: Assignment[] }) {
       </ul>
       <p className="mt-6 flex items-center gap-1.5 text-meta">
         <ArrowRight className="h-3.5 w-3.5" />
-        {t("facilitation.announceNote", "Course announcements are posted by the instructor or by facilitators assigned to the whole course.")}
+        {t("facilitation.announceNote2", "Cohort facilitators announce to their cohort; facilitators of the whole course can reach every learner. Assignments you draft go live once the instructor approves them.")}
       </p>
     </>
   );
