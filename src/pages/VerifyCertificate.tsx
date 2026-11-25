@@ -7,8 +7,8 @@ import { format } from "date-fns";
 import { BadgeCheck, CircleX, Search, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Brand } from "@/components/shell/Brand";
-import { LanguageSelector } from "@/components/LanguageSelector";
+import { SiteHeader } from "@/features/site/SiteHeader";
+import { SiteFooter } from "@/features/site/SiteFooter";
 import { SkeletonBlock } from "@/components/shell/page";
 import { db } from "@/features/learning/api";
 import { useDateLocale } from "@/features/learning/hooks";
@@ -59,12 +59,10 @@ export default function VerifyCertificate() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <header className="flex h-16 items-center justify-between border-b bg-card px-4 sm:px-8">
-        <Link to="/" aria-label="DATA+ Academy"><Brand /></Link>
-        <LanguageSelector />
-      </header>
+      <SiteHeader />
 
-      <main className="mx-auto w-full max-w-xl flex-1 px-4 py-10 sm:py-16">
+      <main id="main" className="mx-auto w-full max-w-site flex-1 px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+        <div className="max-w-xl">
         <h1 className="text-page-title">{t("verify.title", "Verify a certificate")}</h1>
         <p className="mt-2 text-[0.9375rem] leading-6 text-muted-foreground">
           {t("verify.description", "Enter the verification code printed on a DATA+ Academy certificate, or scan its QR code.")}
@@ -126,7 +124,9 @@ export default function VerifyCertificate() {
             </div>
           )}
         </div>
+        </div>
       </main>
+      <SiteFooter />
 
       <footer className="border-t px-4 py-5 text-center text-xs text-muted-foreground">
         DATA+ Academy, Kigali, Rwanda

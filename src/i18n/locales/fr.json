@@ -85,7 +85,9 @@
     "googleAuthenticationFailed": "La connexion Google a échoué",
     "pleaseVerifyYourEmailToContinue": "Validez votre adresse e-mail pour continuer.",
     "anErrorOccurredDuringSignIn": "Une erreur est survenue lors de la connexion",
-    "studentsLearningTogether": "Des apprenants qui travaillent ensemble"
+    "studentsLearningTogether": "Des apprenants qui travaillent ensemble",
+    "panelTitle": "Apprendre avec DATA+ Academy",
+    "photoAlt": "Des apprenants penchés autour d'un ordinateur portable pendant une formation DATA+"
   },
   "dashboard": {
     "welcome": "Bienvenue",
@@ -2782,7 +2784,8 @@
     "freePreview": "Aperçu gratuit",
     "locked": "Verrouillé",
     "free": "Gratuit",
-    "chaptersLessons_one": "{{count}} chapitre • {{totalLessons}} leçons"
+    "chaptersLessons_one": "{{count}} chapitre • {{totalLessons}} leçons",
+    "yourProgress2": "Votre progression"
   },
   "suspensionDialog": {
     "accountSuspended": "Compte suspendu",
@@ -2917,7 +2920,9 @@
     "courseComplete": "Cours terminé !",
     "keepGoingYouReMakingGreat": "Continuez, vous progressez très bien !",
     "aboutThisLesson": "À propos de cette leçon",
-    "selectALessonToStart": "Choisissez une leçon dans le programme pour commencer."
+    "selectALessonToStart": "Choisissez une leçon dans le programme pour commencer.",
+    "freePreview": "Aperçu gratuit",
+    "staffPreview": "Aperçu équipe : la progression n'est pas enregistrée"
   },
   "verifyEmail": {
     "weCouldnTFindTheEmail": "Adresse e-mail introuvable pour le renvoi. Réinscrivez-vous ou reconnectez-vous.",
@@ -3270,14 +3275,41 @@
   },
   "notFound": {
     "oopsPageNotFound": "Oups ! Page introuvable",
-    "returnToHome": "Retour à l'accueil"
+    "returnToHome": "Retour à l'accueil",
+    "body": "Le lien est peut-être ancien ou mal saisi. Le catalogue présente tout ce qui est publié.",
+    "catalogue": "Parcourir les cours",
+    "home": "Aller à l'accueil",
+    "title": "Cette page n'existe pas."
   },
   "catalogue": {
     "eyebrow": "Cours",
     "title": "Explorer les cours",
     "body": "Analyse de données, IA, suivi-évaluation et gestion de projet. Enseignés en français et en anglais, avec des cohortes en direct et un projet final.",
     "subjectAll": "Voir tous les cours",
-    "subjectShowing": "Cours : {{subject}}"
+    "subjectShowing": "Cours : {{subject}}",
+    "any": "Tous",
+    "body2": "Analyse de données, suivi-évaluation, recherche et IA. Chaque cours indique son niveau, sa langue et son prix.",
+    "buy": "Acheter",
+    "clear": "Effacer les filtres",
+    "enrolFree": "S'inscrire gratuitement",
+    "format": "Format",
+    "formatLive": "Cohorte en direct prévue",
+    "free": "Gratuit",
+    "language": "Langue d'enseignement",
+    "level": "Niveau",
+    "noMatch": "Aucun cours ne correspond à ces filtres",
+    "none": "Aucun cours n'est encore publié",
+    "open": "Ouvrir",
+    "paid": "Payant",
+    "price": "Prix",
+    "search": "Rechercher des cours",
+    "searchPlaceholder": "Rechercher par cours, sujet ou formateur",
+    "subject": "Domaine",
+    "title2": "Cours",
+    "view": "Voir le cours",
+    "count_one": "{{count}} cours",
+    "count_other": "{{count}} cours",
+    "results": "Résultats"
   },
   "createCourse": {
     "invalidFile": "Fichier non valide",
@@ -3449,7 +3481,30 @@
     "hoursShort": "{{count}} h",
     "capstoneWorkspaceLocked": "L'espace du projet final s'ouvre après l'achat",
     "getCapstoneAccess": "Accéder au projet final",
-    "paidLessonNote": "Cette leçon fait partie du contenu payant. Achetez ce cours pour ouvrir tous les modules et toutes les leçons."
+    "paidLessonNote": "Cette leçon fait partie du contenu payant. Achetez ce cours pour ouvrir tous les modules et toutes les leçons.",
+    "applyForScholarship2": "Demander une bourse",
+    "back": "Retour",
+    "buyThisCourse2": "Acheter ce cours",
+    "capstoneBriefBody": "Le cours se termine par un vrai problème, traité avec le cadre en cinq étapes et noté par votre formateur. Une note de 65 % ou plus donne droit au certificat.",
+    "capstoneBriefTitle": "Le projet final",
+    "capstoneIncluded2": "Projet final",
+    "contentLocked2": "Cette leçon est verrouillée",
+    "continueLearning2": "Continuer",
+    "free": "Gratuit",
+    "goToLesson2": "Aller à la leçon",
+    "instalments": "Deux versements pour les places en cohorte",
+    "outcomesTitle": "Vous saurez",
+    "playWelcome": "Lire la vidéo de bienvenue",
+    "requirements2": "Avant de commencer",
+    "scholarshipOpen": "Les demandes de bourse sont ouvertes",
+    "startLearning2": "Commencer",
+    "taughtIn": "Enseigné en {{language}}",
+    "tryFreeLesson": "Essayer une leçon gratuite",
+    "welcomeVideo": "Vidéo de bienvenue",
+    "lessonsCount_one": "{{count}} leçon",
+    "lessonsCount_other": "{{count}} leçons",
+    "modulesCount_one": "{{count}} module",
+    "modulesCount_other": "{{count}} modules"
   },
   "teacherPendingApproval": {
     "yourAccountHasBeenApproved": "Votre compte a été validé !",

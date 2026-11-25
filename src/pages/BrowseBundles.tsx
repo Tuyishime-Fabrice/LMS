@@ -112,7 +112,7 @@ export default function BrowseBundles() {
             <PageBand eyebrow={t("browseBundles.eyebrow", "Learning paths")} title={t("browseBundles.title", "Learning paths")} body={t("browseBundles.body", "Courses that build on each other, at a lower price than buying them one by one.")} />
 
             {/* Bundles Grid */}
-            <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8">
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3].map((i) => (

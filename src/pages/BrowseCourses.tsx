@@ -1,279 +1,186 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { Search, X } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { usePageMeta } from "@/lib/pageMeta";
+import { beginPaymentSignUp } from "@/lib/coursePaymentReturn";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PurchaseDialog } from "@/components/PurchaseDialog";
+import { PlusMotif } from "@/components/brand/PlusMotif";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { SiteFooter } from "@/features/site/SiteFooter";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { COVER_FAMILIES, coverFamily, type CoverFamily } from "@/features/courses/coverFamily";
-import { supabase } from "@/integrations/supabase/client";
-import { beginPaymentSignUp } from "@/lib/coursePaymentReturn";
-import { Button } from "@/components/ui/button";
-import { BookOpen } from "lucide-react";
-import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CourseCard } from "@/components/CourseCard";
-import { PurchaseDialog } from "@/components/PurchaseDialog";
-import { useTranslation } from "react-i18next";
+import { fetchLandingCourses, fetchUpcomingStarts, type LandingCourse } from "@/features/site/landing-data";
+import { CourseListingCard } from "@/features/courses/CourseListingCard";
+import { useFamilyLabels } from "@/features/courses/useFamilyLabels";
+import { COVER_FAMILIES } from "@/features/courses/coverFamily";
+import { LANGUAGES, LEVELS, activeFilterCount, applyFilters, parseFilters, type Filters } from "@/features/courses/catalogueFilters";
 
-type Course = {
-  id: string;
-  title: string;
-  description: string | null;
-  thumbnail_url: string | null;
-  teacher_id: string;
-  price: number | null;
-  is_free: boolean | null;
-  currency: string | null;
-  requirements: string | null;
-  created_at: string;
-  category?: string | null;
-};
-
-type EnrollmentCount = {
-  course_id: string;
-  count: number;
-};
-
+/**
+ * Public catalogue: search and five filters kept in the URL, generated covers, and the same two
+ * buttons on every card (view, then enrol free or buy), whatever the price.
+ */
 const BrowseCourses = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const families = useFamilyLabels();
   usePageMeta({ title: t("meta.courses.title", "Courses"), description: t("meta.courses.description", "Browse DATA+ Academy courses in data analysis, monitoring and evaluation, research and AI. See the level, format, language and price of each course."), path: "/courses" });
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [enrollmentCounts, setEnrollmentCounts] = useState<Map<string, number>>(new Map());
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filters = parseFilters(searchParams);
+  const [query, setQuery] = useState(filters.q);
+  const courses = useQuery({ queryKey: ["landing-courses"], queryFn: fetchLandingCourses, staleTime: 5 * 60_000 });
+  const starts = useQuery({ queryKey: ["landing-starts"], queryFn: fetchUpcomingStarts, staleTime: 5 * 60_000 });
+  const live = useMemo(() => new Set(Object.keys(starts.data || {})), [starts.data]);
+  const filterKey = searchParams.toString();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- filters are derived from filterKey
+  const shown = useMemo(() => applyFilters(courses.data || [], filters, live), [courses.data, filterKey, live]);
+
   const [userId, setUserId] = useState<string | null>(null);
-  const [enrolledCourseIds, setEnrolledCourseIds] = useState<Set<string>>(new Set());
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [enrollingCourseId, setEnrollingCourseId] = useState<string | null>(null);
-  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
-  const [purchaseCourse, setPurchaseCourse] = useState<Course | null>(null);
-  // ?subject= comes from the subject tiles on the home page (same families as the course covers).
-  const [searchParams] = useSearchParams();
-  const subjectParam = searchParams.get("subject");
-  const subject = (COVER_FAMILIES as readonly string[]).includes(subjectParam || "") ? (subjectParam as CoverFamily) : null;
-  const subjectLabel: Record<CoverFamily, string> = {
-    data: t("cover.family.data", "Data analysis"),
-    me: t("cover.family.me", "Monitoring and evaluation"),
-    ai: t("cover.family.ai", "AI for professionals"),
-    research: t("cover.family.research", "Research and proposals"),
-    geo: t("cover.family.geo", "Geospatial"),
-  };
-  const shown = subject ? courses.filter((course) => coverFamily(course) === subject) : courses;
+  const [enrolled, setEnrolled] = useState<Set<string>>(new Set());
+  const [enrolling, setEnrolling] = useState<string | null>(null);
+  const [purchase, setPurchase] = useState<LandingCourse | null>(null);
 
   useEffect(() => {
-    fetchCourses();
+    void (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setUserId(user.id);
+      const { data } = await supabase.from("course_enrollments").select("course_id").eq("student_id", user.id);
+      setEnrolled(new Set((data || []).map((row) => row.course_id)));
+    })();
   }, []);
 
+  const setFilter = (key: keyof Filters, value: string | null) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      if (value) next.set(key, value); else next.delete(key);
+      return next;
+    }, { replace: key === "q" });
+  };
+
+  // Search updates the URL after a short pause, so typing does not flood the history.
   useEffect(() => {
-    const fetchUserAndEnrollments = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-        const { data: enrollments } = await supabase
-          .from("course_enrollments")
-          .select("course_id")
-          .eq("student_id", user.id);
-        const ids = new Set<string>((enrollments || []).map((e: any) => e.course_id));
-        setEnrolledCourseIds(ids);
-      } else {
-        setUserId(null);
-        setEnrolledCourseIds(new Set());
-      }
-    };
-    fetchUserAndEnrollments();
-  }, []);
+    const timer = window.setTimeout(() => {
+      if (query.trim() !== filters.q) setFilter("q", query.trim() || null);
+    }, 250);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only react to typing
+  }, [query]);
 
-  const fetchCourses = async () => {
-    try {
-      // Fetch all courses
-      const { data: coursesData, error: coursesError } = await supabase
-        .from("courses")
-        .select("*")
-        .eq("approval_status", "approved")
-        .order("created_at", { ascending: false });
+  const clearAll = () => { setQuery(""); setSearchParams(new URLSearchParams()); };
 
-      if (coursesError) throw coursesError;
-
-      // Fetch enrollment counts for each course
-      const { data: enrollmentsData, error: enrollmentsError } = await supabase
-        .from("course_enrollments")
-        .select("course_id");
-
-      if (!enrollmentsError && enrollmentsData) {
-        const counts = new Map<string, number>();
-        enrollmentsData.forEach((enrollment) => {
-          const currentCount = counts.get(enrollment.course_id) || 0;
-          counts.set(enrollment.course_id, currentCount + 1);
-        });
-        setEnrollmentCounts(counts);
-      }
-
-      // Client-only programmes (listed = false) stay out of the public catalogue.
-      setCourses((coursesData || []).filter((course: { listed?: boolean | null }) => course.listed !== false));
-    } catch (error: any) {
-      console.error("Error fetching courses:", error);
-      toast.error(t('browseCourses.failedToLoad'));
-    } finally {
-      setLoading(false);
-    }
+  const enrolFree = async (course: LandingCourse) => {
+    if (!userId) { navigate(beginPaymentSignUp(`/course/${course.id}`)); return; }
+    setEnrolling(course.id);
+    const { error } = await supabase.from("course_enrollments").insert({ course_id: course.id, student_id: userId });
+    setEnrolling(null);
+    if (error) { toast.error(error.message || t("browseCourses.failedToEnroll", "Could not enrol. Please try again.")); return; }
+    setEnrolled((prev) => new Set(prev).add(course.id));
+    toast.success(t("browseCourses.enrolledSuccess", "You are enrolled."));
+    navigate(`/course/${course.id}`);
+  };
+  const buy = (course: LandingCourse) => {
+    if (!userId) { navigate(beginPaymentSignUp(`/course/${course.id}`)); return; }
+    setPurchase(course);
   };
 
-  const handleEnroll = async (courseId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate(beginPaymentSignUp(`/course/${courseId}`));
-        return;
-      }
-
-      setEnrollingCourseId(courseId);
-      const { error } = await supabase
-        .from("course_enrollments")
-        .insert({ course_id: courseId, student_id: user.id });
-
-      if (error) throw error;
-
-      setEnrolledCourseIds(prev => new Set(prev).add(courseId));
-      toast.success(t('browseCourses.enrolledSuccess'));
-      navigate(`/course/${courseId}`);
-    } catch (error: any) {
-      console.error("Error enrolling in course:", error);
-      toast.error(error.message || t('browseCourses.failedToEnroll'));
-    } finally {
-      setEnrollingCourseId(null);
-    }
-  };
-
-  const gradients = [
-    " ",
-    " ",
-    " ",
-    " to-rose-600",
-    " ",
-    " ",
-  ];
-
-  // Skeleton loader component for courses - compact cards for 4 per row
-  const CourseSkeletonLoader = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="rounded-xl border overflow-hidden animate-pulse bg-card">
-          <div className="h-32" />
-          <div className="p-3 space-y-2">
-            <div className="h-4 bg-border rounded w-3/4" />
-            <div className="h-3 bg-border rounded w-full" />
-            <div className="h-8 bg-border rounded-lg w-full mt-2" />
-          </div>
-        </div>
-      ))}
+  const select = (id: string, label: string, key: keyof Filters, options: { value: string; label: string }[]) => (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="text-sm font-medium text-forest">{label}</label>
+      <select
+        id={id}
+        value={(filters[key] as string | null) || ""}
+        onChange={(event) => setFilter(key, event.target.value || null)}
+        className="h-11 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <option value="">{t("catalogue.any", "Any")}</option>
+        {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
     </div>
   );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-muted/50">
-        <SiteHeader />
-        <main className="container mx-auto px-4 sm:px-6 py-8">
-          <CourseSkeletonLoader />
-        </main>
-      </div>
-    );
-  }
+  const count = activeFilterCount(filters);
 
   return (
-    <div className="min-h-screen bg-muted/50">
+    <div className="min-h-screen bg-background">
       <SiteHeader />
-      <PageBand eyebrow={t("catalogue.eyebrow", "Courses")} title={t("catalogue.title", "Explore courses")} body={t("catalogue.body", "Data analysis, AI, monitoring and evaluation and project management. Taught in English and French, with live cohorts and a capstone.")} />
+      <PageBand title={t("catalogue.title2", "Courses")} body={t("catalogue.body2", "Data analysis, monitoring and evaluation, research and AI. Each course states its level, language and price.")} />
 
-      {/* Courses Grid */}
-      <main className="container mx-auto px-4 sm:px-6 py-8">
-        {subject && (
-          <p className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            <span>{t("catalogue.subjectShowing", "Showing {{subject}} courses", { subject: subjectLabel[subject] })}</span>
-            <Link to="/courses" className="font-semibold text-primary hover:underline">{t("catalogue.subjectAll", "Show all courses")}</Link>
+      <main id="main" className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8">
+        <form role="search" onSubmit={(event) => event.preventDefault()} className="rounded-lg border bg-card p-4 sm:p-5">
+          <div className="relative">
+            <label htmlFor="catalogue-search" className="sr-only">{t("catalogue.search", "Search courses")}</label>
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Input id="catalogue-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("catalogue.searchPlaceholder", "Search by course, topic or instructor")} className="h-11 pl-9" />
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
+            {select("filter-subject", t("catalogue.subject", "Subject"), "subject", COVER_FAMILIES.map((family) => ({ value: family, label: families[family] })))}
+            {select("filter-level", t("catalogue.level", "Level"), "level", LEVELS.map((level) => ({ value: level, label: t(`landing.level.${level}`, level) })))}
+            {select("filter-format", t("catalogue.format", "Format"), "format", [{ value: "live", label: t("catalogue.formatLive", "Live cohort scheduled") }])}
+            {select("filter-lang", t("catalogue.language", "Teaching language"), "lang", LANGUAGES.map((lang) => ({ value: lang, label: lang === "fr" ? "Français" : "English" })))}
+            {select("filter-price", t("catalogue.price", "Price"), "price", [{ value: "free", label: t("catalogue.free", "Free") }, { value: "paid", label: t("catalogue.paid", "Paid") }])}
+          </div>
+        </form>
+
+        <h2 className="sr-only">{t("catalogue.results", "Results")}</h2>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3" aria-live="polite">
+          <p className="text-sm text-muted-foreground">
+            {courses.isLoading ? t("common.loading", "Loading...") : t("catalogue.count", { count: shown.length, defaultValue_one: "{{count}} course", defaultValue_other: "{{count}} courses" })}
           </p>
-        )}
-        {shown.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {shown.map((course, index) => {
-              const gradient = gradients[index % gradients.length];
-              const rawLevel = (course as { level?: string | null }).level;
-              const level = rawLevel ? rawLevel.charAt(0).toUpperCase() + rawLevel.slice(1) : "";
-              const columnIndex = index % 4; // Calculate which column (0-3) for 4-column grid
-              const isEnrolled = enrolledCourseIds.has(course.id);
+          {count > 0 && (
+            <Button variant="ghost" size="sm" onClick={clearAll} className="text-forest"><X className="mr-1 h-4 w-4" aria-hidden />{t("catalogue.clear", "Clear filters")}</Button>
+          )}
+        </div>
 
+        {courses.isLoading ? (
+          <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((key) => <div key={key} className="h-[26rem] animate-pulse rounded-lg bg-muted" />)}</div>
+        ) : shown.length ? (
+          <ul className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {shown.map((course) => {
+              const isEnrolled = enrolled.has(course.id);
               return (
-                <CourseCard
+                <CourseListingCard
                   key={course.id}
-                  course={{
-                    ...course,
-                    level: level.toLowerCase()
-                  }}
-                  onClick={() => {
-                    if (userId && isEnrolled) {
-                      navigate(`/course/${course.id}`);
-                    } else if (!userId) {
-                      navigate(`/course/${course.id}`);
-                    } else {
-                      // Just view the course details, don't auto-enroll
-                      navigate(`/course/${course.id}`);
-                    }
-                  }}
-                  gradient={gradient}
-                  showTeacher={false}
-                  columnIndex={columnIndex}
-                  isEnrolled={isEnrolled}
-                  showEnrollButton={!!(userId && !isEnrolled && (course.is_free !== false))}
-                  onEnroll={() => handleEnroll(course.id)}
-                  onBuy={() => {
-                    if (!userId) {
-                      navigate(beginPaymentSignUp(`/course/${course.id}`));
-                      return;
-                    }
-                    setPurchaseCourse(course);
-                    setShowPurchaseDialog(true);
-                  }}
+                  course={course}
+                  start={starts.data?.[course.id]}
+                  actions={
+                    <>
+                      <Button variant="outline" className="h-10 text-forest" onClick={() => navigate(`/course/${course.id}`)}>{t("catalogue.view", "View course")}</Button>
+                      {isEnrolled ? (
+                        <Button className="h-10" onClick={() => navigate(`/course/${course.id}`)}>{t("catalogue.open", "Open")}</Button>
+                      ) : course.isFree ? (
+                        <Button className="h-10" disabled={enrolling === course.id} onClick={() => void enrolFree(course)}>{t("catalogue.enrolFree", "Enrol free")}</Button>
+                      ) : (
+                        <Button className="h-10" onClick={() => buy(course)}>{t("catalogue.buy", "Buy")}</Button>
+                      )}
+                    </>
+                  }
                 />
               );
             })}
-          </div>
+          </ul>
         ) : (
-          <div className="text-center py-16">
-            <BookOpen className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-forest mb-2">{t('browseCourses.noCoursesAvailable')}</h3>
-            <p className="text-muted-foreground">{t('browseCourses.checkBackLater')}</p>
+          <div className="mt-6 flex flex-col items-center rounded-lg border bg-card px-6 py-14 text-center">
+            <PlusMotif variant="trail" size={140} />
+            <h2 className="mt-6 text-xl font-semibold text-forest">
+              {count > 0 ? t("catalogue.noMatch", "No course matches these filters") : t("catalogue.none", "No courses are published yet")}
+            </h2>
+            {count > 0 && <Button variant="outline" className="mt-5" onClick={clearAll}>{t("catalogue.clear", "Clear filters")}</Button>}
           </div>
         )}
       </main>
       <SiteFooter />
-      {/* Already Enrolled Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('browseCourses.alreadyEnrolled')}</DialogTitle>
-            <DialogDescription>
-              {t('browseCourses.alreadyEnrolledDesc')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>{t('common.close')}</Button>
-            <Button onClick={() => navigate("/student/my-courses")}>{t('browseCourses.goToMyCourses')}</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
-      {/* Purchase Dialog for Paid Courses */}
-      {purchaseCourse && (
+      {purchase && (
         <PurchaseDialog
-          open={showPurchaseDialog}
-          onOpenChange={setShowPurchaseDialog}
+          open={Boolean(purchase)}
+          onOpenChange={(open) => { if (!open) setPurchase(null); }}
           type="course"
-          item={{
-            id: purchaseCourse.id,
-            title: purchaseCourse.title,
-            price: purchaseCourse.price || 0,
-            currency: purchaseCourse.currency || 'RWF',
-          }}
+          item={{ id: purchase.id, title: purchase.title, price: purchase.price, currency: purchase.currency }}
         />
       )}
     </div>

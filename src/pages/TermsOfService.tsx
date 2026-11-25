@@ -19,7 +19,7 @@ const TermsOfService = () => {
             <PageBand title={t("termsOfService.title", "Terms of service")} body={t("termsOfService.updated", "Last updated: February 2026")} />
 
             {/* Content */}
-            <main className="container mx-auto px-4 sm:px-6 py-8 max-w-4xl">
+            <main className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8"><div className="max-w-3xl">
                 <div className="bg-card rounded-xl p-8 space-y-8">
                     {/* Introduction */}
                     <section>
@@ -228,7 +228,7 @@ const TermsOfService = () => {
                         </Button>
                     </div>
                 </div>
-            </main>
+            </div></main>
             <SiteFooter />
         </div>
     );

@@ -130,7 +130,7 @@ const Exhibition = () => {
 
       {/* Projects Gallery */}
       <section className="py-12 px-4">
-        <div className="container mx-auto">
+        <div className="mx-auto max-w-site">
           {projectsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map((i) => (
@@ -320,7 +320,7 @@ const Exhibition = () => {
 
       {/* CTA Section */}
       <section className="py-16 px-4">
-        <div className="container mx-auto">
+        <div className="mx-auto max-w-site">
           <div className="rounded-xl p-12 md:p-16 text-center bg-forest">
             <h2 className="text-4xl md:text-5xl font-bold text-forest mb-6">
               {t("exhibition.readyToBuildYourCapstoneProject", "Ready to Build Your Capstone Project?")}

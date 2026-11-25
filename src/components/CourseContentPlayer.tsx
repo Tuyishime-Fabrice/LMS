@@ -437,7 +437,7 @@ export function CourseContentPlayer({ lesson, studentId, onComplete, progressPer
               {/* Preview mode indicator for teachers */}
               {isPreviewMode && (
                 <Badge className="bg-warning-surface text-warning px-4 py-2">
-                  {t("courseContentPlayer.teacherPreviewMode", "Teacher Preview Mode")}
+                  {studentId ? t("courseContentPlayer.staffPreview", "Staff preview: progress is not saved") : t("courseContentPlayer.freePreview", "Free preview")}
                 </Badge>
               )}
             </div>

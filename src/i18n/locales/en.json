@@ -85,7 +85,9 @@
     "googleAuthenticationFailed": "Google authentication failed",
     "pleaseVerifyYourEmailToContinue": "Please verify your email to continue.",
     "anErrorOccurredDuringSignIn": "An error occurred during sign in",
-    "studentsLearningTogether": "Students learning together"
+    "studentsLearningTogether": "Students learning together",
+    "panelTitle": "Learn with DATA+ Academy",
+    "photoAlt": "Learners lean in around one laptop during a DATA+ training session"
   },
   "dashboard": {
     "welcome": "Welcome",
@@ -2782,7 +2784,8 @@
     "freePreview": "Free Preview",
     "locked": "Locked",
     "free": "Free",
-    "chaptersLessons_one": "{{count}} chapter • {{totalLessons}} lessons"
+    "chaptersLessons_one": "{{count}} chapter • {{totalLessons}} lessons",
+    "yourProgress2": "Your progress"
   },
   "suspensionDialog": {
     "accountSuspended": "Account Suspended",
@@ -2917,7 +2920,9 @@
     "courseComplete": "Course Complete!",
     "keepGoingYouReMakingGreat": "Keep going! You're making great progress.",
     "aboutThisLesson": "About This Lesson",
-    "selectALessonToStart": "Select a lesson from the curriculum to start."
+    "selectALessonToStart": "Select a lesson from the curriculum to start.",
+    "freePreview": "Free preview",
+    "staffPreview": "Staff preview: progress is not saved"
   },
   "verifyEmail": {
     "weCouldnTFindTheEmail": "We couldn't find the email address to resend to. Please try signing up or signing in again.",
@@ -3270,14 +3275,41 @@
   },
   "notFound": {
     "oopsPageNotFound": "Oops! Page not found",
-    "returnToHome": "Return to Home"
+    "returnToHome": "Return to Home",
+    "body": "The link may be old or mistyped. The course catalogue lists everything that is published.",
+    "catalogue": "Browse courses",
+    "home": "Go to the home page",
+    "title": "This page does not exist."
   },
   "catalogue": {
     "eyebrow": "Courses",
     "title": "Explore courses",
     "body": "Data analysis, AI, monitoring and evaluation and project management. Taught in English and French, with live cohorts and a capstone.",
     "subjectAll": "Show all courses",
-    "subjectShowing": "Showing {{subject}} courses"
+    "subjectShowing": "Showing {{subject}} courses",
+    "any": "Any",
+    "body2": "Data analysis, monitoring and evaluation, research and AI. Each course states its level, language and price.",
+    "buy": "Buy",
+    "clear": "Clear filters",
+    "enrolFree": "Enrol free",
+    "format": "Format",
+    "formatLive": "Live cohort scheduled",
+    "free": "Free",
+    "language": "Teaching language",
+    "level": "Level",
+    "noMatch": "No course matches these filters",
+    "none": "No courses are published yet",
+    "open": "Open",
+    "paid": "Paid",
+    "price": "Price",
+    "search": "Search courses",
+    "searchPlaceholder": "Search by course, topic or instructor",
+    "subject": "Subject",
+    "title2": "Courses",
+    "view": "View course",
+    "count_one": "{{count}} course",
+    "count_other": "{{count}} courses",
+    "results": "Results"
   },
   "createCourse": {
     "invalidFile": "Invalid file",
@@ -3449,7 +3481,30 @@
     "hoursShort": "{{count}} h",
     "capstoneWorkspaceLocked": "The capstone workspace opens after purchase",
     "getCapstoneAccess": "Get capstone access",
-    "paidLessonNote": "This lesson is part of the paid content. Buy this course to open every module and lesson."
+    "paidLessonNote": "This lesson is part of the paid content. Buy this course to open every module and lesson.",
+    "applyForScholarship2": "Apply for a scholarship",
+    "back": "Back",
+    "buyThisCourse2": "Buy this course",
+    "capstoneBriefBody": "The course ends with a real problem, worked through the five-step framework and marked by your instructor. A mark of 65% or more earns the certificate.",
+    "capstoneBriefTitle": "The capstone",
+    "capstoneIncluded2": "Capstone project",
+    "contentLocked2": "This lesson is locked",
+    "continueLearning2": "Continue learning",
+    "free": "Free",
+    "goToLesson2": "Go to lesson",
+    "instalments": "Two instalments on cohort places",
+    "outcomesTitle": "You will be able to",
+    "playWelcome": "Play the welcome video",
+    "requirements2": "Before you start",
+    "scholarshipOpen": "Scholarship applications are open",
+    "startLearning2": "Start learning",
+    "taughtIn": "Taught in {{language}}",
+    "tryFreeLesson": "Try a free lesson",
+    "welcomeVideo": "Welcome video",
+    "lessonsCount_one": "{{count}} lesson",
+    "lessonsCount_other": "{{count}} lessons",
+    "modulesCount_one": "{{count}} module",
+    "modulesCount_other": "{{count}} modules"
   },
   "teacherPendingApproval": {
     "yourAccountHasBeenApproved": "Your account has been approved!",

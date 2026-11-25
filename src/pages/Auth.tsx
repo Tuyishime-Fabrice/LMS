@@ -1,4 +1,5 @@
 import { Brand } from "@/components/shell/Brand";
+import { Photo } from "@/features/site/home/Photo";
 import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage } from "@/lib/browserStorage";
 import { useEffect, useState } from "react";
@@ -252,17 +253,21 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Right Side - Image */}
-      <div className="hidden lg:flex flex-1 relative">
-        <img
-          src="/images/mainpagepicture.jpg"
-          alt={t("auth.studentsLearningTogether", "Students learning together")}
-          className="absolute inset-0 w-full h-full object-cover"
+      {/* Right side: a DATA+ training photo */}
+      <div className="relative hidden flex-1 lg:flex">
+        <Photo
+          name="auth-learners"
+          width={1600}
+          height={2000}
+          priority
+          sizes="50vw"
+          alt={t("auth.photoAlt", "Learners lean in around one laptop during a DATA+ training session")}
+          className="absolute inset-0 block h-full w-full"
         />
-        <div className="absolute inset-0 to-transparent" />
-        <div className="absolute bottom-8 left-8 text-white z-10">
-          <h3 className="text-2xl font-bold mb-2">{t('login.joinCommunity')}</h3>
-          <p className="text-lg opacity-90">{t('login.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brand-950/85 to-transparent" aria-hidden />
+        <div className="absolute bottom-10 left-10 right-10 z-10 text-cream">
+          <p className="font-display text-3xl font-bold">{t("auth.panelTitle", "Learn with DATA+ Academy")}</p>
+          <p className="mt-2 text-lg text-cream/90">{t('login.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
         </div>
       </div>
     </div>

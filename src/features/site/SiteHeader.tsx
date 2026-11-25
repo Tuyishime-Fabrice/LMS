@@ -59,7 +59,6 @@ export function SiteHeader({ className }: { className?: string }) {
         <Link
           to="/"
           className={cn("flex items-center gap-3 rounded-lg transition-opacity duration-500", introEnded ? "opacity-100" : "opacity-0")}
-          aria-label={t("site.home", "DATA+ Academy home")}
         >
           <Brand />
           <span className="hidden border-l border-border pl-3 text-xs leading-4 text-muted-foreground sm:block">

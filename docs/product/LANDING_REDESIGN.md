@@ -139,7 +139,58 @@ Screenshots: `screenshots/landing/phase3-*.webp`.
 - The capstone step descriptions (one line each) explain the five framework names. Please check that they match how instructors teach the framework.
 - Photo consent for the four training photos used (classroom, two group-work photos, the group photo outside).
 
-## Phase 4 (next): other pages (Section 11)
+## Phase 4: other pages (done)
+- **/courses:**
+  - **Search:** by title, topic, category or instructor, ignoring accents.
+  - **Five filters:** subject, level, format, teaching language and price. All of them are kept in the URL.
+  - **Filter logic:** `src/features/courses/catalogueFilters.ts`, unit-tested.
+  - **Cards:** the shared course card (`CourseListingCard`, also used on the home page).
+  - **Buttons:** every card has the same two buttons. "View course", plus "Buy" for paid courses, "Enrol free" for free ones, or "Open" once enrolled. Signed-out visitors go to sign-up and come back afterwards.
+  - **Format:** means "a live cohort is scheduled". Courses have no other delivery data.
+  - **Empty state:** uses the trail motif.
+- **Course page:**
+  - **Hero:** cream, on the shared content width. It shows level (plus indicator), teaching language, capstone, lessons, hours, modules and the instructor.
+  - **Side card:** the generated cover (it plays the welcome video if there is one), the price in the site-wide "RWF 50,000" format, and buy and scholarship buttons. It adds "Try a free lesson" when a preview lesson exists, and payment options (Mobile Money, instalments when the cohort allows them, open scholarships).
+  - **Below the hero:** "You will be able to" outcomes with plus markers, the capstone brief (five-step framework, 65% pass mark, capstone titles) and "Before you start".
+  - **Visitors:** no "Your progress" and no locked-lesson panel. The player appears only for the free preview they open.
+  - **Signed-in learners:** progress shows next to the centred plus, which lights a layer at 33%, 66% and 100%.
+  - **Wording:** visitors see "Free preview" instead of "Teacher Preview Mode", and buttons are in sentence case.
+- **Sign-in and sign-up:** a DATA+ training photo instead of the stock image, the current logo, and the existing honest text.
+- **Shared header, footer and width:** /verify, /exhibition, /bundles, privacy, terms and the 404 page. The 404 page has the trail motif, a plain message and links to the catalogue and home.
+- **Accessibility fixes found on the way:**
+  - "At a glance" now uses a valid definition list.
+  - Locked lessons use readable grey text.
+  - The cover is no longer an unnamed button.
+  - The header logo link's name now includes its visible text.
+  - The catalogue has a results heading.
+
+Lighthouse on the demo build (mobile / desktop):
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|---|---|---|---|
+| / | 72 / 97 | 100 / 100 | 100 / 100 | 100 / 100 |
+| /courses | 71 / 98 | 100 / 100 | 100 / 100 | 100 / 100 |
+| /course/… | 64 / 96 | 100 / 100 | 100 / 100 | 100 / 100 |
+| /verify | 75 / 99 | 100 / 100 | 100 / 100 | 100 / 100 |
+
+CLS is 0 on all four pages. Mobile performance is the main script (Phase 5).
+
+Screenshots: `screenshots/landing/phase4-*.webp`.
+
+### Not changed, and why
+- **/about and /contact** still redirect to dataplusrwanda.com. `CLAUDE.md` says the corporate site owns company pages, and the brief asks for LMS pages. This needs your decision (DECISION_LOG D-33).
+- **"Teach with us" and the Teacher role on sign-up.** The brief asks to be told first. Here is how it works today:
+  1. The footer link opens `/signup?role=teacher`, which preselects "Teacher" on the public sign-up form.
+  2. The new account goes to `/teacher/onboarding`, a profile form (expertise, experience, documents).
+  3. The account then waits at `/teacher/pending-approval` with `teacher_approval_status = pending`.
+  4. An admin approves or rejects it in Admin › Teacher approvals.
+
+  So it is already an application with admin approval, but it starts by creating an account. A separate application form without an account would need a new table.
+- **Certificate seal (centred motif):** the certificate preview is also what learners download, so adding a seal would change issued certificates. That needs a sign-off first.
+
+### French to review (Phase 4)
+`catalogue.*` (new keys), `courseDetail.*2`, `courseDetail.taughtIn`, `courseDetail.outcomesTitle`, `courseDetail.capstoneBrief*`, `courseDetail.tryFreeLesson`, `courseDetail.instalments`, `courseDetail.scholarshipOpen`, `courseDetail.requirements2`, `courseDetail.lessonsCount_*`, `courseDetail.modulesCount_*`, `courseContentPlayer.freePreview`, `courseContentPlayer.staffPreview`, `auth.panelTitle`, `auth.photoAlt`, `notFound.*`.
+
+## Phase 5 (next): quality pass
 
 ## Content still needed from DATA+
 - Figures to publish: learners trained, organisations, cohorts.

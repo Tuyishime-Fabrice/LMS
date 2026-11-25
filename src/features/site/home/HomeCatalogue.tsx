@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { formatAmount, type LandingCourse } from "../landing-data";
 import type { SubjectSummary } from "./catalogueSummary";
 import { Section, SectionTitle } from "./Section";
+import { CourseListingCard } from "@/features/courses/CourseListingCard";
 import { useFamilyLabels } from "@/features/courses/useFamilyLabels";
 import { useReveal } from "./useReveal";
 
@@ -72,70 +73,6 @@ export function SubjectTiles({ subjects, loading }: { subjects: SubjectSummary[]
   );
 }
 
-function PriceLine({ course }: { course: LandingCourse }) {
-  const { t, i18n } = useTranslation();
-  if (course.isFree) return <span className="font-semibold text-success">{t("landing.free", "Free")}</span>;
-  if (course.earlyBird) {
-    return (
-      <span className="tabular flex flex-wrap items-baseline gap-x-2">
-        <span className="font-semibold text-forest">{formatAmount(course.earlyBird, course.currency, i18n.language)}</span>
-        <span className="text-xs text-muted-foreground line-through">{formatAmount(course.price, course.currency, i18n.language)}</span>
-      </span>
-    );
-  }
-  return <span className="tabular font-semibold text-forest">{formatAmount(course.price, course.currency, i18n.language)}</span>;
-}
-
-function FeaturedCard({ course, start }: { course: LandingCourse; start: string | undefined }) {
-  const { t } = useTranslation();
-  const locale = useDateLocale();
-  const level = course.level?.toLowerCase();
-  const levelLabel = level ? t(`landing.level.${level}`, course.level as string) : null;
-  const language = course.language === "fr" ? "Français" : course.language === "en" ? "English" : null;
-  const facts = [course.duration, start ? t("landing.featured.live", "Live cohort") : null, language].filter(Boolean) as string[];
-  const initials = (course.teacherName || "").split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-
-  return (
-    <li className="hover-lift group flex flex-col overflow-hidden rounded-lg border bg-card">
-      <Link to={`/course/${course.id}`} className="block overflow-hidden" tabIndex={-1} aria-hidden>
-        <CourseThumb title={course.title} category={course.category} className="hover-img aspect-[16/10] rounded-none" />
-      </Link>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-semibold leading-snug text-forest">
-          <Link to={`/course/${course.id}`} className="hover:text-primary">{course.title}</Link>
-        </h3>
-        {course.teacherName && (
-          <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-            {course.teacherAvatar
-              ? <img src={course.teacherAvatar} alt="" width={28} height={28} loading="lazy" className="h-7 w-7 rounded-full object-cover" />
-              : <span aria-hidden className="flex h-7 w-7 items-center justify-center rounded-full bg-mint text-[0.6875rem] font-semibold text-forest">{initials}</span>}
-            {t("landing.with", "with {{name}}", { name: course.teacherName })}
-          </p>
-        )}
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[0.8125rem] text-muted-foreground">
-          {level && isCourseLevel(level) && levelLabel && (
-            <span className="inline-flex items-center gap-1.5 font-medium text-forest"><PlusLevel level={level} label="" size={18} />{levelLabel}</span>
-          )}
-          {facts.map((fact) => <span key={fact}>{fact}</span>)}
-          {course.earlyBird && <span className="rounded-full bg-warning-surface px-2.5 py-0.5 text-xs font-medium text-warning">{t("landing.earlyBird", "Early bird")}</span>}
-        </div>
-        {start && (
-          <p className="mt-2 text-[0.8125rem] font-medium text-forest">
-            {t("landing.featured.starts", "Next start {{date}}", { date: format(new Date(start), "d MMMM yyyy", { locale }) })}
-          </p>
-        )}
-        <div className="min-h-5 flex-1" />
-        <div className="flex items-center justify-between gap-3 border-t pt-4">
-          <PriceLine course={course} />
-          <Link to={`/course/${course.id}`} className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-            {t("landing.viewCourse", "View course")} <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
-      </div>
-    </li>
-  );
-}
-
 /** Three courses on the cover system, with level, duration, format, language, next start and price. */
 export function FeaturedCourses({ courses, starts, loading }: { courses: LandingCourse[]; starts: Record<string, string>; loading: boolean }) {
   const { t } = useTranslation();
@@ -152,7 +89,7 @@ export function FeaturedCourses({ courses, starts, loading }: { courses: Landing
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((key) => <div key={key} className="h-96 animate-pulse rounded-lg bg-muted" />)}</div>
       ) : courses.length ? (
         <div ref={ref} className="reveal">
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{courses.map((course) => <FeaturedCard key={course.id} course={course} start={starts[course.id]} />)}</ul>
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{courses.map((course) => <CourseListingCard key={course.id} course={course} start={starts[course.id]} />)}</ul>
         </div>
       ) : (
         <p className="rounded-lg border bg-card px-6 py-10 text-center text-muted-foreground">{t("landing.courses.none", "New courses are being prepared. Check back soon.")}</p>

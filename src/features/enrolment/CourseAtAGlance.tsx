@@ -80,18 +80,15 @@ export function CourseAtAGlance({ courseId, counts, hasCapstone }: { courseId: s
 
   return (
     <section className="border-b bg-background" aria-labelledby="glance-heading">
-      <div className="space-y-5 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-site space-y-5 px-4 py-8 sm:px-6 lg:px-8">
         {mine && <JourneyCard item={mine} />}
         <div>
           <h2 id="glance-heading" className="text-eyebrow mb-3">{t("glance.title", "At a glance")}</h2>
           <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {facts.map((fact) => (
-              <div key={fact.label} className="surface flex gap-3 p-4">
-                <fact.icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-                <div>
-                  <dt className="text-sm font-semibold text-forest">{fact.label}</dt>
-                  <dd className="mt-1 text-sm leading-6 text-muted-foreground">{fact.body}</dd>
-                </div>
+              <div key={fact.label} className="surface p-4">
+                <dt className="flex items-center gap-2 text-sm font-semibold text-forest"><fact.icon className="h-4 w-4 shrink-0 text-primary" aria-hidden />{fact.label}</dt>
+                <dd className="mt-1 pl-6 text-sm leading-6 text-muted-foreground">{fact.body}</dd>
               </div>
             ))}
           </dl>
