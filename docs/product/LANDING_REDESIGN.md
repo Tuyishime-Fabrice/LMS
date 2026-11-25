@@ -180,7 +180,7 @@ Screenshots: `screenshots/landing/phase4-*.webp`.
 - **/about and /contact** still redirect to dataplusrwanda.com. `CLAUDE.md` says the corporate site owns company pages, and the brief asks for LMS pages. This needs your decision (DECISION_LOG D-33).
 - **"Teach with us" and the Teacher role on sign-up.** The brief asks to be told first. Here is how it works today:
   1. The footer link opens `/signup?role=teacher`, which preselects "Teacher" on the public sign-up form.
-  2. The new account goes to `/teacher/onboarding`, a profile form (expertise, experience, documents).
+  2. The new account goes to `/teacher/onboarding`, a short profile form (first and last name, email, phone and an avatar). It does not ask about teaching experience.
   3. The account then waits at `/teacher/pending-approval` with `teacher_approval_status = pending`.
   4. An admin approves or rejects it in Admin › Teacher approvals.
 
