@@ -184,7 +184,7 @@ Screenshots: `screenshots/landing/phase4-*.webp`.
   3. The account then waits at `/teacher/pending-approval` with `teacher_approval_status = pending`.
   4. An admin approves or rejects it in Admin › Teacher approvals.
 
-  So it is already an application with admin approval, but it starts by creating an account. A separate application form without an account would need a new table.
+  So it is already an application with admin approval, but it starts by creating an account. DATA+ confirmed on 2026-11-25 that this flow stays as it is (DECISION_LOG D-37).
 - **Certificate seal (centred motif):** the certificate preview is also what learners download, so adding a seal would change issued certificates. That needs a sign-off first.
 
 ### French to review (Phase 4)
