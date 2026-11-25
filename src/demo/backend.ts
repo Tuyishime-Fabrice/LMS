@@ -7,7 +7,7 @@
  */
 import { createSeed, DEMO_PASSWORD, type Row, type Tables } from "./seed";
 
-const STORE_KEY = "dataplus-demo-db-v1";
+const STORE_KEY = "dataplus-demo-db-v4";
 const AUTH_KEY = "dataplus-demo-auth-v1";
 export const DEMO_SUPABASE_URL = "https://demo.dataplus.invalid";
 
@@ -650,6 +650,104 @@ async function handleRpc(request: Request, fn: string): Promise<Response> {
 
     case "get_all_profiles":
       return ok(table("profiles"));
+
+    case "get_competition_leaderboard": {
+      const competition = table("competitions").find((row) => row.id === args.p_competition_id);
+      if (!competition?.results_published_at || String(competition.results_published_at) > nowIso()) return ok([]);
+      const best = new Map<string, number>();
+      table("competition_submissions").filter((row) => row.competition_id === competition.id && row.status === "scored" && row.score != null)
+        .forEach((row) => best.set(String(row.user_id), Math.max(best.get(String(row.user_id)) ?? -Infinity, Number(row.score))));
+      const sorted = Array.from(best.entries()).sort((a, b) => b[1] - a[1]);
+      return ok(sorted.map(([user, score]) => {
+        const parts = profileName(user).trim().split(/\s+/);
+        return { rank: sorted.findIndex((entry) => entry[1] === score) + 1, display_name: parts[1] ? `${parts[0]} ${parts[1][0]}.` : parts[0] || "Participant", score };
+      }));
+    }
+
+    case "competition_registration_open":
+      return ok(true);
+
+    /* Facilitation (mirrors 20261125000000_facilitators.sql for the signed-in demo user). */
+    case "get_facilitated_learners": {
+      const staff = table("course_staff").filter((row) => row.user_id === uid);
+      const cohorts = table("cohorts");
+      const rows = table("course_enrollments").filter((e) => staff.some((s) => s.course_id === e.course_id && (
+        !s.cohort_id || e.cohort_id === s.cohort_id || (!e.cohort_id && e.cohort_name === cohorts.find((c) => c.id === s.cohort_id)?.name))));
+      return ok(rows.map((e) => {
+        const person = table("profiles").find((p) => p.id === e.student_id);
+        return {
+          course_id: e.course_id, student_id: e.student_id, full_name: person?.full_name ?? null, avatar_url: person?.avatar_url ?? null,
+          cohort_name: e.cohort_name, progress_percentage: e.progress_percentage, completed: Boolean(e.completed), last_activity_at: e.last_activity_at, enrolled_at: e.enrolled_at,
+        };
+      }));
+    }
+    case "set_cohort_discord_url": {
+      const cohort = table("cohorts").find((row) => row.id === args.p_cohort_id);
+      const allowed = cohort && (cohort.teacher_id === uid || table("course_staff").some((s) => s.user_id === uid && s.course_id === cohort.course_id && (!s.cohort_id || s.cohort_id === cohort.id)));
+      if (!cohort || !allowed) return pgError(403, "42501", "You cannot change this cohort");
+      cohort.discord_url = String(args.p_url || "").trim() || null;
+      save();
+      return ok(null);
+    }
+    case "find_staffing_candidate": {
+      const email = String(args.p_email || "").trim().toLowerCase();
+      const person = table("profiles").find((row) => String(row.email).toLowerCase() === email && row.role !== "admin");
+      return ok(person ? [{ id: person.id, full_name: person.full_name, role: person.role }] : []);
+    }
+    case "approve_assignment_draft": {
+      const draft = table("assignment_drafts").find((row) => row.id === args.p_draft_id);
+      const course = draft && table("courses").find((row) => row.id === draft.course_id);
+      if (!draft || !course || (course.teacher_id !== uid && table("profiles").find((row) => row.id === uid)?.role !== "admin")) return pgError(403, "42501", "Only the course instructor or an administrator can approve");
+      if (draft.status !== "submitted") return pgError(400, "23514", "Only submitted drafts can be approved");
+      const siblings = table("course_lessons").filter((row) => row.chapter_id === draft.chapter_id);
+      const lesson = {
+        id: uuid(), chapter_id: draft.chapter_id, title: draft.title, description: draft.instructions, content_type: "assignment", content_url: "",
+        file_url: null, duration: null, order_index: siblings.reduce((max, row) => Math.max(max, Number(row.order_index) + 1), 0),
+        is_preview: false, is_mandatory: true, learning_objectives: null, due_date: draft.due_date, rubric: draft.rubric, created_at: nowIso(), updated_at: nowIso(),
+      };
+      table("course_lessons").push(lesson);
+      Object.assign(draft, { status: "approved", lesson_id: lesson.id, reviewed_by: uid, reviewed_at: nowIso(), review_note: null, updated_at: nowIso() });
+      save();
+      return ok(lesson.id);
+    }
+    case "return_assignment_draft": {
+      const draft = table("assignment_drafts").find((row) => row.id === args.p_draft_id);
+      const note = String(args.p_note || "").trim();
+      if (!draft || draft.status !== "submitted" || note.length < 10) return pgError(400, "23514", "Say what needs to change");
+      Object.assign(draft, { status: "changes_requested", review_note: note, reviewed_by: uid, reviewed_at: nowIso(), updated_at: nowIso() });
+      save();
+      return ok(null);
+    }
+
+    case "get_course_staff":
+      return ok(table("course_staff").filter((row) => row.course_id === args.p_course_id).map((row) => {
+        const person = table("profiles").find((p) => p.id === row.user_id);
+        return { id: row.id, user_id: row.user_id, cohort_id: row.cohort_id, full_name: person?.full_name ?? null, email: person?.email ?? "", created_at: row.created_at };
+      }));
+
+    case "get_onboarding_insights": {
+      const min = 5;
+      const all = table("learner_preferences");
+      const consenting = all.filter((row) => row.research_consent);
+      const questions: Record<string, { counts: Record<string, number>; suppressed: number }> = {};
+      const add = (question: string, answer: unknown) => {
+        if (answer == null) return;
+        const bucket = (questions[question] ||= { counts: {}, suppressed: 0 });
+        bucket.counts[String(answer)] = (bucket.counts[String(answer)] || 0) + 1;
+      };
+      consenting.forEach((row) => {
+        add("goal", row.learning_goal); add("level", row.experience_level); add("mode", row.preferred_mode);
+        add("hours", row.weekly_hours); add("access", row.access_route);
+        ((row.interests as string[]) || []).forEach((value) => add("interest", value));
+        ((row.tools as string[]) || []).forEach((value) => add("tool", value));
+      });
+      Object.values(questions).forEach((bucket) => {
+        Object.entries(bucket.counts).forEach(([answer, count]) => {
+          if (count < min) { bucket.suppressed += count; delete bucket.counts[answer]; }
+        });
+      });
+      return ok({ minimum_group_size: min, learners_with_answers: all.length, consenting_learners: consenting.length, questions });
+    }
 
     case "get_admin_dashboard_stats": {
       const profiles = table("profiles");

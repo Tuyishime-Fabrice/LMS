@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shell/page";
+import { FacilitatorsDialog } from "@/features/facilitation/FacilitatorsDialog";
+import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
 import { AppShell } from "@/components/shell/AppShell";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -199,7 +201,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.courses')}</CardTitle>
-                        <BookOpen className="h-4 w-4 text-muted-foreground/60" />
+                        <BookOpen className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{courses.length}</div>
@@ -210,7 +212,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.students')}</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground/60" />
+                        <Users className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalStudents}</div>
@@ -221,7 +223,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.lessons')}</CardTitle>
-                        <PlayCircle className="h-4 w-4 text-muted-foreground/60" />
+                        <PlayCircle className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalLessons}</div>
@@ -232,7 +234,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.chapters')}</CardTitle>
-                        <Layers className="h-4 w-4 text-muted-foreground/60" />
+                        <Layers className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalChapters}</div>
@@ -268,10 +270,10 @@ const TeacherDashboard = () => {
                         </div>
                       ) : courses.length === 0 ? (
                         <div className="text-center py-10">
-                          <BookOpen className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                          <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                           <h3 className="font-medium text-forest mb-1">{t('teacher.dashboard.noCourses')}</h3>
                           <p className="text-sm text-muted-foreground mb-4">{t('teacher.dashboard.createFirst')}</p>
-                          <Button onClick={() => navigate("/create-course")} className="bg-primary hover:bg-primary-hover">
+                          <Button onClick={() => navigate("/create-course")} className="bg-action hover:bg-action-hover">
                             <Plus className="h-4 w-4 mr-2" />
                             {t('courses.createCourse')}
                           </Button>
@@ -280,7 +282,7 @@ const TeacherDashboard = () => {
                         <ul className="divide-y">
                           {courses.map((course) => (
                             <li key={course.id} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
-                              <CourseThumb src={course.thumbnail_url} title={course.title} className="h-14 w-20 shrink-0" />
+                              <CourseThumb compact title={course.title} className="h-14 w-20 shrink-0" />
                               <div className="min-w-0 flex-1">
                                 <Link to={`/course/${course.id}`} className="block truncate text-[0.9375rem] font-medium text-forest hover:text-primary">
                                   {course.title}
@@ -293,6 +295,14 @@ const TeacherDashboard = () => {
                                   </StatusPill>
                                 )}
                               </div>
+                              <FacilitatorsDialog courseId={course.id} courseTitle={course.title} />
+                              <CommunityLinkEditor
+                                target="courses"
+                                id={course.id}
+                                name={course.title}
+                                current={course.discord_url}
+                                onSaved={(url) => setCourses((list) => list.map((item) => item.id === course.id ? { ...item, discord_url: url } : item))}
+                              />
                               <Button asChild variant="outline" size="sm">
                                 <Link to={`/create-course?edit=${course.id}`}><Pencil />{t("common.edit", "Edit")}</Link>
                               </Button>
@@ -344,7 +354,7 @@ const TeacherDashboard = () => {
                         </>
                       ) : scheduledClasses.length === 0 ? (
                         <div className="text-center py-6">
-                          <CalendarIcon className="h-8 w-8 text-muted-foreground/60 mx-auto mb-2" />
+                          <CalendarIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                           <p className="text-sm text-muted-foreground">{t('schedule.noUpcomingClasses')}</p>
                         </div>
                       ) : (
@@ -359,7 +369,7 @@ const TeacherDashboard = () => {
                               <div className="flex-1 min-w-0">
                                 <h5 className="font-medium text-sm text-forest truncate">{classItem.title}</h5>
                                 <p className="text-xs text-muted-foreground truncate">{classItem.courses?.title}</p>
-                                <p className="text-xs text-muted-foreground/60 mt-1">{time}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{time}</p>
                               </div>
                             </div>
                           );

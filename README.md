@@ -1,6 +1,8 @@
-# DataPlus Academy LMS
+# DATA+ Academy LMS
 
-Learning platform for DataPlus Academy: courses with cohorts, live sessions, quizzes, assignments and capstone projects, certificates, Mobile Money payments, and an AI tutor. English and French.
+Product rules: [CLAUDE.md](CLAUDE.md) · product docs: [docs/product](docs/product/).
+
+Learning platform for DATA+ Academy: courses with cohorts, live sessions, quizzes, assignments and capstone projects, certificates, Mobile Money payments, and an AI tutor. English and French.
 
 ## Stack
 
@@ -67,6 +69,10 @@ npm run build
 | `20261118000000_exhibition_projects.sql` | The student exhibition table and image bucket, which the exhibition pages already used |
 | `20261118000100_realtime_tables.sql` | Live updates for messages, notifications and announcements |
 | `20261118000200_lesson_files_access.sql` | Lesson files follow lesson access: no longer readable by anyone signed out, by learners of other courses, or by unapproved teachers |
+| `20261124000000_academy_experience.sql` | Discord links, skill/career tracks, competitions, onboarding preferences with research consent, rubrics, written feedback required with every mark, grade history. After this, a mark cannot be saved without a 20-character comment |
+| `20261125000000_facilitators.sql` | Facilitators assigned per course or cohort, provisional reviews for instructors, and a fix so only course staff can post course announcements. Apply after the previous one |
+| `20261126000000_drafts_and_cohort_announcements.sql` | Announcements for one cohort (only that cohort reads and is notified), facilitator assignment drafts that the instructor approves or returns, and announcement edits limited to where the author may post. Apply after the facilitators migration |
+| `20261127000000_listing_and_verification.sql` | `courses.listed` (admin-only switch that hides a course from the public catalogue and landing) and `exhibition_projects.outcomes_verified` (admin-only switch that shows scores and outcome text on the public projects page). Existing courses stay listed; existing projects start unverified |
 
 The app tolerates a database where the first two are not applied yet (the new features stay hidden or fall back), but the redesigned learner pages need them to work fully.
 
@@ -93,6 +99,7 @@ The app can run entirely in the browser with sample data, without Supabase or an
 | Learner (Aline Uwase) | `aline@dataplus-demo.test` | `demo1234` |
 | Instructor (Théo Mugisha) | `theo@dataplus-demo.test` | `demo1234` |
 | Admin (Grace Ingabire) | `admin@dataplus-demo.test` | `demo1234` |
+| Facilitator (Diane Mutesi, Cohort 3) | `diane@dataplus-demo.test` | `demo1234` |
 
 The sign-in page also has one-click buttons for each, and a **Demo** button in the corner switches account or resets the data.
 
@@ -103,6 +110,8 @@ Run it locally:
 ```bash
 VITE_DEMO_MODE=true npm run dev
 ```
+
+If the machine has no IPv6, add `-- --host 127.0.0.1`.
 
 Build a static copy (hash URLs, relative paths) into `dist-demo/`:
 
@@ -135,9 +144,9 @@ The tutor sees lesson titles, descriptions and objectives. It does not see the v
 
 ## Design
 
-Colours, fonts and radii live in `src/index.css` (tokens) and `tailwind.config.ts`. The palette is midnight navy `#060C2E`, orange `#C9501F` for buttons and links (`#E4683A` on navy), royal blue `#2442E4` for accents and focus, and warm paper `#F2F1EC` behind white cards. Success states (paid, passed, graded) use green and never the brand orange. Text and headings are Inter; large headlines use Bebas Neue (`text-poster`). Both fonts are bundled, so no font is loaded from Google.
+Tokens live in `src/index.css` and `tailwind.config.ts`; the full system is in [docs/product/DESIGN_SYSTEM.md](docs/product/DESIGN_SYSTEM.md). DATA+ green `#4B6929` (from the logo) for actions and progress, green-tinted ink `#1F271C`, neutral canvas `#F5F5F2` behind white panels, emerald for success, blue for focus. One typeface: Inter, bundled.
 
-Public pages share `src/features/site` (header, footer, title band, partner form). Signed-in pages share `src/components/shell`.
+Public pages share `src/features/site` (header, footer, discovery layout). Signed-in pages share `src/components/shell`. Company pages (about, contact) live on the corporate site set by `VITE_CORPORATE_SITE_URL`.
 
 ## Notification emails
 
@@ -166,7 +175,7 @@ The site has a web app manifest and a service worker (`public/sw.js`), so learne
 | `src/pages` | One file per route; learner, instructor and admin areas |
 | `src/index.css` | Design tokens. Colours are changed here only |
 | `api`, `server/lib` | Serverless functions and their helpers |
-| `tests` | Node tests for checkout, auth storage and the tutor |
+| `tests` | Node tests for checkout, auth storage, the tutor, and the journey, track, competition, rubric and Discord-link rules |
 
 ## Security note
 

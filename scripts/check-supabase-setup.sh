@@ -27,10 +27,10 @@ echo "setup.sql: second run refused"
 run -f "$ROOT/supabase/tests/fixtures.sql" >/dev/null 2>&1
 # security_and_certificates logs in as authenticator, the role the Supabase API uses.
 AUTH_URL="$(printf '%s' "$SERVER" | sed -E 's#//[^@/]*@#//authenticator@#')"
-for test in security_and_certificates ai_tutor lesson_files; do
-  if [ "$test" = security_and_certificates ]; then url="$AUTH_URL/$DB"; else url="$SERVER/$DB"; fi
+for test in security_and_certificates ai_tutor lesson_files academy_experience facilitators drafts_and_cohort_announcements listing_and_verification; do
+  case "$test" in security_and_certificates|academy_experience|facilitators|drafts_and_cohort_announcements|listing_and_verification) url="$AUTH_URL/$DB" ;; *) url="$SERVER/$DB" ;; esac
   out="$(psql "$url" -X -v ON_ERROR_STOP=1 -f "$ROOT/supabase/tests/$test.sql" 2>&1)" || { echo "$out" | grep -E "ERROR|FAILED" >&2; exit 1; }
   echo "$test: $(printf '%s\n' "$out" | grep -c 'ok -') checks passed"
 done
 
-psql "$SERVER/postgres" -X -q -c "DROP DATABASE IF EXISTS $DB"
+[ -n "${KEEP_DB:-}" ] || psql "$SERVER/postgres" -X -q -c "DROP DATABASE IF EXISTS $DB"

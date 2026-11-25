@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage } from "@/lib/browserStorage";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ const PENDING_VERIFICATION_EMAIL_KEY = "pendingVerificationEmail";
 
 const VerifyEmail = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.verifyEmail.title", "Check your email"), noindex: true });
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [resending, setResending] = useState(false);
@@ -97,7 +99,7 @@ const VerifyEmail = () => {
                 <p className="pt-0.5">
                   <span className="font-medium text-foreground">{t("verifyEmail.checkYourEmailInbox", "Check your email inbox")}</span>
                   <br />
-                  <span className="text-xs">{t("verifyEmail.lookForAnEmailFromDataplus", "Look for an email from DataPlus Academy")}</span>
+                  <span className="text-xs">{t("verifyEmail.lookForAnEmailFromDataplus", "Look for an email from DATA+ Academy")}</span>
                 </p>
               </div>
               <div className="flex items-start gap-3">

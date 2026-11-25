@@ -257,21 +257,24 @@ export async function resolveLessonFileUrl(raw: string | null | undefined): Prom
   return supabase.storage.from("lesson-files").getPublicUrl(path).data?.publicUrl || null;
 }
 
-export type TeacherAnnouncement = { id: string; title: string; message: string; createdAt: string; courseTitle: string | null };
+export type TeacherAnnouncement = { id: string; title: string; message: string; createdAt: string; courseTitle: string | null; cohortName: string | null };
 
 export async function fetchCourseAnnouncements(limit = 4): Promise<TeacherAnnouncement[]> {
-  const { data, error } = await supabase
-    .from("teacher_announcements")
-    .select("id, title, message, created_at, courses ( title )")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data || []).map((row) => ({
+  // cohort_id arrives with the 2026-11-26 migration; read without it before that.
+  const query = (columns: string) => supabase.from("teacher_announcements").select(columns)
+    .eq("is_active", true).order("created_at", { ascending: false }).limit(limit);
+  let result = await query("id, title, message, created_at, cohort_id, courses ( title )");
+  if (result.error) result = await query("id, title, message, created_at, courses ( title )");
+  if (result.error) throw result.error;
+  const rows = (result.data || []) as unknown as { id: string; title: string; message: string; created_at: string | null; cohort_id?: string | null; courses: { title: string } | null }[];
+  const cohortIds = Array.from(new Set(rows.map((row) => row.cohort_id).filter(Boolean))) as string[];
+  const cohorts = cohortIds.length ? (await supabase.from("cohorts").select("id, name").in("id", cohortIds)).data || [] : [];
+  return rows.map((row) => ({
     id: row.id,
     title: row.title,
     message: row.message,
     createdAt: row.created_at || new Date().toISOString(),
-    courseTitle: (row.courses as { title: string } | null)?.title ?? null,
+    courseTitle: row.courses?.title ?? null,
+    cohortName: cohorts.find((cohort) => cohort.id === row.cohort_id)?.name ?? null,
   }));
 }

@@ -249,7 +249,7 @@ export function CohortJoinRequests() {
                     size="sm"
                     onClick={() => handleApprove(request)}
                     disabled={processing}
-                    className="bg-primary hover:bg-primary-hover"
+                    className="bg-action hover:bg-action-hover"
                   >
                     <Check className="h-4 w-4 mr-1" />
                     {t("cohort.approve")}
@@ -288,7 +288,7 @@ export function CohortJoinRequests() {
             <Button
               onClick={() => selectedRequest && handleApprove(selectedRequest)}
               disabled={processing}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Check className="h-4 w-4 mr-1" />
               {t("cohort.approve")}

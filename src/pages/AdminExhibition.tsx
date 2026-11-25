@@ -28,6 +28,7 @@ type ExhibitionProject = {
   technologies: string[];
   project_link: string | null;
   is_featured: boolean;
+  outcomes_verified?: boolean;
   display_order: number;
   created_at: string;
   // Capstone Framework Fields
@@ -224,6 +225,17 @@ const AdminExhibition = () => {
     }
   };
 
+  // Scores, achievements and results go public only once checked (exhibition_projects.outcomes_verified).
+  const toggleVerified = async (project: ExhibitionProject) => {
+    const { error } = await supabase.from("exhibition_projects").update({ outcomes_verified: !project.outcomes_verified }).eq("id", project.id);
+    if (error) {
+      toast.error(t("adminExhibition.verifyError", "Could not change verification. The latest database update may be missing."));
+      return;
+    }
+    toast.success(project.outcomes_verified ? t("adminExhibition.unverified", "Outcomes hidden from the public page") : t("adminExhibition.verified", "Outcomes shown on the public page"));
+    fetchProjects();
+  };
+
   const resetForm = () => {
     setFormData({
       student_name: "",
@@ -320,7 +332,7 @@ const AdminExhibition = () => {
                   resetForm();
                   setDialogOpen(true);
                 }}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 {t("adminExhibition.addProject", "Add Project")}
@@ -391,10 +403,10 @@ const AdminExhibition = () => {
                   </div>
                 ) : projects.length === 0 ? (
                   <div className="text-center py-12">
-                    <Trophy className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <Trophy className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-forest mb-2">{t("adminExhibition.noProjectsYet", "No projects yet")}</h3>
                     <p className="text-muted-foreground mb-4">{t("adminExhibition.addYourFirstExhibitionProjectTo", "Add your first exhibition project to showcase on the landing page")}</p>
-                    <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
+                    <Button onClick={() => setDialogOpen(true)} className="bg-action hover:bg-action-hover">
                       <Plus className="w-4 h-4 mr-2" />
                       {t("adminExhibition.addProject", "Add Project")}
                     </Button>
@@ -408,6 +420,7 @@ const AdminExhibition = () => {
                         <TableHead>{t("adminExhibition.course", "Course")}</TableHead>
                         <TableHead>{t("adminExhibition.score", "Score")}</TableHead>
                         <TableHead>{t("adminExhibition.featured", "Featured")}</TableHead>
+                        <TableHead>{t("adminExhibition.verifiedLabel", "Outcomes verified")}</TableHead>
                         <TableHead className="text-right">{t("adminExhibition.actions", "Actions")}</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -446,6 +459,13 @@ const AdminExhibition = () => {
                             <Switch
                               checked={project.is_featured}
                               onCheckedChange={() => toggleFeatured(project)}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Switch
+                              checked={Boolean(project.outcomes_verified)}
+                              onCheckedChange={() => void toggleVerified(project)}
+                              aria-label={t("adminExhibition.verifiedLabel", "Outcomes verified")}
                             />
                           </TableCell>
                           <TableCell className="text-right">
@@ -509,7 +529,7 @@ const AdminExhibition = () => {
                   </div>
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-border flex items-center justify-center">
-                    <Image className="w-8 h-8 text-muted-foreground/60" />
+                    <Image className="w-8 h-8 text-muted-foreground" />
                   </div>
                 )}
                 <div>
@@ -740,7 +760,7 @@ const AdminExhibition = () => {
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 {t("adminExhibition.cancel", "Cancel")}
               </Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-hover">
+              <Button type="submit" className="bg-action hover:bg-action-hover">
                 {selectedProject ? t("adminExhibition.updateProject", "Update Project") : t("adminExhibition.addProject", "Add Project")}
               </Button>
             </div>

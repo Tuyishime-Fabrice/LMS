@@ -71,8 +71,8 @@ async function imageDataUrl(path: string): Promise<{ data: string; width: number
   }
 }
 
-const FOREST: [number, number, number] = [6, 12, 46];
-const GREEN: [number, number, number] = [201, 80, 31];
+const FOREST: [number, number, number] = [31, 39, 28];
+const GREEN: [number, number, number] = [75, 105, 41];
 const MUTED: [number, number, number] = [94, 107, 99];
 
 /**
@@ -105,7 +105,7 @@ export async function downloadCertificatePdf(certificate: Certificate, language:
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.setTextColor(...MUTED);
-  doc.text("DataPlus Academy", W / 2, 54, { align: "center" });
+  doc.text("DATA+ Academy", W / 2, 54, { align: "center" });
 
   doc.setFont("times", "bold");
   doc.setFontSize(31);
@@ -159,7 +159,7 @@ export async function downloadCertificatePdf(certificate: Certificate, language:
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(...FOREST);
-  doc.text("DataPlus Academy", 148, baseY - 3, { align: "center" });
+  doc.text("DATA+ Academy", 148, baseY - 3, { align: "center" });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...MUTED);
@@ -167,7 +167,7 @@ export async function downloadCertificatePdf(certificate: Certificate, language:
 
   if (certificate.code) {
     const url = verificationUrl(certificate.code);
-    const qr = await QRCode.toDataURL(url, { margin: 0, width: 360, color: { dark: "#060C2E", light: "#FCFCF9" } });
+    const qr = await QRCode.toDataURL(url, { margin: 0, width: 360, color: { dark: "#1F271C", light: "#FCFCF9" } });
     doc.addImage(qr, "PNG", 232, 148, 30, 30);
     doc.setFontSize(8);
     doc.setTextColor(...MUTED);
@@ -183,5 +183,5 @@ export async function downloadCertificatePdf(certificate: Certificate, language:
   }
 
   const safe = certificate.courseTitle.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 60);
-  doc.save(`DataPlus-Certificate-${safe || "course"}.pdf`);
+  doc.save(`DATA-Plus-Academy-Certificate-${safe || "course"}.pdf`);
 }

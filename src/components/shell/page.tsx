@@ -79,7 +79,7 @@ export function ProgressBar({
       )}
     >
       <div style={{ width: `${clamped}%` }} className="h-full">
-        <div className={cn("animate-grow-x h-full rounded-full", tone === "green" ? "bg-primary" : "bg-flame")} />
+        <div className={cn("animate-grow-x h-full rounded-full", "bg-action")} />
       </div>
     </div>
   );

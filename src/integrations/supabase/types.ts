@@ -96,6 +96,63 @@ export type Database = {
         };
         Relationships: [];
       };
+      assignment_drafts: {
+        Row: {
+          author_id: string;
+          chapter_id: string;
+          course_id: string;
+          created_at: string;
+          due_date: string | null;
+          id: string;
+          instructions: string | null;
+          lesson_id: string | null;
+          review_note: string | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          rubric: Json | null;
+          status: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          author_id?: string;
+          chapter_id: string;
+          course_id: string;
+          created_at?: string;
+          due_date?: string | null;
+          id?: string;
+          instructions?: string | null;
+          lesson_id?: string | null;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          rubric?: Json | null;
+          status?: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          author_id?: string;
+          chapter_id?: string;
+          course_id?: string;
+          created_at?: string;
+          due_date?: string | null;
+          id?: string;
+          instructions?: string | null;
+          lesson_id?: string | null;
+          review_note?: string | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          rubric?: Json | null;
+          status?: "draft" | "submitted" | "changes_requested" | "approved";
+          submitted_at?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       assignment_submissions: {
         Row: {
           created_at: string | null;
@@ -106,6 +163,7 @@ export type Database = {
           id: string;
           lesson_id: string;
           project_links: string[] | null;
+          rubric_scores: Json | null;
           student_id: string;
           submitted_at: string | null;
           updated_at: string | null;
@@ -119,6 +177,7 @@ export type Database = {
           id?: string;
           lesson_id: string;
           project_links?: string[] | null;
+          rubric_scores?: Json | null;
           student_id: string;
           submitted_at?: string | null;
           updated_at?: string | null;
@@ -132,6 +191,7 @@ export type Database = {
           id?: string;
           lesson_id?: string;
           project_links?: string[] | null;
+          rubric_scores?: Json | null;
           student_id?: string;
           submitted_at?: string | null;
           updated_at?: string | null;
@@ -196,6 +256,7 @@ export type Database = {
           id: string;
           instructions: string;
           requirements: string[] | null;
+          rubric: Json | null;
           title: string;
           updated_at: string;
         };
@@ -208,6 +269,7 @@ export type Database = {
           id?: string;
           instructions: string;
           requirements?: string[] | null;
+          rubric?: Json | null;
           title: string;
           updated_at?: string;
         };
@@ -220,6 +282,7 @@ export type Database = {
           id?: string;
           instructions?: string;
           requirements?: string[] | null;
+          rubric?: Json | null;
           title?: string;
           updated_at?: string;
         };
@@ -236,6 +299,7 @@ export type Database = {
           graded_by: string | null;
           id: string;
           project_links: string[] | null;
+          rubric_scores: Json | null;
           student_id: string;
           submitted_at: string;
         };
@@ -249,6 +313,7 @@ export type Database = {
           graded_by?: string | null;
           id?: string;
           project_links?: string[] | null;
+          rubric_scores?: Json | null;
           student_id: string;
           submitted_at?: string;
         };
@@ -262,6 +327,7 @@ export type Database = {
           graded_by?: string | null;
           id?: string;
           project_links?: string[] | null;
+          rubric_scores?: Json | null;
           student_id?: string;
           submitted_at?: string;
         };
@@ -429,6 +495,7 @@ export type Database = {
           created_at: string;
           currency: string | null;
           description: string | null;
+          discord_url: string | null;
           end_date: string | null;
           id: string;
           instalment_count: number | null;
@@ -448,6 +515,7 @@ export type Database = {
           created_at?: string;
           currency?: string | null;
           description?: string | null;
+          discord_url?: string | null;
           end_date?: string | null;
           id?: string;
           instalment_count?: number | null;
@@ -467,6 +535,7 @@ export type Database = {
           created_at?: string;
           currency?: string | null;
           description?: string | null;
+          discord_url?: string | null;
           end_date?: string | null;
           id?: string;
           instalment_count?: number | null;
@@ -482,6 +551,153 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [{"foreignKeyName":"cohorts_course_id_fkey","columns":["course_id"],"isOneToOne":false,"referencedRelation":"courses","referencedColumns":["id"]},{"foreignKeyName":"cohorts_teacher_id_fkey","columns":["teacher_id"],"isOneToOne":false,"referencedRelation":"profiles","referencedColumns":["id"]}];
+      };
+      competition_registrations: {
+        Row: {
+          competition_id: string;
+          created_at: string;
+          id: string;
+          status: "registered" | "withdrawn" | "disqualified";
+          team_name: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          competition_id: string;
+          created_at?: string;
+          id?: string;
+          status?: "registered" | "withdrawn" | "disqualified";
+          team_name?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          competition_id?: string;
+          created_at?: string;
+          id?: string;
+          status?: "registered" | "withdrawn" | "disqualified";
+          team_name?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      competition_submissions: {
+        Row: {
+          competition_id: string;
+          description: string | null;
+          id: string;
+          judge_feedback: string | null;
+          score: number | null;
+          scored_at: string | null;
+          scored_by: string | null;
+          status: "submitted" | "under_review" | "scored" | "rejected";
+          submission_url: string;
+          submitted_at: string;
+          title: string;
+          user_id: string;
+        };
+        Insert: {
+          competition_id: string;
+          description?: string | null;
+          id?: string;
+          judge_feedback?: string | null;
+          score?: number | null;
+          scored_at?: string | null;
+          scored_by?: string | null;
+          status?: "submitted" | "under_review" | "scored" | "rejected";
+          submission_url: string;
+          submitted_at?: string;
+          title: string;
+          user_id: string;
+        };
+        Update: {
+          competition_id?: string;
+          description?: string | null;
+          id?: string;
+          judge_feedback?: string | null;
+          score?: number | null;
+          scored_at?: string | null;
+          scored_by?: string | null;
+          status?: "submitted" | "under_review" | "scored" | "rejected";
+          submission_url?: string;
+          submitted_at?: string;
+          title?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      competitions: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          dataset_url: string | null;
+          description: string | null;
+          discord_url: string | null;
+          eligibility: string | null;
+          id: string;
+          open_to_public: boolean;
+          prizes: string | null;
+          registration_closes_at: string | null;
+          registration_opens_at: string | null;
+          results_published_at: string | null;
+          rules: string | null;
+          slug: string;
+          starts_at: string | null;
+          status: "draft" | "upcoming" | "open" | "judging" | "closed";
+          submission_deadline: string | null;
+          submission_instructions: string | null;
+          summary: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          dataset_url?: string | null;
+          description?: string | null;
+          discord_url?: string | null;
+          eligibility?: string | null;
+          id?: string;
+          open_to_public?: boolean;
+          prizes?: string | null;
+          registration_closes_at?: string | null;
+          registration_opens_at?: string | null;
+          results_published_at?: string | null;
+          rules?: string | null;
+          slug: string;
+          starts_at?: string | null;
+          status?: "draft" | "upcoming" | "open" | "judging" | "closed";
+          submission_deadline?: string | null;
+          submission_instructions?: string | null;
+          summary?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          dataset_url?: string | null;
+          description?: string | null;
+          discord_url?: string | null;
+          eligibility?: string | null;
+          id?: string;
+          open_to_public?: boolean;
+          prizes?: string | null;
+          registration_closes_at?: string | null;
+          registration_opens_at?: string | null;
+          results_published_at?: string | null;
+          rules?: string | null;
+          slug?: string;
+          starts_at?: string | null;
+          status?: "draft" | "upcoming" | "open" | "judging" | "closed";
+          submission_deadline?: string | null;
+          submission_instructions?: string | null;
+          summary?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       conversations: {
         Row: {
@@ -834,6 +1050,7 @@ export type Database = {
           is_preview: boolean | null;
           learning_objectives: string[] | null;
           order_index: number;
+          rubric: Json | null;
           title: string;
           updated_at: string | null;
         };
@@ -851,6 +1068,7 @@ export type Database = {
           is_preview?: boolean | null;
           learning_objectives?: string[] | null;
           order_index?: number;
+          rubric?: Json | null;
           title: string;
           updated_at?: string | null;
         };
@@ -868,6 +1086,7 @@ export type Database = {
           is_preview?: boolean | null;
           learning_objectives?: string[] | null;
           order_index?: number;
+          rubric?: Json | null;
           title?: string;
           updated_at?: string | null;
         };
@@ -939,6 +1158,36 @@ export type Database = {
         };
         Relationships: [{"foreignKeyName":"course_price_tiers_course_id_fkey","columns":["course_id"],"isOneToOne":false,"referencedRelation":"courses","referencedColumns":["id"]}];
       };
+      course_staff: {
+        Row: {
+          assigned_by: string | null;
+          cohort_id: string | null;
+          course_id: string;
+          created_at: string;
+          id: string;
+          staff_role: "facilitator";
+          user_id: string;
+        };
+        Insert: {
+          assigned_by?: string | null;
+          cohort_id?: string | null;
+          course_id: string;
+          created_at?: string;
+          id?: string;
+          staff_role?: "facilitator";
+          user_id: string;
+        };
+        Update: {
+          assigned_by?: string | null;
+          cohort_id?: string | null;
+          course_id?: string;
+          created_at?: string;
+          id?: string;
+          staff_role?: "facilitator";
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       course_update_history: {
         Row: {
           changes: Json | null;
@@ -985,6 +1234,7 @@ export type Database = {
           created_at: string;
           currency: string | null;
           description: string | null;
+          discord_url: string | null;
           duration: string | null;
           early_bird_end: string | null;
           early_bird_max_seats: number | null;
@@ -998,6 +1248,7 @@ export type Database = {
           last_approved_at: string | null;
           learning_outcomes: string[] | null;
           level: "beginner" | "intermediate" | "advanced" | null;
+          listed: boolean;
           mode: string | null;
           pending_update: boolean | null;
           price: number | null;
@@ -1022,6 +1273,7 @@ export type Database = {
           created_at?: string;
           currency?: string | null;
           description?: string | null;
+          discord_url?: string | null;
           duration?: string | null;
           early_bird_end?: string | null;
           early_bird_max_seats?: number | null;
@@ -1035,6 +1287,7 @@ export type Database = {
           last_approved_at?: string | null;
           learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
+          listed?: boolean;
           mode?: string | null;
           pending_update?: boolean | null;
           price?: number | null;
@@ -1059,6 +1312,7 @@ export type Database = {
           created_at?: string;
           currency?: string | null;
           description?: string | null;
+          discord_url?: string | null;
           duration?: string | null;
           early_bird_end?: string | null;
           early_bird_max_seats?: number | null;
@@ -1072,6 +1326,7 @@ export type Database = {
           last_approved_at?: string | null;
           learning_outcomes?: string[] | null;
           level?: "beginner" | "intermediate" | "advanced" | null;
+          listed?: boolean;
           mode?: string | null;
           pending_update?: boolean | null;
           price?: number | null;
@@ -1136,6 +1391,7 @@ export type Database = {
           display_order: number;
           id: string;
           is_featured: boolean;
+          outcomes_verified: boolean;
           problem_definition: string | null;
           project_description: string;
           project_link: string | null;
@@ -1156,6 +1412,7 @@ export type Database = {
           display_order?: number;
           id?: string;
           is_featured?: boolean;
+          outcomes_verified?: boolean;
           problem_definition?: string | null;
           project_description?: string;
           project_link?: string | null;
@@ -1176,6 +1433,7 @@ export type Database = {
           display_order?: number;
           id?: string;
           is_featured?: boolean;
+          outcomes_verified?: boolean;
           problem_definition?: string | null;
           project_description?: string;
           project_link?: string | null;
@@ -1185,6 +1443,42 @@ export type Database = {
           student_name?: string;
           technologies?: string[];
           tools_methods?: string | null;
+        };
+        Relationships: [];
+      };
+      grade_history: {
+        Row: {
+          feedback: string | null;
+          grade: number | null;
+          graded_by: string | null;
+          id: string;
+          recorded_at: string;
+          rubric_scores: Json | null;
+          student_id: string;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+        };
+        Insert: {
+          feedback?: string | null;
+          grade?: number | null;
+          graded_by?: string | null;
+          id?: string;
+          recorded_at?: string;
+          rubric_scores?: Json | null;
+          student_id: string;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+        };
+        Update: {
+          feedback?: string | null;
+          grade?: number | null;
+          graded_by?: string | null;
+          id?: string;
+          recorded_at?: string;
+          rubric_scores?: Json | null;
+          student_id?: string;
+          submission_id?: string;
+          submission_type?: "assignment" | "capstone";
         };
         Relationships: [];
       };
@@ -1283,6 +1577,147 @@ export type Database = {
           status?: "pending" | "paid" | "overdue" | "waived";
         };
         Relationships: [{"foreignKeyName":"instalment_schedules_enrollment_id_fkey","columns":["enrollment_id"],"isOneToOne":false,"referencedRelation":"student_instalment_enrollments","referencedColumns":["id"]},{"foreignKeyName":"instalment_schedules_payment_id_fkey","columns":["payment_id"],"isOneToOne":false,"referencedRelation":"payments","referencedColumns":["id"]}];
+      };
+      learner_preferences: {
+        Row: {
+          access_route: "individual" | "organisation";
+          career_goal: string | null;
+          created_at: string;
+          experience_level: "new" | "some" | "experienced" | null;
+          interests: string[];
+          learning_goal: "start_career" | "change_career" | "grow_in_role" | "team_project" | "personal_interest" | "other" | null;
+          preferred_mode: "self_paced" | "cohort" | "either" | null;
+          research_consent: boolean;
+          research_consent_at: string | null;
+          sponsor_organisation: string | null;
+          tools: string[];
+          updated_at: string;
+          user_id: string;
+          weekly_hours: "lt3" | "3to5" | "6to10" | "gt10" | null;
+        };
+        Insert: {
+          access_route?: "individual" | "organisation";
+          career_goal?: string | null;
+          created_at?: string;
+          experience_level?: "new" | "some" | "experienced" | null;
+          interests?: string[];
+          learning_goal?: "start_career" | "change_career" | "grow_in_role" | "team_project" | "personal_interest" | "other" | null;
+          preferred_mode?: "self_paced" | "cohort" | "either" | null;
+          research_consent?: boolean;
+          research_consent_at?: string | null;
+          sponsor_organisation?: string | null;
+          tools?: string[];
+          updated_at?: string;
+          user_id: string;
+          weekly_hours?: "lt3" | "3to5" | "6to10" | "gt10" | null;
+        };
+        Update: {
+          access_route?: "individual" | "organisation";
+          career_goal?: string | null;
+          created_at?: string;
+          experience_level?: "new" | "some" | "experienced" | null;
+          interests?: string[];
+          learning_goal?: "start_career" | "change_career" | "grow_in_role" | "team_project" | "personal_interest" | "other" | null;
+          preferred_mode?: "self_paced" | "cohort" | "either" | null;
+          research_consent?: boolean;
+          research_consent_at?: string | null;
+          sponsor_organisation?: string | null;
+          tools?: string[];
+          updated_at?: string;
+          user_id?: string;
+          weekly_hours?: "lt3" | "3to5" | "6to10" | "gt10" | null;
+        };
+        Relationships: [];
+      };
+      learning_path_items: {
+        Row: {
+          course_id: string;
+          created_at: string;
+          id: string;
+          is_required: boolean;
+          milestone: string | null;
+          path_id: string;
+          position: number;
+        };
+        Insert: {
+          course_id: string;
+          created_at?: string;
+          id?: string;
+          is_required?: boolean;
+          milestone?: string | null;
+          path_id: string;
+          position?: number;
+        };
+        Update: {
+          course_id?: string;
+          created_at?: string;
+          id?: string;
+          is_required?: boolean;
+          milestone?: string | null;
+          path_id?: string;
+          position?: number;
+        };
+        Relationships: [];
+      };
+      learning_paths: {
+        Row: {
+          competencies: string[];
+          created_at: string;
+          created_by: string | null;
+          description: string | null;
+          display_order: number;
+          estimated_hours: number | null;
+          id: string;
+          is_published: boolean;
+          kind: "skill" | "career";
+          language: string | null;
+          level: "beginner" | "intermediate" | "advanced" | null;
+          outcomes: string[];
+          slug: string;
+          summary: string | null;
+          target_role: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          competencies?: string[];
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          display_order?: number;
+          estimated_hours?: number | null;
+          id?: string;
+          is_published?: boolean;
+          kind: "skill" | "career";
+          language?: string | null;
+          level?: "beginner" | "intermediate" | "advanced" | null;
+          outcomes?: string[];
+          slug: string;
+          summary?: string | null;
+          target_role?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          competencies?: string[];
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          display_order?: number;
+          estimated_hours?: number | null;
+          id?: string;
+          is_published?: boolean;
+          kind?: "skill" | "career";
+          language?: string | null;
+          level?: "beginner" | "intermediate" | "advanced" | null;
+          outcomes?: string[];
+          slug?: string;
+          summary?: string | null;
+          target_role?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       lesson_quiz_questions: {
         Row: {
@@ -1950,6 +2385,42 @@ export type Database = {
         };
         Relationships: [{"foreignKeyName":"student_quiz_attempts_student_id_fkey","columns":["student_id"],"isOneToOne":false,"referencedRelation":"profiles","referencedColumns":["id"]},{"foreignKeyName":"student_quiz_attempts_lesson_id_fkey","columns":["lesson_id"],"isOneToOne":false,"referencedRelation":"course_lessons","referencedColumns":["id"]}];
       };
+      submission_reviews: {
+        Row: {
+          created_at: string;
+          id: string;
+          notes: string | null;
+          reviewer_id: string;
+          rubric_scores: Json | null;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+          suggested_grade: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          notes?: string | null;
+          reviewer_id?: string;
+          rubric_scores?: Json | null;
+          submission_id: string;
+          submission_type: "assignment" | "capstone";
+          suggested_grade?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          notes?: string | null;
+          reviewer_id?: string;
+          rubric_scores?: Json | null;
+          submission_id?: string;
+          submission_type?: "assignment" | "capstone";
+          suggested_grade?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       system_settings: {
         Row: {
           description: string | null;
@@ -1979,6 +2450,7 @@ export type Database = {
       };
       teacher_announcements: {
         Row: {
+          cohort_id: string | null;
           course_id: string | null;
           created_at: string | null;
           id: string;
@@ -1989,6 +2461,7 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
+          cohort_id?: string | null;
           course_id?: string | null;
           created_at?: string | null;
           id?: string;
@@ -1999,6 +2472,7 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
+          cohort_id?: string | null;
           course_id?: string | null;
           created_at?: string | null;
           id?: string;
@@ -2118,6 +2592,15 @@ export type Database = {
       create_payment_record: { Args: { p_student_id: string; p_course_id?: string; p_bundle_id?: string; p_amount?: number; p_currency?: string; p_reference_id?: string; p_payment_method?: string; p_payer_phone?: string; p_payer_email?: string; p_payment_provider?: string; p_provider_ref_id?: string; p_coupon_id?: string; p_original_amount?: number; p_discount_amount?: number; p_payment_track?: string; p_cohort_id?: string; p_instalment_enrollment_id?: string; p_instalment_schedule_id?: string }; Returns: string };
       get_activity_logs: { Args: { p_limit?: number; p_offset?: number }; Returns: { id: string; user_id: string; action: string; entity_type: string; entity_id: string; details: Json; ip_address: string; user_agent: string; created_at: string; user_full_name: string; user_email: string }[] };
       get_admin_dashboard_stats: { Args: Record<PropertyKey, never>; Returns: Json };
+      get_onboarding_insights: { Args: Record<PropertyKey, never>; Returns: Json };
+      get_competition_leaderboard: { Args: { p_competition_id: string }; Returns: { rank: number; display_name: string; score: number }[] };
+      competition_registration_open: { Args: { p_competition_id: string }; Returns: boolean };
+      get_facilitated_learners: { Args: Record<PropertyKey, never>; Returns: { course_id: string; student_id: string; full_name: string | null; avatar_url: string | null; cohort_name: string | null; progress_percentage: number | null; completed: boolean; last_activity_at: string | null; enrolled_at: string }[] };
+      set_cohort_discord_url: { Args: { p_cohort_id: string; p_url: string }; Returns: undefined };
+      find_staffing_candidate: { Args: { p_email: string }; Returns: { id: string; full_name: string | null; role: string }[] };
+      get_course_staff: { Args: { p_course_id: string }; Returns: { id: string; user_id: string; cohort_id: string | null; full_name: string | null; email: string; created_at: string }[] };
+      approve_assignment_draft: { Args: { p_draft_id: string }; Returns: string };
+      return_assignment_draft: { Args: { p_draft_id: string; p_note: string }; Returns: undefined };
       get_all_profiles: { Args: Record<PropertyKey, never>; Returns: { id: string; email: string; full_name: string; role: string; avatar_url: string; phone: string; pricing_tier: string; created_at: string; updated_at: string; teacher_approved: boolean; teacher_approval_status: string; is_suspended: boolean; suspension_reason: string; last_login: string; last_activity: string }[] };
       get_all_student_progress: { Args: Record<PropertyKey, never>; Returns: { student_id: string; student_name: string; student_email: string; student_phone: string; course_id: string; course_title: string; teacher_name: string; enrolled_at: string; total_lessons: number; completed_lessons: number; progress_percentage: number; last_activity: string }[] };
       get_coupon_redemption_stats: { Args: Record<PropertyKey, never>; Returns: { coupon_id: string; code: string; coupon_type: string; discount_type: string; discount_value: number; max_uses: number; uses_count: number; redemption_count: number; total_discount: number; is_active: boolean }[] };

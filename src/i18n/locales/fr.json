@@ -26,7 +26,10 @@
     "actions": "Actions",
     "or": "ou",
     "sending": "Envoi en cours...",
-    "tryAgain": "Réessayer"
+    "tryAgain": "Réessayer",
+    "breadcrumb": "Fil d'Ariane",
+    "remove": "Retirer",
+    "saving": "Enregistrement…"
   },
   "nav": {
     "home": "Accueil",
@@ -61,7 +64,7 @@
   "auth": {
     "signIn": "Se connecter",
     "signUp": "S'inscrire",
-    "email": "Email",
+    "email": "E-mail",
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
@@ -82,7 +85,11 @@
     "googleAuthenticationFailed": "La connexion Google a échoué",
     "pleaseVerifyYourEmailToContinue": "Validez votre adresse e-mail pour continuer.",
     "anErrorOccurredDuringSignIn": "Une erreur est survenue lors de la connexion",
-    "studentsLearningTogether": "Des apprenants qui travaillent ensemble"
+    "studentsLearningTogether": "Des apprenants qui travaillent ensemble",
+    "panelTitle": "Apprendre avec DATA+ Academy",
+    "photoAlt": "Des apprenants penchés autour d'un ordinateur portable pendant une formation DATA+",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe"
   },
   "dashboard": {
     "welcome": "Bienvenue",
@@ -521,7 +528,9 @@
     "checkYourEmailToVerifyYour": "Consultez votre boîte mail pour valider votre compte et continuer.",
     "accountCreatedCompleteYourProfileTo": "Compte créé ! Complétez votre profil pour continuer.",
     "anErrorOccurredDuringSignup": "Une erreur est survenue lors de l'inscription",
-    "studentsLearningTogether": "Des apprenants qui travaillent ensemble"
+    "studentsLearningTogether": "Des apprenants qui travaillent ensemble",
+    "connectPeers": "Vos cours, vos notes et vos certificats au même endroit.",
+    "tagline": "Cours en données, suivi-évaluation et IA par DATA+ Rwanda."
   },
   "certificates": {
     "certificates": "Certificats",
@@ -572,10 +581,12 @@
     "welcomeAdmin": "Bienvenue Admin !",
     "signedInSuccess": "Connexion réussie !",
     "joinCommunity": "Rejoignez notre communauté d'apprentissage",
-    "connectWorldwide": "Connectez-vous avec des étudiants et enseignants du monde entier"
+    "connectWorldwide": "Connectez-vous avec des étudiants et enseignants du monde entier",
+    "connectPeers": "Vos cours, vos notes et vos certificats au même endroit.",
+    "tagline": "Cours en données, suivi-évaluation et IA par DATA+ Rwanda."
   },
   "onboarding": {
-    "welcome": "Bienvenue sur TutorSpace",
+    "welcome": "Bienvenue sur DATA+ Academy",
     "getStarted": "Commencer",
     "completeProfile": "Complétez votre profil",
     "selectRole": "Sélectionnez votre rôle",
@@ -585,7 +596,79 @@
     "skip": "Passer",
     "finish": "Terminer",
     "step": "Étape",
-    "of": "de"
+    "of": "de",
+    "accessQ": "Qui finance votre formation ?",
+    "access": {
+      "individual": "Moi-même",
+      "individualHint": "Accès individuel",
+      "org": "Mon organisation",
+      "orgHint": "Employeur, ONG ou programme sponsor"
+    },
+    "back": "Retour",
+    "careerGoal": "Un métier ou un objectif visé",
+    "careerGoalPlaceholder": "Par exemple : chargé de suivi-évaluation, analyste de données junior",
+    "continue": "Continuer",
+    "done": "Tout est prêt",
+    "error": "Vos réponses n'ont pas pu être enregistrées. Vérifiez votre connexion et réessayez.",
+    "goalQ": "Votre raison principale d'apprendre",
+    "goal": {
+      "change": "Changer de carrière",
+      "grow": "Mieux faire mon travail actuel",
+      "other": "Autre chose",
+      "personal": "Intérêt personnel",
+      "project": "Un projet au travail ou pour mon équipe",
+      "start": "Commencer une carrière dans les données"
+    },
+    "goalsTitle": "Qu'est-ce qui vous amène ?",
+    "hoursQ": "Temps réaliste par semaine",
+    "hours": {
+      "3to5": "3 à 5 heures",
+      "6to10": "6 à 10 heures",
+      "gt10": "Plus de 10 heures",
+      "lt3": "Moins de 3 heures"
+    },
+    "interests": "Domaines à développer",
+    "interestsHint": "Choisissez librement. Nous nous en servons pour suggérer des cours et des parcours.",
+    "levelQ": "Votre expérience des données",
+    "level": {
+      "exp": "Expérimenté",
+      "expHint": "J'analyse ou je code déjà",
+      "new": "Débutant",
+      "newHint": "Peu ou pas d'expérience",
+      "some": "Quelques bases",
+      "someHint": "Tableurs, rapports simples"
+    },
+    "modeQ": "Mode d'apprentissage préféré",
+    "mode": {
+      "cohort": "En cohorte",
+      "cohortHint": "Calendrier, formateur, pairs",
+      "either": "L'un ou l'autre",
+      "eitherHint": "Selon le cours",
+      "self": "À mon rythme",
+      "selfHint": "Quand je veux"
+    },
+    "name": "Votre nom, tel qu'il doit figurer sur les certificats",
+    "optional": "(facultatif)",
+    "org": "Nom de l'organisation",
+    "orgHint": "Cela aide l'Académie à vous rattacher à une cohorte financée. Le financement est confirmé par l'Académie, pas par cette réponse.",
+    "planTitle": "Comment souhaitez-vous apprendre ?",
+    "policy": "En savoir plus dans notre",
+    "policyLink": "politique de confidentialité",
+    "privacy1": "Vos réponses personnalisent votre tableau de bord et vos suggestions. Vous seul pouvez les voir. Les formateurs et facilitateurs ne les voient pas.",
+    "privacy2": "Vous pouvez les modifier ou les supprimer à tout moment dans Paramètres → Apprentissage et confidentialité.",
+    "privacyTitle": "Vos réponses et votre vie privée",
+    "progress": "Progression",
+    "research": "Aidez-nous à mieux planifier nos programmes (facultatif)",
+    "researchBody": "Autoriser les administrateurs de DATA+ Academy à inclure vos réponses dans des totaux anonymes pour planifier cours et cohortes. Les groupes de moins de cinq personnes ne sont jamais affichés. Refuser ne change rien à votre formation.",
+    "saving": "Enregistrement…",
+    "stepName": {
+      "goals": "Objectifs",
+      "plan": "Votre façon d'apprendre",
+      "privacy": "Confidentialité",
+      "you": "Vous"
+    },
+    "stepOf": "Étape {{n}} sur {{total}}",
+    "welcomeBody": "Quelques questions rapides nous aident à vous suggérer les bons cours et parcours. Seul votre nom est obligatoire ; vous pourrez modifier vos réponses dans Paramètres."
   },
   "errors": {
     "somethingWentWrong": "Quelque chose s'est mal passé",
@@ -949,7 +1032,7 @@
     },
     "more": "+{{count}} de plus",
     "next": "Suivant",
-    "noCourse": "DataPlus Academy",
+    "noCourse": "DATA+ Academy",
     "online": "En ligne",
     "open": "Ouvrir",
     "openAssignment": "Ouvrir le devoir",
@@ -1054,6 +1137,9 @@
       "title": "À venir",
       "today": "Aujourd'hui",
       "tomorrow": "Demain"
+    },
+    "attention": {
+      "title": "À traiter"
     }
   },
   "myCourses": {
@@ -1161,7 +1247,9 @@
       "sending": "Envoi…",
       "sent": "Question envoyée. La réponse arrivera dans Messages.",
       "title": "Aide pour cette leçon",
-      "toggle": "Aide"
+      "toggle": "Aide",
+      "community": "Demandez à votre cohorte",
+      "instructorNote": "Les commentaires sur votre travail arrivent avec vos notes."
     },
     "hideCurriculum": "Masquer le contenu du cours",
     "loadError": "Ce cours n'a pas pu être ouvert",
@@ -1208,7 +1296,10 @@
       "review": "Évaluer",
       "system": "Système",
       "website": "Site web",
-      "account": "Compte"
+      "account": "Compte",
+      "explore": "Explorer",
+      "community": "Communauté",
+      "facilitation": "Facilitation"
     },
     "language": "Langue",
     "nav": {
@@ -1220,7 +1311,7 @@
       "cohorts": "Cohortes",
       "coupons": "Coupons",
       "courses": "Cours",
-      "exhibition": "Exposition",
+      "exhibition": "Projets d'apprenants",
       "explore": "Explorer les cours",
       "grades": "Notes",
       "home": "Accueil",
@@ -1231,14 +1322,24 @@
       "partners": "Demandes de partenariat",
       "payments": "Paiements",
       "pricing": "Niveaux de prix",
-      "progress": "Progression des étudiants",
+      "progress": "Progression des apprenants",
       "scholarships": "Bourses",
       "settings": "Paramètres",
-      "students": "Étudiants",
-      "submissions": "Travaux remis",
+      "students": "Apprenants",
+      "submissions": "À corriger",
       "teacherApprovals": "Validation des formateurs",
       "testimonials": "Témoignages",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs et rôles",
+      "myLearning": "Mon apprentissage",
+      "tracks": "Parcours",
+      "competitions": "Compétitions",
+      "community": "Communauté de cohorte",
+      "orgRequests": "Demandes d'organisations",
+      "insights": "Statistiques d'accueil",
+      "facilitationOverview": "Vue d'ensemble",
+      "review": "Examiner les travaux",
+      "learners": "Apprenants",
+      "drafts": "Brouillons de devoirs"
     },
     "newCourse": "Créer un cours",
     "notifications": {
@@ -1255,7 +1356,7 @@
   "verify": {
     "codeLabel": "Code de vérification",
     "course": "Programme",
-    "description": "Saisissez le code de vérification imprimé sur un certificat DataPlus Academy, ou scannez son code QR.",
+    "description": "Saisissez le code de vérification imprimé sur un certificat DATA+ Academy, ou scannez son code QR.",
     "error": {
       "body": "Le certificat n'est pas en cause. Réessayez dans un instant.",
       "title": "La vérification est indisponible pour le moment"
@@ -1264,7 +1365,7 @@
     "issued": "Date de délivrance",
     "issuer": "Délivré par",
     "notFound": {
-      "body": "Vérifiez qu'il n'y a pas d'erreur de saisie. Si le code ne correspond toujours pas, ce certificat n'a pas été délivré par DataPlus Academy.",
+      "body": "Vérifiez qu'il n'y a pas d'erreur de saisie. Si le code ne correspond toujours pas, ce certificat n'a pas été délivré par DATA+ Academy.",
       "title": "Aucun certificat ne correspond à ce code"
     },
     "number": "Numéro du certificat",
@@ -1340,7 +1441,9 @@
       "todo": "À faire",
       "submitted": "Remis",
       "graded": "Notés"
-    }
+    },
+    "hideRubric": "Masquer la grille",
+    "showRubric": "Voir comment c'est noté"
   },
   "settingsPage": {
     "profile": {
@@ -1386,7 +1489,7 @@
     "sending": "Envoi…",
     "signOut": {
       "title": "Déconnexion",
-      "body": "Se déconnecter de DataPlus Academy sur cet appareil.",
+      "body": "Se déconnecter de DATA+ Academy sur cet appareil.",
       "action": "Se déconnecter",
       "confirmTitle": "Se déconnecter ?",
       "confirmBody": "Votre progression est enregistrée. Vous pouvez vous reconnecter à tout moment.",
@@ -1525,7 +1628,12 @@
     "download": "Télécharger",
     "preview": "Aperçu",
     "studentDescription": "Description de l'apprenant",
-    "yourFeedback": "Votre commentaire"
+    "yourFeedback": "Votre commentaire",
+    "feedbackHint": "Obligatoire avec une note : au moins {{n}} caractères ({{count}} pour l'instant). L'apprenant le voit avec sa note.",
+    "feedbackRequired": "Rédigez un commentaire d'au moins {{n}} caractères avant de publier une note.",
+    "noRubric": "Pas de grille",
+    "rubricsBody": "Les apprenants voient la grille dans la leçon avant de soumettre. Les devoirs importants devraient toujours en avoir une.",
+    "rubricsTitle": "Grilles des devoirs"
   },
   "teacherAnnouncements": {
     "pleaseFillInAllFields": "Veuillez remplir tous les champs",
@@ -1533,7 +1641,10 @@
     "failedToCreateAnnouncement": "Échec de la création de l'annonce",
     "announcementDeleted": "Annonce supprimée",
     "failedToDelete": "Échec de la suppression",
-    "failedToUpdate": "Échec de la mise à jour"
+    "failedToUpdate": "Échec de la mise à jour",
+    "allCohorts": "Tous les apprenants du cours",
+    "audience": "Destinataires",
+    "onlyCohort": "Uniquement {{cohort}}"
   },
   "teacherCohorts": {
     "studentHasNotCompletedCohortPayment": "L'apprenant n'a pas encore réglé les frais de la cohorte.",
@@ -1784,7 +1895,13 @@
     "noChaptersFoundForThisCourse": "Aucun chapitre trouvé pour ce cours",
     "locked": "Verrouillé",
     "freePreviewChaptersCanBeAccessed": "Les chapitres en aperçu gratuit sont accessibles à tous. Les chapitres verrouillés nécessitent un achat.",
-    "courses_one": "{{count}} cours"
+    "courses_one": "{{count}} cours",
+    "listed": "Visible",
+    "listedError": "Impossible de modifier la visibilité. La dernière mise à jour de la base de données manque peut-être.",
+    "listedLabel": "Visible dans le catalogue public",
+    "listedNeedsUpdate": "Nécessite la mise à jour de la base de données du 2026-11-27",
+    "nowListed": "Visible dans le catalogue public",
+    "nowUnlisted": "Masqué : accessible uniquement par lien direct"
   },
   "adminCoupons": {
     "error": "Erreur",
@@ -2174,7 +2291,11 @@
     "updateProject": "Mettre à jour le projet",
     "deleteProject": "Supprimer le projet",
     "areYouSureYouWantTo": "Voulez-vous vraiment supprimer « {{projectTitle}} » ? Cette action est irréversible.",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "unverified": "Résultats masqués sur la page publique",
+    "verified": "Résultats affichés sur la page publique",
+    "verifiedLabel": "Résultats vérifiés",
+    "verifyError": "Impossible de modifier la vérification. La dernière mise à jour de la base de données manque peut-être."
   },
   "adminBundles": {
     "error": "Erreur",
@@ -2245,7 +2366,8 @@
     "role": {
       "student": "Apprenant",
       "teacher": "Formateur",
-      "admin": "Administrateur"
+      "admin": "Administrateur",
+      "facilitator": "Facilitateur"
     },
     "accountsTitle": "Essayer la démo",
     "accountsBody": "Données d'exemple uniquement. Connectez-vous en un clic, ou saisissez une adresse ci-dessous avec le mot de passe {{password}}.",
@@ -2275,7 +2397,17 @@
       "coursesGeneric": "Plusieurs cours en un seul paiement",
       "certs": "Un certificat pour chaque cours terminé",
       "scholarship": "Bourses jusqu'à 50 % pour les étudiants et le personnel d'ONG",
-      "viewPaths": "Voir les parcours"
+      "viewPaths": "Voir les parcours",
+      "body2": "Pas d'abonnement. Payez par cours, via Mobile Money.",
+      "bodyBundle": "Pas d'abonnement. Payez par cours ou pour un lot de cours, via Mobile Money.",
+      "scholarship2": "Bourses pour les cours qui en proposent, indiquées sur la page du cours",
+      "singleBody2": "Un cours avec ses leçons, ses évaluations et son certificat.",
+      "viewBundles": "Voir les lots de cours",
+      "paths": "Parcours",
+      "pathsBody": "Les parcours de compétences et de carrière enchaînent plusieurs cours vers une compétence ou un métier.",
+      "pathsCta": "Voir les parcours",
+      "perCourseNote": "par cours, selon le cours",
+      "range": "De {{min}} à {{max}}"
     },
     "free": "Gratuit",
     "level": {
@@ -2296,12 +2428,21 @@
       "progress": "Une progression visible",
       "progressBody": "Reprenez là où vous vous êtes arrêté, suivez chaque leçon et chaque note, et recevez automatiquement votre certificat une fois réussi.",
       "tutor": "De l'aide dans chaque leçon",
-      "tutorBody": "Interrogez le tuteur IA à toute heure, ou posez à votre formateur une question sur la leçon où vous êtes.",
+      "tutorBody": "Posez vos questions au tuteur IA à toute heure, et échangez avec votre cohorte et vos facilitateurs dans la communauté Discord du cours.",
       "language": "En français ou en anglais",
       "languageBody": "Toute la plateforme fonctionne dans les deux langues : apprenez dans celle où vous pensez.",
-      "eyebrow": "Pourquoi DataPlus",
+      "eyebrow": "Pourquoi DATA+ Academy",
       "title": "Une formation compatible avec votre travail",
-      "body": "Conçu pour les professionnels, les étudiants et les équipes d'ONG du Rwanda et de l'Afrique francophone."
+      "body": "Conçu pour les professionnels, les étudiants et les équipes d'ONG du Rwanda et de l'Afrique francophone.",
+      "body2": "Conçu pour les professionnels, les étudiants et les équipes d'ONG.",
+      "capstone2": "Projets finaux",
+      "capstoneBody2": "Les cours avec un projet final se terminent par un vrai problème traité avec le cadre en cinq étapes et noté par votre formateur.",
+      "feedback": "Commentaires écrits",
+      "feedbackBody": "Chaque travail noté revient avec les commentaires de votre formateur, pas seulement une note.",
+      "language2": "Interface en anglais ou en français",
+      "languageBody2": "Les menus, les pages et les messages existent dans les deux langues. Chaque page de cours indique la langue d'enseignement.",
+      "practicalBody2": "Vous vous exercez sur de vraies données de commerces, de centres de santé et de coopératives, avec les outils enseignés dans chaque cours.",
+      "progressBody2": "Reprenez là où vous vous êtes arrêté et suivez chaque leçon et chaque note. Les certificats portent un code vérifiable en ligne par tous."
     },
     "steps": {
       "enrol": "Inscrivez-vous",
@@ -2314,7 +2455,12 @@
       "certifyBody": "Obtenez 65 % ou plus au projet final et recevez un certificat vérifiable en ligne.",
       "photo": "Des apprenants travaillant sur leurs ordinateurs pendant une séance",
       "eyebrow": "Comment ça marche",
-      "title": "De la première leçon au certificat"
+      "title": "De la première leçon au certificat",
+      "buildBody2": "Si votre cours comporte un projet final, appliquez le cadre en cinq étapes à un vrai problème, avec les commentaires de votre formateur.",
+      "certifyBody2": "Remplissez les conditions de réussite du cours (65 % au projet final, s'il y en a un) et recevez un certificat vérifiable en ligne par tous.",
+      "enrolBody2": "Choisissez un cours et payez via Mobile Money, en une fois ou, si le cours le permet, en deux versements.",
+      "learn2": "Apprendre",
+      "learnBody2": "Suivez les leçons, participez aux sessions en direct si votre cours en propose, et réalisez les travaux demandés."
     },
     "hero": {
       "nextCohort": "{{name}} : début le {{date}}",
@@ -2327,9 +2473,14 @@
       "momo": "Paiement par MoMo",
       "cohorts": "Cohortes en direct",
       "verified": "Certificats vérifiables",
-      "photo": "Un formateur lors d'un atelier DataPlus à Kigali",
+      "photo": "Un formateur lors d'un atelier DATA+ à Kigali",
       "cardTitle": "Projet final noté 65 % ou plus",
-      "cardBody": "Certificat délivré automatiquement, avec un code QR"
+      "cardBody": "Certificat délivré automatiquement, avec un code QR",
+      "body2": "Cohortes en direct, en ligne et à Kigali. La plateforme est en anglais et en français, et chaque cours indique sa langue d'enseignement.",
+      "heading": "Formations en données, suivi-évaluation et IA, par des praticiens qui font ce travail au Rwanda et dans la région.",
+      "team": "Former votre équipe",
+      "photoAlt": "Un formateur présente devant une salle de classe pendant que les apprenants suivent sur leurs ordinateurs",
+      "screenAlt": "Le lecteur de leçons de DATA+ Academy : la liste des modules à gauche et une leçon de lecture sur le nettoyage des données"
     },
     "partners": "Partenaires",
     "trusted": "Ils travaillent avec nous",
@@ -2338,35 +2489,148 @@
       "title": "Cours à la une",
       "body": "Commencez par les compétences les plus demandées. Chaque cours se termine par un projet à montrer.",
       "all": "Voir tous les cours",
-      "none": "De nouveaux cours sont en préparation. Revenez bientôt."
+      "none": "De nouveaux cours sont en préparation. Revenez bientôt.",
+      "body2": "Chaque page de cours présente ses leçons, le mode d'évaluation et les conditions d'obtention du certificat."
     },
     "instructors": {
       "eyebrow": "Formateurs",
       "title": "Apprenez auprès de professionnels du terrain",
       "body": "Nos formateurs dirigent des équipes data, des projets de recherche et des systèmes de suivi-évaluation.",
-      "role": "Formateur"
+      "role": "Formateur",
+      "body2": "Les personnes qui enseignent les cours du catalogue."
     },
     "success": {
       "eyebrow": "Réussites",
       "title": "Ce que nos diplômés sont devenus"
     },
     "teams": {
-      "title": "Vous formez une équipe ou une organisation ?",
-      "body": "Nous concevons des programmes sur mesure pour les ONG, les administrations et les entreprises, et accompagnons la mise en place de systèmes de suivi-évaluation, de recherches et de tableaux de bord.",
-      "cta": "Parlons-en",
-      "contact": "Coordonnées"
+      "title": "Vous financez des apprenants de votre organisation ?",
+      "body": "Les organisations peuvent financer des places, inscrire un groupe dans une cohorte dédiée et convenir d'un enchaînement de cours sur mesure. Le contenu reste le même ; le calendrier, l'accompagnement et le tarif sont définis avec vous.",
+      "cta": "Demander un accès organisation",
+      "contact": "Contacter DATA+",
+      "parent": "En savoir plus sur DATA+ Rwanda",
+      "photo": "Un groupe d'apprenants et de formateurs réunis dehors, à côté d'une bannière DATA+",
+      "programmes": "Pour les ONG, les administrations et les entreprises, DATA+ propose aussi des formations sur mesure et un appui pour les systèmes de suivi-évaluation, la recherche et les tableaux de bord.",
+      "title2": "Formation pour votre organisation"
     },
     "cta": {
       "title": "Votre prochain chapitre commence ici.",
       "body": "Rejoignez la prochaine cohorte et développez des compétences utiles au travail dès lundi.",
-      "signup": "Créer un compte gratuit"
+      "signup": "Créer un compte gratuit",
+      "body2": "Parcourez le catalogue, ou créez un compte gratuit et inscrivez-vous quand vous êtes prêt.",
+      "title2": "Trouvez le cours adapté à votre travail."
+    },
+    "modes": {
+      "cohort": "Cohorte avec formateur",
+      "cohortBody": "Rejoignez un groupe avec un calendrier, des sessions en direct, des échéances, les commentaires d'un formateur et une communauté de cohorte sur Discord.",
+      "self": "À votre rythme",
+      "selfBody": "Commencez quand vous êtes prêt et avancez à votre vitesse. Mêmes leçons, mêmes évaluations, même certificat.",
+      "cohortBody2": "Rejoignez un groupe avec un calendrier, des sessions en direct, des échéances et les commentaires de votre formateur.",
+      "selfBody2": "Commencez dès que vous avez accès et avancez dans les leçons à votre rythme."
+    },
+    "ways": {
+      "body": "Suivez un cours, un parcours qui développe une compétence ou prépare à un métier, ou testez-vous lors d'une compétition.",
+      "career": "Parcours métiers",
+      "careerBody": "Un parcours plus long vers un métier, avec les compétences, les cours et les projets appliqués nécessaires.",
+      "careerCta": "Voir les parcours métiers",
+      "competitions": "Compétitions",
+      "competitionsBody": "Des défis de données limités dans le temps, avec leurs règles, leur calendrier et leurs résultats.",
+      "competitionsCta": "Voir les compétitions",
+      "courses": "Cours",
+      "coursesBody": "Un programme structuré avec leçons, quiz, devoirs et certificat.",
+      "coursesCta": "Parcourir les cours",
+      "eyebrow": "Façons d'apprendre",
+      "skill": "Parcours de compétences",
+      "skillBody": "Une courte suite de cours et de projets qui développe une compétence, comme SQL pour l'analyse.",
+      "skillCta": "Voir les parcours de compétences",
+      "title": "Une académie, quatre façons de progresser",
+      "body2": "Suivez un cours seul, ou rejoignez une cohorte avec un calendrier et des sessions en direct.",
+      "coursesBody2": "Des leçons dans l'ordre, les travaux demandés par chaque cours et un certificat vérifiable par tous.",
+      "title2": "Choisissez votre façon d'apprendre"
+    },
+    "capstone": {
+      "body": "Les cours avec un projet final se terminent par un vrai problème traité avec le cadre en cinq étapes et noté par votre formateur. Une note de 65 % ou plus donne droit au certificat.",
+      "pass": "65 % au projet final : certificat obtenu",
+      "photo1": "Quatre apprenants réunis autour d'un ordinateur portable pour résoudre un problème ensemble",
+      "photo2": "Des apprenants discutent de leur travail à des tables partagées, ordinateurs ouverts",
+      "projects": "Projets vérifiés",
+      "seeWork": "Voir le travail",
+      "step1": "Définition du problème",
+      "step1Body": "Nommer la décision à prendre et la question à laquelle les données doivent répondre.",
+      "step2": "Données et preuves",
+      "step2Body": "Trouver et nettoyer les données utiles à cette question.",
+      "step3": "Outils et méthodes",
+      "step3Body": "Choisir, parmi les outils et méthodes vus en cours, ceux qui conviennent au problème.",
+      "step4": "Analyse",
+      "step4Body": "Travailler les données et montrer ce qu'elles disent.",
+      "step5": "Recommandations",
+      "step5Body": "Transformer les résultats en actions que le décideur peut mener.",
+      "title": "Le projet final"
+    },
+    "faq": {
+      "body": "Réponses tirées de nos conditions et des pages de cours.",
+      "certificateA": "Remplissez les conditions de réussite du cours, dont 65 % au projet final lorsqu'il y en a un. Chaque certificat porte un code que tout le monde peut vérifier sur la page de vérification.",
+      "certificateQ": "Comment obtenir un certificat, et un employeur peut-il le vérifier ?",
+      "languageA": "La plateforme fonctionne en anglais et en français. Chaque page de cours indique la langue d'enseignement.",
+      "languageQ": "Dans quelle langue les cours sont-ils enseignés ?",
+      "paymentA": "Par MTN Mobile Money ou Airtel Money. Les cours en cohorte peuvent être payés en deux versements.",
+      "paymentQ": "Comment payer ?",
+      "refundsA": "Les demandes de remboursement doivent être faites dans les 7 jours suivant l'achat et sont examinées au cas par cas, comme le prévoient les conditions d'utilisation.",
+      "refundsQ": "Puis-je être remboursé ?",
+      "scheduleA": "Les cours en cohorte ont lieu le soir en ligne, avec des ateliers pratiques le samedi à Kigali. Lorsqu'une cohorte est prévue, sa date de début figure sur la carte du cours.",
+      "scheduleQ": "Quand les cours ont-ils lieu ?",
+      "scholarshipA": "Certains cours proposent des bourses. La page du cours indique si vous pouvez postuler.",
+      "scholarshipQ": "Y a-t-il des bourses ?",
+      "teamsA": "Oui. Les organisations peuvent financer des places ou inscrire un groupe dans une cohorte dédiée. Utilisez le formulaire ci-dessus pour nous dire ce dont vous avez besoin.",
+      "teamsQ": "Mon organisation peut-elle payer pour son personnel ?",
+      "termsLink": "Lire les conditions d'utilisation",
+      "title": "Questions",
+      "verifyLink": "Vérifier un certificat"
+    },
+    "featured": {
+      "live": "Cohorte en direct",
+      "starts": "Prochain début : {{date}}"
+    },
+    "platform": {
+      "assignments": "Devoirs",
+      "assignmentsAlt": "La page des devoirs avec deux devoirs, leurs dates limites et une grille de notation ouverte",
+      "assignmentsCaption": "Les échéances dans une seule liste, et la grille de notation visible avant de rendre votre travail.",
+      "body": "Ce que vous voyez une fois inscrit.",
+      "certificate": "Certificats",
+      "certificateAlt": "Un certificat de réussite avec un code QR, et des boutons pour le télécharger ou copier son lien de vérification",
+      "certificateCaption": "Chaque certificat porte un code et un code QR que tout le monde peut vérifier.",
+      "player": "Leçons",
+      "playerAlt": "Le lecteur de leçons avec une leçon de lecture sur le nettoyage des données et les modules du cours listés à gauche",
+      "playerCaption": "Des leçons dans l'ordre, avec la liste des modules à côté et votre progression enregistrée.",
+      "progress": "Progression",
+      "progressAlt": "La page des notes avec les résultats globaux, des quiz et des devoirs, et un commentaire du formateur",
+      "progressCaption": "Vos résultats aux quiz et vos travaux notés pour chaque cours, avec les commentaires écrits qui les accompagnent.",
+      "sample": "Affiché avec des données d'exemple.",
+      "title": "Dans la plateforme",
+      "verify": "Vérifier un certificat"
+    },
+    "proof": {
+      "countries": "pays",
+      "label": "DATA+ en chiffres",
+      "lastYear": "formés en {{year}}",
+      "organisations": "Organisations que nous avons formées ou avec lesquelles nous avons travaillé",
+      "trained": "personnes formées"
+    },
+    "subjects": {
+      "body": "Choisissez un domaine pour voir ses cours, niveaux et prix.",
+      "from": "À partir de {{price}}",
+      "see": "Voir les cours",
+      "title": "Trouvez votre cours",
+      "count_one": "{{count}} cours",
+      "count_other": "{{count}} cours",
+      "catalogue": "Voir le catalogue des cours"
     }
   },
   "partner": {
     "failed": "Votre demande n'a pas été envoyée. Veuillez réessayer.",
     "sentTitle": "Demande reçue",
     "sentBody": "Notre équipe vous contactera sous deux jours ouvrables.",
-    "title": "Formez votre équipe avec DataPlus",
+    "title": "Formez votre équipe avec DATA+ Academy",
     "body": "Parlez-nous de votre organisation. Nous proposons des formations sur mesure et un accompagnement en suivi-évaluation, recherche et tableaux de bord.",
     "name": "Nom complet",
     "organization": "Organisation",
@@ -2374,10 +2638,12 @@
     "phone": "Numéro de téléphone",
     "message": "Quels sont vos objectifs ? (facultatif)",
     "sending": "Envoi…",
-    "send": "Envoyer la demande"
+    "send": "Envoyer la demande",
+    "another": "Envoyer une autre demande",
+    "formTitle": "Parlez-nous de votre organisation"
   },
   "site": {
-    "home": "Accueil DataPlus Academy",
+    "home": "Accueil DATA+ Academy",
     "mainNav": "Principal",
     "myAccount": "Mon espace",
     "signIn": "Se connecter",
@@ -2389,7 +2655,12 @@
       "paths": "Parcours",
       "exhibition": "Projets d'apprenants",
       "about": "À propos",
-      "contact": "Contact"
+      "contact": "Contact",
+      "competitions": "Compétitions",
+      "tracks": "Parcours",
+      "verify": "Vérifier un certificat",
+      "organisations": "Pour les organisations",
+      "projects": "Projets des apprenants"
     },
     "footer": {
       "learn": "Apprendre",
@@ -2401,9 +2672,16 @@
       "contact": "Contact",
       "rights": "Tous droits réservés.",
       "privacy": "Politique de confidentialité",
-      "terms": "Conditions d'utilisation"
+      "terms": "Conditions d'utilisation",
+      "bundles": "Packs de cours",
+      "company": "À propos de DATA+",
+      "mission2": "La plateforme de formation de DATA+ Rwanda : cours en analyse de données, suivi-évaluation, recherche et IA, en ligne et à Kigali.",
+      "parent": "DATA+ Rwanda",
+      "whatsapp": "WhatsApp"
     },
-    "skip": "Aller au contenu"
+    "skip": "Aller au contenu",
+    "byParent": "par {{parent}}",
+    "menu": "Menu"
   },
   "capstoneSubmission": {
     "thisFileCannotBeUploaded": "Ce fichier ne peut pas être envoyé.",
@@ -2509,7 +2787,16 @@
     "freePreview": "Aperçu gratuit",
     "locked": "Verrouillé",
     "free": "Gratuit",
-    "chaptersLessons_one": "{{count}} chapitre • {{totalLessons}} leçons"
+    "chaptersLessons_one": "{{count}} chapitre • {{totalLessons}} leçons",
+    "yourProgress2": "Votre progression",
+    "type": {
+      "video": "Vidéo",
+      "document": "Document",
+      "link": "Lien",
+      "quiz": "Quiz",
+      "assignment": "Devoir",
+      "lesson": "Leçon"
+    }
   },
   "suspensionDialog": {
     "accountSuspended": "Compte suspendu",
@@ -2643,7 +2930,10 @@
     "courseProgress": "Progression dans les cours",
     "courseComplete": "Cours terminé !",
     "keepGoingYouReMakingGreat": "Continuez, vous progressez très bien !",
-    "aboutThisLesson": "À propos de cette leçon"
+    "aboutThisLesson": "À propos de cette leçon",
+    "selectALessonToStart": "Choisissez une leçon dans le programme pour commencer.",
+    "freePreview": "Aperçu gratuit",
+    "staffPreview": "Aperçu équipe : la progression n'est pas enregistrée"
   },
   "verifyEmail": {
     "weCouldnTFindTheEmail": "Adresse e-mail introuvable pour le renvoi. Réinscrivez-vous ou reconnectez-vous.",
@@ -2653,7 +2943,7 @@
     "weVeSentAVerificationEmail": "Nous vous avons envoyé un e-mail de validation. Cliquez sur le lien qu'il contient pour valider votre compte.",
     "whatHappensNext": "Et ensuite ?",
     "checkYourEmailInbox": "Consultez votre boîte de réception",
-    "lookForAnEmailFromDataplus": "Cherchez un e-mail de DataPlus Academy",
+    "lookForAnEmailFromDataplus": "Cherchez un e-mail de DATA+ Academy",
     "clickTheVerificationLink": "Cliquez sur le lien de validation",
     "thisWillVerifyYourEmailAddress": "Cela validera votre adresse e-mail",
     "completeYourProfile": "Complétez votre profil",
@@ -2713,7 +3003,9 @@
     "readyToBuildYourCapstoneProject": "Prêt à réaliser votre projet final ?",
     "joinOurCommunityAndCreateProjects": "Rejoignez notre communauté et réalisez des projets qui changent vraiment les choses",
     "enrollNow": "S'inscrire maintenant",
-    "viewAllCourses": "Voir tous les cours"
+    "viewAllCourses": "Voir tous les cours",
+    "readyToBuild2": "Prêt à réaliser votre propre projet final ?",
+    "noProjectsYet2": "Aucun projet pour l'instant"
   },
   "teacherOnboarding": {
     "pleaseFillInAllFieldsAnd": "Remplissez tous les champs et choisissez un avatar",
@@ -2747,10 +3039,10 @@
     "address": "Adresse",
     "phone": "Téléphone",
     "workingHours": "Heures d'ouverture",
-    "monFri": "Lun.–ven. :",
-    "n830am530pm": "8 h 30 – 17 h 30",
+    "monFri": "Lun. à ven. :",
+    "n830am530pm": "8 h 30 à 17 h 30",
     "sat": "Sam. :",
-    "n900am100pm": "9 h 00 – 13 h 00",
+    "n900am100pm": "9 h 00 à 13 h 00",
     "sun": "Dim. :",
     "closed": "Fermé",
     "getStartedToday": "Commencer aujourd'hui",
@@ -2779,7 +3071,7 @@
     "failedToUpdatePassword": "Échec de la mise à jour du mot de passe",
     "backToLogin": "Retour à la connexion",
     "createANewPassword": "Créez un nouveau mot de passe",
-    "chooseANewPasswordForYour": "Choisissez un nouveau mot de passe pour votre compte DataPlus.",
+    "chooseANewPasswordForYour": "Choisissez un nouveau mot de passe pour votre compte DATA+ Academy.",
     "verifyingResetLink": "Vérification du lien…",
     "resetLinkUnavailable": "Lien de réinitialisation indisponible",
     "requestANewResetLink": "Demander un nouveau lien",
@@ -2796,7 +3088,7 @@
     "title": "Conditions d'utilisation",
     "updated": "Dernière mise à jour : février 2026",
     "introduction": "Introduction",
-    "welcomeToDataplusLearningTheseTerms": "Bienvenue sur DataPlus Learning. Les présentes conditions d'utilisation (les « Conditions ») régissent votre accès à notre plateforme d'apprentissage et son utilisation, y compris les contenus, fonctionnalités et services proposés sur notre site. En accédant à la plateforme ou en l'utilisant, vous acceptez d'être lié par ces Conditions.",
+    "welcomeToDataplusLearningTheseTerms": "Bienvenue sur DATA+ Academy. Les présentes conditions d'utilisation (les « Conditions ») régissent votre accès à notre plateforme d'apprentissage et son utilisation, y compris les contenus, fonctionnalités et services proposés sur notre site. En accédant à la plateforme ou en l'utilisant, vous acceptez d'être lié par ces Conditions.",
     "pleaseReadTheseTermsCarefullyBefore": "Lisez attentivement ces conditions avant d'utiliser nos services. Si vous n'acceptez pas l'une d'elles, vous ne pouvez pas accéder à notre plateforme ni l'utiliser.",
     "accountRegistration": "Création de compte",
     "toAccessCertainFeaturesOfOur": "Certaines fonctionnalités nécessitent un compte. En vous inscrivant, vous acceptez de :",
@@ -2810,7 +3102,7 @@
     "enrollment": "Inscription",
     "whenYouEnrollInACourse": "En vous inscrivant à un cours ou en achetant un parcours, vous obtenez une licence limitée, non exclusive et non cessible pour consulter le contenu à des fins éducatives personnelles et non commerciales.",
     "courseContent": "Contenu du cours",
-    "allCourseMaterialsAreTheIntellectual": "Tous les supports de cours sont la propriété intellectuelle de DataPlus Learning ou des formateurs concernés",
+    "allCourseMaterialsAreTheIntellectual": "Tous les supports de cours sont la propriété intellectuelle de DATA+ Academy ou des formateurs concernés",
     "youMayNotReproduceDistributeModify": "Vous ne pouvez pas reproduire, diffuser, modifier notre contenu ni en créer des œuvres dérivées",
     "accessToCourseContentMayBe": "L'accès au contenu peut être limité dans le temps selon votre type d'inscription",
     "weReserveTheRightToUpdate": "Nous pouvons mettre à jour, modifier ou retirer du contenu à tout moment",
@@ -2839,7 +3131,7 @@
     "ifYouRegisterAsATeacher": "Si vous vous inscrivez en tant que formateur, les conditions supplémentaires suivantes s'appliquent :",
     "teacherAccountsAreSubjectToAn": "Les comptes formateurs sont soumis à une validation par notre administration",
     "youAreResponsibleForTheAccuracy": "Vous êtes responsable de l'exactitude et de la qualité des contenus que vous créez et publiez",
-    "youGrantDataplusLearningALicense": "Vous accordez à DataPlus Learning une licence pour afficher, diffuser et promouvoir votre contenu sur la plateforme",
+    "youGrantDataplusLearningALicense": "Vous accordez à DATA+ Academy une licence pour afficher, diffuser et promouvoir votre contenu sur la plateforme",
     "youRetainOwnershipOfYourOriginal": "Vous restez propriétaire de vos contenus originaux mais acceptez qu'ils soient utilisés pour la plateforme",
     "youMustComplyWithOurContent": "Vous devez respecter nos règles de contenu et répondre aux apprenants dans des délais raisonnables",
     "limitationOfLiability": "Limitation de responsabilité",
@@ -2865,7 +3157,7 @@
     "title": "Politique de confidentialité",
     "updated": "Dernière mise à jour : janvier 2025",
     "introduction": "Introduction",
-    "welcomeToDataplusLearningWeAre": "Bienvenue sur DataPlus Learning. Nous nous engageons à protéger vos informations personnelles et votre droit à la vie privée. Cette politique explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre plateforme d'apprentissage.",
+    "welcomeToDataplusLearningWeAre": "Bienvenue sur DATA+ Academy. Nous nous engageons à protéger vos informations personnelles et votre droit à la vie privée. Cette politique explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous utilisez notre plateforme d'apprentissage.",
     "informationWeCollect": "Informations collectées",
     "personalInformation": "Informations personnelles",
     "weCollectInformationThatYouProvide": "Nous collectons les informations que vous nous fournissez directement, notamment :",
@@ -2996,12 +3288,41 @@
   },
   "notFound": {
     "oopsPageNotFound": "Oups ! Page introuvable",
-    "returnToHome": "Retour à l'accueil"
+    "returnToHome": "Retour à l'accueil",
+    "body": "Le lien est peut-être ancien ou mal saisi. Le catalogue présente tout ce qui est publié.",
+    "catalogue": "Parcourir les cours",
+    "home": "Aller à l'accueil",
+    "title": "Cette page n'existe pas."
   },
   "catalogue": {
     "eyebrow": "Cours",
     "title": "Explorer les cours",
-    "body": "Analyse de données, IA, suivi-évaluation et gestion de projet. Enseignés en français et en anglais, avec des cohortes en direct et un projet final."
+    "body": "Analyse de données, IA, suivi-évaluation et gestion de projet. Enseignés en français et en anglais, avec des cohortes en direct et un projet final.",
+    "subjectAll": "Voir tous les cours",
+    "subjectShowing": "Cours : {{subject}}",
+    "any": "Tous",
+    "body2": "Analyse de données, suivi-évaluation, recherche et IA. Chaque cours indique son niveau, sa langue et son prix.",
+    "buy": "Acheter",
+    "clear": "Effacer les filtres",
+    "enrolFree": "S'inscrire gratuitement",
+    "format": "Format",
+    "formatLive": "Cohorte en direct prévue",
+    "free": "Gratuit",
+    "language": "Langue d'enseignement",
+    "level": "Niveau",
+    "noMatch": "Aucun cours ne correspond à ces filtres",
+    "none": "Aucun cours n'est encore publié",
+    "open": "Ouvrir",
+    "paid": "Payant",
+    "price": "Prix",
+    "search": "Rechercher des cours",
+    "searchPlaceholder": "Rechercher par cours, sujet ou formateur",
+    "subject": "Domaine",
+    "title2": "Cours",
+    "view": "Voir le cours",
+    "count_one": "{{count}} cours",
+    "count_other": "{{count}} cours",
+    "results": "Résultats"
   },
   "createCourse": {
     "invalidFile": "Fichier non valide",
@@ -3170,7 +3491,33 @@
     "purchaseSuccessful": "Achat réussi !",
     "youNowHaveFullAccessTo": "Vous avez maintenant accès à tout le cours",
     "chapters_one": "{{count}} chapitre",
-    "hoursShort": "{{count}} h"
+    "hoursShort": "{{count}} h",
+    "capstoneWorkspaceLocked": "L'espace du projet final s'ouvre après l'achat",
+    "getCapstoneAccess": "Accéder au projet final",
+    "paidLessonNote": "Cette leçon fait partie du contenu payant. Achetez ce cours pour ouvrir tous les modules et toutes les leçons.",
+    "applyForScholarship2": "Demander une bourse",
+    "back": "Retour",
+    "buyThisCourse2": "Acheter ce cours",
+    "capstoneBriefBody": "Le cours se termine par un vrai problème, traité avec le cadre en cinq étapes et noté par votre formateur. Une note de 65 % ou plus donne droit au certificat.",
+    "capstoneBriefTitle": "Le projet final",
+    "capstoneIncluded2": "Projet final",
+    "contentLocked2": "Cette leçon est verrouillée",
+    "continueLearning2": "Continuer",
+    "free": "Gratuit",
+    "goToLesson2": "Aller à la leçon",
+    "instalments": "Deux versements pour les places en cohorte",
+    "outcomesTitle": "Vous saurez",
+    "playWelcome": "Lire la vidéo de bienvenue",
+    "requirements2": "Avant de commencer",
+    "scholarshipOpen": "Les demandes de bourse sont ouvertes",
+    "startLearning2": "Commencer",
+    "taughtIn": "Enseigné en {{language}}",
+    "tryFreeLesson": "Essayer une leçon gratuite",
+    "welcomeVideo": "Vidéo de bienvenue",
+    "lessonsCount_one": "{{count}} leçon",
+    "lessonsCount_other": "{{count}} leçons",
+    "modulesCount_one": "{{count}} module",
+    "modulesCount_other": "{{count}} modules"
   },
   "teacherPendingApproval": {
     "yourAccountHasBeenApproved": "Votre compte a été validé !",
@@ -3202,5 +3549,688 @@
     "beginner": "Débutant",
     "intermediate": "Intermédiaire",
     "advanced": "Avancé"
+  },
+  "adminCompetitions": {
+    "confirmPublish": "Publier les résultats ? Les participants verront le classement avec des noms abrégés.",
+    "description": "Annoncez des défis, évaluez les soumissions et publiez les résultats. Les brouillons ne sont visibles que par les administrateurs.",
+    "dialogBody": "Les horaires sont dans votre fuseau horaire. Les périodes d'inscription et de soumission sont contrôlées par la base de données.",
+    "edit": "Modifier la compétition",
+    "empty": "Aucune compétition pour l'instant",
+    "errDataset": "Le lien du jeu de données doit commencer par https://.",
+    "feedback": "Commentaire pour le participant",
+    "judge": "Évaluer",
+    "judgeBody": "Les notes restent privées jusqu'à la publication des résultats. Le classement retient la meilleure note de chaque participant.",
+    "judgeTitle": "Évaluer : {{title}}",
+    "new": "Nouvelle compétition",
+    "noSubmissions": "Aucune soumission pour l'instant.",
+    "notReady": "Les compétitions nécessitent la dernière mise à jour de la base de données",
+    "overview": "Présentation",
+    "participant": "Participant",
+    "public": "Ouverte au public",
+    "publish": "Publier les résultats",
+    "publishError": "Les résultats n'ont pas pu être publiés.",
+    "published": "Résultats publiés",
+    "regOpens": "Ouverture des inscriptions",
+    "saveError": "La compétition n'a pas pu être enregistrée.",
+    "saved": "Compétition enregistrée",
+    "score": "Note",
+    "scoreError": "La note n'a pas pu être enregistrée.",
+    "scoreInvalid": "Saisissez une note supérieure ou égale à 0.",
+    "scored": "Note enregistrée",
+    "scoredPill": "Noté {{score}}",
+    "status": "Statut",
+    "statusValue": {
+      "draft": "Brouillon",
+      "upcoming": "À venir",
+      "open": "Ouverte",
+      "judging": "Évaluation",
+      "closed": "Clôturée"
+    },
+    "title": "Compétitions"
+  },
+  "adminTracks": {
+    "add": "Ajouter",
+    "col": {
+      "courses": "Cours",
+      "status": "Statut",
+      "track": "Parcours",
+      "type": "Type"
+    },
+    "competencies": "Compétences (séparées par des virgules)",
+    "confirmDelete": "Supprimer « {{title}} » ? Les cours et la progression des apprenants ne sont pas touchés.",
+    "courses": "Cours, dans l'ordre",
+    "deleted": "Parcours supprimé",
+    "description": "Construisez des parcours à partir des cours existants. Les cours sont réutilisés, jamais copiés, et la progression est calculée à partir des cours terminés.",
+    "descriptionField": "À propos de ce parcours",
+    "dialogBody": "Les apprenants voient les parcours publiés dans Explorer. Les brouillons ne sont visibles que par les administrateurs.",
+    "down": "Descendre",
+    "draft": "Brouillon",
+    "edit": "Modifier le parcours",
+    "empty": "Aucun parcours pour l'instant",
+    "emptyBody": "Créez un parcours de compétence (une capacité) ou un parcours métier (un rôle) à partir de vos cours publiés.",
+    "errCourses": "Ajoutez au moins un cours.",
+    "errDelete": "Le parcours n'a pas pu être supprimé.",
+    "errDuplicate": "Cette adresse web est déjà utilisée.",
+    "errHours": "Les heures estimées doivent être un nombre positif.",
+    "errSave": "Le parcours n'a pas pu être enregistré.",
+    "errSlug": "L'adresse web peut contenir des minuscules, des chiffres et des tirets.",
+    "errTitle": "Ajoutez un titre.",
+    "hours": "Heures estimées",
+    "kind": "Type",
+    "language": "Langue",
+    "level": "Niveau",
+    "milestone": "Étape ou projet (facultatif)",
+    "new": "Nouveau parcours",
+    "noLevel": "Non défini",
+    "notApproved": "non approuvé",
+    "notReady": "Les parcours nécessitent la dernière mise à jour de la base de données",
+    "notReadyBody": "Appliquez supabase/migrations/20261124000000_academy_experience.sql, puis rechargez cette page.",
+    "order": "Ordre d'affichage",
+    "outcomes": "Objectifs (un par ligne)",
+    "pickCourse": "Choisissez un cours à ajouter",
+    "publish": "Publié",
+    "publishBody": "Visible par tous dans Explorer.",
+    "published": "Publié",
+    "required": "Obligatoire",
+    "role": "Métier visé",
+    "rolePlaceholder": "Analyste de données junior",
+    "saved": "Parcours enregistré",
+    "slug": "Adresse web",
+    "summary": "Résumé",
+    "title": "Parcours de compétences et métiers",
+    "titleField": "Titre",
+    "up": "Monter",
+    "view": "Voir"
+  },
+  "community": {
+    "announcementsNote": "Vous cherchez un message de votre formateur ? Les annonces des cours sont sur votre page d'accueil et dans chaque cours.",
+    "cohortChannel": "Canal {{cohort}}",
+    "courseServer": "Communauté du cours",
+    "editor": {
+      "body": "Les apprenants voient ce lien dans leur cours et sur la page Communauté. Utilisez une invitation Discord sans expiration ou un lien de canal.",
+      "button": "Lien Discord",
+      "error": "Le lien n'a pas pu être enregistré. Réessayez.",
+      "hint": "Commence par https://discord.gg/ ou https://discord.com/. Laissez vide pour le retirer.",
+      "invalid": "Ce n'est pas un lien Discord. Copiez l'invitation depuis Discord : Inviter des gens → Copier.",
+      "label": "URL d'invitation ou de canal Discord",
+      "notReady": "Les liens de communauté nécessitent la dernière mise à jour de la base de données. Demandez à un administrateur de l'appliquer.",
+      "removed": "Lien Discord retiré",
+      "saved": "Lien Discord enregistré",
+      "title": "Communauté Discord de {{name}}"
+    },
+    "empty": "Aucun cours pour l'instant",
+    "emptyBody": "Quand vous vous inscrivez à un cours, sa communauté Discord apparaît ici.",
+    "error": "Vos liens de communauté n'ont pas pu être chargés",
+    "explain": "Les questions, l'entraide et les échanges de cohorte se font sur Discord. Il s'ouvre dans un nouvel onglet et les conditions de Discord s'appliquent. Les annonces, les notes et les commentaires restent ici.",
+    "goHome": "Aller à l'accueil",
+    "newTab": "(s'ouvre dans un nouvel onglet)",
+    "notSet": "Pas encore de lien de communauté",
+    "notSetBody": "Votre formateur n'a pas encore ajouté de lien Discord pour ce cours. Les annonces du cours apparaissent toujours sur votre page d'accueil.",
+    "open": "Ouvrir Discord",
+    "pageBody": "Les échanges avec votre cohorte, les facilitateurs et les formateurs ont lieu sur Discord. Les annonces officielles, les échéances, les notes et les commentaires restent toujours dans DATA+ Academy.",
+    "pageTitle": "Communauté de cohorte",
+    "title": "Communauté de cohorte"
+  },
+  "competitions": {
+    "all": "Toutes les compétitions",
+    "confirmWithdraw": "Vous retirer de cette compétition ? Vous pourrez vous réinscrire tant que les inscriptions sont ouvertes.",
+    "dataset": "Jeu de données et fichiers de départ",
+    "deadline": "Soumissions jusqu'au {{date}}",
+    "deadlineLabel": "Date limite de soumission",
+    "description": "Des défis de données limités dans le temps, avec leurs propres règles, calendrier et résultats. Ouverts aux apprenants DATA+ et, lorsque c'est indiqué, au public.",
+    "detail": {
+      "disqualified": "Disqualifié",
+      "judging": "En cours",
+      "missed": "Aucune soumission",
+      "notRegistered": "Pas encore",
+      "notYet": "Pas encore",
+      "open": "Ouverte",
+      "withdrawn": "Retiré"
+    },
+    "details": "Voir les détails",
+    "discord": "Discord de la compétition",
+    "eligibility": "Qui peut participer",
+    "empty": "Aucune compétition annoncée pour le moment",
+    "emptyBody": "Les nouveaux défis sont annoncés ici et à votre cohorte sur Discord.",
+    "emptyMine": "Vous ne participez à aucune compétition",
+    "emptyPast": "Aucune compétition passée pour l'instant",
+    "error": "Les compétitions n'ont pas pu être chargées",
+    "form": {
+      "description": "Courte description (facultatif)",
+      "note": "Vous pouvez soumettre plusieurs fois avant la date limite ; chaque soumission est conservée. Le jury voit votre travail, jamais vos coordonnées.",
+      "submit": "Soumettre",
+      "title": "Titre",
+      "url": "Lien vers votre travail",
+      "urlHint": "Un notebook partagé (Colab, GitHub, JupyterLite), un tableau de bord ou un rapport. Il doit commencer par https:// et être consultable par le jury."
+    },
+    "howToSubmit": "Comment soumettre",
+    "joined": "Inscrit",
+    "learnersOnly": "Ouverte aux apprenants de DATA+ Academy.",
+    "noDeadline": "Dates à annoncer",
+    "noScores": "Aucune soumission notée.",
+    "noSubmissions": "Rien de soumis pour l'instant.",
+    "notFound": "Cette compétition n'est pas disponible",
+    "notPublished": "Pas encore publié.",
+    "openWorkspace": "Ouvrir l'espace de travail",
+    "participant": "Participant",
+    "phase": {
+      "closed": "Clôturée",
+      "judging": "Évaluation en cours",
+      "open": "Soumissions ouvertes",
+      "results": "Résultats publiés",
+      "upcoming": "À venir"
+    },
+    "prizes": "Prix et reconnaissance",
+    "public": "Ouverte au public ; un compte DATA+ gratuit est nécessaire pour participer.",
+    "rank": "Rang",
+    "regCloses": "Clôture des inscriptions",
+    "register": "S'inscrire",
+    "registerError": "L'inscription n'a pas abouti. Les inscriptions sont peut-être closes.",
+    "registered": "Vous êtes inscrit",
+    "resources": "Ressources",
+    "results": "Résultats",
+    "resultsLater": "Les résultats et le classement apparaîtront ici dès que le jury les publiera.",
+    "rules": "Règlement",
+    "score": "Note {{score}}",
+    "scoreCol": "Note",
+    "signInToJoin": "Connectez-vous pour participer",
+    "starts": "Début",
+    "step": {
+      "judging": "Évaluation",
+      "registered": "Inscription",
+      "results": "Résultats",
+      "submitted": "Soumission"
+    },
+    "sub": {
+      "rejected": "Non acceptée",
+      "review": "En cours d'examen",
+      "scored": "Notée",
+      "submitted": "Reçue"
+    },
+    "submitClosed": "Les soumissions ne sont pas ouvertes en ce moment. Consultez le calendrier à droite.",
+    "submitError": "Votre soumission n'a pas été acceptée. La date limite est peut-être passée.",
+    "submitted": "Soumission reçue",
+    "tab": {
+      "current": "En cours et à venir",
+      "mine": "Mes compétitions",
+      "overview": "Présentation",
+      "past": "Passées",
+      "results": "Résultats",
+      "rules": "Règlement et conditions",
+      "submit": "Mes soumissions"
+    },
+    "tba": "À annoncer",
+    "timeline": "Calendrier",
+    "title": "Compétitions",
+    "withdraw": "Me retirer de cette compétition",
+    "withdrawError": "Impossible de vous retirer. Réessayez.",
+    "youAreIn": "Vous êtes inscrit",
+    "yourProgress": "Votre progression",
+    "yourSubmissions": "Vos soumissions",
+    "filterLabel": "Afficher les compétitions"
+  },
+  "glance": {
+    "assessed": "Comment vous êtes évalué",
+    "assessedBody": "{{list}}, le tout dans DATA+ Academy. Chaque travail noté est accompagné d'un commentaire écrit.",
+    "assignments": "{{count}} devoirs",
+    "capstone": "un projet final",
+    "certAuto": "Délivré automatiquement quand votre projet final obtient {{grade}} % ou plus. Tout le monde peut le vérifier en ligne.",
+    "certManual": "Délivré par l'Académie après l'examen de votre travail. Tout le monde peut le vérifier en ligne.",
+    "certificate": "Certificat",
+    "cohort": "Cohorte avec formateur",
+    "cohortNext": "{{name}} commence le {{date}}. Postulez avec « Rejoindre une cohorte ».",
+    "cohortOpen": "{{name}} est ouverte. Postulez avec « Rejoindre une cohorte ».",
+    "noAssessment": "Ce cours n'a pas de travail noté.",
+    "noCohort": "Aucune cohorte n'est prévue pour le moment.",
+    "quizzes": "{{count}} quiz",
+    "selfPaced": "À votre rythme",
+    "selfPacedBody": "Commencez dès que vous avez accès et avancez à votre rythme.",
+    "title": "En bref"
+  },
+  "insights": {
+    "answerCol": "Réponse",
+    "answered": "Apprenants ayant répondu",
+    "consenting": "Apprenants consentants",
+    "description": "Totaux des apprenants ayant accepté l'usage à des fins de recherche, pour planifier cours, parcours et cohortes.",
+    "empty": "Aucun apprenant consentant pour l'instant",
+    "emptyBody": "{{count}} apprenants ont répondu aux questions d'accueil ; aucun n'a encore accepté l'usage à des fins de recherche.",
+    "error": "Les statistiques n'ont pas pu être chargées",
+    "learners": "Apprenants",
+    "noAnswers": "Aucune réponse pour l'instant.",
+    "notReady": "Les statistiques nécessitent la dernière mise à jour de la base de données",
+    "privacy": "Les réponses individuelles sont privées et ne sont accessibles ni ici ni aux formateurs. Toute réponse donnée par moins de {{n}} apprenants est regroupée sous « Moins de {{n}} ».",
+    "q": {
+      "access": "Qui paie",
+      "goal": "Raison principale",
+      "hours": "Temps par semaine",
+      "interest": "Centres d'intérêt",
+      "level": "Niveau d'expérience",
+      "mode": "Mode d'apprentissage préféré"
+    },
+    "suppressed": "Moins de {{n}} (regroupés)",
+    "title": "Statistiques d'accueil",
+    "answer": {
+      "goal": {
+        "start_career": "Commencer une carrière dans les données",
+        "change_career": "Changer de carrière",
+        "grow_in_role": "Mieux faire mon travail actuel",
+        "team_project": "Un projet au travail ou d'équipe",
+        "personal_interest": "Intérêt personnel",
+        "other": "Autre"
+      },
+      "level": {
+        "new": "Débutant",
+        "some": "Quelques bases",
+        "experienced": "Expérimenté"
+      },
+      "mode": {
+        "self_paced": "À son rythme",
+        "cohort": "En cohorte",
+        "either": "L'un ou l'autre"
+      },
+      "hours": {
+        "lt3": "Moins de 3 heures",
+        "3to5": "3 à 5 heures",
+        "6to10": "6 à 10 heures",
+        "gt10": "Plus de 10 heures"
+      },
+      "access": {
+        "individual": "Particulier",
+        "organisation": "Organisation"
+      }
+    }
+  },
+  "journey": {
+    "action": {
+      "browse": "Parcourir les cours",
+      "certificate": "Voir le certificat",
+      "continue": "Continuer à apprendre",
+      "pay": "Finaliser le paiement",
+      "retry": "Réessayer le paiement"
+    },
+    "detail": {
+      "accepted": "Accepté",
+      "accessPending": "Après paiement",
+      "afterReview": "Après acceptation",
+      "awaiting": "En attente de confirmation",
+      "certPending": "En préparation",
+      "completed": "Terminé",
+      "failed": "N'a pas abouti",
+      "granted": "Accordé",
+      "inProgress": "En cours",
+      "issued": "Délivré",
+      "notAccepted": "Non accepté",
+      "notNeeded": "Non requis",
+      "notStarted": "Pas commencé",
+      "notYet": "Une fois réussi",
+      "paid": "Confirmé",
+      "required": "Requis",
+      "revoked": "Révoqué",
+      "underReview": "En cours d'examen"
+    },
+    "msg": {
+      "active": "Vous avez accès. Reprenez là où vous vous êtes arrêté.",
+      "awaiting": "Nous attendons la confirmation du prestataire de paiement. Si vous avez validé le paiement sur votre téléphone, cela prend généralement quelques minutes. Cette page se met à jour toute seule.",
+      "certificate": "Vous avez terminé ce cours et votre certificat a été délivré.",
+      "completed": "Vous avez terminé ce cours. Votre certificat est en préparation et apparaîtra dans Certificats.",
+      "failed": "Votre dernier paiement n'a pas abouti, aucun accès n'a donc été facturé. Vous pouvez réessayer avec Mobile Money.",
+      "rejected": "Votre candidature à cette cohorte n'a pas été retenue. Vous pouvez choisir une autre cohorte ou un cours à votre rythme.",
+      "required": "Votre place n'est confirmée qu'à réception du paiement. L'accès s'ouvre dès que le prestataire de paiement le confirme.",
+      "review": "Votre candidature est chez le formateur. Vous serez averti dès qu'elle aura été examinée ; le paiement éventuel vient après l'acceptation."
+    },
+    "state": {
+      "blocked": "À traiter",
+      "current": "Étape en cours",
+      "done": "Fait",
+      "upcoming": "Pas encore"
+    },
+    "status": {
+      "action": "Action requise",
+      "active": "En cours",
+      "blocked": "Non accepté",
+      "completed": "Terminé",
+      "waiting": "En attente"
+    },
+    "step": {
+      "access": "Accès",
+      "applied": "Candidature envoyée",
+      "certificate": "Certificat",
+      "learning": "Apprentissage",
+      "paid": "Paiement confirmé",
+      "payment": "Paiement",
+      "review": "Examen"
+    },
+    "timeline": "Progression"
+  },
+  "privacy": {
+    "body": "Ce que vous nous avez dit à l'inscription. Vous seul voyez ces réponses ; elles servent à suggérer des cours et des parcours.",
+    "consentOff": "Consentement retiré. Vos réponses ne sont plus incluses dans les totaux.",
+    "consentOn": "Merci. Vous pouvez retirer votre consentement à tout moment.",
+    "consentSince": "Consentement donné le {{date}}",
+    "delete": "Supprimer mes réponses d'accueil",
+    "deleteBody": "Vos objectifs, centres d'intérêt, disponibilités et consentement sont supprimés. Votre compte, vos cours, vos notes et vos certificats ne sont pas touchés.",
+    "deleteConfirm": "Supprimer",
+    "deleteTitle": "Supprimer vos réponses d'accueil ?",
+    "deleted": "Vos réponses d'accueil ont été supprimées",
+    "error": "Impossible d'enregistrer. Réessayez.",
+    "interests": "Centres d'intérêt",
+    "research": "Inclure mes réponses dans la planification anonyme des programmes",
+    "researchBody": "Les administrateurs ne voient que des totaux, jamais vos réponses individuelles, ni les groupes de moins de cinq personnes.",
+    "saveInterests": "Enregistrer",
+    "saved": "Enregistré",
+    "title": "Apprentissage et confidentialité",
+    "unavailable": "Les réglages de consentement apparaîtront ici après la prochaine mise à jour de la plateforme."
+  },
+  "recommend": {
+    "addInterests": "Ajouter des centres d'intérêt",
+    "all": "Tous les cours",
+    "because": "Correspond à votre intérêt pour : {{interest}}",
+    "noInterests": "Dites-nous ce que vous voulez apprendre et nous vous suggérerons des cours adaptés.",
+    "title": "Suggestions pour vous"
+  },
+  "redirect": {
+    "continue": "Continuer vers le site DATA+",
+    "corporate": "Cette page se trouve sur le site de l'entreprise DATA+."
+  },
+  "rubric": {
+    "add": "Ajouter une grille",
+    "addCriterion": "Ajouter un critère",
+    "addLevel": "Ajouter un niveau",
+    "awarded": "{{points}} / {{max}}",
+    "awardedLevel": "Attribué",
+    "criterion": "Critère",
+    "criterionPlaceholder": "Critère, par ex. Nettoyage des données",
+    "description": "Ce qui est attendu",
+    "descriptionPlaceholder": "Ce qui est attendu (facultatif)",
+    "edit": "Modifier la grille",
+    "editorBody": "Critères et niveaux de performance. Les apprenants la voient avant de soumettre ; le total est ramené sur 100 lors de la notation.",
+    "editorTitle": "Grille d'évaluation : {{name}}",
+    "incomplete": "Chaque critère doit avoir un titre et chaque niveau un nom.",
+    "level": "Niveau",
+    "max": "jusqu'à {{max}}",
+    "notReady": "Les grilles nécessitent la dernière mise à jour de la base de données.",
+    "pickAll": "Choisissez un niveau pour chaque critère afin de calculer la note.",
+    "points": "Points",
+    "remove": "Retirer la grille",
+    "removeCriterion": "Retirer le critère",
+    "removeLevel": "Retirer le niveau",
+    "removed": "Grille retirée",
+    "result": "{{points}} sur {{max}} points = {{mark}}/100",
+    "saveError": "La grille n'a pas pu être enregistrée.",
+    "saved": "Grille enregistrée. Les apprenants peuvent la voir.",
+    "scoreWith": "Noter avec la grille",
+    "title": "Grille d'évaluation",
+    "total": "{{points}} points, ramenés sur 100",
+    "totalPoints": "Total : {{points}} points"
+  },
+  "tracks": {
+    "about": "À propos de ce parcours",
+    "all": "Tous les parcours",
+    "browseCourses": "Parcourir les cours",
+    "careerExplain": "Des parcours plus longs vers un métier, avec les compétences nécessaires, les cours recommandés et des projets appliqués. Ils préparent à un métier ; ce ne sont ni une offre d'emploi ni un placement.",
+    "competencies": "Compétences pour ce métier",
+    "completed": "Terminé",
+    "continue": "Continuer le parcours",
+    "courses": "{{count}} cours",
+    "description": "Les parcours sont des suites ordonnées de cours et de projets DATA+. Un parcours de compétence développe une capacité ; un parcours métier prépare à un rôle.",
+    "detail": {
+      "courses": "Cours",
+      "coursesValue": "{{total}} ({{required}} obligatoires)",
+      "effort": "Effort estimé",
+      "language": "Langue",
+      "level": "Niveau",
+      "role": "Métier visé",
+      "type": "Type"
+    },
+    "details": "Détails",
+    "emptyBody": "L'Académie assemble des parcours à partir des cours existants. Les cours individuels sont disponibles dès maintenant.",
+    "emptyCareer": "Aucun parcours métier publié pour l'instant",
+    "emptySkill": "Aucun parcours de compétence publié pour l'instant",
+    "error": "Les parcours n'ont pas pu être chargés",
+    "hours": "environ {{count}} heures",
+    "inProgress": "En cours · {{percent}} %",
+    "kind": {
+      "career": "Parcours métier",
+      "skill": "Parcours de compétence"
+    },
+    "nextCourse": "Suivant : {{title}}",
+    "noPlacement": "Les parcours métiers développent des compétences professionnelles. DATA+ Academy ne promet ni emploi ni placement.",
+    "notFound": "Ce parcours n'est pas disponible",
+    "notFoundBody": "Il a peut-être été renommé ou dépublié.",
+    "optional": "Facultatif",
+    "outcomes": "Vous saurez",
+    "progress": "{{done}} cours obligatoires terminés sur {{total}}",
+    "progressNote": "Calculé à partir des cours que vous terminez. Les cours terminés avant de rejoindre le parcours comptent aussi.",
+    "recommendedAfter": "Recommandé après {{title}}",
+    "sequence": "Ordre des cours",
+    "skillExplain": "Court et ciblé : quelques cours qui, ensemble, développent une compétence, comme SQL pour l'analyse. Généralement quelques semaines.",
+    "start": "Commencer par {{title}}",
+    "tab": {
+      "career": "Parcours métiers",
+      "skill": "Parcours de compétences"
+    },
+    "title": "Parcours de compétences et métiers",
+    "towards": "Objectif : {{role}}",
+    "view": "Voir le parcours",
+    "yourProgress": "Votre progression",
+    "started": "En cours",
+    "filterLabel": "Type de parcours"
+  },
+  "interests": {
+    "data_analysis": "Analyse de données",
+    "data_science": "Science des données",
+    "ai": "IA",
+    "data_management": "Gestion des données",
+    "geospatial": "Analyse géospatiale",
+    "programming": "Programmation",
+    "visualisation": "Visualisation de données",
+    "research_me": "Recherche et suivi-évaluation"
+  },
+  "facilitation": {
+    "allCohorts": "Toutes les cohortes",
+    "allCourses": "Tous mes cours",
+    "already": "Déjà affecté avec ce périmètre.",
+    "annMessage": "Message",
+    "annTitle": "Titre",
+    "announce": "Annoncer",
+    "announceBody": "Les apprenants choisis le verront sur leur page d'accueil et seront avertis. Utilisez Discord pour les échanges.",
+    "announceError": "L'annonce n'a pas pu être publiée.",
+    "announceNote": "Les annonces du cours sont publiées par le formateur ou par les facilitateurs affectés à tout le cours.",
+    "announceTitle": "Annonce pour {{course}}",
+    "announced": "Annonce publiée dans le cours",
+    "assign": "Affecter",
+    "assignError": "Le facilitateur n'a pas pu être affecté.",
+    "assigned": "{{name}} peut maintenant faciliter",
+    "assignment": "Devoir",
+    "awaiting": "À examiner",
+    "backHome": "Retour à mon accueil",
+    "capstone": "Projet final",
+    "col": {
+      "active": "Dernière activité",
+      "course": "Cours et cohorte",
+      "learner": "Apprenant",
+      "progress": "Progression"
+    },
+    "confirmRemove": "Retirer {{name}} ? Ses avis provisoires restent attachés aux travaux, mais il perd l'accès.",
+    "description": "Accompagnez les apprenants qui vous sont confiés : suivez leur progression, examinez leurs travaux, faites vivre la communauté de cohorte.",
+    "dialogBody": "Les facilitateurs voient la progression et les travaux des apprenants qui leur sont confiés, proposent des notes avec des remarques et s'occupent du Discord de la cohorte. Vous publiez les notes et commentaires définitifs.",
+    "dialogTitle": "Facilitateurs de {{course}}",
+    "email": "E-mail de son compte",
+    "emptyOther": "Rien ici pour l'instant",
+    "emptyTodo": "Rien à examiner",
+    "error": "Votre travail de facilitation n'a pas pu être chargé",
+    "facilitator": "un facilitateur",
+    "fileError": "Ce fichier n'a pas pu être ouvert.",
+    "instructorFeedback": "Commentaire du formateur (publié)",
+    "learners": "Apprenants",
+    "learnersBody": "Progression des apprenants que vous accompagnez. Les coordonnées ne sont pas affichées ; contactez-les via le Discord de la cohorte.",
+    "learnersTitle": "Apprenants",
+    "manage": "Facilitateurs",
+    "marked": "Noté {{grade}}/100",
+    "needsReview": "À examiner",
+    "never": "Pas commencé",
+    "noCohort": "Sans cohorte",
+    "noLearners": "Aucun apprenant pour l'instant",
+    "noLearnersBody": "Les apprenants apparaissent ici dès qu'ils sont inscrits à votre cours ou cohorte.",
+    "noStaff": "Aucun facilitateur pour l'instant.",
+    "none": "Vous ne facilitez aucun cours",
+    "noneBody": "Un formateur ou un administrateur affecte les facilitateurs à un cours ou à une cohorte. Demandez-leur si vous vous attendiez à voir du travail ici.",
+    "notAllowed": "Ce compte ne peut pas faciliter ce cours.",
+    "notFound": "Aucun compte avec cet e-mail. La personne doit d'abord s'inscrire.",
+    "notReady": "Les facilitateurs nécessitent la dernière mise à jour de la base de données (20261125000000_facilitators.sql).",
+    "notes": "Remarques pour le formateur",
+    "notesPlaceholder": "Ce qui fonctionne, ce qui manque, et ce que vous diriez à l'apprenant.",
+    "openCourse": "Ouvrir le cours",
+    "post": "Publier",
+    "private": "Seule l'équipe du cours voit ceci. Le formateur rédige le commentaire que reçoit l'apprenant.",
+    "removeError": "Impossible de retirer le facilitateur.",
+    "reviewBody": "Travaux des apprenants que vous accompagnez. Votre note proposée et vos remarques vont au formateur, qui publie la note définitive.",
+    "reviewError": "Votre avis n'a pas pu être enregistré.",
+    "reviewSaved": "Avis enregistré pour le formateur",
+    "reviewTitle": "Examiner les travaux",
+    "reviewWork": "Examiner les travaux",
+    "reviewed": "Votre avis est chez le formateur",
+    "rules": "Vous pouvez examiner les travaux et proposer une note avec des remarques. Le formateur reste responsable de la note définitive et du commentaire écrit que reçoivent les apprenants, qui ne voient jamais vos propositions.",
+    "saveReview": "Enregistrer l'avis",
+    "scope": "Périmètre",
+    "seeLearners": "Apprenants",
+    "suggested": "Note proposée",
+    "suggestionFrom": "Avis du facilitateur {{name}}",
+    "suggests": "propose {{grade}}/100",
+    "tab": {
+      "marked": "Notés",
+      "reviewed": "Examinés",
+      "todo": "À examiner"
+    },
+    "title": "Facilitation",
+    "toReview": "{{count}} à examiner",
+    "unnamed": "Apprenant",
+    "useSuggestion": "Partir de cette proposition",
+    "workspace": "Espace de facilitation",
+    "youPublish": "C'est vous qui publiez la note ; reformulez le commentaire pour l'apprenant.",
+    "yourReview": "Votre avis",
+    "announceCohortBody": "Seuls les apprenants de {{cohort}} le verront sur leur page d'accueil et seront avertis. Utilisez Discord pour les échanges.",
+    "announceNote2": "Les facilitateurs de cohorte publient pour leur cohorte ; ceux de tout le cours peuvent toucher tous les apprenants. Les devoirs que vous rédigez sont publiés après approbation du formateur.",
+    "announcedCohort": "Annonce publiée pour la cohorte",
+    "draftAssignment": "Rédiger un devoir"
+  },
+  "drafts": {
+    "approve": "Approuver et publier",
+    "approveError": "Le brouillon n'a pas pu être approuvé.",
+    "approved": "Approuvé : le devoir fait maintenant partie du cours",
+    "awaitingYou": "En attente de votre approbation",
+    "by": "Par {{name}}",
+    "confirmDelete": "Supprimer le brouillon « {{title}} » ?",
+    "course": "Cours",
+    "deleteError": "Le brouillon n'a pas pu être supprimé.",
+    "dialogBody": "Les apprenants ne voient rien tant que le formateur n'a pas approuvé. Une fois approuvé, le devoir est ajouté à la fin du module choisi.",
+    "due": "Échéance (facultatif)",
+    "dueOn": "échéance {{date}}",
+    "edit": "Modifier le brouillon de devoir",
+    "empty": "Aucun brouillon pour l'instant",
+    "emptyBody": "Rédigez un exercice ou un sujet de projet avec sa grille ; le formateur l'examine et l'ajoute au cours.",
+    "error": "Vos brouillons n'ont pas pu être chargés",
+    "instructions": "Consignes pour les apprenants",
+    "instructionsPlaceholder": "Ce qu'il faut faire, ce qu'il faut rendre, et comment ce sera évalué.",
+    "instructorNote": "Remarque du formateur",
+    "module": "Module",
+    "new": "Nouveau brouillon de devoir",
+    "noRubric": "Les devoirs importants devraient avoir une grille. Les apprenants la voient avant de soumettre.",
+    "noRubricWarning": "Pas encore de grille. Pensez à en demander une avant d'approuver un devoir important.",
+    "notReady": "Les brouillons de devoirs nécessitent la dernière mise à jour de la base de données",
+    "noteLabel": "Ce qui doit changer",
+    "notePlaceholder": "Que faut-il changer avant que vous l'approuviez ?",
+    "openLive": "Ouvrir dans le cours",
+    "pageBody": "Rédigez des devoirs pour les cours que vous facilitez. Le formateur les approuve avant que les apprenants ne voient quoi que ce soit.",
+    "pageTitle": "Brouillons de devoirs",
+    "pickCourse": "Choisissez un cours",
+    "pickModule": "Choisissez un module",
+    "queueBody": "L'approbation ajoute le devoir, avec sa grille et son échéance, à la fin du module choisi. Les apprenants le voient aussitôt.",
+    "queueTitle": "Brouillons de devoirs des facilitateurs",
+    "requestChanges": "Demander des modifications",
+    "returnError": "Le brouillon n'a pas pu être renvoyé.",
+    "returned": "Renvoyé avec votre remarque",
+    "revise": "Modifier et renvoyer",
+    "rubric": "Grille d'évaluation",
+    "saveDraft": "Enregistrer le brouillon",
+    "saveError": "Le brouillon n'a pas pu être enregistré.",
+    "saved": "Brouillon enregistré",
+    "sendBack": "Renvoyer",
+    "status": {
+      "approved": "Approuvé et en ligne",
+      "changes": "Modifications demandées",
+      "draft": "Brouillon",
+      "submitted": "Chez le formateur"
+    },
+    "submit": "Soumettre pour approbation",
+    "submitted": "Envoyé au formateur pour approbation",
+    "title": "Titre"
+  },
+  "meta": {
+    "bundles": {
+      "description": "Des groupes de cours DATA+ Academy proposés ensemble à un prix unique.",
+      "title": "Lots de cours"
+    },
+    "competitions": {
+      "description": "Les défis de données organisés par DATA+ Academy, avec leurs règles, leur calendrier et leurs résultats.",
+      "title": "Compétitions"
+    },
+    "courses": {
+      "description": "Parcourez les cours DATA+ Academy en analyse de données, suivi-évaluation, recherche et IA. Consultez le niveau, le format, la langue et le prix de chaque cours.",
+      "title": "Cours"
+    },
+    "forgot": {
+      "title": "Réinitialiser votre mot de passe"
+    },
+    "home": "Cours en analyse de données, suivi-évaluation, recherche et IA par DATA+ Rwanda, avec des cohortes en direct en ligne et à Kigali. Paiement via Mobile Money.",
+    "notFound": {
+      "title": "Page introuvable"
+    },
+    "privacy": {
+      "description": "Comment DATA+ Academy collecte, utilise et protège vos données personnelles.",
+      "title": "Politique de confidentialité"
+    },
+    "projects": {
+      "description": "Projets finaux des apprenants de DATA+ Academy.",
+      "title": "Projets des apprenants"
+    },
+    "reset": {
+      "title": "Choisir un nouveau mot de passe"
+    },
+    "signIn": {
+      "description": "Connectez-vous à DATA+ Academy pour poursuivre vos cours.",
+      "title": "Connexion"
+    },
+    "signUp": {
+      "description": "Créez un compte DATA+ Academy gratuit pour vous inscrire aux cours.",
+      "title": "Créer un compte"
+    },
+    "terms": {
+      "description": "Les conditions d'utilisation de DATA+ Academy.",
+      "title": "Conditions d'utilisation"
+    },
+    "tracks": {
+      "description": "Des suites ordonnées de cours DATA+ Academy pour développer une compétence ou préparer un métier.",
+      "title": "Parcours de compétences et de carrière"
+    },
+    "verify": {
+      "description": "Vérifiez l'authenticité d'un certificat DATA+ Academy avec le code qui y figure.",
+      "title": "Vérifier un certificat"
+    },
+    "verifyEmail": {
+      "title": "Consultez vos e-mails"
+    }
+  },
+  "cover": {
+    "family": {
+      "ai": "IA pour les professionnels",
+      "data": "Analyse de données",
+      "geo": "Géospatial",
+      "me": "Suivi et évaluation",
+      "research": "Recherche et propositions"
+    }
+  },
+  "intro": {
+    "skip": "Passer l'intro"
   }
 }

@@ -266,7 +266,7 @@ export function PurchaseDialog({
                         {earlyBird?.active && (
                             <div className="flex items-center justify-between text-sm text-warning">
                                 <span>{t("purchaseDialog.earlyBirdPrice", "Early bird price")}</span>
-                                <span className="line-through text-muted-foreground/60 mr-2">
+                                <span className="line-through text-muted-foreground mr-2">
                                     {formatPrice(earlyBird.regularPrice, item.currency)}
                                 </span>
                                 <span>{formatPrice(earlyBird.price, item.currency)}</span>
@@ -433,7 +433,7 @@ export function PurchaseDialog({
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                                             !CARD_PAYMENT_ENABLED
-                                                ? "bg-muted text-muted-foreground/60"
+                                                ? "bg-muted text-muted-foreground"
                                                 : paymentMethod === "card"
                                                   ? "bg-info text-white"
                                                   : "bg-muted text-muted-foreground"
@@ -443,14 +443,14 @@ export function PurchaseDialog({
                                     </div>
                                     <div className="text-left">
                                         <p className="font-semibold text-muted-foreground">{t("purchaseDialog.cardPayment", "Card Payment")}</p>
-                                        <p className="text-xs text-muted-foreground/60">
+                                        <p className="text-xs text-muted-foreground">
                                             {CARD_PAYMENT_ENABLED
                                                 ? t("purchaseDialog.visaMastercardViaXentripay", "Visa, Mastercard via XentriPay")
-                                                : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon — use MoMo for now")}
+                                                : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon. Use MoMo for now")}
                                         </p>
                                     </div>
                                     {!CARD_PAYMENT_ENABLED && (
-                                        <span className="ml-auto text-xs font-medium text-muted-foreground/60 bg-muted px-2 py-0.5 rounded-full">
+                                        <span className="ml-auto text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
                                             {t("purchaseDialog.soon", "Soon")}
                                         </span>
                                     )}
@@ -466,7 +466,7 @@ export function PurchaseDialog({
                                         {paymentMethod === "momo" ? t("purchaseDialog.mtnMomoPhoneNumber", "MTN MoMo Phone Number") : t("purchaseDialog.phoneNumber", "Phone Number")}
                                     </Label>
                                     <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             id="phone"
                                             type="tel"
@@ -479,7 +479,7 @@ export function PurchaseDialog({
                                     <p className="text-xs text-muted-foreground">
                                         {paymentMethod === "momo"
                                             ? t("purchaseDialog.rwandaMtnAirtelNumberOnlyE", "Rwanda MTN/Airtel number only (e.g. 0788123456 or +250788123456)")
-                                            : t("purchaseDialog.anyPhoneNumberLocalOrInternational", "Any phone number — local or international (e.g. +1 555 123 4567)")}
+                                            : t("purchaseDialog.anyPhoneNumberLocalOrInternational", "Any phone number, local or international (e.g. +1 555 123 4567)")}
                                     </p>
                                 </div>
                             )}
@@ -491,7 +491,7 @@ export function PurchaseDialog({
                             )}
 
                             <Button
-                                className="w-full bg-primary hover:bg-primary-hover text-white h-12 text-base"
+                                className="w-full bg-action hover:bg-action-hover text-white h-12 text-base"
                                 onClick={handleInitiatePayment}
                                 disabled={authLoading}
                             >
@@ -562,7 +562,7 @@ export function PurchaseDialog({
                                 {t("purchaseDialog.youHaveBeenEnrolledInThe", "You have been enrolled in the {{type}}. You can now access all course content.", { type: type })}
                             </p>
                             <Button
-                                className="w-full bg-primary hover:bg-primary-hover text-white"
+                                className="w-full bg-action hover:bg-action-hover text-white"
                                 onClick={() => {
                                     onOpenChange(false);
                                     onSuccess?.();
@@ -589,7 +589,7 @@ export function PurchaseDialog({
                                     </p>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground/60">
+                            <p className="text-xs text-muted-foreground">
                                 {t("purchaseDialog.ifTheProblemPersistsContactSupport", "If the problem persists, contact support with the reference above.")}
                             </p>
                             <div className="flex gap-2">
@@ -597,7 +597,7 @@ export function PurchaseDialog({
                                     {t("purchaseDialog.cancel", "Cancel")}
                                 </Button>
                                 <Button
-                                    className="flex-1 bg-primary hover:bg-primary-hover text-white"
+                                    className="flex-1 bg-action hover:bg-action-hover text-white"
                                     onClick={() => {
                                         setStep("method");
                                         setError(null);

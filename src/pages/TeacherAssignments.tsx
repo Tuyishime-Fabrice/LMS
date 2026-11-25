@@ -4,6 +4,11 @@ import { AppShell } from "@/components/shell/AppShell";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { RubricEditor } from "@/features/rubrics/RubricEditor";
+import { fetchReviewsForInstructor } from "@/features/facilitation/api";
+import { DraftApprovals } from "@/features/facilitation/DraftApprovals";
+import { RubricScorer } from "@/features/rubrics/RubricScorer";
+import { feedbackIsValid, MIN_FEEDBACK_LENGTH, parseRubric, parseScores, type RubricScores } from "@/features/rubrics/rubric";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +76,9 @@ const TeacherAssignments = () => {
   const [enrolledStudents, setEnrolledStudents] = useState<EnrolledStudent[]>([]);
   const [editGrades, setEditGrades] = useState<Record<string, string>>({});
   const [editFeedback, setEditFeedback] = useState<Record<string, string>>({});
+  const [editRubric, setEditRubric] = useState<Record<string, RubricScores>>({});
+  const [suggestions, setSuggestions] = useState<Map<string, { suggestedGrade: number | null; notes: string | null; rubricScores: RubricScores; reviewerName: string }>>(new Map());
+  const [assignmentLessons, setAssignmentLessons] = useState<{ id: string; title: string; rubric: unknown }[]>([]);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
 
@@ -147,16 +155,15 @@ const TeacherAssignments = () => {
       // Fetch submissions for BOTH regular assignments AND capstone projects
       
       // 1. Get regular assignment lesson IDs from course_lessons
-      const { data: courseLessons } = await supabase
+      const lessonQuery = (columns: string) => supabase
         .from("course_lessons")
-        .select(`
-          id,
-          course_chapters!inner (
-            course_id
-          )
-        `)
+        .select(`${columns}, course_chapters!inner ( course_id )`)
         .eq("content_type", "assignment")
         .eq("course_chapters.course_id", selectedCourseId);
+      let lessonResult = await lessonQuery("id, title, rubric");
+      if (lessonResult.error) lessonResult = await lessonQuery("id, title");
+      const courseLessons = (lessonResult.data || []) as unknown as { id: string; title: string; rubric?: unknown }[];
+      setAssignmentLessons(courseLessons.map((lesson) => ({ id: lesson.id, title: lesson.title, rubric: lesson.rubric ?? null })));
 
       const lessonIds = courseLessons?.map(l => l.id) || [];
 
@@ -222,6 +229,12 @@ const TeacherAssignments = () => {
       console.log("Total submissions:", allSubmissions.length);
       
       setSubmissions(allSubmissions);
+      // Provisional reviews by facilitators (staff-only; learners never see them).
+      const [assignmentReviews, capstoneReviews] = await Promise.all([
+        fetchReviewsForInstructor("assignment", assignmentSubmissions.map((row) => row.id)),
+        fetchReviewsForInstructor("capstone", capstoneSubmissions.map((row) => row.id)),
+      ]);
+      setSuggestions(new Map([...assignmentReviews, ...capstoneReviews]));
     } catch (error: any) {
       toast.error(t('teacher.assignments.failedToLoadSubmissions'));
       console.error(error);
@@ -314,6 +327,12 @@ const TeacherAssignments = () => {
     setEditGrades((prev) => ({ ...prev, [submissionId]: value }));
   };
 
+  const rubricFor = (submission: Submission) => {
+    const lessonId = (submission as { lesson_id?: string }).lesson_id;
+    if (lessonId) return parseRubric(assignmentLessons.find((lesson) => lesson.id === lessonId)?.rubric);
+    return parseRubric((capstoneProject as { rubric?: unknown } | null)?.rubric);
+  };
+
   const handleFeedbackChange = (submissionId: string, value: string) => {
     setEditFeedback((prev) => ({ ...prev, [submissionId]: value }));
   };
@@ -340,6 +359,12 @@ const TeacherAssignments = () => {
         toast.error(t("teacherAssignments.submissionNotFound", "Submission not found"));
         return;
       }
+      // A mark is never published without a meaningful written comment (enforced again by the database).
+      const effectiveFeedback = feedbackText?.trim() || submission.feedback || "";
+      if ((grade !== undefined || submission.grade !== null) && !feedbackIsValid(effectiveFeedback)) {
+        toast.error(t("teacherAssignments.feedbackRequired", "Write feedback of at least {{n}} characters before publishing a mark.", { n: MIN_FEEDBACK_LENGTH }));
+        return;
+      }
 
       // Determine table based on which ID field exists
       const isAssignment = 'lesson_id' in submission;
@@ -350,13 +375,20 @@ const TeacherAssignments = () => {
       const updatePayload: any = { graded_at: new Date().toISOString() };
       if (grade !== undefined) updatePayload.grade = grade;
       if (feedbackText?.trim()) updatePayload.feedback = feedbackText.trim();
+      if (editRubric[submissionId]) updatePayload.rubric_scores = editRubric[submissionId];
 
       const { error } = await supabase
         .from(tableName)
         .update(updatePayload)
         .eq("id", submissionId);
       
-      if (error) throw error;
+      if (error) {
+        if (error.code === "23514") {
+          toast.error(t("teacherAssignments.feedbackRequired", "Write feedback of at least {{n}} characters before publishing a mark.", { n: MIN_FEEDBACK_LENGTH }));
+          return;
+        }
+        throw error;
+      }
       
       setSubmissions((prev) => prev.map((s) => {
         if (s.id !== submissionId) return s;
@@ -401,11 +433,11 @@ const TeacherAssignments = () => {
                 <CardContent>
                   {courses.length === 0 ? (
                     <div className="text-center py-8">
-                      <FileText className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                       <p className="text-muted-foreground">{t('teacher.assignments.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
-                        className="mt-4 bg-primary hover:bg-primary-hover"
+                        className="mt-4 bg-action hover:bg-action-hover"
                       >
                         {t('teacher.assignments.createFirstCourse')}
                       </Button>
@@ -477,6 +509,27 @@ const TeacherAssignments = () => {
                     </Card>
                   </div>
 
+                  <DraftApprovals courseId={selectedCourseId} onApproved={() => void fetchSubmissions()} />
+
+                  {assignmentLessons.length > 0 && (
+                    <section className="surface p-4 sm:p-5" aria-labelledby="rubrics-heading">
+                      <h2 id="rubrics-heading" className="text-card-title">{t("teacherAssignments.rubricsTitle", "Assignment rubrics")}</h2>
+                      <p className="mt-1 text-meta">{t("teacherAssignments.rubricsBody", "Learners see the rubric in the lesson before they submit. Major assignments should always have one.")}</p>
+                      <ul className="mt-3 divide-y">
+                        {assignmentLessons.map((lesson) => (
+                          <li key={lesson.id} className="flex items-center justify-between gap-3 py-2.5">
+                            <span className="min-w-0 truncate text-sm font-medium text-forest">{lesson.title}</span>
+                            <span className="flex shrink-0 items-center gap-2">
+                              {!parseRubric(lesson.rubric) && <Badge variant="outline" className="border-warning/30 text-warning">{t("teacherAssignments.noRubric", "No rubric")}</Badge>}
+                              <RubricEditor target="course_lessons" id={lesson.id} name={lesson.title} current={lesson.rubric}
+                                onSaved={(rubric) => setAssignmentLessons((list) => list.map((item) => item.id === lesson.id ? { ...item, rubric } : item))} />
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
                   {/* Assignment Details */}
                   {capstoneProject ? (
                     <Card>
@@ -489,6 +542,13 @@ const TeacherAssignments = () => {
                             </CardDescription>
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
+                            <RubricEditor
+                              target="capstone_projects"
+                              id={capstoneProject.id}
+                              name={capstoneProject.title}
+                              current={(capstoneProject as { rubric?: unknown }).rubric}
+                              onSaved={(rubric) => setCapstoneProject((current) => current && ({ ...current, rubric } as typeof current))}
+                            />
                             {capstoneProject.due_date && (
                               <Badge variant="outline" className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -497,7 +557,7 @@ const TeacherAssignments = () => {
                             )}
                             <Button
                               onClick={() => navigate(`/create-course?edit=${selectedCourseId}`)}
-                              className="bg-primary hover:bg-primary-hover"
+                              className="bg-action hover:bg-action-hover"
                             >
                               {t('teacher.assignments.editAssignment')}
                             </Button>
@@ -519,7 +579,7 @@ const TeacherAssignments = () => {
                           <TabsContent value="submitted" className="space-y-4 mt-4">
                             {submissions.length === 0 ? (
                               <div className="text-center py-12">
-                                <FileText className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                                 <p className="text-muted-foreground">{t('teacher.assignments.noSubmissions')}</p>
                               </div>
                             ) : (
@@ -613,7 +673,7 @@ const TeacherAssignments = () => {
                                           <Button 
                                             size="sm" 
                                             onClick={() => handleSaveInlineGrade(submission.id)}
-                                            className="bg-primary hover:bg-primary-hover mt-5"
+                                            className="bg-action hover:bg-action-hover mt-5"
                                           >
                                             <Send className="h-3.5 w-3.5 mr-1" />
                                             {t("teacherAssignments.save", "Save")}
@@ -630,16 +690,53 @@ const TeacherAssignments = () => {
                                     {/* Teacher Feedback / Comment Section */}
                                     <div className="mt-4 pt-4 border-t border-border">
                                       <div className="flex items-start gap-3">
-                                        <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
+                                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {suggestions.get(submission.id) && submission.grade === null && (() => {
+                                            const suggestion = suggestions.get(submission.id)!;
+                                            return (
+                                              <div className="mb-3 rounded-lg border border-info/20 bg-info-surface p-3 text-sm">
+                                                <p className="text-xs font-semibold text-info">
+                                                  {t("facilitation.suggestionFrom", "Facilitator review by {{name}}", { name: suggestion.reviewerName || t("facilitation.facilitator", "a facilitator") })}
+                                                  {suggestion.suggestedGrade !== null ? ` · ${t("facilitation.suggests", "suggests {{grade}}/100", { grade: suggestion.suggestedGrade })}` : ""}
+                                                </p>
+                                                {suggestion.notes && <p className="mt-1 whitespace-pre-line leading-6 text-forest">{suggestion.notes}</p>}
+                                                <Button type="button" size="sm" variant="outline" className="mt-2"
+                                                  onClick={() => {
+                                                    if (Object.keys(suggestion.rubricScores).length) setEditRubric((prev) => ({ ...prev, [submission.id]: suggestion.rubricScores }));
+                                                    if (suggestion.suggestedGrade !== null) handleInlineGradeChange(submission.id, String(suggestion.suggestedGrade));
+                                                    if (suggestion.notes && !(editFeedback[submission.id] ?? submission.feedback)) handleFeedbackChange(submission.id, suggestion.notes);
+                                                  }}>
+                                                  {t("facilitation.useSuggestion", "Use as a starting point")}
+                                                </Button>
+                                                <p className="mt-2 text-xs text-muted-foreground">{t("facilitation.youPublish", "You publish the mark; edit the feedback so it speaks to the learner.")}</p>
+                                              </div>
+                                            );
+                                          })()}
+                                          {rubricFor(submission) && (
+                                            <div className="mb-3">
+                                              <RubricScorer
+                                                rubric={rubricFor(submission)!}
+                                                value={editRubric[submission.id] ?? parseScores((submission as { rubric_scores?: unknown }).rubric_scores)}
+                                                onChange={(scores, mark) => {
+                                                  setEditRubric((prev) => ({ ...prev, [submission.id]: scores }));
+                                                  if (mark !== null) handleInlineGradeChange(submission.id, String(mark));
+                                                }}
+                                              />
+                                            </div>
+                                          )}
                                           <Textarea
                                             placeholder={t("teacherAssignments.writeYourFeedbackHereEG", "Write your feedback here... (e.g. Great work on the UI! Consider improving error handling.)")}
                                             value={editFeedback[submission.id] ?? (submission.feedback || "")}
                                             onChange={(e) => handleFeedbackChange(submission.id, e.target.value)}
-                                            rows={2}
+                                            rows={3}
                                             className="text-sm resize-none"
+                                            aria-describedby={`feedback-hint-${submission.id}`}
                                           />
+                                          <p id={`feedback-hint-${submission.id}`} className={`mt-1 text-xs ${feedbackIsValid(editFeedback[submission.id] ?? submission.feedback) ? "text-muted-foreground" : "text-warning"}`}>
+                                            {t("teacherAssignments.feedbackHint", "Required with a mark: at least {{n}} characters ({{count}} so far). The learner sees this with their grade.", { n: MIN_FEEDBACK_LENGTH, count: (editFeedback[submission.id] ?? submission.feedback ?? "").trim().length })}
+                                          </p>
                                         </div>
                                       </div>
                                       {submission.feedback && !editFeedback[submission.id] && (
@@ -707,7 +804,7 @@ const TeacherAssignments = () => {
                           </div>
                           <Button
                             onClick={() => navigate(`/create-course?edit=${selectedCourseId}`)}
-                            className="bg-primary hover:bg-primary-hover"
+                            className="bg-action hover:bg-action-hover"
                           >
                             {t("teacherAssignments.manageCourse", "Manage Course")}
                           </Button>
@@ -728,7 +825,7 @@ const TeacherAssignments = () => {
                           <TabsContent value="submitted" className="space-y-4 mt-4">
                             {submissions.length === 0 ? (
                               <div className="text-center py-12">
-                                <FileText className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                                 <p className="text-muted-foreground">{t("teacherAssignments.noSubmissionsYet", "No submissions yet")}</p>
                                 <p className="text-sm text-muted-foreground mt-2">
                                   {t("teacherAssignments.studentsWillSeeAssignmentsOnceYou", "Students will see assignments once you add them to the course structure")}
@@ -791,7 +888,7 @@ const TeacherAssignments = () => {
                                           <Button 
                                             size="sm" 
                                             onClick={() => handleSaveInlineGrade(submission.id)}
-                                            className="bg-primary hover:bg-primary-hover mt-5"
+                                            className="bg-action hover:bg-action-hover mt-5"
                                           >
                                             <Send className="h-3.5 w-3.5 mr-1" />
                                             {t("teacherAssignments.save", "Save")}
@@ -808,16 +905,53 @@ const TeacherAssignments = () => {
                                     {/* Teacher Feedback / Comment Section */}
                                     <div className="mt-4 pt-4 border-t border-border">
                                       <div className="flex items-start gap-3">
-                                        <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
+                                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
+                                          {suggestions.get(submission.id) && submission.grade === null && (() => {
+                                            const suggestion = suggestions.get(submission.id)!;
+                                            return (
+                                              <div className="mb-3 rounded-lg border border-info/20 bg-info-surface p-3 text-sm">
+                                                <p className="text-xs font-semibold text-info">
+                                                  {t("facilitation.suggestionFrom", "Facilitator review by {{name}}", { name: suggestion.reviewerName || t("facilitation.facilitator", "a facilitator") })}
+                                                  {suggestion.suggestedGrade !== null ? ` · ${t("facilitation.suggests", "suggests {{grade}}/100", { grade: suggestion.suggestedGrade })}` : ""}
+                                                </p>
+                                                {suggestion.notes && <p className="mt-1 whitespace-pre-line leading-6 text-forest">{suggestion.notes}</p>}
+                                                <Button type="button" size="sm" variant="outline" className="mt-2"
+                                                  onClick={() => {
+                                                    if (Object.keys(suggestion.rubricScores).length) setEditRubric((prev) => ({ ...prev, [submission.id]: suggestion.rubricScores }));
+                                                    if (suggestion.suggestedGrade !== null) handleInlineGradeChange(submission.id, String(suggestion.suggestedGrade));
+                                                    if (suggestion.notes && !(editFeedback[submission.id] ?? submission.feedback)) handleFeedbackChange(submission.id, suggestion.notes);
+                                                  }}>
+                                                  {t("facilitation.useSuggestion", "Use as a starting point")}
+                                                </Button>
+                                                <p className="mt-2 text-xs text-muted-foreground">{t("facilitation.youPublish", "You publish the mark; edit the feedback so it speaks to the learner.")}</p>
+                                              </div>
+                                            );
+                                          })()}
+                                          {rubricFor(submission) && (
+                                            <div className="mb-3">
+                                              <RubricScorer
+                                                rubric={rubricFor(submission)!}
+                                                value={editRubric[submission.id] ?? parseScores((submission as { rubric_scores?: unknown }).rubric_scores)}
+                                                onChange={(scores, mark) => {
+                                                  setEditRubric((prev) => ({ ...prev, [submission.id]: scores }));
+                                                  if (mark !== null) handleInlineGradeChange(submission.id, String(mark));
+                                                }}
+                                              />
+                                            </div>
+                                          )}
                                           <Textarea
                                             placeholder={t("teacherAssignments.writeYourFeedbackHereEG", "Write your feedback here... (e.g. Great work on the UI! Consider improving error handling.)")}
                                             value={editFeedback[submission.id] ?? (submission.feedback || "")}
                                             onChange={(e) => handleFeedbackChange(submission.id, e.target.value)}
-                                            rows={2}
+                                            rows={3}
                                             className="text-sm resize-none"
+                                            aria-describedby={`feedback-hint-${submission.id}`}
                                           />
+                                          <p id={`feedback-hint-${submission.id}`} className={`mt-1 text-xs ${feedbackIsValid(editFeedback[submission.id] ?? submission.feedback) ? "text-muted-foreground" : "text-warning"}`}>
+                                            {t("teacherAssignments.feedbackHint", "Required with a mark: at least {{n}} characters ({{count}} so far). The learner sees this with their grade.", { n: MIN_FEEDBACK_LENGTH, count: (editFeedback[submission.id] ?? submission.feedback ?? "").trim().length })}
+                                          </p>
                                         </div>
                                       </div>
                                       {submission.feedback && !editFeedback[submission.id] && (

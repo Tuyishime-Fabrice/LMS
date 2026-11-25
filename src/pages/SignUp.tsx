@@ -1,3 +1,6 @@
+import { Brand } from "@/components/shell/Brand";
+import { Photo } from "@/features/site/home/Photo";
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from "@/lib/browserStorage";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -19,6 +22,7 @@ const PENDING_VERIFICATION_EMAIL_KEY = "pendingVerificationEmail";
 const SignUp = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.signUp.title", "Create an account"), description: t("meta.signUp.description", "Create a free DATA+ Academy account to enrol in courses."), path: "/signup" });
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const [selectedRole, setSelectedRole] = useState<UserRole>(searchParams.get("role") === "teacher" ? "teacher" : "student");
@@ -153,17 +157,13 @@ const SignUp = () => {
         <div className="w-full max-w-md space-y-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img
-              src="/images/dataplus_logggg-removebg-preview.png"
-              alt="DataPlus Academy"
-              className="w-10 h-10 object-contain"
-            />
+            <Brand />
           </div>
 
           {/* Header */}
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-forest leading-tight">
-              {t('signUp.masterSkills')}
+              {t('signUp.tagline', 'Data, M&E and AI courses by DATA+ Rwanda.')}
             </h1>
             <p className="text-muted-foreground text-sm">{t('signUp.signUpToStart')}</p>
           </div>
@@ -175,7 +175,7 @@ const SignUp = () => {
               variant={selectedRole === "student" ? "default" : "outline"}
               onClick={() => setSelectedRole("student")}
               className={`w-full h-10 text-sm font-medium rounded-lg transition-colors duration-300 group ${selectedRole === "student"
-                ? "bg-primary hover:bg-primary-hover text-white"
+                ? "bg-action hover:bg-action-hover text-white"
                 : "bg-card border border-border hover:bg-muted"
                 }`}
             >
@@ -189,7 +189,7 @@ const SignUp = () => {
               variant={selectedRole === "teacher" ? "default" : "outline"}
               onClick={() => setSelectedRole("teacher")}
               className={`w-full h-10 text-sm font-medium rounded-lg transition-colors duration-300 group ${selectedRole === "teacher"
-                ? "bg-primary hover:bg-primary-hover text-white"
+                ? "bg-action hover:bg-action-hover text-white"
                 : "bg-card border border-border hover:bg-muted"
                 }`}
             >
@@ -233,7 +233,7 @@ const SignUp = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-card text-muted-foreground/60">{t("common.or", "or")}</span>
+              <span className="px-3 bg-card text-muted-foreground">{t("common.or", "or")}</span>
             </div>
           </div>
 
@@ -284,7 +284,9 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                  aria-label={showPassword ? t("auth.hidePassword", "Hide password") : t("auth.showPassword", "Show password")}
+                  aria-pressed={showPassword}
+                  className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:text-forest"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -308,7 +310,9 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                  aria-label={showConfirmPassword ? t("auth.hidePassword", "Hide password") : t("auth.showPassword", "Show password")}
+                  aria-pressed={showConfirmPassword}
+                  className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:text-forest"
                 >
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -319,7 +323,7 @@ const SignUp = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className={`w-full h-11 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors duration-300 ${
+                className={`w-full h-11 bg-action hover:bg-action-hover text-white font-medium rounded-lg transition-colors duration-300 ${
                   lastAuthMethod === "email" ? "ring-2 ring-primary ring-offset-2" : ""
                 }`}
               >
@@ -348,17 +352,21 @@ const SignUp = () => {
         </div>
       </div>
 
-      {/* Right Side - Image */}
-      <div className="hidden lg:flex flex-1 relative">
-        <img
-          src="/images/mainpagepicture.jpg"
-          alt={t("signUp.studentsLearningTogether", "Students learning together")}
-          className="absolute inset-0 w-full h-full object-cover"
+      {/* Right side: a DATA+ training photo */}
+      <div className="relative hidden flex-1 lg:flex">
+        <Photo
+          name="auth-learners"
+          width={1600}
+          height={2000}
+          priority
+          sizes="50vw"
+          alt={t("auth.photoAlt", "Learners lean in around one laptop during a DATA+ training session")}
+          className="absolute inset-0 block h-full w-full"
         />
-        <div className="absolute inset-0 to-transparent" />
-        <div className="absolute bottom-8 left-8 text-white z-10">
-          <h3 className="text-2xl font-bold mb-2">{t('signUp.joinCommunity')}</h3>
-          <p className="text-lg opacity-90">{t('signUp.connectWorldwide')}</p>
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brand-950/85 to-transparent" aria-hidden />
+        <div className="absolute bottom-10 left-10 right-10 z-10 text-cream">
+          <p className="font-display text-3xl font-bold">{t("auth.panelTitle", "Learn with DATA+ Academy")}</p>
+          <p className="mt-2 text-lg text-cream/90">{t('signUp.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
         </div>
       </div>
     </div>

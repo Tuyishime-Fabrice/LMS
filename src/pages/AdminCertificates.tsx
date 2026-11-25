@@ -323,7 +323,7 @@ export default function AdminCertificates() {
                 <CardContent className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input placeholder={t("adminCertificates.searchStudentOrCourse", "Search student or course...")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
                     </div>
                     <Select value={selectedCourse} onValueChange={setSelectedCourse}>
@@ -401,7 +401,7 @@ export default function AdminCertificates() {
                             <Button
                               size="sm"
                               onClick={() => handleUploadClick(s)}
-                              className={s.certificate_status === "approved" ? "bg-info hover:bg-info/90" : "bg-primary hover:bg-primary-hover"}
+                              className={s.certificate_status === "approved" ? "bg-info hover:bg-info/90" : "bg-action hover:bg-action-hover"}
                             >
                               <Upload className="h-4 w-4 mr-1" />
                               {s.certificate_status === "approved" ? t("adminCertificates.update", "Update") : t("adminCertificates.issue", "Issue")}
@@ -469,16 +469,16 @@ export default function AdminCertificates() {
                     <span className="text-sm font-medium">{uploadedFileName}</span>
                     <button
                       onClick={(e) => { e.stopPropagation(); setUploadedFileName(""); setCertificateUrl(""); }}
-                      className="ml-1 text-muted-foreground/60 hover:text-destructive"
+                      className="ml-1 text-muted-foreground hover:text-destructive"
                     >
                       <X className="h-4 w-4" />
                     </button>
                   </div>
                 ) : (
                   <>
-                    <Upload className="h-8 w-8 text-muted-foreground/60 mx-auto mb-2" />
+                    <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground">{t("adminCertificates.clickToUploadCertificateFile", "Click to upload certificate file")}</p>
-                    <p className="text-xs text-muted-foreground/60 mt-1">{t("adminCertificates.pdfPngOrJpgMax10mb", "PDF, PNG, or JPG (max 10MB)")}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{t("adminCertificates.pdfPngOrJpgMax10mb", "PDF, PNG, or JPG (max 10MB)")}</p>
                   </>
                 )}
               </div>
@@ -490,7 +490,7 @@ export default function AdminCertificates() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-3 bg-card text-muted-foreground/60">{t("adminCertificates.orPasteUrl", "OR paste URL")}</span>
+                <span className="px-3 bg-card text-muted-foreground">{t("adminCertificates.orPasteUrl", "OR paste URL")}</span>
               </div>
             </div>
 
@@ -523,7 +523,7 @@ export default function AdminCertificates() {
             <Button
               onClick={handleIssueCertificate}
               disabled={processing || !certificateUrl.trim() || uploading}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               {processing ? t("adminCertificates.issuing", "Issuing...") : selectedStudent?.certificate_status === "approved" ? t("adminCertificates.updateCertificate", "Update Certificate") : t("adminCertificates.issueCertificate", "Issue Certificate")}
             </Button>

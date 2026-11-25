@@ -57,7 +57,7 @@ function EventDetails({ event, conflicted, onClose }: { event: CalendarEvent | n
           </div>
           <DialogTitle className="text-left font-display text-xl text-forest">{event.title}</DialogTitle>
           <DialogDescription className="text-left">
-            {event.courseTitle || t("calendar2.noCourse", "DataPlus Academy")}
+            {event.courseTitle || t("calendar2.noCourse", "DATA+ Academy")}
           </DialogDescription>
         </DialogHeader>
 

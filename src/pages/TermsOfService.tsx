@@ -1,3 +1,5 @@
+import { siteFacts } from "@/content/site-facts";
+import { usePageMeta } from "@/lib/pageMeta";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
@@ -8,6 +10,7 @@ import { ArrowLeft, Users, CreditCard, BookOpen, AlertTriangle, Scale, Mail } fr
 
 const TermsOfService = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.terms.title", "Terms of service"), description: t("meta.terms.description", "The terms for using DATA+ Academy."), path: "/terms-of-service" });
     const navigate = useNavigate();
 
     return (
@@ -16,13 +19,13 @@ const TermsOfService = () => {
             <PageBand title={t("termsOfService.title", "Terms of service")} body={t("termsOfService.updated", "Last updated: February 2026")} />
 
             {/* Content */}
-            <main className="container mx-auto px-4 sm:px-6 py-8 max-w-4xl">
+            <main id="main" className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8"><div className="max-w-3xl">
                 <div className="bg-card rounded-xl p-8 space-y-8">
                     {/* Introduction */}
                     <section>
                         <h2 className="text-2xl font-bold text-forest mb-4">{t("termsOfService.introduction", "Introduction")}</h2>
                         <p className="text-foreground leading-relaxed">
-                            {t("termsOfService.welcomeToDataplusLearningTheseTerms", "Welcome to DataPlus Learning. These Terms of Service (\"Terms\") govern your access to and use of our learning management platform, including any content, features, and services offered through our website. By accessing or using our platform, you agree to be bound by these Terms.")}
+                            {t("termsOfService.welcomeToDataplusLearningTheseTerms", "Welcome to DATA+ Academy. These Terms of Service (\"Terms\") govern your access to and use of our learning management platform, including any content, features, and services offered through our website. By accessing or using our platform, you agree to be bound by these Terms.")}
                         </p>
                         <p className="text-foreground leading-relaxed mt-3">
                             {t("termsOfService.pleaseReadTheseTermsCarefullyBefore", "Please read these Terms carefully before using our services. If you do not agree with any part of these Terms, you may not access or use our platform.")}
@@ -69,7 +72,7 @@ const TermsOfService = () => {
                             <div>
                                 <h3 className="text-lg font-semibold text-forest mb-2">{t("termsOfService.courseContent", "Course Content")}</h3>
                                 <ul className="list-disc list-inside text-foreground space-y-2 ml-4">
-                                    <li>{t("termsOfService.allCourseMaterialsAreTheIntellectual", "All course materials are the intellectual property of DataPlus Learning or respective instructors")}</li>
+                                    <li>{t("termsOfService.allCourseMaterialsAreTheIntellectual", "All course materials are the intellectual property of DATA+ Academy or respective instructors")}</li>
                                     <li>{t("termsOfService.youMayNotReproduceDistributeModify", "You may not reproduce, distribute, modify, or create derivative works from our content")}</li>
                                     <li>{t("termsOfService.accessToCourseContentMayBe", "Access to course content may be time-limited based on your enrollment type")}</li>
                                     <li>{t("termsOfService.weReserveTheRightToUpdate", "We reserve the right to update, modify, or remove course content at any time")}</li>
@@ -148,7 +151,7 @@ const TermsOfService = () => {
                             <ul className="list-disc list-inside text-foreground space-y-2 ml-4">
                                 <li>{t("termsOfService.teacherAccountsAreSubjectToAn", "Teacher accounts are subject to an approval process by our administration")}</li>
                                 <li>{t("termsOfService.youAreResponsibleForTheAccuracy", "You are responsible for the accuracy and quality of the content you create and upload")}</li>
-                                <li>{t("termsOfService.youGrantDataplusLearningALicense", "You grant DataPlus Learning a license to display, distribute, and promote your course content on our platform")}</li>
+                                <li>{t("termsOfService.youGrantDataplusLearningALicense", "You grant DATA+ Academy a license to display, distribute, and promote your course content on our platform")}</li>
                                 <li>{t("termsOfService.youRetainOwnershipOfYourOriginal", "You retain ownership of your original content but agree it may be used for platform purposes")}</li>
                                 <li>{t("termsOfService.youMustComplyWithOurContent", "You must comply with our content guidelines and respond to student inquiries in a timely manner")}</li>
                             </ul>
@@ -210,7 +213,7 @@ const TermsOfService = () => {
                         </p>
                         <div className="space-y-2 text-foreground">
                             <p><strong>{t("termsOfService.email", "Email:")}</strong>{" "}<a href="mailto:info@dataplusrwanda.com" className="text-primary hover:underline">info@dataplusrwanda.com</a></p>
-                            <p><strong>{t("termsOfService.address", "Address:")}</strong>{" "}DataPlus Labs, Kigali, Rwanda</p>
+                            <p><strong>{t("termsOfService.address", "Address:")}</strong>{" "}{siteFacts.brand.legalName}, {siteFacts.contact.address}</p>
                         </div>
                     </section>
 
@@ -218,14 +221,14 @@ const TermsOfService = () => {
                     <div className="pt-6 border-t">
                         <Button
                             onClick={() => navigate(-1)}
-                            className="bg-primary hover:bg-primary-hover text-white"
+                            className="bg-action hover:bg-action-hover text-white"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             {t("termsOfService.goBack", "Go Back")}
                         </Button>
                     </div>
                 </div>
-            </main>
+            </div></main>
             <SiteFooter />
         </div>
     );

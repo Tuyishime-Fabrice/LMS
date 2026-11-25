@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
@@ -32,6 +33,7 @@ interface Bundle {
 
 export default function BrowseBundles() {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.bundles.title", "Course bundles"), description: t("meta.bundles.description", "Groups of DATA+ Academy courses offered together at one price."), path: "/bundles" });
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
@@ -110,7 +112,7 @@ export default function BrowseBundles() {
             <PageBand eyebrow={t("browseBundles.eyebrow", "Learning paths")} title={t("browseBundles.title", "Learning paths")} body={t("browseBundles.body", "Courses that build on each other, at a lower price than buying them one by one.")} />
 
             {/* Bundles Grid */}
-            <div className="max-w-6xl mx-auto px-4 py-8">
+            <div id="main" className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8">
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3].map((i) => (
@@ -119,10 +121,10 @@ export default function BrowseBundles() {
                     </div>
                 ) : bundles.length === 0 ? (
                     <div className="text-center py-16">
-                        <Package className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                         <h2 className="text-xl font-semibold text-muted-foreground mb-2">{t("browseBundles.noBundlesAvailable", "No bundles available")}</h2>
                         <p className="text-muted-foreground">{t("browseBundles.checkBackLaterForSpecialOffers", "Check back later for special offers!")}</p>
-                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-primary hover:bg-primary-hover">
+                        <Button onClick={() => navigate("/courses")} className="mt-4 bg-action hover:bg-action-hover">
                             {t("browseBundles.browseIndividualCourses", "Browse Individual Courses")}
                         </Button>
                     </div>
@@ -144,7 +146,7 @@ export default function BrowseBundles() {
                                             </Badge>
                                         )}
                                         <Package className="h-10 w-10 mb-3 opacity-80" />
-                                        <h3 className="text-xl font-bold mb-1">{bundle.title}</h3>
+                                        <h2 className="text-xl font-bold mb-1">{bundle.title}</h2>
                                         {bundle.description && (
                                             <p className="text-sm text-white/75 line-clamp-2">{bundle.description}</p>
                                         )}
@@ -172,7 +174,7 @@ export default function BrowseBundles() {
                                                 {formatPrice(bundle.bundle_price, bundle.currency)}
                                             </span>
                                             {bundle.original_price > bundle.bundle_price && (
-                                                <span className="text-sm text-muted-foreground/60 line-through">
+                                                <span className="text-sm text-muted-foreground line-through">
                                                     {formatPrice(bundle.original_price, bundle.currency)}
                                                 </span>
                                             )}
@@ -180,7 +182,7 @@ export default function BrowseBundles() {
 
                                         {/* CTA */}
                                         <Button
-                                            className="w-full bg-primary hover:bg-primary-hover text-white h-11"
+                                            className="w-full bg-action hover:bg-action-hover text-white h-11"
                                             onClick={() => {
                                                 if (!user) {
                                                     navigate(beginPaymentSignUp(`/bundles?bundle=${bundle.id}`));

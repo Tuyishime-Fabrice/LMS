@@ -1,3 +1,6 @@
+import { Brand } from "@/components/shell/Brand";
+import { Photo } from "@/features/site/home/Photo";
+import { usePageMeta } from "@/lib/pageMeta";
 import { readBrowserStorage, writeBrowserStorage } from "@/lib/browserStorage";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +23,7 @@ const AUTH_METHOD_KEY = "lastAuthMethod";
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.signIn.title", "Sign in"), description: t("meta.signIn.description", "Sign in to DATA+ Academy to continue your courses."), path: "/auth" });
   const { user, profile, loading: authLoading } = useAppAuth();
   const [formLoading, setFormLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -109,11 +113,7 @@ const Auth = () => {
         <div className="w-full max-w-md space-y-4">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img
-              src="/images/dataplus_logggg-removebg-preview.png"
-              alt="DataPlus Academy"
-              className="w-10 h-10 object-contain"
-            />
+            <Brand />
           </div>
 
           {/* Language Selector */}
@@ -124,7 +124,7 @@ const Auth = () => {
           {/* Header */}
           <div className="space-y-1">
             <h1 className="text-3xl font-bold text-forest leading-tight">
-              {t('login.masterSkills')}
+              {t('login.tagline', 'Data, M&E and AI courses by DATA+ Rwanda.')}
             </h1>
             <p className="text-muted-foreground text-sm">{t('login.signInToStart')}</p>
           </div>
@@ -165,7 +165,7 @@ const Auth = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-card text-muted-foreground/60">{t('common.or', 'or')}</span>
+              <span className="px-3 bg-card text-muted-foreground">{t('common.or', 'or')}</span>
             </div>
           </div>
 
@@ -213,7 +213,9 @@ const Auth = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                  aria-label={showPassword ? t("auth.hidePassword", "Hide password") : t("auth.showPassword", "Show password")}
+                  aria-pressed={showPassword}
+                  className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:text-forest"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -224,7 +226,7 @@ const Auth = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full h-11 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors duration-300 ${
+                className={`w-full h-11 bg-action hover:bg-action-hover text-white font-medium rounded-lg transition-colors duration-300 ${
                   lastAuthMethod === "email" ? "ring-2 ring-primary ring-offset-2" : ""
                 }`}
               >
@@ -253,17 +255,21 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Right Side - Image */}
-      <div className="hidden lg:flex flex-1 relative">
-        <img
-          src="/images/mainpagepicture.jpg"
-          alt={t("auth.studentsLearningTogether", "Students learning together")}
-          className="absolute inset-0 w-full h-full object-cover"
+      {/* Right side: a DATA+ training photo */}
+      <div className="relative hidden flex-1 lg:flex">
+        <Photo
+          name="auth-learners"
+          width={1600}
+          height={2000}
+          priority
+          sizes="50vw"
+          alt={t("auth.photoAlt", "Learners lean in around one laptop during a DATA+ training session")}
+          className="absolute inset-0 block h-full w-full"
         />
-        <div className="absolute inset-0 to-transparent" />
-        <div className="absolute bottom-8 left-8 text-white z-10">
-          <h3 className="text-2xl font-bold mb-2">{t('login.joinCommunity')}</h3>
-          <p className="text-lg opacity-90">{t('login.connectWorldwide')}</p>
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brand-950/85 to-transparent" aria-hidden />
+        <div className="absolute bottom-10 left-10 right-10 z-10 text-cream">
+          <p className="font-display text-3xl font-bold">{t("auth.panelTitle", "Learn with DATA+ Academy")}</p>
+          <p className="mt-2 text-lg text-cream/90">{t('login.connectPeers', 'Your courses, marks and certificates in one place.')}</p>
         </div>
       </div>
     </div>

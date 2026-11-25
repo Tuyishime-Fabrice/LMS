@@ -106,9 +106,9 @@ INSERT INTO public.capstone_submissions (capstone_project_id, student_id, descri
   VALUES ('00000000-0000-0000-0000-0000000000a1', :student2, 'Second project');
 
 SELECT pg_temp.act_as(:teacher);
-UPDATE public.capstone_submissions SET grade = 64, feedback = 'Close', graded_at = now(), graded_by = :teacher
+UPDATE public.capstone_submissions SET grade = 64, feedback = 'Close: the analysis needs a clearer conclusion.', graded_at = now(), graded_by = :teacher
   WHERE student_id = :student2;
-UPDATE public.capstone_submissions SET grade = 65, feedback = 'Meets the bar', graded_at = now(), graded_by = :teacher
+UPDATE public.capstone_submissions SET grade = 65, feedback = 'Meets the bar: sound method and clear charts.', graded_at = now(), graded_by = :teacher
   WHERE student_id = :student;
 
 SELECT pg_temp.act_as(:student);

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { FacilitatorsDialog } from "@/features/facilitation/FacilitatorsDialog";
 import { Search, Star, Check, Trash2, Eye, Lock, Unlock, Pencil } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -19,6 +20,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 
 interface Course {
   id: string;
+  /** Public catalogue listing (2026-11-27). Undefined before that migration. */
+  listed?: boolean;
   title: string;
   description: string | null;
   summary: string | null;
@@ -163,6 +166,20 @@ const AdminCourses = () => {
     }
   };
 
+  // Client-only programmes stay reachable by link but leave the public catalogue.
+  const toggleListed = async (course: Course) => {
+    const next = course.listed === false;
+    setProcessing(true);
+    const { error } = await supabase.from("courses").update({ listed: next }).eq("id", course.id);
+    setProcessing(false);
+    if (error) {
+      toast.error(t("adminCourses.listedError", "Could not change the listing. The latest database update may be missing."));
+      return;
+    }
+    toast.success(next ? t("adminCourses.nowListed", "Listed in the public catalogue") : t("adminCourses.nowUnlisted", "Unlisted: reachable by direct link only"));
+    fetchCourses();
+  };
+
   const approveCourse = async (courseId: string) => {
     setProcessing(true);
     try {
@@ -235,7 +252,7 @@ const AdminCourses = () => {
 
       if (error) throw error;
       if (!data || data.length === 0) {
-        toast.error(t("adminCourses.updateBlockedCheckAdminPermissionsRls", "Update blocked — check admin permissions (RLS policy may be missing)"));
+        toast.error(t("adminCourses.updateBlockedCheckAdminPermissionsRls", "Update blocked: check admin permissions (RLS policy may be missing)"));
         return;
       }
       toast.success(t("adminCourses.pricingUpdated", "Pricing updated"));
@@ -318,7 +335,7 @@ const AdminCourses = () => {
     }
 
     if (!data || data.length === 0) {
-      toast.error(t("adminCourses.updateBlockedRunTheAdminRls", "Update blocked — run the admin RLS fix migration in Supabase SQL Editor"));
+      toast.error(t("adminCourses.updateBlockedRunTheAdminRls", "Update blocked: run the admin RLS fix migration in the Supabase SQL Editor"));
       return;
     }
 
@@ -351,7 +368,7 @@ const AdminCourses = () => {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder={t("adminCourses.searchCourses", "Search courses...")}
                         value={searchQuery}
@@ -384,6 +401,7 @@ const AdminCourses = () => {
                         <TableHead>{t("adminCourses.price", "Price")}</TableHead>
                         <TableHead>{t("adminCourses.status", "Status")}</TableHead>
                         <TableHead>{t("adminCourses.featured", "Featured")}</TableHead>
+                        <TableHead>{t("adminCourses.listed", "Listed")}</TableHead>
                         <TableHead>{t("adminCourses.created", "Created")}</TableHead>
                         <TableHead>{t("adminCourses.actions", "Actions")}</TableHead>
                       </TableRow>
@@ -565,17 +583,27 @@ const AdminCourses = () => {
                               />
                             </Button>
                           </TableCell>
+                          <TableCell>
+                            <Switch
+                              checked={course.listed !== false}
+                              onCheckedChange={() => void toggleListed(course)}
+                              disabled={processing || course.listed === undefined}
+                              aria-label={t("adminCourses.listedLabel", "Listed in the public catalogue")}
+                              title={course.listed === undefined ? t("adminCourses.listedNeedsUpdate", "Needs the 2026-11-27 database update") : undefined}
+                            />
+                          </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
                             {new Date(course.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
+                              <FacilitatorsDialog courseId={course.id} courseTitle={course.title} />
                               {course.approval_status === "pending" && (
                                 <Button
                                   size="sm"
                                   onClick={() => approveCourse(course.id)}
                                   disabled={processing}
-                                  className="bg-primary hover:bg-primary-hover"
+                                  className="bg-action hover:bg-action-hover"
                                 >
                                   <Check className="h-4 w-4 mr-1" />
                                   {t("adminCourses.approve", "Approve")}
@@ -654,7 +682,7 @@ const AdminCourses = () => {
           <DialogHeader>
             <DialogTitle>{t("adminCourses.manageChapterAccess", "Manage Chapter Access")}</DialogTitle>
             <DialogDescription>
-              {t("adminCourses.toggleWhichChaptersAreFreeTo", "{{title}} — Toggle which chapters are free to preview", { title: selectedCourseForChapters?.title })}
+              {t("adminCourses.toggleWhichChaptersAreFreeTo", "{{title}}: toggle which chapters are free to preview", { title: selectedCourseForChapters?.title })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
@@ -690,7 +718,7 @@ const AdminCourses = () => {
               ))
             )}
           </div>
-          <p className="text-xs text-muted-foreground/60 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             {t("adminCourses.freePreviewChaptersCanBeAccessed", "Free preview chapters can be accessed by anyone. Locked chapters require purchase.")}
           </p>
         </DialogContent>

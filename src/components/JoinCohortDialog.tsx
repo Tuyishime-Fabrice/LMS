@@ -225,7 +225,7 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
           </div>
         ) : cohorts.length === 0 ? (
           <div className="text-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
             <p className="text-muted-foreground">{t("cohort.noCohortsAvailable")}</p>
           </div>
         ) : (
@@ -357,7 +357,7 @@ export function JoinCohortDialog({ open, onOpenChange }: JoinCohortDialogProps) 
                   <Button
                     onClick={handleJoinRequest}
                     disabled={submitting}
-                    className="bg-primary hover:bg-primary-hover"
+                    className="bg-action hover:bg-action-hover"
                   >
                     {submitting ? (
                       <>

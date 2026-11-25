@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { AlertCircle, CalendarClock, CheckCircle2, ClipboardList, Clock, FileUp, MessageSquareText, Paperclip } from "lucide-react";
+import { RubricView } from "@/features/rubrics/RubricView";
 import { AppShell } from "@/components/shell/AppShell";
 import { EmptyState, ErrorState, PageHeader, SkeletonBlock, StatusPill } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
@@ -181,6 +182,16 @@ function WorkRow({ item, onSubmit }: { item: WorkItem; onSubmit: (item: WorkItem
           </p>
           <p className="mt-1 whitespace-pre-line text-sm leading-6 text-foreground">{item.submission.feedback}</p>
         </div>
+      )}
+
+      {item.rubric && (
+        <details className="group mt-4" open={!item.submission}>
+          <summary className="cursor-pointer list-none text-sm font-semibold text-primary hover:underline [&::-webkit-details-marker]:hidden">
+            <span className="group-open:hidden">{t("work.showRubric", "Show how this is marked")}</span>
+            <span className="hidden group-open:inline">{t("work.hideRubric", "Hide rubric")}</span>
+          </summary>
+          <RubricView className="mt-3" rubric={item.rubric} scores={item.submission?.grade != null ? item.submission.rubricScores : undefined} />
+        </details>
       )}
     </li>
   );

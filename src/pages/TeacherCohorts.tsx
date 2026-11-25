@@ -16,6 +16,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Users, Plus, Trash2, Eye, Bell, Check, X, BookOpen, Calendar, Send, UserPlus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CommunityLinkEditor } from "@/features/community/CommunityLinkEditor";
+import { postAnnouncement } from "@/features/announcements/api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -39,6 +41,7 @@ interface Cohort {
   instalment_enabled?: boolean;
   courses?: { title: string } | null;
   student_count?: number;
+  discord_url?: string | null;
 }
 
 interface CohortStudent {
@@ -438,17 +441,15 @@ const TeacherCohorts = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Create announcement using teacher_announcements table
-      // Include cohort name in title for identification
-      const { error } = await supabase.from("teacher_announcements").insert({
-        teacher_id: user.id,
-        course_id: selectedCohort.course_id || null,
-        title: `[${selectedCohort.name}] ${announcement.title}`,
+      // Only this cohort's learners read it and are notified (cohort_id, 2026-11-26).
+      await postAnnouncement({
+        teacherId: user.id,
+        courseId: selectedCohort.course_id || null,
+        cohortId: selectedCohort.course_id ? selectedCohort.id : null,
+        cohortName: selectedCohort.name,
+        title: announcement.title,
         message: announcement.message,
-        is_active: true,
       });
-
-      if (error) throw error;
 
       toast.success(t("teacher.cohorts.announcementSent"));
       setShowAnnouncementDialog(false);
@@ -472,7 +473,7 @@ const TeacherCohorts = () => {
         description={t("teacher.cohorts.subtitle")}
         actions={<><Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t("teacher.cohorts.createCohort")}
@@ -529,10 +530,10 @@ const TeacherCohorts = () => {
                   {cohorts.length === 0 ? (
                     <Card>
                       <CardContent className="py-12 text-center">
-                        <Users className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">{t("teacher.cohorts.noCohorts")}</h3>
                         <p className="text-muted-foreground mb-4">{t("teacher.cohorts.createFirst")}</p>
-                        <Button onClick={() => setShowCreateDialog(true)} className="bg-primary hover:bg-primary-hover">
+                        <Button onClick={() => setShowCreateDialog(true)} className="bg-action hover:bg-action-hover">
                           <Plus className="h-4 w-4 mr-2" />
                           {t("teacher.cohorts.createCohort")}
                         </Button>
@@ -587,6 +588,13 @@ const TeacherCohorts = () => {
                                 <Eye className="h-4 w-4 mr-1" />
                                 {t("teacher.cohorts.viewStudents")}
                               </Button>
+                              <CommunityLinkEditor
+                                target="cohorts"
+                                id={cohort.id}
+                                name={cohort.name}
+                                current={cohort.discord_url}
+                                onSaved={(url) => setCohorts((list) => list.map((item) => item.id === cohort.id ? { ...item, discord_url: url } : item))}
+                              />
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -674,7 +682,7 @@ const TeacherCohorts = () => {
                                   size="sm"
                                   onClick={() => handleApproveRequest(request)}
                                   disabled={processing}
-                                  className="bg-primary hover:bg-primary-hover"
+                                  className="bg-action hover:bg-action-hover"
                                 >
                                   <Check className="h-4 w-4 mr-1" />
                                   {t("teacher.cohorts.approve")}
@@ -797,7 +805,7 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleCreateCohort}
                 disabled={processing}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 {processing ? t("common.loading") : t("common.create")}
               </Button>
@@ -816,7 +824,7 @@ const TeacherCohorts = () => {
             <div className="max-h-96 overflow-y-auto">
               {cohortStudents.length === 0 ? (
                 <div className="text-center py-8">
-                  <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-2" />
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
                   <p className="text-muted-foreground">{t("teacher.cohorts.noStudentsYet")}</p>
                 </div>
               ) : (
@@ -892,7 +900,7 @@ const TeacherCohorts = () => {
               <Button
                 onClick={handleSendAnnouncement}
                 disabled={processing}
-                className="bg-primary hover:bg-primary-hover"
+                className="bg-action hover:bg-action-hover"
               >
                 <Send className="h-4 w-4 mr-2" />
                 {processing ? t("common.sending") : t("teacher.cohorts.send")}

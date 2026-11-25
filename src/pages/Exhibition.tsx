@@ -1,4 +1,6 @@
 import { PageBand } from "@/features/site/PageBand";
+import { ContentTodo } from "@/components/ContentTodo";
+import { usePageMeta } from "@/lib/pageMeta";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
 import { SiteFooter } from "@/features/site/SiteFooter";
@@ -36,6 +38,8 @@ type ExhibitionProject = {
   technologies: string[];
   project_link: string | null;
   is_featured: boolean;
+  /** Undefined before the 2026-11-27 migration: treated as not verified. */
+  outcomes_verified?: boolean;
   display_order: number;
   // Capstone Framework Fields
   problem_definition: string | null;
@@ -47,6 +51,7 @@ type ExhibitionProject = {
 
 const Exhibition = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.projects.title", "Student projects"), description: t("meta.projects.description", "Capstone projects by DATA+ Academy learners."), path: "/exhibition" });
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,8 +129,8 @@ const Exhibition = () => {
       <PageBand eyebrow={t("exhibition.eyebrow", "Student projects")} title={t("exhibition.title", "Capstone exhibition")} body={t("exhibition.body", "Real problems, real data and the recommendations our graduates made. Every project follows the five-step capstone framework.")} />
 
       {/* Projects Gallery */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto">
+      <section id="main" className="py-12 px-4">
+        <div className="mx-auto max-w-site">
           {projectsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map((i) => (
@@ -167,8 +172,8 @@ const Exhibition = () => {
             </div>
           ) : studentProjects.length === 0 ? (
             <div className="text-center py-16">
-              <GraduationCap className="w-16 h-16 text-muted-foreground/60 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">{t("exhibition.noProjectsYet", "No Projects Yet")}</h3>
+              <GraduationCap className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-foreground mb-2">{t("exhibition.noProjectsYet2", "No projects yet")}</h2>
               <p className="text-muted-foreground">{t("exhibition.checkBackSoonForAmazingStudent", "Check back soon for amazing student projects!")}</p>
             </div>
           ) : (
@@ -194,28 +199,30 @@ const Exhibition = () => {
                           </div>
                         )}
                         <div>
-                          <h3 className="text-2xl font-bold text-white">{project.student_name}</h3>
+                          <h2 className="text-2xl font-bold text-white">{project.student_name}</h2>
                           <p className="text-white/80 font-medium">{project.course_name}</p>
                         </div>
                       </div>
 
-                      {/* Score Badge */}
+                      {/* Score: public only once an admin has verified the outcomes */}
                       <div className="flex items-center justify-between">
-                        <div className="bg-card px-4 py-2 rounded-full">
-                          <span className="text-forest font-bold">{t("exhibition.courseScore", "Course Score: {{courseScore}}%", { courseScore: project.course_score })}</span>
-                        </div>
+                        {project.outcomes_verified ? (
+                          <div className="bg-card px-4 py-2 rounded-full">
+                            <span className="text-forest font-bold">{t("exhibition.courseScore", "Course Score: {{courseScore}}%", { courseScore: project.course_score })}</span>
+                          </div>
+                        ) : <span />}
                         <GraduationCap className="w-8 h-8 text-white" />
                       </div>
                     </div>
 
                     {/* Project Details */}
                     <div className="p-6">
-                      <h4 className="text-xl font-bold text-forest mb-3">
+                      <h3 className="text-xl font-bold text-forest mb-3">
                         {project.project_title}
-                      </h4>
+                      </h3>
 
                       <p className="text-foreground text-sm mb-4 leading-relaxed">
-                        {project.project_description}
+                        {project.outcomes_verified ? project.project_description : null}
                       </p>
 
                       {/* Technologies */}
@@ -236,7 +243,8 @@ const Exhibition = () => {
                       )}
 
                       {/* Achievements */}
-                      {project.achievements && project.achievements.length > 0 && (
+                      {!project.outcomes_verified && <ContentTodo className="mb-4" label="Outcomes for this project are hidden until an admin verifies them (Admin, Student projects)" />}
+                      {project.outcomes_verified && project.achievements && project.achievements.length > 0 && (
                         <div className="mb-4">
                           <p className="text-xs font-semibold text-muted-foreground mb-2">{t("exhibition.achievements", "ACHIEVEMENTS")}</p>
                           <div className="space-y-2">
@@ -262,7 +270,7 @@ const Exhibition = () => {
                             </div>
                           )}
 
-                          {project.data_evidence && (
+                          {project.outcomes_verified && project.data_evidence && (
                             <div>
                               <p className="text-xs font-bold text-info mb-1">{t("exhibition.n2DataEvidence", "2. Data / Evidence")}</p>
                               <p className="text-sm text-foreground">{project.data_evidence}</p>
@@ -276,14 +284,14 @@ const Exhibition = () => {
                             </div>
                           )}
 
-                          {project.analysis && (
+                          {project.outcomes_verified && project.analysis && (
                             <div>
                               <p className="text-xs font-bold text-warning mb-1">{t("exhibition.n4Analysis", "4. Analysis")}</p>
                               <p className="text-sm text-foreground">{project.analysis}</p>
                             </div>
                           )}
 
-                          {project.recommendations && (
+                          {project.outcomes_verified && project.recommendations && (
                             <div>
                               <p className="text-xs font-bold text-primary mb-1">{t("exhibition.n5Recommendations", "5. Recommendations")}</p>
                               <p className="text-sm text-foreground">{project.recommendations}</p>
@@ -295,7 +303,7 @@ const Exhibition = () => {
                       {/* View Project Link */}
                       <Button
                         onClick={() => project.project_link && window.open(project.project_link, '_blank')}
-                        className="w-full bg-primary hover:bg-primary-hover text-white font-medium mt-4"
+                        className="w-full bg-action hover:bg-action-hover text-white font-medium mt-4"
                         disabled={!project.project_link}
                       >
                         <span>{t("exhibition.viewFullProjectDetails", "View Full Project Details")}</span>
@@ -312,21 +320,21 @@ const Exhibition = () => {
 
       {/* CTA Section */}
       <section className="py-16 px-4">
-        <div className="container mx-auto">
+        <div className="mx-auto max-w-site">
           <div className="rounded-xl p-12 md:p-16 text-center bg-forest">
-            <h2 className="text-4xl md:text-5xl font-bold text-forest mb-6">
-              {t("exhibition.readyToBuildYourCapstoneProject", "Ready to Build Your Capstone Project?")}
+            <h2 className="text-4xl md:text-5xl font-bold text-cream mb-6">
+              {t("exhibition.readyToBuild2", "Ready to build your own capstone?")}
             </h2>
-            <p className="text-xl text-black/80 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-cream/80 mb-8 max-w-2xl mx-auto">
               {t("exhibition.joinOurCommunityAndCreateProjects", "Join our community and create projects that make a real difference")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
                 onClick={() => navigate("/signup")}
-                className="bg-primary hover:bg-primary-hover text-white px-8 py-4 text-lg font-medium"
+                className="bg-action hover:bg-action-hover text-white px-8 py-4 text-lg font-medium"
               >
-                {t("exhibition.enrollNow", "Enroll Now")}
+                {t("landing.cta.signup", "Create a free account")}
               </Button>
               <Button
                 size="lg"

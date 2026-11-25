@@ -1,85 +1,149 @@
-/* Latin and Latin Extended cover English, French and Kinyarwanda. */
-@import "@fontsource/inter/latin-400.css";
-@import "@fontsource/inter/latin-ext-400.css";
-@import "@fontsource/inter/latin-500.css";
-@import "@fontsource/inter/latin-ext-500.css";
-@import "@fontsource/inter/latin-600.css";
-@import "@fontsource/inter/latin-ext-600.css";
-@import "@fontsource/inter/latin-700.css";
-@import "@fontsource/inter/latin-ext-700.css";
-@import "@fontsource/bebas-neue/latin-400.css";
-@import "@fontsource/bebas-neue/latin-ext-400.css";
+/*
+ * Fonts, self-hosted. The weight files below declare unicode ranges, so English and French
+ * pages download only the Latin subset (Latin Extended only when a character needs it).
+ */
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+/* Headings: League Spartan 600 and 700, as on dataplusrwanda.com. */
+@import "@fontsource/league-spartan/600.css";
+
+/*
+ * The two faces the home page paints first are served from stable URLs in public/fonts so
+ * index.html can preload them; that keeps the heading from reflowing when the font arrives.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/fonts/inter-latin-400.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "League Spartan";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/fonts/league-spartan-latin-700.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/fonts/inter-latin-ext-400.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "League Spartan";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/fonts/league-spartan-latin-ext-700.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
- * DataPlus Academy design tokens (2026 identity: midnight navy, flame
- * orange, royal blue on warm paper). Every colour in the product comes
- * from here as HSL triplets, so Tailwind opacity modifiers keep working.
+ * DATA+ Academy design tokens (2026-11-24 brand brief, see docs/product/DESIGN_SYSTEM.md).
+ * Every colour in the product comes from here as HSL triplets, so Tailwind
+ * opacity modifiers keep working. Token names are historical; read them as:
  *
- *   forest   #060C2E  midnight navy: bands, headings, navigation ink
- *   primary  #C9501F  orange for buttons and links (AA on white)
- *   flame    #E4683A  bright orange for icons and accents on navy
- *   royal    #2442E4  royal blue: focus, information, small accents
- *   leaf     #ECEEF8  lavender tint behind highlighted content
- *   paper    #F2F1EC  app background     surface #FFFFFF cards
- *   success  #1E7A4C  completed, paid, passed (never the brand colour)
+ *   action   #C9501F  Academy orange: buttons and progress fills only (4.5:1 with white)
+ *   primary  #03722E  green-700: links, selected and active states, focus
+ *   forest   #004225  green-900: headings on cream, dark feature sections
+ *   forest-2 #00311B  green-950: footer, deepest bands, player frames
+ *   brand-*           green-950/900/800/700/500, the plus-motif greens (500 is motif only)
+ *   olive-ink #3F4130 body text      olive #4E5B35 small accents and icons
+ *   cream    #F7F4EA  page canvas    card #FFFFFF panels    mint #ECF7EC highlights
+ *   flame             mint: accents on dark surfaces
+ *   success  #1A7051  completed, paid, passed
  */
 @layer base {
   :root {
-    --background: 50 19% 94%;
-    --foreground: 230 57% 13%;
+    --background: 46.2 44.8% 94.3%;
+    --foreground: 67.1 15% 22.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 230 57% 13%;
+    --card-foreground: 67.1 15% 22.2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 230 57% 13%;
+    --popover-foreground: 67.1 15% 22.2%;
 
-    --primary: 17 73% 45%;
+    --action: 17.3 73.3% 45.5%;
+    --action-hover: 16.5 73.2% 38%;
+    --action-foreground: 0 0% 100%;
+
+    --primary: 143.2 94.9% 22.9%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 17 75% 39%;
-    --flame: 16 76% 56%;
-    --royal: 231 78% 52%;
+    --primary-hover: 149.6 95.2% 16.3%;
+    --flame: 120 40.7% 94.7%;
+    --royal: 143.2 94.9% 22.9%;
 
-    --forest: 231 77% 10%;
-    --forest-foreground: 50 19% 94%;
-    --forest-2: 232 50% 19%;
-    --leaf: 230 46% 95%;
-    --leaf-foreground: 232 68% 33%;
+    --brand-950: 153.1 100% 9.6%;
+    --brand-900: 153.6 100% 12.9%;
+    --brand-800: 149.6 95.2% 16.3%;
+    --brand-700: 143.2 94.9% 22.9%;
+    --brand-500: 116.3 83.5% 38%;
+    --olive-ink: 67.1 15% 22.2%;
+    --olive: 80.5 26.4% 28.2%;
+    --cream: 46.2 44.8% 94.3%;
+    --mint: 120 40.7% 94.7%;
 
-    --secondary: 230 46% 95%;
-    --secondary-foreground: 232 68% 33%;
-    --muted: 51 13% 90%;
-    --muted-foreground: 228 12% 40%;
-    --accent: 230 46% 95%;
-    --accent-foreground: 232 68% 33%;
+    /* Generated course covers: one tint per subject family, all from the green range. */
+    --cover-data: 153.6 100% 12.9%;
+    --cover-me: 120 38% 87%;
+    --cover-ai: 153.1 100% 9.6%;
+    --cover-research: 143.2 94.9% 22.9%;
+    --cover-geo: 84 32% 82%;
 
-    --success: 150 61% 30%;
-    --success-surface: 146 35% 92%;
-    --warning: 35 100% 30%;
-    --warning-surface: 38 89% 93%;
-    --destructive: 2 63% 46%;
+    --forest: 153.6 100% 12.9%;
+    --forest-foreground: 46.2 44.8% 94.3%;
+    --forest-2: 153.1 100% 9.6%;
+    --leaf: 120 40.7% 94.7%;
+    --leaf-foreground: 153.6 100% 12.9%;
+
+    --secondary: 46.7 36% 90.2%;
+    --secondary-foreground: 67.1 15% 22.2%;
+    --muted: 45 38.1% 91.8%;
+    --muted-foreground: 60 7.5% 39%;
+    --accent: 120 40.7% 94.7%;
+    --accent-foreground: 153.6 100% 12.9%;
+
+    --success: 156 62% 27%;
+    --success-surface: 150 40% 93%;
+    --warning: 34 92% 30%;
+    --warning-surface: 40 90% 93%;
+    --destructive: 2 64% 46%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 7 68% 95%;
-    --info: 231 78% 52%;
-    --info-surface: 228 83% 95%;
+    --info: 205 70% 34%;
+    --info-surface: 205 60% 94%;
 
-    --border: 230 11% 89%;
-    --input: 229 12% 83%;
-    --ring: 231 78% 52%;
+    --border: 45 26.3% 85.1%;
+    --input: 45 22.6% 79.2%;
+    --ring: 143.2 94.9% 22.9%;
 
-    --radius: 0.625rem;
+    /* One corner radius (8 px) for cards, inputs and buttons; pills stay round. */
+    --radius: 0.5rem;
 
-    --sidebar-background: 50 19% 94%;
-    --sidebar-foreground: 230 30% 24%;
-    --sidebar-primary: 17 73% 45%;
+    --sidebar-background: 46.2 44.8% 94.3%;
+    --sidebar-foreground: 67.1 15% 28%;
+    --sidebar-primary: 143.2 94.9% 22.9%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 100%;
-    --sidebar-accent-foreground: 231 77% 10%;
-    --sidebar-border: 230 11% 89%;
-    --sidebar-ring: 231 78% 52%;
+    --sidebar-accent-foreground: 153.6 100% 12.9%;
+    --sidebar-border: 45 26.3% 85.1%;
+    --sidebar-ring: 143.2 94.9% 22.9%;
+
+    /* Elevation: hairlines on the page; a shadow only on layers that float (menus, dialogs). */
+    --shadow-raised: none;
+    --shadow-float: 0 12px 32px -12px hsl(153 100% 10% / 0.22);
 
     /* Motion: short, purposeful, and switched off for reduced-motion users. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -88,48 +152,51 @@
   }
 
   .dark {
-    --background: 231 60% 7%;
-    --foreground: 50 19% 94%;
-    --card: 232 45% 11%;
-    --card-foreground: 50 19% 94%;
-    --popover: 232 45% 11%;
-    --popover-foreground: 50 19% 94%;
-    --primary: 16 76% 56%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 16 80% 62%;
-    --flame: 16 80% 62%;
-    --royal: 230 85% 68%;
-    --forest: 231 77% 10%;
-    --forest-foreground: 50 19% 94%;
-    --forest-2: 232 50% 19%;
-    --leaf: 232 40% 18%;
-    --leaf-foreground: 230 80% 85%;
-    --secondary: 232 40% 18%;
-    --secondary-foreground: 230 80% 85%;
-    --muted: 232 30% 15%;
-    --muted-foreground: 230 15% 68%;
-    --accent: 232 40% 18%;
-    --accent-foreground: 230 80% 85%;
-    --success: 150 50% 55%;
-    --success-surface: 150 40% 14%;
+    --background: 100 12% 7%;
+    --foreground: 60 8% 94%;
+    --card: 100 10% 10%;
+    --card-foreground: 60 8% 94%;
+    --popover: 100 10% 10%;
+    --popover-foreground: 60 8% 94%;
+    --action: 18 80% 62%;
+    --action-hover: 18 85% 68%;
+    --action-foreground: 20 60% 8%;
+    --primary: 130 50% 55%;
+    --primary-foreground: 150 60% 8%;
+    --primary-hover: 130 55% 62%;
+    --flame: 82 55% 66%;
+    --royal: 213 85% 68%;
+    --forest: 60 8% 94%;
+    --forest-foreground: 100 12% 7%;
+    --forest-2: 98 12% 16%;
+    --leaf: 88 25% 16%;
+    --leaf-foreground: 84 50% 78%;
+    --secondary: 100 8% 15%;
+    --secondary-foreground: 60 8% 94%;
+    --muted: 100 8% 14%;
+    --muted-foreground: 80 6% 66%;
+    --accent: 88 25% 16%;
+    --accent-foreground: 84 50% 78%;
+    --success: 152 50% 55%;
+    --success-surface: 152 35% 13%;
     --warning: 38 90% 60%;
     --warning-surface: 38 50% 14%;
     --destructive: 4 70% 60%;
     --destructive-foreground: 0 0% 100%;
     --destructive-surface: 4 40% 14%;
-    --info: 230 85% 68%;
-    --info-surface: 230 40% 16%;
-    --border: 232 25% 20%;
-    --input: 232 25% 26%;
-    --ring: 230 85% 68%;
-    --sidebar-background: 231 60% 7%;
-    --sidebar-foreground: 230 15% 80%;
-    --sidebar-primary: 16 76% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 232 45% 11%;
-    --sidebar-accent-foreground: 50 19% 94%;
-    --sidebar-border: 232 25% 20%;
-    --sidebar-ring: 230 85% 68%;
+    --info: 213 85% 68%;
+    --info-surface: 213 40% 16%;
+    --border: 90 8% 19%;
+    --input: 90 8% 26%;
+    --ring: 213 85% 68%;
+    --sidebar-background: 100 12% 7%;
+    --sidebar-foreground: 80 6% 78%;
+    --sidebar-primary: 84 45% 52%;
+    --sidebar-primary-foreground: 100 16% 10%;
+    --sidebar-accent: 100 10% 10%;
+    --sidebar-accent-foreground: 60 8% 94%;
+    --sidebar-border: 90 8% 19%;
+    --sidebar-ring: 213 85% 68%;
   }
 }
 
@@ -147,9 +214,17 @@
     font-feature-settings: "tnum" 0;
   }
 
-  /* Inter carries text and headings; Bebas Neue is for poster headlines only. */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+  body { line-height: 1.6; }
+
+  /* League Spartan for the three heading levels; Inter for everything else. */
+  h1, h2, h3 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  h4, h5, h6 {
+    @apply font-sans tracking-tight;
     text-wrap: balance;
   }
 
@@ -162,20 +237,22 @@
 @layer components {
   /* Page titles and section titles, one scale for the whole product. */
   .text-page-title { @apply font-display text-2xl font-bold tracking-tight text-forest sm:text-[1.75rem] sm:leading-9; }
-  /* Condensed poster headline (landing page, banners). */
-  .text-poster { @apply font-poster uppercase leading-[0.92] tracking-[0.01em]; }
+  /* Display headline (public discovery pages only, never inside the app). */
+  .text-poster { @apply font-display font-bold leading-[1.05] tracking-[-0.015em]; }
   .text-section-title { @apply font-display text-lg font-semibold tracking-tight text-forest; }
-  .text-card-title { @apply font-display text-base font-semibold text-forest; }
+  .text-card-title { @apply font-sans text-base font-semibold text-forest; }
   .text-meta { @apply text-[0.8125rem] leading-5 text-muted-foreground; }
 
-  /* The one surface style: white, hairline, no shadow. */
-  .surface { @apply rounded-xl border border-border bg-card; }
+  /* The one surface style: white, hairline, a whisper of elevation. */
+  .surface { @apply rounded-xl border border-border bg-card; box-shadow: var(--shadow-raised); }
+  /* Small uppercase label above a group (sidebar groups, stat labels). */
+  .text-eyebrow { @apply text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground; }
   .surface-interactive {
     @apply surface transition-[border-color,box-shadow,transform] duration-200;
   }
   .surface-interactive:hover {
     border-color: hsl(var(--primary) / 0.45);
-    box-shadow: 0 6px 20px -12px hsl(var(--forest) / 0.35);
+    box-shadow: var(--shadow-float);
   }
 }
 
@@ -183,6 +260,8 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .tabular { font-variant-numeric: tabular-nums; }
+  /* The public 12-column grid: 4 columns on phones, 8 on tablets, 12 from 1024 px. */
+  .site-grid { @apply grid grid-cols-4 gap-x-4 gap-y-8 md:grid-cols-8 md:gap-x-6 lg:grid-cols-12; }
   .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
@@ -208,6 +287,53 @@
 }
 .animate-confirm { animation: confirm 320ms var(--ease-out) both; }
 
+/* Plus motif: layers draw in once (inner first), or loop while loading. */
+@keyframes plus-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes plus-loop {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  55% { stroke-dashoffset: 0; opacity: 1; }
+  85% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.35; }
+}
+.plus-draw .plus-layer {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: plus-draw 900ms var(--ease-out) forwards;
+}
+.plus-loop .plus-layer {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: plus-loop 1200ms ease-in-out infinite;
+}
+
+/* Home page reveals (src/features/site/home/useReveal.ts): once, 600 ms, one easing. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+.reveal .reveal-img { transform: scale(1.03); transition: transform 600ms var(--ease-out); }
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal.is-in .reveal-img { transform: none; }
+
+/* Plus-shaped mask reveal: the hero photo and one capstone photo only (900 ms, once). */
+@keyframes plus-mask {
+  0% { clip-path: polygon(48% 43%, 52% 43%, 52% 48%, 57% 48%, 57% 52%, 52% 52%, 52% 57%, 48% 57%, 48% 52%, 43% 52%, 43% 48%, 48% 48%); }
+  45% { clip-path: polygon(37% 14%, 63% 14%, 63% 37%, 86% 37%, 86% 63%, 63% 63%, 63% 86%, 37% 86%, 37% 63%, 14% 63%, 14% 37%, 37% 37%); }
+  100% { clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%, 0% 100%, 0% 100%, 0% 100%, 0% 0%, 0% 0%); }
+}
+.plus-mask { clip-path: polygon(48% 43%, 52% 43%, 52% 48%, 57% 48%, 57% 52%, 52% 52%, 52% 57%, 48% 57%, 48% 52%, 43% 52%, 43% 48%, 48% 48%); }
+.is-in .plus-mask, .plus-mask.is-in { animation: plus-mask 900ms var(--ease-out) forwards; }
+
+/* Hover on course covers and instructor cards: image scale 1.03, border to green-700. */
+.hover-lift { transition: border-color 200ms var(--ease-out); }
+.hover-lift .hover-img { transition: transform 200ms var(--ease-out); }
+.hover-lift:hover { border-color: hsl(var(--primary)); }
+.hover-lift:hover .hover-img { transform: scale(1.03); }
+
 /* Landing page marquees (unchanged behaviour). */
 @keyframes scroll-left {
   0% { transform: translateX(0); }
@@ -221,13 +347,10 @@
 }
 .animate-scroll-rtl { animation: scroll-rtl 15s linear infinite; }
 .animate-scroll-rtl:hover { animation-play-state: paused; }
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-.animate-float { animation: float 3s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal .reveal-img { opacity: 1; transform: none; }
+  .plus-mask { clip-path: none; animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

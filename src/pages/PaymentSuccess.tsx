@@ -107,7 +107,7 @@ const PaymentSuccess = () => {
                 )}
 
                 {ref && (
-                    <p className="text-xs text-muted-foreground/60 mt-6">
+                    <p className="text-xs text-muted-foreground mt-6">
                         {t("paymentSuccess.reference", "Reference: {{ref}}", { ref: ref })}
                     </p>
                 )}

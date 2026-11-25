@@ -281,7 +281,7 @@ export default function AdminBundles() {
                                                 <div>
                                                     <p className="font-medium">{bundle.title}</p>
                                                     {bundle.description && (
-                                                        <p className="text-xs text-muted-foreground/60 truncate max-w-[200px]">{bundle.description}</p>
+                                                        <p className="text-xs text-muted-foreground truncate max-w-[200px]">{bundle.description}</p>
                                                     )}
                                                 </div>
                                             </TableCell>
@@ -289,7 +289,7 @@ export default function AdminBundles() {
                                                 <div className="space-y-1">
                                                     {bundle.courses.map((c) => (
                                                         <div key={c.id} className="flex items-center gap-1 text-xs">
-                                                            <BookOpen className="h-3 w-3 text-muted-foreground/60" />
+                                                            <BookOpen className="h-3 w-3 text-muted-foreground" />
                                                             <span className="truncate max-w-[150px]">{c.title}</span>
                                                         </div>
                                                     ))}
@@ -383,7 +383,7 @@ export default function AdminBundles() {
                                             className="rounded"
                                         />
                                         <span className="flex-1 text-sm">{course.title}</span>
-                                        <span className="text-xs text-muted-foreground/60">
+                                        <span className="text-xs text-muted-foreground">
                                             {course.is_free ? t("adminBundles.free", "Free") : formatPrice(course.price, course.currency)}
                                         </span>
                                     </label>
@@ -396,7 +396,7 @@ export default function AdminBundles() {
                             <div className="bg-leaf p-3 rounded-lg text-sm space-y-1">
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">{t("adminBundles.originalTotal", "Original total:")}</span>
-                                    <span className="line-through text-muted-foreground/60">{formatPrice(calculateOriginalPrice(), currency)}</span>
+                                    <span className="line-through text-muted-foreground">{formatPrice(calculateOriginalPrice(), currency)}</span>
                                 </div>
                                 <div className="flex justify-between font-bold text-primary">
                                     <span>{t("adminBundles.bundlePrice2", "Bundle price:")}</span>
@@ -413,7 +413,7 @@ export default function AdminBundles() {
                             </div>
                         )}
 
-                        <Button onClick={handleSaveBundle} className="w-full bg-primary hover:bg-primary-hover">
+                        <Button onClick={handleSaveBundle} className="w-full bg-action hover:bg-action-hover">
                             {editingBundle ? t("adminBundles.updateBundle", "Update Bundle") : t("adminBundles.createBundle", "Create Bundle")}
                         </Button>
                     </div>

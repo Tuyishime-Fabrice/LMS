@@ -79,7 +79,7 @@ const AuthCallback = () => {
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-info/30 mx-auto mb-4" />
         <p className="text-muted-foreground text-lg">{t("authCallback.completingAuthentication", "Completing authentication...")}</p>
-        <p className="text-muted-foreground/60 text-sm mt-2">{t("authCallback.pleaseWaitWhileWeSetUp", "Please wait while we set up your account")}</p>
+        <p className="text-muted-foreground text-sm mt-2">{t("authCallback.pleaseWaitWhileWeSetUp", "Please wait while we set up your account")}</p>
       </div>
     </div>
   );

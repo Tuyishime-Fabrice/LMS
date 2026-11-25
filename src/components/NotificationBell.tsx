@@ -169,7 +169,7 @@ export function NotificationBell() {
         </div>
         {items.length === 0 ? (
           <div className="px-6 py-10 text-center">
-            <Bell className="mx-auto mb-3 h-6 w-6 text-muted-foreground/60" />
+            <Bell className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
             <p className="text-sm font-medium text-forest">{t("shell.notifications.emptyTitle", "You're all caught up")}</p>
             <p className="mt-1 text-meta">{t("shell.notifications.emptyBody", "Feedback, schedule changes and certificates will show up here.")}</p>
           </div>

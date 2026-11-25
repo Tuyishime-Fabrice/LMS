@@ -16,6 +16,7 @@ export const DEMO_IDS = {
   admin: id(3),
   teacher2: id(4),
   pendingTeacher: id(5),
+  facilitator: id(6),
 };
 
 export const DEMO_PASSWORD = "demo1234";
@@ -24,6 +25,7 @@ export const DEMO_ACCOUNTS = [
   { role: "student", email: "aline@dataplus-demo.test", name: "Aline Uwase", id: DEMO_IDS.student },
   { role: "teacher", email: "theo@dataplus-demo.test", name: "Théo Mugisha", id: DEMO_IDS.teacher },
   { role: "admin", email: "admin@dataplus-demo.test", name: "Grace Ingabire", id: DEMO_IDS.admin },
+  { role: "facilitator", email: "diane@dataplus-demo.test", name: "Diane Mutesi", id: DEMO_IDS.facilitator },
 ] as const;
 
 export function createSeed(assetBase: string): Tables {
@@ -69,6 +71,8 @@ export function createSeed(assetBase: string): Tables {
       teacher_approved: false, teacher_approval_status: "pending", teacher_approval_date: null,
       organization: "University of Rwanda", job_role: "Statistics lecturer", created_at: at(-2),
     }),
+    // A graduate of the Excel course who now facilitates Cohort 3 (account role stays "student").
+    person(6, "Diane Mutesi", "diane@dataplus-demo.test", "student", { avatar_url: avatar("3d-rendering-zoom-call-avatar.webp") }),
     ...learners,
   ];
 
@@ -87,7 +91,7 @@ export function createSeed(assetBase: string): Tables {
     summary: "From a messy spreadsheet to a dashboard your manager can read.",
     description: "Learn to clean data, summarise it with pivot tables and build a Power BI dashboard, using real datasets from shops, cooperatives and clinics.",
     learning_outcomes: ["Clean and structure raw data", "Summarise sales with pivot tables", "Build a dashboard that answers a business question"],
-    thumbnail_url: asset("images/mainpagepicture.jpg"), whatsapp_group_link: "https://chat.whatsapp.com/",
+    thumbnail_url: asset("images/mainpagepicture.jpg"), whatsapp_group_link: "https://chat.whatsapp.com/", discord_url: "https://discord.gg/dataplus-demo",
     mode: "Hybrid (online + Kigali workshops)", scholarship_open: true, scholarship_slots_max: 10, scholarship_slots_used: 3,
   });
   const sql = course(2, {
@@ -162,7 +166,11 @@ export function createSeed(assetBase: string): Tables {
   const l8 = lesson(ex3, "Your first Power BI dashboard", "video", 0, {
     description: "Import your data, create three visuals and arrange them so the main question is answered at a glance.",
   });
-  const l9 = lesson(ex3, "Assignment: dashboard draft", "assignment", 1, { due_date: at(12, 23, 59) });
+  const l9 = lesson(ex3, "Assignment: dashboard draft", "assignment", 1, { due_date: at(12, 23, 59), rubric: { criteria: [
+    { id: "c1", title: "Answers the business question", description: "The first screen says what to stock next quarter.", levels: [{ label: "Clear", points: 10 }, { label: "Partly", points: 6 }, { label: "Missing", points: 0 }] },
+    { id: "c2", title: "Data cleaning", description: "Duplicates, blanks and dates handled and explained.", levels: [{ label: "Thorough", points: 10 }, { label: "Some gaps", points: 5 }, { label: "Not done", points: 0 }] },
+    { id: "c3", title: "Visual design", levels: [{ label: "Easy to read", points: 5 }, { label: "Cluttered", points: 2 }] },
+  ] } });
 
   const sq1 = chapter(4, sql, "Module 1: Asking questions with SELECT", 0);
   const s1 = lesson(sq1, "SELECT, WHERE and ORDER BY", "video", 0, { is_preview: true });
@@ -210,6 +218,11 @@ export function createSeed(assetBase: string): Tables {
       description: "Help a Kigali shop owner decide what to stock next quarter, using a year of sales data.",
       instructions: "Clean the dataset, analyse sales by product, month and branch, build a dashboard, and write a one-page recommendation. Follow the 5-step framework: problem, data, tools, analysis, recommendations.",
       requirements: ["Cleaned dataset", "Power BI dashboard", "One-page recommendation"], due_date: at(25, 23, 59), file_url: null,
+      rubric: { criteria: [
+        { id: "p", title: "Problem definition", levels: [{ label: "Precise", points: 10 }, { label: "Vague", points: 4 }] },
+        { id: "a", title: "Analysis", levels: [{ label: "Sound", points: 20 }, { label: "Partial", points: 10 }, { label: "Weak", points: 3 }] },
+        { id: "r", title: "Recommendation", levels: [{ label: "Actionable", points: 10 }, { label: "General", points: 4 }] },
+      ] },
       created_at: at(-80), updated_at: at(-10),
     },
     {
@@ -231,6 +244,7 @@ export function createSeed(assetBase: string): Tables {
       id: id(500), course_id: excel.id, teacher_id: DEMO_IDS.teacher, name: "Cohort 3: Evening, Kigali", description: "Tuesday and Thursday evenings, with two Saturday workshops.",
       start_date: at(-30), end_date: at(40), is_active: true, max_students: 30, price: 50000, currency: "RWF", requires_payment: true,
       instalment_enabled: true, instalment_count: 2, instalment_deposit_percent: 50, created_at: at(-60), updated_at: at(-30),
+      discord_url: "https://discord.gg/dataplus-cohort3-demo",
     },
     {
       id: id(501), course_id: sql.id, teacher_id: DEMO_IDS.teacher2, name: "Cohort 1: Weekend", description: "Saturday mornings, online.",
@@ -347,7 +361,7 @@ export function createSeed(assetBase: string): Tables {
     session(1, excel, "Live: cleaning data, your questions", at(-6, 18), 90, { cohort_id: id(500) }),
     session(2, excel, "Live: pivot tables walkthrough", at(1, 18), 90, { cohort_id: id(500), description: "Bring your cleaned shop file. We build the monthly summary together." }),
     session(3, excel, "Workshop: Power BI on your laptop", at(8, 9, 30), 180, {
-      cohort_id: id(500), modality: "in_person", meet_link: null, location: "Kigali, Kimihurura (venue details in WhatsApp group)",
+      cohort_id: id(500), modality: "in_person", meet_link: null, location: "Kigali, Kimihurura (directions in the cohort Discord)",
       description: "Hands-on workshop. Bring a laptop with Power BI Desktop installed.",
     }),
     session(4, excel, "Live: capstone briefing", at(15, 18), 60, { cohort_id: id(500), modality: "hybrid", location: "Kigali + online" }),
@@ -357,8 +371,9 @@ export function createSeed(assetBase: string): Tables {
 
   /* Announcements and notifications ------------------------------------ */
   const teacher_announcements = [
+    { id: id(1203), teacher_id: DEMO_IDS.facilitator, course_id: excel.id, cohort_id: id(500), title: "Office hours tonight", message: "I am on the cohort Discord from 18:00 to 19:00 for questions on the monthly summary.", is_active: true, created_at: at(-0.2), updated_at: at(-0.2) },
     { id: id(1200), teacher_id: DEMO_IDS.teacher, course_id: excel.id, title: "Module 2 is open", message: "Pivot tables are up. Watch the video before Thursday's live session and bring your cleaned file.", is_active: true, created_at: at(-2), updated_at: at(-2) },
-    { id: id(1201), teacher_id: DEMO_IDS.teacher, course_id: excel.id, title: "Workshop venue confirmed", message: "Saturday's Power BI workshop is in Kimihurura. Details are in the WhatsApp group.", is_active: true, created_at: at(-1), updated_at: at(-1) },
+    { id: id(1201), teacher_id: DEMO_IDS.teacher, course_id: excel.id, title: "Workshop venue confirmed", message: "Saturday's Power BI workshop is in Kimihurura. Directions are in the cohort Discord.", is_active: true, created_at: at(-1), updated_at: at(-1) },
     { id: id(1202), teacher_id: DEMO_IDS.teacher2, course_id: sql.id, title: "Welcome to SQL for Data Analysts", message: "Install DB Browser for SQLite before the kickoff.", is_active: true, created_at: at(-4), updated_at: at(-4) },
   ];
   const announcements = [
@@ -472,6 +487,7 @@ export function createSeed(assetBase: string): Tables {
     },
   ];
   const cohort_join_requests = [
+    { id: id(1991), cohort_id: id(501), student_id: DEMO_IDS.student, status: "pending", message: "I finished the Excel course and want the SQL weekend cohort.", payment_track: "full", created_at: at(-0.5), updated_at: at(-0.5) },
     { id: id(1990), cohort_id: id(501), student_id: id(14), status: "pending", message: "I would like to join the weekend cohort.", payment_track: "full", created_at: at(-1), updated_at: at(-1) },
   ];
   const testimonials = [
@@ -525,13 +541,92 @@ export function createSeed(assetBase: string): Tables {
     { id: id(2303), user_id: DEMO_IDS.student, action: "login", entity_type: null, entity_id: null, details: {}, ip_address: null, user_agent: null, created_at: at(-1) },
   ];
   const system_settings = [
-    { id: id(2400), key: "site_name", value: JSON.stringify("DataPlus Academy"), description: "Site name", updated_at: at(-30), updated_by: DEMO_IDS.admin },
+    { id: id(2400), key: "site_name", value: JSON.stringify("DATA+ Academy"), description: "Site name", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2401), key: "require_teacher_approval", value: JSON.stringify(true), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2402), key: "require_course_approval", value: JSON.stringify(true), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },
     { id: id(2403), key: "maintenance_mode", value: JSON.stringify(false), description: "", updated_at: at(-30), updated_by: DEMO_IDS.admin },
   ];
 
+
+  /* Tracks, competitions and onboarding answers (2026-11-24) ------------ */
+  const learning_paths = [
+    { id: id(3000), slug: "spreadsheet-to-dashboard", kind: "skill", title: "From spreadsheet to dashboard", summary: "Read a table, clean it and turn it into a dashboard that answers a business question.",
+      description: "Two courses that build one skill: reporting with spreadsheets and Power BI.", outcomes: ["Spot and fix common data errors", "Summarise with pivot tables", "Publish a one-page dashboard"],
+      target_role: null, competencies: [], level: "beginner", estimated_hours: 40, language: "en", is_published: true, display_order: 0, created_by: DEMO_IDS.admin, created_at: at(-20), updated_at: at(-2) },
+    { id: id(3001), slug: "sql-for-analysis", kind: "skill", title: "SQL for analysis", summary: "Query databases with confidence, from SELECT to monthly reports.",
+      description: null, outcomes: ["Write filtered SELECT queries", "Join several tables", "Build a monthly report in SQL"], target_role: null, competencies: [],
+      level: "intermediate", estimated_hours: 30, language: "en", is_published: true, display_order: 1, created_by: DEMO_IDS.admin, created_at: at(-20), updated_at: at(-2) },
+    { id: id(3002), slug: "junior-data-analyst", kind: "career", title: "Junior data analyst", summary: "The courses and projects that prepare you for a first data analyst role in an NGO, clinic or company.",
+      description: "Start with data literacy, move to spreadsheets and dashboards, then SQL. Each step ends with a project you can show an employer.",
+      outcomes: ["Clean, analyse and present data", "Answer questions with SQL", "Show three portfolio projects"], target_role: "Junior data analyst",
+      competencies: ["Data cleaning", "Spreadsheets", "Dashboards", "SQL", "Communicating findings"], level: "beginner", estimated_hours: 120, language: "en",
+      is_published: true, display_order: 0, created_by: DEMO_IDS.admin, created_at: at(-20), updated_at: at(-2) },
+  ];
+  const pathItem = (n: number, path: number, courseRow: Row, position: number, extra: Row = {}): Row => ({
+    id: id(3100 + n), path_id: id(path), course_id: courseRow.id, position, is_required: true, milestone: null, created_at: at(-20), ...extra,
+  });
+  const learning_path_items = [
+    pathItem(1, 3000, literacy, 0, { is_required: false, milestone: "Optional warm-up if tables are new to you" }),
+    pathItem(2, 3000, excel, 1, { milestone: "Project: Kigali retail sales dashboard" }),
+    pathItem(3, 3001, sql, 0, { milestone: "Project: district health report" }),
+    pathItem(4, 3002, literacy, 0),
+    pathItem(5, 3002, excel, 1, { milestone: "Portfolio project 1: sales dashboard" }),
+    pathItem(6, 3002, sql, 2, { milestone: "Portfolio project 2: health report in SQL" }),
+  ];
+  const competitions = [
+    { id: id(3200), slug: "kigali-market-prices", title: "Kigali market prices challenge", summary: "Forecast next month's prices for five staple foods from three years of market data.",
+      description: "Use the public market price dataset to forecast next month's average price for beans, maize, rice, potatoes and cooking oil in Kigali markets. Explain your method in a short notebook.",
+      eligibility: "Open to everyone with a DATA+ account. Individuals only.", rules: "1. Use only the dataset provided.\n2. Share a notebook the judges can open.\n3. Scores: accuracy (60%), explanation (40%).",
+      prizes: "Top three: a free course and a feature on the student projects page.", submission_instructions: "Share a Colab or GitHub link to your notebook. Make sure 'Anyone with the link' can view it.",
+      dataset_url: "https://example.org/demo-dataset", discord_url: "https://discord.gg/dataplus-demo", status: "open", open_to_public: true,
+      registration_opens_at: at(-10), registration_closes_at: at(8), starts_at: at(-7), submission_deadline: at(10, 23, 59), results_published_at: null,
+      created_by: DEMO_IDS.admin, created_at: at(-12), updated_at: at(-7) },
+    { id: id(3201), slug: "clinic-visits-dashboard", title: "Clinic visits dashboard sprint", summary: "Build the clearest one-page dashboard of district clinic visits.",
+      description: "A one-week sprint to design a dashboard for district health officers.", eligibility: "DATA+ learners.", rules: "One submission per person counts: your best score.",
+      prizes: null, submission_instructions: "Link to a published Power BI report or a PDF.", dataset_url: null, discord_url: null, status: "closed", open_to_public: false,
+      registration_opens_at: at(-50), registration_closes_at: at(-40), starts_at: at(-40), submission_deadline: at(-33), results_published_at: at(-25),
+      created_by: DEMO_IDS.admin, created_at: at(-55), updated_at: at(-25) },
+  ];
+  const competition_registrations = [
+    { id: id(3300), competition_id: id(3201), user_id: DEMO_IDS.student, team_name: null, status: "registered", created_at: at(-45), updated_at: at(-45) },
+    { id: id(3301), competition_id: id(3201), user_id: id(10), team_name: null, status: "registered", created_at: at(-44), updated_at: at(-44) },
+    { id: id(3302), competition_id: id(3201), user_id: id(13), team_name: null, status: "registered", created_at: at(-44), updated_at: at(-44) },
+  ];
+  const sub = (n: number, user: string, score: number, feedback: string): Row => ({
+    id: id(3400 + n), competition_id: id(3201), user_id: user, title: "Clinic visits dashboard", description: null, submission_url: "https://example.org/demo-report",
+    status: "scored", score, judge_feedback: feedback, scored_by: DEMO_IDS.admin, scored_at: at(-26), submitted_at: at(-34),
+  });
+  const competition_submissions = [
+    sub(1, DEMO_IDS.student, 82, "Clear layout; the trend chart answers the main question at a glance."),
+    sub(2, id(10), 91, "Excellent use of small multiples per district."),
+    sub(3, id(13), 74, "Good data, but the colour scale hides the differences."),
+  ];
+  const goals = ["grow_in_role", "start_career", "grow_in_role", "change_career", "grow_in_role", "start_career", "team_project"];
+  const learner_preferences = [DEMO_IDS.student, id(10), id(11), id(12), id(13), id(14), id(16)].map((user, i) => ({
+    user_id: user, learning_goal: goals[i], experience_level: i % 3 === 0 ? "some" : "new",
+    interests: i % 2 === 0 ? ["data_analysis", "visualisation"] : ["data_analysis", "programming"], tools: [], career_goal: null,
+    preferred_mode: i % 3 === 2 ? "self_paced" : "cohort", weekly_hours: i % 2 === 0 ? "3to5" : "6to10", access_route: i === 3 ? "organisation" : "individual",
+    sponsor_organisation: null, research_consent: i !== 5, research_consent_at: i !== 5 ? at(-20) : null, created_at: at(-20), updated_at: at(-20),
+  }));
+
   return {
+    assignment_drafts: [
+      { id: id(3700), course_id: excel.id, chapter_id: ex3.id, author_id: DEMO_IDS.facilitator, title: "Exercise: one-page stock dashboard",
+        instructions: "Using the shop sales file, build one Power BI page that answers: which three products should the shop reorder first? Hand in the .pbix file and a screenshot.",
+        due_date: at(16, 23, 59), status: "submitted", review_note: null, reviewed_by: null, reviewed_at: null, lesson_id: null, submitted_at: at(-0.3),
+        rubric: { criteria: [
+          { id: "q", title: "Answers the question", levels: [{ label: "Clear", points: 10 }, { label: "Partly", points: 5 }, { label: "No", points: 0 }] },
+          { id: "v", title: "Readable visuals", levels: [{ label: "Readable", points: 5 }, { label: "Cluttered", points: 2 }] },
+        ] }, created_at: at(-1), updated_at: at(-0.3) },
+    ],
+    course_staff: [
+      { id: id(3500), course_id: excel.id, cohort_id: id(500), user_id: DEMO_IDS.facilitator, staff_role: "facilitator", assigned_by: DEMO_IDS.teacher, created_at: at(-28) },
+    ],
+    submission_reviews: [
+      { id: id(3600), submission_type: "assignment", submission_id: id(906), reviewer_id: DEMO_IDS.facilitator, suggested_grade: 76, rubric_scores: null,
+        notes: "Correct top product and a clear pivot table. The monthly totals in March double-count returns; ask Jean-Paul to filter them out.", created_at: at(-0.5), updated_at: at(-0.5) },
+    ],
+    learning_paths, learning_path_items, competitions, competition_registrations, competition_submissions, learner_preferences, grade_history: [],
     profiles, courses, course_chapters: chapters, course_lessons: lessons, lesson_quiz_questions, capstone_projects, cohorts,
     course_enrollments, student_lesson_progress, student_quiz_attempts, assignment_submissions, capstone_submissions,
     certificates, course_certificate_rules, scheduled_classes, teacher_announcements, announcements, announcement_reads: [],

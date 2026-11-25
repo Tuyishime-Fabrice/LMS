@@ -183,7 +183,7 @@ export default function AssignmentUploadWidget({ studentId, capstoneProjectId, o
       <Button 
         onClick={handleUpload} 
         disabled={uploading || !file || !description.trim()} 
-        className="w-full bg-primary hover:bg-primary-hover"
+        className="w-full bg-action hover:bg-action-hover"
         size="lg"
       >
         {uploading ? (

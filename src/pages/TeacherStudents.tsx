@@ -173,7 +173,7 @@ const TeacherStudents = () => {
         description={t('teacher.students.manageStudents')}
         actions={<><Button 
               onClick={() => navigate("/teacher/cohorts")}
-              className="bg-primary hover:bg-primary-hover"
+              className="bg-action hover:bg-action-hover"
             >
               <Layers className="h-4 w-4 mr-2" />
               {t('teacher.students.manageCohorts')}
@@ -313,7 +313,7 @@ const TeacherStudents = () => {
                     <div className="space-y-2">
                       <Label>{t('common.search')}</Label>
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           placeholder={t('teacher.students.searchByName')}
                           value={searchQuery}
@@ -337,7 +337,7 @@ const TeacherStudents = () => {
                 <CardContent>
                   {filteredStudents.length === 0 ? (
                     <div className="text-center py-12">
-                      <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
+                      <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground">{t('teacher.students.noStudentsFound')}</p>
                     </div>
                   ) : (
@@ -376,7 +376,7 @@ const TeacherStudents = () => {
                                   {student.cohort_name}
                                 </Badge>
                               ) : (
-                                <span className="text-sm text-muted-foreground/60">{t('teacher.students.noCohort')}</span>
+                                <span className="text-sm text-muted-foreground">{t('teacher.students.noCohort')}</span>
                               )}
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">

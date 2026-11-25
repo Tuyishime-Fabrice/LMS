@@ -1,28 +1,35 @@
 import { cn } from "@/lib/utils";
 
 /**
- * The DataPlus mark with the Academy name. `compact` shows the mark alone;
- * `tone="light"` is for navy backgrounds.
+ * The official DATA+ Academy lock-up (target, dart, "DATA+", "ACADEMY").
+ * Until DATA+ supplies the logo as SVG, these images are cut from the intro's poster frame
+ * (public/brand/intro/intro-poster.jpg) with the background made transparent; see DESIGN_SYSTEM.md.
+ * `compact` shows the target and dart alone; `tone="light"` is for dark green surfaces.
  */
 export function Brand({ compact = false, tone = "dark", className }: { compact?: boolean; tone?: "dark" | "light"; className?: string }) {
   const light = tone === "light";
-  return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", light ? "bg-white" : "")}>
+  if (compact) {
+    return (
+      <span className={cn("flex items-center", className)}>
         <img
-          src="/images/dataplus-mark.png"
-          alt={compact ? "DataPlus Academy" : ""}
-          width={32}
-          height={32}
-          className={cn("shrink-0 object-contain", light ? "h-7 w-7" : "h-8 w-8")}
+          src={light ? "/brand/dataplus-academy-mark-light.webp" : "/brand/dataplus-academy-mark.webp"}
+          alt="DATA+ Academy"
+          width={36}
+          height={36}
+          className="h-9 w-9 shrink-0 object-contain"
         />
       </span>
-      {!compact && (
-        <span className="flex flex-col leading-none">
-          <span className={cn("font-display text-[1.0625rem] font-bold tracking-tight", light ? "text-white" : "text-forest")}>DataPlus</span>
-          <span className={cn("mt-0.5 text-[0.6875rem] font-medium uppercase tracking-[0.14em]", light ? "text-white/60" : "text-muted-foreground")}>Academy</span>
-        </span>
-      )}
+    );
+  }
+  return (
+    <span className={cn("flex items-center", className)}>
+      <img
+        src={light ? "/brand/dataplus-academy-logo-light.webp" : "/brand/dataplus-academy-logo.webp"}
+        alt="DATA+ Academy"
+        width={91}
+        height={48}
+        className="h-12 w-auto shrink-0"
+      />
     </span>
   );
 }

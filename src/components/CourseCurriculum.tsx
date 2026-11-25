@@ -1,3 +1,5 @@
+import { PlusMotif } from "@/components/brand/PlusMotif";
+import { progressLayers } from "@/components/brand/courseLevel";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,9 +37,11 @@ interface CourseCurriculumProps {
   isWelcomeSelected?: boolean;
   isPaidCourse?: boolean;
   hasAccess?: boolean;
+  /** Progress is shown only to signed-in people; visitors see the list of modules. */
+  showProgress?: boolean;
 }
 
-export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, welcomeVideoUrl, onSelectWelcome, isWelcomeSelected, isPaidCourse = false, hasAccess = true }: CourseCurriculumProps) {
+export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, welcomeVideoUrl, onSelectWelcome, isWelcomeSelected, isPaidCourse = false, hasAccess = true, showProgress = true }: CourseCurriculumProps) {
   const { t } = useTranslation();
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
     new Set(chapters.map((c) => c.id))
@@ -54,7 +58,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
   };
 
   const getLessonIcon = (contentType: string, isCompleted?: boolean) => {
-    const iconClass = isCompleted ? "text-primary" : "text-muted-foreground/60";
+    const iconClass = isCompleted ? "text-primary" : "text-muted-foreground";
     switch (contentType) {
       case "video":
         return <Play className={cn("h-4 w-4", iconClass)} />;
@@ -73,13 +77,13 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
   const getContentTypeLabel = (contentType: string) => {
     switch (contentType) {
-      case "video": return "Video";
+      case "video": return t("courseCurriculum.type.video", "Video");
       case "pdf": return "PDF";
-      case "document": return "Document";
-      case "url": return "Link";
-      case "quiz": return "Quiz";
-      case "assignment": return "Assignment";
-      default: return "Lesson";
+      case "document": return t("courseCurriculum.type.document", "Document");
+      case "url": return t("courseCurriculum.type.link", "Link");
+      case "quiz": return t("courseCurriculum.type.quiz", "Quiz");
+      case "assignment": return t("courseCurriculum.type.assignment", "Assignment");
+      default: return t("courseCurriculum.type.lesson", "Lesson");
     }
   };
 
@@ -117,19 +121,24 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
             <p className="text-white/70 text-sm">{t("courseCurriculum.chaptersLessons", "{{count}} chapters • {{totalLessons}} lessons", { count: chapters.length, totalLessons: totalLessons })}</p>
           </div>
         </div>
-        {/* Mini Progress */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-white/80">{t("courseCurriculum.yourProgress", "Your Progress")}</span>
-            <span className="text-white font-semibold">{completedLessons}/{totalLessons}</span>
+        {/* Mini progress, with the centred plus lighting a layer at 33%, 66% and 100% */}
+        {showProgress && (
+          <div className="flex items-center gap-3">
+            <PlusMotif variant="centred" tone="dark" size={30} layersLit={progressLayers(totalLessons ? completedLessons / totalLessons : 0)} />
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-white/80">{t("courseCurriculum.yourProgress2", "Your progress")}</span>
+                <span className="tabular font-semibold text-white">{completedLessons}/{totalLessons}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-white/20">
+                <div
+                  className="h-full rounded-full bg-action transition-all duration-500"
+                  style={{ width: `${totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0}%` }}
+                />
+              </div>
+            </div>
           </div>
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-card rounded-full transition-all duration-500"
-              style={{ width: `${totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0}%` }}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       <CardContent className="p-0 max-h-[600px] overflow-y-auto">
@@ -186,7 +195,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                   <div className={cn(
                     "w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all",
                     chapterLocked
-                      ? "bg-border text-muted-foreground/60"
+                      ? "bg-border text-muted-foreground"
                       : isChapterComplete
                         ? "bg-primary text-white shadow-primary/20"
                         : "bg-muted text-muted-foreground group-hover:bg-gray-200"
@@ -204,7 +213,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                     <div className="flex items-center gap-2 mb-1">
                       <span className={cn(
                         "font-semibold",
-                        chapterLocked ? "text-muted-foreground/60" : "text-forest"
+                        chapterLocked ? "text-muted-foreground" : "text-forest"
                       )}>
                         {chapter.title}
                       </span>
@@ -306,7 +315,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                                   : "bg-card border border-border group-hover:border-gray-300"
                           )}>
                             {locked ? (
-                              <Lock className="h-4 w-4 text-muted-foreground/60" />
+                              <Lock className="h-4 w-4 text-muted-foreground" />
                             ) : lesson.is_completed ? (
                               <CheckCircle2 className="h-4 w-4 text-white" />
                             ) : (
@@ -328,7 +337,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                           <div className="flex-1 min-w-0">
                             <div className={cn(
                               "text-sm font-medium transition-colors",
-                              locked ? "text-muted-foreground/60" : isActive ? "text-primary" : lesson.is_completed ? "text-foreground" : "text-muted-foreground"
+                              locked ? "text-muted-foreground" : isActive ? "text-primary" : lesson.is_completed ? "text-foreground" : "text-muted-foreground"
                             )}>
                               {lesson.title}
                             </div>
@@ -337,7 +346,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
                                 {getContentTypeLabel(lesson.content_type)}
                               </Badge>
                               {lesson.duration && (
-                                <span className="text-xs text-muted-foreground/60 flex items-center gap-1">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
                                   {lesson.duration}m
                                 </span>
@@ -352,7 +361,7 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
                           {/* Active Indicator or Lock Icon */}
                           {locked ? (
-                            <Lock className="h-4 w-4 text-muted-foreground/60" />
+                            <Lock className="h-4 w-4 text-muted-foreground" />
                           ) : isActive ? (
                             <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                           ) : null}

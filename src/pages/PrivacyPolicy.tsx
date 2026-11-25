@@ -1,3 +1,5 @@
+import { siteFacts } from "@/content/site-facts";
+import { usePageMeta } from "@/lib/pageMeta";
 import { PageBand } from "@/features/site/PageBand";
 import { SiteHeader } from "@/features/site/SiteHeader";
 import { useTranslation } from "react-i18next";
@@ -8,6 +10,7 @@ import { ArrowLeft, Shield, Eye, Lock, Database, UserCheck, Mail } from "lucide-
 
 const PrivacyPolicy = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.privacy.title", "Privacy policy"), description: t("meta.privacy.description", "How DATA+ Academy collects, uses and protects your personal data."), path: "/privacy-policy" });
   const navigate = useNavigate();
 
   return (
@@ -16,13 +19,13 @@ const PrivacyPolicy = () => {
       <PageBand title={t("privacyPolicy.title", "Privacy policy")} body={t("privacyPolicy.updated", "Last updated: January 2025")} />
 
       {/* Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-8 max-w-4xl">
+      <main id="main" className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8"><div className="max-w-3xl">
         <div className="bg-card rounded-xl p-8 space-y-8">
           {/* Introduction */}
           <section>
             <h2 className="text-2xl font-bold text-forest mb-4">{t("privacyPolicy.introduction", "Introduction")}</h2>
             <p className="text-foreground leading-relaxed">
-              {t("privacyPolicy.welcomeToDataplusLearningWeAre", "Welcome to DataPlus Learning. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our learning management platform.")}
+              {t("privacyPolicy.welcomeToDataplusLearningWeAre", "Welcome to DATA+ Academy. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our learning management platform.")}
             </p>
           </section>
 
@@ -177,7 +180,7 @@ const PrivacyPolicy = () => {
             </p>
             <div className="space-y-2 text-foreground">
               <p><strong>{t("privacyPolicy.email", "Email:")}</strong>{" "}<a href="mailto:info@dataplusrwanda.com" className="text-primary hover:underline">info@dataplusrwanda.com</a></p>
-              <p><strong>{t("privacyPolicy.address", "Address:")}</strong>{" "}DataPlus Labs, KG 5 Kimihurura, Kigali, Rwanda</p>
+              <p><strong>{t("privacyPolicy.address", "Address:")}</strong>{" "}{siteFacts.brand.legalName}, {siteFacts.contact.address}</p>
               <p><strong>{t("privacyPolicy.phone", "Phone:")}</strong> +250 784 857 317</p>
             </div>
           </section>
@@ -186,14 +189,14 @@ const PrivacyPolicy = () => {
           <div className="pt-6 border-t">
             <Button
               onClick={() => navigate(-1)}
-              className="bg-primary hover:bg-primary-hover text-white"
+              className="bg-action hover:bg-action-hover text-white"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t("privacyPolicy.backToSettings", "Back to Settings")}
             </Button>
           </div>
         </div>
-      </main>
+      </div></main>
       <SiteFooter />
     </div>
   );

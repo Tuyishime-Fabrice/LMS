@@ -380,7 +380,7 @@ const TeacherGrades = () => {
   };
 
   const getGradeColor = (grade: number | null) => {
-    if (grade === null) return "text-muted-foreground/60";
+    if (grade === null) return "text-muted-foreground";
     if (grade >= 90) return "text-primary";
     if (grade >= 80) return "text-info";
     if (grade >= 70) return "text-warning";
@@ -627,11 +627,11 @@ const TeacherGrades = () => {
                 <CardContent>
                   {courses.length === 0 ? (
                     <div className="text-center py-8">
-                      <GraduationCap className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <GraduationCap className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                       <p className="text-muted-foreground">{t('teacher.grades.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
-                        className="mt-4 bg-primary hover:bg-primary-hover"
+                        className="mt-4 bg-action hover:bg-action-hover"
                       >
                         {t('teacher.grades.createFirstCourse')}
                       </Button>
@@ -721,7 +721,7 @@ const TeacherGrades = () => {
                     <CardContent>
                       {studentGrades.length === 0 ? (
                         <div className="text-center py-12">
-                          <GraduationCap className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                          <GraduationCap className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                           <p className="text-muted-foreground">{t('teacher.grades.noStudentsEnrolled')}</p>
                         </div>
                       ) : (
@@ -852,7 +852,7 @@ const TeacherGrades = () => {
               <X className="h-4 w-4 mr-1" />
               {t("teacherGrades.cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSaveGrade} disabled={saving} className="bg-primary hover:bg-primary-hover">
+            <Button onClick={handleSaveGrade} disabled={saving} className="bg-action hover:bg-action-hover">
               <Save className="h-4 w-4 mr-1" />
               {saving ? t("teacherGrades.saving", "Saving...") : t("teacherGrades.saveGrade", "Save Grade")}
             </Button>

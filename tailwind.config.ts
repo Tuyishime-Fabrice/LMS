@@ -7,17 +7,22 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      // One content width for every public page: 1200 px of content plus the gutters.
+      padding: { DEFAULT: "1rem", sm: "1.5rem", lg: "2rem" },
       screens: {
-        "2xl": "1400px",
+        "2xl": "1264px",
       },
     },
     extend: {
+      maxWidth: {
+        // Shared by every public page: 1200 px of content inside lg:px-8 gutters.
+        site: "1264px",
+      },
       fontFamily: {
         sans: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
-        display: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
+        display: ['"League Spartan"', 'Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
         body: ['Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
-        poster: ['"Bebas Neue"', '"Arial Narrow"', 'Impact', 'sans-serif'],
+        poster: ['"League Spartan"', 'Inter', 'system-ui', '"Segoe UI"', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -25,6 +30,31 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        action: {
+          DEFAULT: "hsl(var(--action))",
+          hover: "hsl(var(--action-hover))",
+          foreground: "hsl(var(--action-foreground))",
+        },
+        brand: {
+          950: "hsl(var(--brand-950))",
+          900: "hsl(var(--brand-900))",
+          800: "hsl(var(--brand-800))",
+          700: "hsl(var(--brand-700))",
+          500: "hsl(var(--brand-500))",
+        },
+        olive: {
+          DEFAULT: "hsl(var(--olive))",
+          ink: "hsl(var(--olive-ink))",
+        },
+        cream: "hsl(var(--cream))",
+        cover: {
+          data: "hsl(var(--cover-data))",
+          me: "hsl(var(--cover-me))",
+          ai: "hsl(var(--cover-ai))",
+          research: "hsl(var(--cover-research))",
+          geo: "hsl(var(--cover-geo))",
+        },
+        mint: "hsl(var(--mint))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -90,7 +120,9 @@ export default {
         },
       },
       borderRadius: {
-        xl: "calc(var(--radius) + 2px)",
+        "3xl": "var(--radius)",
+        "2xl": "var(--radius)",
+        xl: "var(--radius)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",

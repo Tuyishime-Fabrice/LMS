@@ -736,7 +736,7 @@ export default function CreateCourse() {
                 <Eye className="h-4 w-4 mr-2" />
                 {t("createCourse.preview", "Preview")}
               </Button>
-              <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
+              <Button onClick={handleSubmit} disabled={loading} className="bg-action hover:bg-action-hover">
                 <Save className="h-4 w-4 mr-2" />
                 {loading ? t("createCourse.saving", "Saving...") : t("createCourse.saveCourse", "Save Course")}
               </Button>
@@ -761,10 +761,10 @@ export default function CreateCourse() {
                     ? "border-primary text-primary"
                     : isCompleted
                       ? "border-transparent text-muted-foreground hover:text-forest"
-                      : "border-transparent text-muted-foreground/60"
+                      : "border-transparent text-muted-foreground"
                     }`}
                 >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${isActive ? "bg-primary text-white" : isCompleted ? "bg-leaf text-primary" : "bg-muted text-muted-foreground/60"
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${isActive ? "bg-primary text-white" : isCompleted ? "bg-leaf text-primary" : "bg-muted text-muted-foreground"
                     }`}>
                     {isCompleted ? <Check className="h-3 w-3" /> : index + 1}
                   </div>
@@ -864,14 +864,14 @@ export default function CreateCourse() {
                         <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors">
                           <div className="flex flex-col items-center justify-center py-4">
                             {uploadingThumbnail ? (
-                              <Loader2 className="w-8 h-8 text-muted-foreground/60 animate-spin mb-2" />
+                              <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mb-2" />
                             ) : (
-                              <Upload className="w-8 h-8 text-muted-foreground/60 mb-2" />
+                              <Upload className="w-8 h-8 text-muted-foreground mb-2" />
                             )}
                             <p className="text-sm font-medium text-muted-foreground">
                               {uploadingThumbnail ? t("createCourse.uploading", "Uploading...") : t("createCourse.clickToUploadThumbnail", "Click to upload thumbnail")}
                             </p>
-                            <p className="text-xs text-muted-foreground/60 mt-1">{t("createCourse.jpgPngOrWebpMax1mb", "JPG, PNG or WebP — Max 1MB")}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t("createCourse.jpgPngOrWebpMax1mb", "JPG, PNG or WebP, max 1 MB")}</p>
                           </div>
                           <input
                             type="file"
@@ -900,7 +900,7 @@ export default function CreateCourse() {
               </Card>
 
               <div className="flex justify-end">
-                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={() => setActiveStep(1)} disabled={!canProceed()} className="bg-action hover:bg-action-hover">
                   {t("createCourse.continueToContent", "Continue to Content")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -926,10 +926,10 @@ export default function CreateCourse() {
               {chapters.length === 0 ? (
                 <Card>
                   <CardContent className="p-12 text-center">
-                    <Layers className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                    <Layers className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                     <h3 className="font-medium text-forest mb-1">{t("createCourse.noChaptersYet", "No chapters yet")}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{t("createCourse.startBuildingYourCourseStructure", "Start building your course structure")}</p>
-                    <Button onClick={addChapter} className="bg-primary hover:bg-primary-hover">
+                    <Button onClick={addChapter} className="bg-action hover:bg-action-hover">
                       <Plus className="h-4 w-4 mr-2" />
                       {t("createCourse.addFirstChapter", "Add First Chapter")}
                     </Button>
@@ -946,7 +946,7 @@ export default function CreateCourse() {
                       <Card>
                         <CollapsibleTrigger asChild>
                           <div className="p-4 flex items-center gap-3 cursor-pointer hover:bg-muted transition-colors">
-                            <GripVertical className="h-4 w-4 text-muted-foreground/60" />
+                            <GripVertical className="h-4 w-4 text-muted-foreground" />
                             <div className="w-8 h-8 rounded-lg bg-leaf flex items-center justify-center">
                               <span className="text-sm font-semibold text-primary">{chapterIndex + 1}</span>
                             </div>
@@ -961,14 +961,14 @@ export default function CreateCourse() {
                               variant="ghost"
                               size="icon"
                               onClick={(e) => { e.stopPropagation(); removeChapter(chapterIndex); }}
-                              className="text-muted-foreground/60 hover:text-destructive"
+                              className="text-muted-foreground hover:text-destructive"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                             {openChapters.has(chapterIndex) ? (
-                              <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
                             ) : (
-                              <ChevronRight className="h-4 w-4 text-muted-foreground/60" />
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
                             )}
                           </div>
                         </CollapsibleTrigger>
@@ -1015,7 +1015,7 @@ export default function CreateCourse() {
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeLesson(chapterIndex, lessonIndex)}
-                                            className="h-7 w-7 text-muted-foreground/60 hover:text-destructive"
+                                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
                                           >
                                             <Trash2 className="h-3 w-3" />
                                           </Button>
@@ -1207,7 +1207,7 @@ export default function CreateCourse() {
                                             ))}
 
                                             {(!lesson.quiz_questions || lesson.quiz_questions.length === 0) && (
-                                              <p className="text-xs text-muted-foreground/60 text-center py-3">{t("createCourse.noQuestionsAdded", "No questions added")}</p>
+                                              <p className="text-xs text-muted-foreground text-center py-3">{t("createCourse.noQuestionsAdded", "No questions added")}</p>
                                             )}
                                           </div>
                                         )}
@@ -1230,7 +1230,7 @@ export default function CreateCourse() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={() => setActiveStep(2)} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={() => setActiveStep(2)} className="bg-action hover:bg-action-hover">
                   {t("createCourse.continueToCapstone", "Continue to Capstone")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -1329,7 +1329,7 @@ export default function CreateCourse() {
                                       placeholder={`Requirement ${reqIndex + 1}`}
                                     />
                                     {cp.requirements.length > 1 && (
-                                      <Button type="button" size="icon" variant="ghost" onClick={() => removeCapstoneRequirement(cpIndex, reqIndex)} className="text-muted-foreground/60 hover:text-destructive">
+                                      <Button type="button" size="icon" variant="ghost" onClick={() => removeCapstoneRequirement(cpIndex, reqIndex)} className="text-muted-foreground hover:text-destructive">
                                         <Trash2 className="h-4 w-4" />
                                       </Button>
                                     )}
@@ -1376,9 +1376,9 @@ export default function CreateCourse() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <Award className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <Award className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                       <p className="text-muted-foreground">{t("createCourse.noCapstoneProject", "No capstone project")}</p>
-                      <p className="text-sm text-muted-foreground/60">{t("createCourse.enableToAddAFinalProject", "Enable to add a final project")}</p>
+                      <p className="text-sm text-muted-foreground">{t("createCourse.enableToAddAFinalProject", "Enable to add a final project")}</p>
                     </div>
                   )}
                 </CardContent>
@@ -1389,7 +1389,7 @@ export default function CreateCourse() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t("createCourse.back", "Back")}
                 </Button>
-                <Button onClick={handleSubmit} disabled={loading} className="bg-primary hover:bg-primary-hover">
+                <Button onClick={handleSubmit} disabled={loading} className="bg-action hover:bg-action-hover">
                   <Save className="h-4 w-4 mr-2" />
                   {loading ? t("createCourse.saving", "Saving...") : (isEditMode ? t("createCourse.updateCourse", "Update Course") : t("createCourse.createCourse", "Create Course"))}
                 </Button>
@@ -1495,10 +1495,10 @@ export default function CreateCourse() {
                                     const Icon = contentTypeIcons[lesson.content_type] || FileText;
                                     return (
                                       <div key={lIdx} className="p-3 flex items-center gap-3 hover:bg-muted">
-                                        <Icon className="h-4 w-4 text-muted-foreground/60" />
+                                        <Icon className="h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm text-foreground flex-1">{lesson.title || `Lesson ${lIdx + 1}`}</span>
                                         {lesson.duration && (
-                                          <span className="text-xs text-muted-foreground/60">{t("createCourse.min", "{{duration}} min", { duration: lesson.duration })}</span>
+                                          <span className="text-xs text-muted-foreground">{t("createCourse.min", "{{duration}} min", { duration: lesson.duration })}</span>
                                         )}
                                       </div>
                                     );
@@ -1548,7 +1548,7 @@ export default function CreateCourse() {
                         </div>
                       )}
                       <div className="p-4">
-                        <Button className="w-full bg-primary hover:bg-primary-hover">
+                        <Button className="w-full bg-action hover:bg-action-hover">
                           {t("createCourse.enrollNow", "Enroll Now")}
                         </Button>
                       </div>
@@ -1590,7 +1590,7 @@ export default function CreateCourse() {
                         <div className="text-sm text-muted-foreground space-y-1">
                           {courseData.requirements.split('\n').filter(r => r.trim()).map((req, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <Target className="h-3 w-3 mt-1 text-muted-foreground/60" />
+                              <Target className="h-3 w-3 mt-1 text-muted-foreground" />
                               <span>{req}</span>
                             </div>
                           ))}

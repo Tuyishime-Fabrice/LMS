@@ -7,14 +7,12 @@
   <link rel="icon" href="/favicon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Primary SEO Meta Tags -->
-  <title>DataPlus Learning | #1 Online Learning Platform in Rwanda — Courses, Data Science & Skills</title>
+  <!-- Primary meta tags. Each public page replaces title, description and canonical (src/lib/pageMeta.ts). -->
+  <title>DATA+ Academy: data, M&amp;E and AI courses by DATA+ Rwanda</title>
   <meta name="description"
-    content="DataPlus Learning is Rwanda's leading online education platform. Explore expert-led courses in Data Science, Programming, AI, Business, and more. Affordable courses in RWF & USD. Enroll today and grow your career!" />
-  <meta name="keywords"
-    content="online learning Rwanda, online courses Rwanda, data science courses, programming courses Kigali, e-learning Rwanda, DataPlus, education platform Rwanda, learn coding Rwanda, AI courses Africa, affordable courses RWF, career development Rwanda, online university Rwanda" />
-  <meta name="author" content="DataPlus Learning" />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    content="Courses in data analysis, monitoring and evaluation, research and AI from DATA+ Rwanda, with live cohorts online and in Kigali. Pay by Mobile Money. Interface in English and French." />
+  <meta name="author" content="DATA+ Consultant Ltd" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://dataplusacademy.com/" />
 
   <!-- Rwanda / Africa Geo Targeting -->
@@ -31,101 +29,53 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/dataplus_logggg-removebg-preview.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <meta name="theme-color" content="#060C2E" />
+  <link rel="preload" href="/fonts/league-spartan-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+  <meta name="theme-color" content="#004225" />
 
   <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
-  <meta property="og:title" content="DataPlus Learning | Rwanda's #1 Online Learning Platform" />
+  <meta property="og:title" content="DATA+ Academy: data, M&amp;E and AI courses by DATA+ Rwanda" />
   <meta property="og:description"
-    content="Explore expert-led courses in Data Science, AI, Programming & Business. Rwanda's top e-learning platform. Affordable prices in RWF & USD." />
+    content="Courses in data analysis, monitoring and evaluation, research and AI from DATA+ Rwanda, with live cohorts online and in Kigali." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dataplusacademy.com/" />
   <meta property="og:image" content="https://dataplusacademy.com/images/dataplus_logggg-removebg-preview.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:site_name" content="DataPlus Learning" />
+  <meta property="og:locale:alternate" content="fr_FR" />
+  <meta property="og:site_name" content="DATA+ Academy" />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@dataplus_learn" />
-  <meta name="twitter:title" content="DataPlus Learning | Rwanda's #1 Online Learning Platform" />
+  <!-- Twitter card (no account listed until DATA+ confirms its handle) -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DATA+ Academy: data, M&amp;E and AI courses by DATA+ Rwanda" />
   <meta name="twitter:description"
-    content="Explore expert-led courses in Data Science, AI, Programming & Business. Rwanda's top e-learning platform." />
+    content="Courses in data analysis, monitoring and evaluation, research and AI from DATA+ Rwanda." />
   <meta name="twitter:image" content="https://dataplusacademy.com/images/dataplus_logggg-removebg-preview.png" />
 
-  <!-- Structured Data: Organization -->
+  <!-- Structured data: the Academy and its parent organisation. Only confirmed facts (src/content/site-facts.ts). -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
-      "name": "DataPlus Learning",
+      "name": "DATA+ Academy",
       "url": "https://dataplusacademy.com",
       "logo": "https://dataplusacademy.com/images/dataplus_logggg-removebg-preview.png",
-      "description": "Rwanda's leading online learning platform offering courses in Data Science, Programming, AI, Business and more.",
-      "email": "support@dataplusacademy.com",
+      "description": "The learning platform of DATA+ Rwanda: courses in data analysis, monitoring and evaluation, research and AI.",
+      "email": "info@dataplusrwanda.com",
+      "telephone": "+250784857317",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "KG 5 Kimihurura",
         "addressLocality": "Kigali",
         "addressCountry": "RW"
       },
-      "sameAs": [
-        "https://twitter.com/dataplus_learn"
-      ],
-      "areaServed": {
-        "@type": "Country",
-        "name": "Rwanda"
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "DATA+ Rwanda",
+        "legalName": "DATA+ Consultant Ltd",
+        "url": "https://dataplusrwanda.com"
       }
     }
-    </script>
-
-  <!-- Structured Data: Website with SearchAction -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "DataPlus Learning",
-      "url": "https://dataplusacademy.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://dataplusacademy.com/courses?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-
-  <!-- Structured Data: BreadcrumbList -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://dataplusacademy.com/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Courses",
-          "item": "https://dataplusacademy.com/courses"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "About",
-          "item": "https://dataplusacademy.com/about"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "Contact",
-          "item": "https://dataplusacademy.com/contact"
-        }
-      ]
-    }
-    </script>
+  </script>
 </head>
 
 <body>

@@ -1,20 +1,22 @@
 import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, HashRouter, Navigate, Routes, Route } from "react-router-dom";
 import { DEMO_MODE, HASH_ROUTER } from "./demo/config";
 import { DemoBar } from "./demo/DemoBar";
 import "./i18n/config";
-import { SuspensionDialog } from "@/components/SuspensionDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { corporateUrl } from "@/lib/siteConfig";
 
 const Index = lazy(() => import("./pages/Index"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
+// Toasts and the suspension notice are not needed for the first paint: they load right after it.
+const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
+const Sonner = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
+const SuspensionDialog = lazy(() => import("@/components/SuspensionDialog").then((m) => ({ default: m.SuspensionDialog })));
+const BrandReference = lazy(() => import("./pages/BrandReference"));
+const ExternalRedirect = lazy(() => import("./components/ExternalRedirect"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -28,8 +30,18 @@ const CreateCourse = lazy(() => import("./pages/CreateCourse"));
 const Exhibition = lazy(() => import("./pages/Exhibition"));
 const StudentOnboarding = lazy(() => import("./pages/StudentOnboarding"));
 const TeacherOnboarding = lazy(() => import("./pages/TeacherOnboarding"));
-const TeacherChat = lazy(() => import("./pages/TeacherChat"));
-const StudentChat = lazy(() => import("./pages/StudentChat"));
+const StudentCommunity = lazy(() => import("./pages/StudentCommunity"));
+const Tracks = lazy(() => import("./pages/Tracks"));
+const TrackDetail = lazy(() => import("./pages/TrackDetail"));
+const Competitions = lazy(() => import("./pages/Competitions"));
+const CompetitionDetail = lazy(() => import("./pages/CompetitionDetail"));
+const AdminTracks = lazy(() => import("./pages/AdminTracks"));
+const AdminCompetitions = lazy(() => import("./pages/AdminCompetitions"));
+const AdminInsights = lazy(() => import("./pages/AdminInsights"));
+const FacilitationOverview = lazy(() => import("./pages/FacilitationOverview"));
+const FacilitationReview = lazy(() => import("./pages/FacilitationReview"));
+const FacilitationLearners = lazy(() => import("./pages/FacilitationLearners"));
+const FacilitationAssignments = lazy(() => import("./pages/FacilitationAssignments"));
 const StudentSchedule = lazy(() => import("./pages/StudentSchedule"));
 const StudentCertificates = lazy(() => import("./pages/StudentCertificates"));
 const BrowseCourses = lazy(() => import("./pages/BrowseCourses"));
@@ -88,17 +100,24 @@ const signedIn = (page: JSX.Element) => <ProtectedRoute requireOnboarding={false
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <Suspense fallback={null}>
+        <Toaster />
+        <Sonner />
+      </Suspense>
       <Router>
         <AuthProvider>
-          <SuspensionDialog />
+          <Suspense fallback={null}>
+            <SuspensionDialog />
+          </Suspense>
           {DEMO_MODE && <DemoBar />}
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+            {/* Design-system reference: development and demo builds only. */}
+            {(import.meta.env.DEV || DEMO_MODE) && <Route path="/brand" element={<BrandReference />} />}
+            {/* Company pages live on the corporate site (see src/lib/siteConfig.ts). */}
+            <Route path="/about" element={<ExternalRedirect to={corporateUrl("/about")} />} />
+            <Route path="/contact" element={<ExternalRedirect to={corporateUrl("/contact")} />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
@@ -106,7 +125,9 @@ const App = () => (
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/student/dashboard" element={student(<StudentDashboard />)} />
-            <Route path="/student/chat" element={student(<StudentChat />)} />
+            {/* In-platform chat is retired: cohort discussion happens on Discord. Old links land on the community page. */}
+            <Route path="/student/chat" element={<Navigate to="/student/community" replace />} />
+            <Route path="/student/community" element={student(<StudentCommunity />)} />
             <Route path="/student/schedule" element={student(<StudentSchedule />)} />
             <Route path="/student/certificates" element={student(<StudentCertificates />)} />
             <Route path="/student/my-courses" element={student(<MyCourses />)} />
@@ -117,7 +138,7 @@ const App = () => (
             <Route path="/student/subscription" element={<Navigate to="/student/payments" replace />} />
             <Route path="/teacher/dashboard" element={teacher(<TeacherDashboard />)} />
             <Route path="/teacher/schedule" element={teacher(<TeacherSchedule />)} />
-            <Route path="/teacher/chat" element={teacher(<TeacherChat />)} />
+            <Route path="/teacher/chat" element={<Navigate to="/teacher/announcements" replace />} />
             <Route path="/teacher/students" element={teacher(<TeacherStudents />)} />
             <Route path="/teacher/assignments" element={teacher(<TeacherAssignments />)} />
             <Route path="/teacher/grades" element={teacher(<TeacherGrades />)} />
@@ -153,6 +174,18 @@ const App = () => (
             <Route path="/admin/scholarships" element={admin(<AdminScholarships />)} />
             <Route path="/admin/pricing" element={admin(<AdminPricing />)} />
             <Route path="/bundles" element={<BrowseBundles />} />
+            <Route path="/tracks" element={<Tracks />} />
+            <Route path="/tracks/:slug" element={<TrackDetail />} />
+            <Route path="/competitions" element={<Competitions />} />
+            <Route path="/competitions/:slug" element={<CompetitionDetail />} />
+            <Route path="/admin/tracks" element={admin(<AdminTracks />)} />
+            <Route path="/admin/competitions" element={admin(<AdminCompetitions />)} />
+            <Route path="/admin/insights" element={admin(<AdminInsights />)} />
+            {/* Facilitation: any signed-in account with a course_staff assignment; scope enforced by RLS. */}
+            <Route path="/facilitate" element={signedIn(<FacilitationOverview />)} />
+            <Route path="/facilitate/review" element={signedIn(<FacilitationReview />)} />
+            <Route path="/facilitate/learners" element={signedIn(<FacilitationLearners />)} />
+            <Route path="/facilitate/assignments" element={signedIn(<FacilitationAssignments />)} />
             <Route path="/learn/:courseId" element={signedIn(<LearningRoom />)} />
             <Route path="/learn/:courseId/:lessonId" element={signedIn(<LearningRoom />)} />
             <Route path="/admin/calendar" element={admin(<AdminCalendar />)} />

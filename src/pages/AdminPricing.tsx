@@ -146,7 +146,7 @@ export default function AdminPricing() {
                             <SelectContent>
                                 {courses.map((c) => (
                                     <SelectItem key={c.id} value={c.id}>
-                                        {t("adminPricing.standard", "{{title}} — {{formatPrice}} (standard)", { title: c.title, formatPrice: formatPrice(c.price, c.currency) })}
+                                        {t("adminPricing.standard", "{{title}}: {{formatPrice}} (standard)", { title: c.title, formatPrice: formatPrice(c.price, c.currency) })}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -178,7 +178,7 @@ export default function AdminPricing() {
                                         onChange={(e) => setNewPrice(e.target.value)}
                                     />
                                 </div>
-                                <Button onClick={addTier} className="bg-primary hover:bg-primary-hover">
+                                <Button onClick={addTier} className="bg-action hover:bg-action-hover">
                                     <Plus className="h-4 w-4 mr-1" />{" "}{t("adminPricing.addTierPrice", "Add tier price")}
                                 </Button>
                             </div>
@@ -195,7 +195,7 @@ export default function AdminPricing() {
                                     {tiers.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
-                                                {t("adminPricing.noTierPricesStandardPriceApplies", "No tier prices — standard price applies to all users")}
+                                                {t("adminPricing.noTierPricesStandardPriceApplies", "No tier prices, so the standard price applies to all users")}
                                             </TableCell>
                                         </TableRow>
                                     ) : (

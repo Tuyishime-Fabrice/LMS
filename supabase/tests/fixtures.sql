@@ -4,7 +4,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('00000000-0000-0000-0000-00000000000a', 'admin@example.test',   '{"full_name":"Ada Admin","role":"admin"}'),
   ('00000000-0000-0000-0000-00000000000b', 'teacher@example.test', '{"full_name":"Theo Teacher","role":"teacher"}'),
   ('00000000-0000-0000-0000-00000000000c', 'student@example.test', '{"full_name":"Sam Student","role":"student"}'),
-  ('00000000-0000-0000-0000-00000000000d', 'second@example.test',  '{"full_name":"Sia Second","role":"student"}');
+  ('00000000-0000-0000-0000-00000000000d', 'second@example.test',  '{"full_name":"Sia Second","role":"student"}'),
+  ('00000000-0000-0000-0000-00000000000f', 'facilitator@example.test', '{"full_name":"Fay Facilitator","role":"student"}');
 UPDATE public.profiles SET onboarding_completed = true, teacher_approved = (role = 'teacher')
   WHERE id <> '00000000-0000-0000-0000-00000000000d';
 

@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/lib/pageMeta";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
+  usePageMeta({ title: t("meta.reset.title", "Choose a new password"), noindex: true });
   const navigate = useNavigate();
   const [checkingSession, setCheckingSession] = useState(true);
   const [hasRecoverySession, setHasRecoverySession] = useState(false);
@@ -118,7 +120,7 @@ const ResetPassword = () => {
           <div className="space-y-1">
             <CardTitle className="text-2xl">{t("resetPassword.createANewPassword", "Create a new password")}</CardTitle>
             <CardDescription>
-              {t("resetPassword.chooseANewPasswordForYour", "Choose a new password for your DataPlus account.")}
+              {t("resetPassword.chooseANewPasswordForYour", "Choose a new password for your DATA+ Academy account.")}
             </CardDescription>
           </div>
         </CardHeader>
@@ -137,7 +139,7 @@ const ResetPassword = () => {
               </Alert>
               <Button
                 type="button"
-                className="w-full bg-primary hover:bg-primary-hover text-white"
+                className="w-full bg-action hover:bg-action-hover text-white"
                 onClick={() => navigate("/forgot-password")}
               >
                 {t("resetPassword.requestANewResetLink", "Request a new reset link")}
@@ -161,7 +163,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((value) => !value)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-forest"
                     aria-label={showPassword ? t("resetPassword.hidePassword", "Hide password") : t("resetPassword.showPassword", "Show password")}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -185,7 +187,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((value) => !value)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-forest"
                     aria-label={showConfirmPassword ? t("resetPassword.hideConfirmationPassword", "Hide confirmation password") : t("resetPassword.showConfirmationPassword", "Show confirmation password")}
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -196,7 +198,7 @@ const ResetPassword = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-hover text-white"
+                className="w-full bg-action hover:bg-action-hover text-white"
               >
                 {loading ? t("resetPassword.updating", "Updating...") : t("resetPassword.updatePassword", "Update password")}
               </Button>

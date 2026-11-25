@@ -18,7 +18,7 @@ export function CertificatePreview({ certificate, className }: { certificate: Ce
     let active = true;
     if (!certificate.code) { setQr(null); return; }
     void import("qrcode").then((QRCode) =>
-      QRCode.toDataURL(verificationUrl(certificate.code!), { margin: 0, width: 240, color: { dark: "#060C2E", light: "#FCFCF9" } }))
+      QRCode.toDataURL(verificationUrl(certificate.code!), { margin: 0, width: 240, color: { dark: "#1F271C", light: "#FCFCF9" } }))
       .then((data) => { if (active) setQr(data); });
     return () => { active = false; };
   }, [certificate.code]);
@@ -29,8 +29,8 @@ export function CertificatePreview({ certificate, className }: { certificate: Ce
         <div className="absolute inset-[3%] border-[0.35em] border-forest" />
         <div className="absolute inset-[4.2%] border border-primary" />
         <div className="relative flex h-full flex-col items-center px-[10%] pb-[7%] pt-[8%]">
-          <img src="/images/dataplus-logo.png" alt="DataPlus" className="h-[14%] w-auto object-contain" />
-          <p className="mt-[1.2%] text-[1em] text-muted-foreground">DataPlus Academy</p>
+          <img src="/images/dataplus-logo.png" alt="DATA+" className="h-[14%] w-auto object-contain" />
+          <p className="mt-[1.2%] text-[1em] text-muted-foreground">DATA+ Academy</p>
           <p className="mt-[1.5%] font-serif text-[2.9em] font-bold leading-none text-forest">
             {t("certificate.title", "Certificate of Completion")}
           </p>
@@ -47,7 +47,7 @@ export function CertificatePreview({ certificate, className }: { certificate: Ce
               <p className="text-muted-foreground">{t("certificate.date", "Date of issue")}</p>
             </div>
             <div className="w-[26%] border-t border-muted-foreground/60 pt-[2%]">
-              <p className="font-semibold text-forest">DataPlus Academy</p>
+              <p className="font-semibold text-forest">DATA+ Academy</p>
               <p className="text-muted-foreground">{t("certificate.authority", "Issuing authority")}</p>
             </div>
             <div className="flex w-[14%] flex-col items-center">

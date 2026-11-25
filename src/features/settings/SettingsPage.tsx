@@ -17,6 +17,7 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { LearningPrivacySection } from "./LearningPrivacySection";
 
 type Role = "student" | "teacher";
 
@@ -272,7 +273,7 @@ function SignOutSection() {
   const { signOut } = useAppAuth();
   const [busy, setBusy] = useState(false);
   return (
-    <Section title={t("settingsPage.signOut.title", "Sign out")} description={t("settingsPage.signOut.body", "Sign out of DataPlus Academy on this device.")}>
+    <Section title={t("settingsPage.signOut.title", "Sign out")} description={t("settingsPage.signOut.body", "Sign out of DATA+ Academy on this device.")}>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant="outline" className="border-destructive/40 text-destructive hover:border-destructive hover:bg-destructive-surface hover:text-destructive">
@@ -315,6 +316,7 @@ export function SettingsPage({ role }: { role: Role }) {
         />
         <div className="space-y-5">
           <ProfileSection />
+          {role === "student" && <LearningPrivacySection />}
           <LanguageSection />
           <NotificationSection role={role} />
           <SecuritySection />

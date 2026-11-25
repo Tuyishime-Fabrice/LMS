@@ -230,7 +230,7 @@ const AdminPartners = () => {
                   </div>
                 ) : filteredRequests.length === 0 ? (
                   <div className="text-center py-12">
-                    <Handshake className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <Handshake className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-forest mb-2">{t("adminPartners.noPartnerRequests", "No partner requests")}</h3>
                     <p className="text-muted-foreground">{t("adminPartners.partnerRequestsFromTheLandingPage", "Partner requests from the landing page will appear here")}</p>
                   </div>
@@ -256,7 +256,7 @@ const AdminPartners = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <Building2 className="w-4 h-4 text-muted-foreground/60" />
+                              <Building2 className="w-4 h-4 text-muted-foreground" />
                               <span>{request.organization}</span>
                             </div>
                           </TableCell>
