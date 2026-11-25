@@ -177,7 +177,7 @@ CLS is 0 on all four pages. Mobile performance is the main script (Phase 5).
 Screenshots: `screenshots/landing/phase4-*.webp`.
 
 ### Not changed, and why
-- **/about and /contact** still redirect to dataplusrwanda.com. `CLAUDE.md` says the corporate site owns company pages, and the brief asks for LMS pages. This needs your decision (DECISION_LOG D-33).
+- **/about and /contact** redirect to dataplusrwanda.com, as DATA+ confirmed on 2026-11-25 (DECISION_LOG D-33). The corporate site owns company pages.
 - **"Teach with us" and the Teacher role on sign-up.** The brief asks to be told first. Here is how it works today:
   1. The footer link opens `/signup?role=teacher`, which preselects "Teacher" on the public sign-up form.
   2. The new account goes to `/teacher/onboarding`, a short profile form (first and last name, email, phone and an avatar). It does not ask about teaching experience.
@@ -246,4 +246,4 @@ Lighthouse, production build, home page:
 - Consent and names for the people in the photos.
 - The logo as SVG (the current one is cut from the video poster).
 - The intro videos: `dataplus-academy-intro.webm` (alpha) and `.mp4`.
-- Answers on /about and /contact (LMS pages or corporate redirect), and on one branch versus a branch per phase.
+- An answer on one branch versus a branch per phase. (/about and /contact: settled, they stay redirects.)
