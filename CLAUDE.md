@@ -34,7 +34,7 @@ Supabase (auth, Postgres + RLS, storage), i18next (en/fr), Vercel functions in `
 
 ## Commands
 `npm test` (Node tests, incl. TS logic via strip-types) · `npm run typecheck` ·
-`npm run build` · `VITE_DEMO_MODE=true npx vite --host 127.0.0.1` (demo, no Supabase) ·
+`npm run build` (also pre-renders the home hero, `scripts/prerender-home.mjs`) · `VITE_DEMO_MODE=true npx vite --host 127.0.0.1` (demo, no Supabase) ·
 `scripts/build-supabase-setup.sh <pg>` then `scripts/check-supabase-setup.sh <pg>` (scratch DB).
 `npm run lint` has pre-existing errors in older files; new code must be lint-clean.
 

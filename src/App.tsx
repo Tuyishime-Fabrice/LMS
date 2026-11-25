@@ -1,19 +1,20 @@
 import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, HashRouter, Navigate, Routes, Route } from "react-router-dom";
 import { DEMO_MODE, HASH_ROUTER } from "./demo/config";
 import { DemoBar } from "./demo/DemoBar";
 import "./i18n/config";
-import { SuspensionDialog } from "@/components/SuspensionDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { corporateUrl } from "@/lib/siteConfig";
 
 const Index = lazy(() => import("./pages/Index"));
+// Toasts and the suspension notice are not needed for the first paint: they load right after it.
+const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
+const Sonner = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
+const SuspensionDialog = lazy(() => import("@/components/SuspensionDialog").then((m) => ({ default: m.SuspensionDialog })));
 const BrandReference = lazy(() => import("./pages/BrandReference"));
 const ExternalRedirect = lazy(() => import("./components/ExternalRedirect"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -99,11 +100,15 @@ const signedIn = (page: JSX.Element) => <ProtectedRoute requireOnboarding={false
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <Suspense fallback={null}>
+        <Toaster />
+        <Sonner />
+      </Suspense>
       <Router>
         <AuthProvider>
-          <SuspensionDialog />
+          <Suspense fallback={null}>
+            <SuspensionDialog />
+          </Suspense>
           {DEMO_MODE && <DemoBar />}
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>

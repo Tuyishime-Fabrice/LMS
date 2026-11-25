@@ -497,7 +497,7 @@ const AdminDashboard = () => {
 
                     {stats.pendingTeachers === 0 && stats.pendingCourses === 0 && stats.suspendedUsers === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
-                        <Activity className="h-12 w-12 mx-auto mb-2 text-muted-foreground/60" />
+                        <Activity className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
                         <p className="text-sm">{t("adminDashboard.noPendingActions", "No pending actions")}</p>
                       </div>
                     )}
@@ -520,7 +520,7 @@ const AdminDashboard = () => {
                         <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
                           <BookOpen className="h-5 w-5 text-primary" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                       </div>
                       <p className="font-semibold text-sm text-forest">{t("adminDashboard.allCourses", "All Courses")}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.viewApproveManage", "View, approve, manage")}</p>
@@ -534,7 +534,7 @@ const AdminDashboard = () => {
                         <div className="w-10 h-10 rounded-lg bg-info-surface flex items-center justify-center">
                           <Pencil className="h-5 w-5 text-info" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-info group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-info group-hover:translate-x-1 transition-all" />
                       </div>
                       <p className="font-semibold text-sm text-forest">{t("adminDashboard.createEditCourse", "Create / Edit Course")}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.buildOrUpdateContent", "Build or update content")}</p>
@@ -548,7 +548,7 @@ const AdminDashboard = () => {
                         <div className="w-10 h-10 rounded-lg bg-leaf flex items-center justify-center">
                           <ClipboardList className="h-5 w-5 text-forest" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-forest group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-forest group-hover:translate-x-1 transition-all" />
                       </div>
                       <p className="font-semibold text-sm text-forest">{t("adminDashboard.gradesQuizzes", "Grades & Quizzes")}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.quizAssignmentCapstone", "Quiz, assignment, capstone")}</p>
@@ -562,7 +562,7 @@ const AdminDashboard = () => {
                         <div className="w-10 h-10 rounded-lg bg-warning-surface flex items-center justify-center">
                           <Award className="h-5 w-5 text-warning" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-warning group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-warning group-hover:translate-x-1 transition-all" />
                       </div>
                       <p className="font-semibold text-sm text-forest">{t("adminDashboard.certificates", "Certificates")}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{t("adminDashboard.issueManage", "Issue & manage")}</p>

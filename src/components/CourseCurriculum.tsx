@@ -77,13 +77,13 @@ export function CourseCurriculum({ chapters, currentLessonId, onLessonClick, wel
 
   const getContentTypeLabel = (contentType: string) => {
     switch (contentType) {
-      case "video": return "Video";
+      case "video": return t("courseCurriculum.type.video", "Video");
       case "pdf": return "PDF";
-      case "document": return "Document";
-      case "url": return "Link";
-      case "quiz": return "Quiz";
-      case "assignment": return "Assignment";
-      default: return "Lesson";
+      case "document": return t("courseCurriculum.type.document", "Document");
+      case "url": return t("courseCurriculum.type.link", "Link");
+      case "quiz": return t("courseCurriculum.type.quiz", "Quiz");
+      case "assignment": return t("courseCurriculum.type.assignment", "Assignment");
+      default: return t("courseCurriculum.type.lesson", "Lesson");
     }
   };
 

@@ -221,7 +221,7 @@ const AdminUsers = () => {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder={t("adminUsers.searchUsers", "Search users...")}
                         value={searchQuery}
@@ -312,7 +312,7 @@ const AdminUsers = () => {
                                 </SelectContent>
                               </Select>
                             ) : (
-                              <span className="text-xs text-muted-foreground/60">—</span>
+                              <span className="text-xs text-muted-foreground">—</span>
                             )}
                           </TableCell>
                           <TableCell>

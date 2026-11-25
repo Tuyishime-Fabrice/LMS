@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { usePageMeta } from "@/lib/pageMeta";
 import { Button } from "@/components/ui/button";
@@ -10,12 +9,6 @@ import { SiteFooter } from "@/features/site/SiteFooter";
 const NotFound = () => {
   const { t } = useTranslation();
   usePageMeta({ title: t("meta.notFound.title", "Page not found"), noindex: true });
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />

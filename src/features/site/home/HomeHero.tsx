@@ -8,17 +8,20 @@ import { useDateLocale } from "@/features/learning/hooks";
 import { useIntroEnded } from "../introState";
 import { Photo } from "./Photo";
 import { useReveal } from "./useReveal";
+import { wasPrerendered } from "./prerenderState";
+import { cn } from "@/lib/utils";
 
 /**
  * Hero: what DATA+ Academy is and for whom, the format in one sentence, two actions.
  * The classroom photo opens through the plus-shaped mask and the trail motif draws in behind it,
  * both after the intro (if any) has left. The next cohort date shows only when one exists.
  */
-export function HomeHero({ cohort }: { cohort: { name: string; startDate: string } | null | undefined }) {
+export function HomeHero({ cohort, prerender = false }: { cohort: { name: string; startDate: string } | null | undefined; prerender?: boolean }) {
   const { t } = useTranslation();
   const locale = useDateLocale();
   const introEnded = useIntroEnded();
   const photoRef = useReveal<HTMLDivElement>(introEnded);
+  const revealed = !prerender && wasPrerendered();
 
   return (
     <section className="relative overflow-hidden bg-background" aria-labelledby="hero-title">
@@ -50,7 +53,7 @@ export function HomeHero({ cohort }: { cohort: { name: string; startDate: string
         </div>
 
         <div className="relative mx-auto w-full max-w-xl pb-14 lg:max-w-none lg:pb-16">
-          {introEnded && (
+          {introEnded && !prerender && (
             <PlusMotif
               variant="trail"
               size="min(88vw, 620px)"
@@ -58,8 +61,9 @@ export function HomeHero({ cohort }: { cohort: { name: string; startDate: string
               className="pointer-events-none absolute -right-[18%] top-1/2 -translate-y-1/2 opacity-[0.22] sm:-right-[12%]"
             />
           )}
-          <div ref={photoRef}>
-          <div className="plus-mask relative overflow-hidden rounded-lg">
+          {/* Build-time render: the reveal runs in CSS at first paint. After it, React shows the photo revealed. */}
+          <div ref={prerender || revealed ? undefined : photoRef} className={prerender ? "is-in" : undefined}>
+          <div className={cn("relative overflow-hidden rounded-lg", !revealed && "plus-mask")}>
             <Photo
               name="classroom"
               width={1600}

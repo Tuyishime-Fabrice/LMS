@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
       <PageBand title={t("privacyPolicy.title", "Privacy policy")} body={t("privacyPolicy.updated", "Last updated: January 2025")} />
 
       {/* Content */}
-      <main className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8"><div className="max-w-3xl">
+      <main id="main" className="mx-auto max-w-site px-4 py-10 sm:px-6 lg:px-8"><div className="max-w-3xl">
         <div className="bg-card rounded-xl p-8 space-y-8">
           {/* Introduction */}
           <section>

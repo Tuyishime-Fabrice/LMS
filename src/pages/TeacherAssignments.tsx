@@ -433,7 +433,7 @@ const TeacherAssignments = () => {
                 <CardContent>
                   {courses.length === 0 ? (
                     <div className="text-center py-8">
-                      <FileText className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                      <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                       <p className="text-muted-foreground">{t('teacher.assignments.noCoursesFound')}</p>
                       <Button
                         onClick={() => navigate("/create-course")}
@@ -579,7 +579,7 @@ const TeacherAssignments = () => {
                           <TabsContent value="submitted" className="space-y-4 mt-4">
                             {submissions.length === 0 ? (
                               <div className="text-center py-12">
-                                <FileText className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                                 <p className="text-muted-foreground">{t('teacher.assignments.noSubmissions')}</p>
                               </div>
                             ) : (
@@ -690,7 +690,7 @@ const TeacherAssignments = () => {
                                     {/* Teacher Feedback / Comment Section */}
                                     <div className="mt-4 pt-4 border-t border-border">
                                       <div className="flex items-start gap-3">
-                                        <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
+                                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
                                           {suggestions.get(submission.id) && submission.grade === null && (() => {
@@ -825,7 +825,7 @@ const TeacherAssignments = () => {
                           <TabsContent value="submitted" className="space-y-4 mt-4">
                             {submissions.length === 0 ? (
                               <div className="text-center py-12">
-                                <FileText className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                                 <p className="text-muted-foreground">{t("teacherAssignments.noSubmissionsYet", "No submissions yet")}</p>
                                 <p className="text-sm text-muted-foreground mt-2">
                                   {t("teacherAssignments.studentsWillSeeAssignmentsOnceYou", "Students will see assignments once you add them to the course structure")}
@@ -905,7 +905,7 @@ const TeacherAssignments = () => {
                                     {/* Teacher Feedback / Comment Section */}
                                     <div className="mt-4 pt-4 border-t border-border">
                                       <div className="flex items-start gap-3">
-                                        <MessageSquare className="h-4 w-4 text-muted-foreground/60 mt-2 flex-shrink-0" />
+                                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-2 flex-shrink-0" />
                                         <div className="flex-1">
                                           <label className="text-xs font-semibold text-muted-foreground block mb-1.5">{t("teacherAssignments.feedbackCommentForStudent", "Feedback / Comment for Student")}</label>
                                           {suggestions.get(submission.id) && submission.grade === null && (() => {

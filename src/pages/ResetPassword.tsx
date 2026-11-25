@@ -163,7 +163,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((value) => !value)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-forest"
                     aria-label={showPassword ? t("resetPassword.hidePassword", "Hide password") : t("resetPassword.showPassword", "Show password")}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -187,7 +187,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((value) => !value)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-forest"
                     aria-label={showConfirmPassword ? t("resetPassword.hideConfirmationPassword", "Hide confirmation password") : t("resetPassword.showConfirmationPassword", "Show confirmation password")}
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}

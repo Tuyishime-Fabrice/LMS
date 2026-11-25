@@ -368,7 +368,7 @@ const AdminCourses = () => {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder={t("adminCourses.searchCourses", "Search courses...")}
                         value={searchQuery}
@@ -718,7 +718,7 @@ const AdminCourses = () => {
               ))
             )}
           </div>
-          <p className="text-xs text-muted-foreground/60 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             {t("adminCourses.freePreviewChaptersCanBeAccessed", "Free preview chapters can be accessed by anyone. Locked chapters require purchase.")}
           </p>
         </DialogContent>

@@ -266,7 +266,7 @@ export function PurchaseDialog({
                         {earlyBird?.active && (
                             <div className="flex items-center justify-between text-sm text-warning">
                                 <span>{t("purchaseDialog.earlyBirdPrice", "Early bird price")}</span>
-                                <span className="line-through text-muted-foreground/60 mr-2">
+                                <span className="line-through text-muted-foreground mr-2">
                                     {formatPrice(earlyBird.regularPrice, item.currency)}
                                 </span>
                                 <span>{formatPrice(earlyBird.price, item.currency)}</span>
@@ -433,7 +433,7 @@ export function PurchaseDialog({
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                                             !CARD_PAYMENT_ENABLED
-                                                ? "bg-muted text-muted-foreground/60"
+                                                ? "bg-muted text-muted-foreground"
                                                 : paymentMethod === "card"
                                                   ? "bg-info text-white"
                                                   : "bg-muted text-muted-foreground"
@@ -443,14 +443,14 @@ export function PurchaseDialog({
                                     </div>
                                     <div className="text-left">
                                         <p className="font-semibold text-muted-foreground">{t("purchaseDialog.cardPayment", "Card Payment")}</p>
-                                        <p className="text-xs text-muted-foreground/60">
+                                        <p className="text-xs text-muted-foreground">
                                             {CARD_PAYMENT_ENABLED
                                                 ? t("purchaseDialog.visaMastercardViaXentripay", "Visa, Mastercard via XentriPay")
                                                 : t("purchaseDialog.comingSoonUseMomoForNow", "Coming soon. Use MoMo for now")}
                                         </p>
                                     </div>
                                     {!CARD_PAYMENT_ENABLED && (
-                                        <span className="ml-auto text-xs font-medium text-muted-foreground/60 bg-muted px-2 py-0.5 rounded-full">
+                                        <span className="ml-auto text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
                                             {t("purchaseDialog.soon", "Soon")}
                                         </span>
                                     )}
@@ -466,7 +466,7 @@ export function PurchaseDialog({
                                         {paymentMethod === "momo" ? t("purchaseDialog.mtnMomoPhoneNumber", "MTN MoMo Phone Number") : t("purchaseDialog.phoneNumber", "Phone Number")}
                                     </Label>
                                     <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             id="phone"
                                             type="tel"
@@ -589,7 +589,7 @@ export function PurchaseDialog({
                                     </p>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground/60">
+                            <p className="text-xs text-muted-foreground">
                                 {t("purchaseDialog.ifTheProblemPersistsContactSupport", "If the problem persists, contact support with the reference above.")}
                             </p>
                             <div className="flex gap-2">

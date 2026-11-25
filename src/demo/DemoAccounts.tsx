@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { GraduationCap, HeartHandshake, Presentation, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "./config";
+import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "./seed";
 import { cn } from "@/lib/utils";
 
 const icons = { student: GraduationCap, teacher: Presentation, admin: ShieldCheck, facilitator: HeartHandshake } as const;

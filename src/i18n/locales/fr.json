@@ -64,7 +64,7 @@
   "auth": {
     "signIn": "Se connecter",
     "signUp": "S'inscrire",
-    "email": "Email",
+    "email": "E-mail",
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
@@ -87,7 +87,9 @@
     "anErrorOccurredDuringSignIn": "Une erreur est survenue lors de la connexion",
     "studentsLearningTogether": "Des apprenants qui travaillent ensemble",
     "panelTitle": "Apprendre avec DATA+ Academy",
-    "photoAlt": "Des apprenants penchés autour d'un ordinateur portable pendant une formation DATA+"
+    "photoAlt": "Des apprenants penchés autour d'un ordinateur portable pendant une formation DATA+",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe"
   },
   "dashboard": {
     "welcome": "Bienvenue",
@@ -2620,7 +2622,8 @@
       "see": "Voir les cours",
       "title": "Trouvez votre cours",
       "count_one": "{{count}} cours",
-      "count_other": "{{count}} cours"
+      "count_other": "{{count}} cours",
+      "catalogue": "Voir le catalogue des cours"
     }
   },
   "partner": {
@@ -2785,7 +2788,15 @@
     "locked": "Verrouillé",
     "free": "Gratuit",
     "chaptersLessons_one": "{{count}} chapitre • {{totalLessons}} leçons",
-    "yourProgress2": "Votre progression"
+    "yourProgress2": "Votre progression",
+    "type": {
+      "video": "Vidéo",
+      "document": "Document",
+      "link": "Lien",
+      "quiz": "Quiz",
+      "assignment": "Devoir",
+      "lesson": "Leçon"
+    }
   },
   "suspensionDialog": {
     "accountSuspended": "Compte suspendu",
@@ -2992,7 +3003,9 @@
     "readyToBuildYourCapstoneProject": "Prêt à réaliser votre projet final ?",
     "joinOurCommunityAndCreateProjects": "Rejoignez notre communauté et réalisez des projets qui changent vraiment les choses",
     "enrollNow": "S'inscrire maintenant",
-    "viewAllCourses": "Voir tous les cours"
+    "viewAllCourses": "Voir tous les cours",
+    "readyToBuild2": "Prêt à réaliser votre propre projet final ?",
+    "noProjectsYet2": "Aucun projet pour l'instant"
   },
   "teacherOnboarding": {
     "pleaseFillInAllFieldsAnd": "Remplissez tous les champs et choisissez un avatar",
@@ -3753,7 +3766,8 @@
     "withdrawError": "Impossible de vous retirer. Réessayez.",
     "youAreIn": "Vous êtes inscrit",
     "yourProgress": "Votre progression",
-    "yourSubmissions": "Vos soumissions"
+    "yourSubmissions": "Vos soumissions",
+    "filterLabel": "Afficher les compétitions"
   },
   "glance": {
     "assessed": "Comment vous êtes évalué",
@@ -3999,7 +4013,8 @@
     "towards": "Objectif : {{role}}",
     "view": "Voir le parcours",
     "yourProgress": "Votre progression",
-    "started": "En cours"
+    "started": "En cours",
+    "filterLabel": "Type de parcours"
   },
   "interests": {
     "data_analysis": "Analyse de données",

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { ArrowRight, CalendarClock, Trophy, UserCheck } from "lucide-react";
 import { EmptyState, ErrorState, PageHeader, SkeletonBlock } from "@/components/shell/page";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FilterTabs } from "@/components/shell/FilterTabs";
 import { useAppAuth } from "@/contexts/AuthContext";
 import { useCompetitions, useMyRegistrations } from "@/features/competitions/api";
 import { PhasePill } from "@/features/competitions/PhasePill";
@@ -37,13 +37,17 @@ export default function Competitions() {
         title={t("competitions.title", "Competitions")}
         description={t("competitions.description", "Time-boxed data challenges with their own rules, timeline and results. Open to DATA+ learners and, where stated, to the public.")}
       />
-      <Tabs value={filter} onValueChange={(value) => setFilter(value as Filter)} className="mb-6">
-        <TabsList>
-          <TabsTrigger value="current">{t("competitions.tab.current", "Current and upcoming")}</TabsTrigger>
-          {user && <TabsTrigger value="mine">{t("competitions.tab.mine", "My competitions")}</TabsTrigger>}
-          <TabsTrigger value="past">{t("competitions.tab.past", "Past")}</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <FilterTabs<Filter>
+        className="mb-6"
+        label={t("competitions.filterLabel", "Show competitions")}
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { value: "current" as Filter, label: t("competitions.tab.current", "Current and upcoming") },
+          ...(user ? [{ value: "mine" as Filter, label: t("competitions.tab.mine", "My competitions") }] : []),
+          { value: "past" as Filter, label: t("competitions.tab.past", "Past") },
+        ]}
+      />
 
       {competitions.isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">{[0, 1].map((key) => <SkeletonBlock key={key} className="h-52" />)}</div>

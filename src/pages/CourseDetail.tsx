@@ -729,7 +729,7 @@ export default function CourseDetail() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       {/* Hero: cream, on the shared content width; the cover is generated from the course data. */}
-      <section className="border-b bg-background" aria-labelledby="course-title">
+      <section id="main" tabIndex={-1} className="border-b bg-background outline-none" aria-labelledby="course-title">
         <div className="mx-auto max-w-site px-4 pb-10 pt-6 sm:px-6 lg:px-8 lg:pb-14">
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="-ml-2 mb-6 text-forest hover:bg-mint">
             <ArrowLeft className="mr-2 h-4 w-4" aria-hidden />

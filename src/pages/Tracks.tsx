@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, BriefcaseBusiness, Clock, Layers, Route } from "lucide-react";
 import { EmptyState, ErrorState, PageHeader, ProgressBar, SkeletonBlock } from "@/components/shell/page";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FilterTabs } from "@/components/shell/FilterTabs";
 import { DiscoveryLayout } from "@/features/site/DiscoveryLayout";
 import { progressFor, useMyEnrolments, useTracks, type Track } from "@/features/tracks/api";
 import { TrackKindPill } from "@/features/tracks/TrackBits";
@@ -68,12 +68,16 @@ export default function Tracks() {
         description={t("tracks.description", "Tracks are ordered sequences of DATA+ courses and projects. A skill track builds one capability; a career track prepares you for a role.")}
       />
 
-      <Tabs value={kind} onValueChange={(value) => setParams(value === "skill" ? {} : { kind: value }, { replace: true })} className="mb-6">
-        <TabsList>
-          <TabsTrigger value="skill" className="gap-1.5"><Route className="h-4 w-4" />{t("tracks.tab.skill", "Skill tracks")}</TabsTrigger>
-          <TabsTrigger value="career" className="gap-1.5"><BriefcaseBusiness className="h-4 w-4" />{t("tracks.tab.career", "Career tracks")}</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <FilterTabs
+        className="mb-6"
+        label={t("tracks.filterLabel", "Type of track")}
+        value={kind === "career" ? "career" : "skill"}
+        onChange={(value) => setParams(value === "skill" ? {} : { kind: value }, { replace: true })}
+        options={[
+          { value: "skill", label: t("tracks.tab.skill", "Skill tracks"), icon: <Route className="h-4 w-4" aria-hidden /> },
+          { value: "career", label: t("tracks.tab.career", "Career tracks"), icon: <BriefcaseBusiness className="h-4 w-4" aria-hidden /> },
+        ]}
+      />
 
       <p className="mb-5 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
         <Clock className="mt-1 h-4 w-4 shrink-0" />

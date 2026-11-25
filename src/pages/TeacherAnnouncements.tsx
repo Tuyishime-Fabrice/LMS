@@ -252,7 +252,7 @@ export default function TeacherAnnouncements() {
                 <CardContent>
                   {announcements.length === 0 ? (
                     <div className="text-center py-12">
-                      <Megaphone className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                      <Megaphone className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                       <h3 className="font-medium text-forest mb-1">{t('teacher.announcements.noAnnouncements')}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
                         {t('teacher.announcements.createFirst')}

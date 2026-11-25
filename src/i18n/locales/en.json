@@ -87,7 +87,9 @@
     "anErrorOccurredDuringSignIn": "An error occurred during sign in",
     "studentsLearningTogether": "Students learning together",
     "panelTitle": "Learn with DATA+ Academy",
-    "photoAlt": "Learners lean in around one laptop during a DATA+ training session"
+    "photoAlt": "Learners lean in around one laptop during a DATA+ training session",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
   },
   "dashboard": {
     "welcome": "Welcome",
@@ -2620,7 +2622,8 @@
       "see": "See courses",
       "title": "Find your course",
       "count_one": "{{count}} course",
-      "count_other": "{{count}} courses"
+      "count_other": "{{count}} courses",
+      "catalogue": "See the course catalogue"
     }
   },
   "partner": {
@@ -2785,7 +2788,15 @@
     "locked": "Locked",
     "free": "Free",
     "chaptersLessons_one": "{{count}} chapter • {{totalLessons}} lessons",
-    "yourProgress2": "Your progress"
+    "yourProgress2": "Your progress",
+    "type": {
+      "assignment": "Assignment",
+      "document": "Document",
+      "lesson": "Lesson",
+      "link": "Link",
+      "quiz": "Quiz",
+      "video": "Video"
+    }
   },
   "suspensionDialog": {
     "accountSuspended": "Account Suspended",
@@ -2992,7 +3003,9 @@
     "readyToBuildYourCapstoneProject": "Ready to Build Your Capstone Project?",
     "joinOurCommunityAndCreateProjects": "Join our community and create projects that make a real difference",
     "enrollNow": "Enroll Now",
-    "viewAllCourses": "View All Courses"
+    "viewAllCourses": "View All Courses",
+    "readyToBuild2": "Ready to build your own capstone?",
+    "noProjectsYet2": "No projects yet"
   },
   "teacherOnboarding": {
     "pleaseFillInAllFieldsAnd": "Please fill in all fields and select an avatar",
@@ -3753,7 +3766,8 @@
     "withdrawError": "Could not withdraw. Try again.",
     "youAreIn": "You are registered",
     "yourProgress": "Your progress",
-    "yourSubmissions": "Your submissions"
+    "yourSubmissions": "Your submissions",
+    "filterLabel": "Show competitions"
   },
   "glance": {
     "assessed": "How you are assessed",
@@ -3969,7 +3983,8 @@
     "towards": "Towards: {{role}}",
     "view": "View track",
     "yourProgress": "Your progress",
-    "started": "In progress"
+    "started": "In progress",
+    "filterLabel": "Type of track"
   },
   "interests": {
     "data_analysis": "Data analysis",

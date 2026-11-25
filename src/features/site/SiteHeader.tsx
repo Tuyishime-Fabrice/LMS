@@ -54,6 +54,10 @@ export function SiteHeader({ className }: { className?: string }) {
   const isActive = (to: string) => !to.includes("#") && pathname.startsWith(to);
 
   return (
+    <>
+    <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-card focus:px-4 focus:py-2 focus:text-forest focus:shadow-[var(--shadow-float)]">
+      {t("site.skip", "Skip to content")}
+    </a>
     <header className={cn("sticky top-0 z-40 border-b bg-background transition-[border-color]", scrolled || open ? "border-border" : "border-transparent", className)}>
       <div className="mx-auto flex h-16 max-w-site items-center gap-6 px-4 sm:h-[4.5rem] sm:px-6 lg:px-8">
         <Link
@@ -121,5 +125,6 @@ export function SiteHeader({ className }: { className?: string }) {
         </div>
       )}
     </header>
+    </>
   );
 }

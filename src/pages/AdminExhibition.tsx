@@ -403,7 +403,7 @@ const AdminExhibition = () => {
                   </div>
                 ) : projects.length === 0 ? (
                   <div className="text-center py-12">
-                    <Trophy className="w-12 h-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <Trophy className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-forest mb-2">{t("adminExhibition.noProjectsYet", "No projects yet")}</h3>
                     <p className="text-muted-foreground mb-4">{t("adminExhibition.addYourFirstExhibitionProjectTo", "Add your first exhibition project to showcase on the landing page")}</p>
                     <Button onClick={() => setDialogOpen(true)} className="bg-action hover:bg-action-hover">
@@ -529,7 +529,7 @@ const AdminExhibition = () => {
                   </div>
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-border flex items-center justify-center">
-                    <Image className="w-8 h-8 text-muted-foreground/60" />
+                    <Image className="w-8 h-8 text-muted-foreground" />
                   </div>
                 )}
                 <div>

@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:api": "node scripts/local-api-server.mjs",
     "db:migrate:payment": "node scripts/apply-payment-migration.mjs",
-    "build": "npm run typecheck && vite build",
+    "build": "npm run typecheck && vite build && node scripts/prerender-home.mjs",
     "build:dev": "vite build --mode development",
     "build:netlify": "npm run build",
     "build:vercel": "node scripts/vercel-build.mjs",

@@ -233,7 +233,7 @@ const SignUp = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-card text-muted-foreground/60">{t("common.or", "or")}</span>
+              <span className="px-3 bg-card text-muted-foreground">{t("common.or", "or")}</span>
             </div>
           </div>
 
@@ -284,7 +284,9 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                  aria-label={showPassword ? t("auth.hidePassword", "Hide password") : t("auth.showPassword", "Show password")}
+                  aria-pressed={showPassword}
+                  className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:text-forest"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -308,7 +310,9 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 hover:text-forest"
+                  aria-label={showConfirmPassword ? t("auth.hidePassword", "Hide password") : t("auth.showPassword", "Show password")}
+                  aria-pressed={showConfirmPassword}
+                  className="absolute right-1.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:text-forest"
                 >
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>

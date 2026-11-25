@@ -129,7 +129,7 @@ const Exhibition = () => {
       <PageBand eyebrow={t("exhibition.eyebrow", "Student projects")} title={t("exhibition.title", "Capstone exhibition")} body={t("exhibition.body", "Real problems, real data and the recommendations our graduates made. Every project follows the five-step capstone framework.")} />
 
       {/* Projects Gallery */}
-      <section className="py-12 px-4">
+      <section id="main" className="py-12 px-4">
         <div className="mx-auto max-w-site">
           {projectsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -172,8 +172,8 @@ const Exhibition = () => {
             </div>
           ) : studentProjects.length === 0 ? (
             <div className="text-center py-16">
-              <GraduationCap className="w-16 h-16 text-muted-foreground/60 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">{t("exhibition.noProjectsYet", "No Projects Yet")}</h3>
+              <GraduationCap className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-foreground mb-2">{t("exhibition.noProjectsYet2", "No projects yet")}</h2>
               <p className="text-muted-foreground">{t("exhibition.checkBackSoonForAmazingStudent", "Check back soon for amazing student projects!")}</p>
             </div>
           ) : (
@@ -199,7 +199,7 @@ const Exhibition = () => {
                           </div>
                         )}
                         <div>
-                          <h3 className="text-2xl font-bold text-white">{project.student_name}</h3>
+                          <h2 className="text-2xl font-bold text-white">{project.student_name}</h2>
                           <p className="text-white/80 font-medium">{project.course_name}</p>
                         </div>
                       </div>
@@ -217,9 +217,9 @@ const Exhibition = () => {
 
                     {/* Project Details */}
                     <div className="p-6">
-                      <h4 className="text-xl font-bold text-forest mb-3">
+                      <h3 className="text-xl font-bold text-forest mb-3">
                         {project.project_title}
-                      </h4>
+                      </h3>
 
                       <p className="text-foreground text-sm mb-4 leading-relaxed">
                         {project.outcomes_verified ? project.project_description : null}
@@ -322,10 +322,10 @@ const Exhibition = () => {
       <section className="py-16 px-4">
         <div className="mx-auto max-w-site">
           <div className="rounded-xl p-12 md:p-16 text-center bg-forest">
-            <h2 className="text-4xl md:text-5xl font-bold text-forest mb-6">
-              {t("exhibition.readyToBuildYourCapstoneProject", "Ready to Build Your Capstone Project?")}
+            <h2 className="text-4xl md:text-5xl font-bold text-cream mb-6">
+              {t("exhibition.readyToBuild2", "Ready to build your own capstone?")}
             </h2>
-            <p className="text-xl text-black/80 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-cream/80 mb-8 max-w-2xl mx-auto">
               {t("exhibition.joinOurCommunityAndCreateProjects", "Join our community and create projects that make a real difference")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -334,7 +334,7 @@ const Exhibition = () => {
                 onClick={() => navigate("/signup")}
                 className="bg-action hover:bg-action-hover text-white px-8 py-4 text-lg font-medium"
               >
-                {t("exhibition.enrollNow", "Enroll Now")}
+                {t("landing.cta.signup", "Create a free account")}
               </Button>
               <Button
                 size="lg"

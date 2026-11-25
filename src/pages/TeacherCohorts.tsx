@@ -530,7 +530,7 @@ const TeacherCohorts = () => {
                   {cohorts.length === 0 ? (
                     <Card>
                       <CardContent className="py-12 text-center">
-                        <Users className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                         <h3 className="text-lg font-semibold mb-2">{t("teacher.cohorts.noCohorts")}</h3>
                         <p className="text-muted-foreground mb-4">{t("teacher.cohorts.createFirst")}</p>
                         <Button onClick={() => setShowCreateDialog(true)} className="bg-action hover:bg-action-hover">
@@ -824,7 +824,7 @@ const TeacherCohorts = () => {
             <div className="max-h-96 overflow-y-auto">
               {cohortStudents.length === 0 ? (
                 <div className="text-center py-8">
-                  <Users className="h-12 w-12 text-muted-foreground/60 mx-auto mb-2" />
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
                   <p className="text-muted-foreground">{t("teacher.cohorts.noStudentsYet")}</p>
                 </div>
               ) : (

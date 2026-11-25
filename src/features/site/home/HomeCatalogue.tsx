@@ -28,7 +28,6 @@ export function SubjectTiles({ subjects, loading }: { subjects: SubjectSummary[]
   const { t, i18n } = useTranslation();
   const labels = useFamilyLabels();
   const ref = useReveal<HTMLUListElement>();
-  if (!loading && !subjects.length) return null;
   return (
     <Section labelledBy="subjects-title" tone="white">
       <SectionTitle
@@ -39,6 +38,11 @@ export function SubjectTiles({ subjects, loading }: { subjects: SubjectSummary[]
       />
       {loading ? (
         <div aria-hidden className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((key) => <div key={key} className="h-44 animate-pulse rounded-lg bg-muted" />)}</div>
+      ) : !subjects.length ? (
+        <Link to="/courses" className="group flex min-h-44 items-end justify-between gap-4 rounded-lg border bg-background p-6 text-forest hover:border-primary">
+          <span className="font-display text-xl font-semibold">{t("landing.subjects.catalogue", "See the course catalogue")}</span>
+          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        </Link>
       ) : (
       <ul ref={ref} className={cn("reveal grid gap-3 sm:grid-cols-2", subjects.length >= 4 ? "lg:grid-cols-5" : "lg:grid-cols-3")}>
         {subjects.map((subject) => {

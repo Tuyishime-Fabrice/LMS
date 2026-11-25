@@ -195,7 +195,7 @@ export default function AdminStudentProgress() {
               {/* Filters */}
               <Card><CardContent className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" /><Input placeholder={t("adminStudentProgress.searchStudents", "Search students...")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" /></div>
+                  <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder={t("adminStudentProgress.searchStudents", "Search students...")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" /></div>
                   <Select value={selectedCourse} onValueChange={setSelectedCourse}><SelectTrigger><SelectValue placeholder={t("adminStudentProgress.filterByCourse", "Filter by course")} /></SelectTrigger><SelectContent><SelectItem value="all">{t("adminStudentProgress.allCourses", "All Courses")}</SelectItem>{courses.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent></Select>
                 </div>
               </CardContent></Card>

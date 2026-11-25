@@ -201,7 +201,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.courses')}</CardTitle>
-                        <BookOpen className="h-4 w-4 text-muted-foreground/60" />
+                        <BookOpen className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{courses.length}</div>
@@ -212,7 +212,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('nav.students')}</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground/60" />
+                        <Users className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalStudents}</div>
@@ -223,7 +223,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.lessons')}</CardTitle>
-                        <PlayCircle className="h-4 w-4 text-muted-foreground/60" />
+                        <PlayCircle className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalLessons}</div>
@@ -234,7 +234,7 @@ const TeacherDashboard = () => {
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">{t('teacher.dashboard.chapters')}</CardTitle>
-                        <Layers className="h-4 w-4 text-muted-foreground/60" />
+                        <Layers className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
                         <div className="text-2xl font-bold">{totalChapters}</div>
@@ -270,7 +270,7 @@ const TeacherDashboard = () => {
                         </div>
                       ) : courses.length === 0 ? (
                         <div className="text-center py-10">
-                          <BookOpen className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+                          <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                           <h3 className="font-medium text-forest mb-1">{t('teacher.dashboard.noCourses')}</h3>
                           <p className="text-sm text-muted-foreground mb-4">{t('teacher.dashboard.createFirst')}</p>
                           <Button onClick={() => navigate("/create-course")} className="bg-action hover:bg-action-hover">
@@ -354,7 +354,7 @@ const TeacherDashboard = () => {
                         </>
                       ) : scheduledClasses.length === 0 ? (
                         <div className="text-center py-6">
-                          <CalendarIcon className="h-8 w-8 text-muted-foreground/60 mx-auto mb-2" />
+                          <CalendarIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                           <p className="text-sm text-muted-foreground">{t('schedule.noUpcomingClasses')}</p>
                         </div>
                       ) : (
@@ -369,7 +369,7 @@ const TeacherDashboard = () => {
                               <div className="flex-1 min-w-0">
                                 <h5 className="font-medium text-sm text-forest truncate">{classItem.title}</h5>
                                 <p className="text-xs text-muted-foreground truncate">{classItem.courses?.title}</p>
-                                <p className="text-xs text-muted-foreground/60 mt-1">{time}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{time}</p>
                               </div>
                             </div>
                           );

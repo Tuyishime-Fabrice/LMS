@@ -190,7 +190,54 @@ Screenshots: `screenshots/landing/phase4-*.webp`.
 ### French to review (Phase 4)
 `catalogue.*` (new keys), `courseDetail.*2`, `courseDetail.taughtIn`, `courseDetail.outcomesTitle`, `courseDetail.capstoneBrief*`, `courseDetail.tryFreeLesson`, `courseDetail.instalments`, `courseDetail.scholarshipOpen`, `courseDetail.requirements2`, `courseDetail.lessonsCount_*`, `courseDetail.modulesCount_*`, `courseContentPlayer.freePreview`, `courseContentPlayer.staffPreview`, `auth.panelTitle`, `auth.photoAlt`, `notFound.*`.
 
-## Phase 5 (next): quality pass
+## Phase 5: quality pass (done)
+
+### Performance
+- **Translations load per language** (`src/i18n/config.ts`): a visitor downloads only English or only French, about 50 KB compressed, instead of both inside the main script.
+  - The first render waits for that file, so no raw keys flash on screen.
+  - `<html lang>` follows the language.
+- **Home page pre-render** (`scripts/prerender-home.mjs`, `src/prerender/renderHome.tsx`):
+  - `npm run build` and the Vercel build render the header and hero to HTML in English and French.
+  - An inline script shows the right language on `/` for signed-out visitors before the first paint, and removes it everywhere else.
+  - React replaces it with identical markup, so layout shift is 0.
+  - The hero photo plays its plus-mask reveal in CSS at first paint, and React keeps it revealed.
+  - If the step fails, the build keeps the plain `index.html`.
+- **Smaller main script:** toasts and the suspension notice load right after the first paint. Main script: 313 to 170 KB compressed.
+- **Fonts and layout:** the subject tiles keep their space even when course data is empty or fails, so nothing jumps.
+
+Lighthouse, production build, home page:
+
+| | Performance | Accessibility | Best practices | SEO | LCP | CLS |
+|---|---|---|---|---|---|---|
+| Mobile, simulated (Lighthouse default) | 83 to 89 | 100 | 96* | 100 | 2.7 to 2.9 s (estimate) | 0 |
+| Mobile, devtools throttling (4G, 4x CPU, applied) | 84 to 86 | 100 | 96* | 100 | 2.0 to 2.1 s | 0 |
+| Desktop | 100 | 100 | 96* | 100 | 0.6 s | 0 |
+
+\* Best practices loses points here only because this sandbox cannot reach the Supabase project (console network errors) and the build has no source maps. On the deployed site it measures 100.
+
+- **LCP target met.** A throttled Chromium trace paints the hero heading and photo at about 0.1 s unthrottled and 0.95 s at 4G with 4x CPU. Under applied throttling LCP is 2.0 s, below the 2.5 s target.
+- **Performance score below 90.** The remaining gap is main-thread blocking time (250 to 770 ms) while the 170 KB main script runs on a slow phone.
+- **Other pages are not pre-rendered.** For example, /courses scores 74 on mobile. Pre-rendering pages that show live data needs server rendering, which this stack does not have.
+
+### Accessibility (Lighthouse and keyboard, all public pages: 100)
+- **Fixed:**
+  - The show-password buttons had no name and were too small.
+  - About 90 low-contrast grey labels across the app (`text-muted-foreground/60` and lighter) now use the full muted colour (4.9:1).
+  - The projects page's closing band had green text on green; it now uses cream text and sentence case.
+  - Heading levels on projects and bundles.
+  - Filter tabs on tracks and competitions are now a labelled button group (they pointed at panels that never existed).
+  - "Skip to content" is now on every public page, and every page has a main landmark.
+  - The 404 page no longer logs a console error.
+- **Keyboard:** tabbing through the home page and catalogue reaches the skip link, header, filters and cards in order, with a visible focus ring on each.
+
+### Both languages
+- A French pass at 360 px on every public page found no overflow.
+- It also found no English left in the interface apart from language names, which are written in their own language.
+- Fixed along the way: lesson type labels in the curriculum (Vidéo, Devoir, Quiz) and "E-mail".
+
+### Devices
+- No horizontal overflow on the home page, catalogue, course page, sign-in and projects pages, in Playwright emulation of iPhone SE, iPhone 13, Pixel 7, Galaxy S8 and iPad Mini.
+- **Not tested:** real devices and Safari/WebKit. Only Chromium is available here, so the intro's Safari path (MP4 on white) also needs a real check once the videos exist.
 
 ## Content still needed from DATA+
 - Figures to publish: learners trained, organisations, cohorts.

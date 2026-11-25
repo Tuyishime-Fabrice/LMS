@@ -128,7 +128,7 @@ export default function AdminAnnouncements() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminAnnouncements.total", "Total")}</p><p className="text-3xl font-bold text-info">{announcements.length}</p></div><Bell className="h-10 w-10 text-info" /></CardContent></Card>
                 <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminAnnouncements.active", "Active")}</p><p className="text-3xl font-bold text-primary">{announcements.filter(a => a.is_active).length}</p></div><Bell className="h-10 w-10 text-primary" /></CardContent></Card>
-                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminAnnouncements.inactive", "Inactive")}</p><p className="text-3xl font-bold text-muted-foreground">{announcements.filter(a => !a.is_active).length}</p></div><Bell className="h-10 w-10 text-muted-foreground/60" /></CardContent></Card>
+                <Card><CardContent className="p-6 flex justify-between items-center"><div><p className="text-sm text-muted-foreground">{t("adminAnnouncements.inactive", "Inactive")}</p><p className="text-3xl font-bold text-muted-foreground">{announcements.filter(a => !a.is_active).length}</p></div><Bell className="h-10 w-10 text-muted-foreground" /></CardContent></Card>
               </div>
               <Card><CardContent className="p-0">
                 <Table>

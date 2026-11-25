@@ -380,7 +380,7 @@ export default function AdminPayments() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder={t("adminPayments.searchByStudentCourseOrReference", "Search by student, course, or reference ID...")}
                         value={search}
@@ -437,7 +437,7 @@ export default function AdminPayments() {
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium text-sm">{payment.student_name}</p>
-                                                <p className="text-xs text-muted-foreground/60">{payment.payer_email}</p>
+                                                <p className="text-xs text-muted-foreground">{payment.payer_email}</p>
                                             </div>
                                         </TableCell>
                                         <TableCell>
@@ -467,7 +467,7 @@ export default function AdminPayments() {
                                                     </span>
                                                 </div>
                                                 {payment.payment_provider && (
-                                                    <span className="text-[10px] text-muted-foreground/60 capitalize">
+                                                    <span className="text-[10px] text-muted-foreground capitalize">
                                                         {payment.payment_provider}
                                                     </span>
                                                 )}

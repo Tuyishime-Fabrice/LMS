@@ -277,7 +277,7 @@ const TeacherSchedule = () => {
                   {scheduledClasses.length === 0 ? (
                     <Card className="border-2 border-dashed border-border">
                       <CardContent className="p-12 text-center">
-                        <Video className="h-16 w-16 text-muted-foreground/60 mx-auto mb-4" />
+                        <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-forest mb-2">{t('teacher.schedule.noClassesScheduled')}</h3>
                         <p className="text-muted-foreground mb-6">{t('teacher.schedule.startScheduling')}</p>
                         <Button onClick={() => setShowForm(true)} className="bg-action hover:bg-action-hover">
