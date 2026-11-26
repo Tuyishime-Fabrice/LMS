@@ -4,8 +4,21 @@ import { authStorage } from '@/lib/browserStorage';
 import { DEMO_MODE } from '@/demo/config';
 import { demoFetch, demoFileUrl, DEMO_SUPABASE_URL } from '@/demo/backend';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://huknlixecscpyfficeom.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1a25saXhlY3NjcHlmZmljZW9tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMjYxODEsImV4cCI6MjA3NDgwMjE4MX0.YZ8WYoW6Xsjmz06QDQBqnd0n-bXEVNYs4cgC7hfjJKI";
+/*
+ * The project comes only from the build's environment (VITE_SUPABASE_URL and
+ * VITE_SUPABASE_PUBLISHABLE_KEY, set in Vercel; see docs/supabase-setup.md). There is
+ * deliberately no fallback project: a build without them must not quietly read or write
+ * another database. It points at an address that cannot resolve and says why in the console.
+ */
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
+const SUPABASE_PUBLISHABLE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined)?.trim();
+export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+
+if (!DEMO_MODE && !supabaseConfigured && typeof window !== "undefined") {
+  console.error(
+    "Supabase is not configured: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY for this build (Vercel → Settings → Environment Variables), then redeploy.",
+  );
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +28,7 @@ export const supabase = DEMO_MODE
       auth: { storage: authStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
       global: { fetch: demoFetch },
     })
-  : createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  : createClient<Database>(SUPABASE_URL || "https://supabase-not-configured.invalid", SUPABASE_PUBLISHABLE_KEY || "not-configured", {
       auth: {
         storage: authStorage,
         persistSession: true,

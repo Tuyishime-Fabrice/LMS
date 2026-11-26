@@ -126,7 +126,7 @@ These are described in the [README](../README.md) and each needs only keys added
 
 ## 9. Tell me when it is done
 
-Send me the **Project URL** (it is not secret). I will then point the repository's `supabase/config.toml` at the new project and remove the old project's address, which the site still falls back to when the Vercel variables are missing.
+Send me the **Project URL** (it is not secret) so `supabase/config.toml` can name the new project. The site itself has no built-in project any more: it reads only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. If either is missing from a build, pages stay empty and the browser console says *Supabase is not configured*; add the variables in Vercel and redeploy.
 
 ## When something goes wrong
 
@@ -135,6 +135,7 @@ Send me the **Project URL** (it is not secret). I will then point the repository
 | Sign-up fails with *Database error saving new user* | Step 2 did not finish. Run `setup.sql` again. |
 | The site still shows the sample academy (Aline, Théo, Grace) | `VITE_DEMO_MODE` is set in Vercel. Delete it and redeploy. |
 | *Invalid API key*, or pages stay empty | A key was copied wrongly, or the site was not redeployed after step 5. |
+| The browser console says *Supabase is not configured* | `VITE_SUPABASE_URL` or `VITE_SUPABASE_PUBLISHABLE_KEY` is missing for that environment (Production or Preview). Add it and redeploy. |
 | Email links open the wrong site or a "page not found" | Check the Site URL and Redirect URLs in step 3. |
 | Confirmation emails do not arrive | Check spam. The built-in sender's hourly limit may be used up; set up SMTP (step 3). |
 | An upload fails for a teacher | The teacher is not approved yet, or the file is over 50 MB on the Free plan. |
