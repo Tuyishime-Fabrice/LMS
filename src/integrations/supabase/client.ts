@@ -10,7 +10,9 @@ import { demoFetch, demoFileUrl, DEMO_SUPABASE_URL } from '@/demo/backend';
  * deliberately no fallback project: a build without them must not quietly read or write
  * another database. It points at an address that cannot resolve and says why in the console.
  */
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim()
+  // Accept the URL as copied from Supabase's API page too ("…supabase.co/rest/v1/"): the client adds /rest/v1 itself.
+  .replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
 const SUPABASE_PUBLISHABLE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined)?.trim();
 export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
 

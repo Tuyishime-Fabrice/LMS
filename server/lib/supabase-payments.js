@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { resolveEarlyBirdPricing } from './early-bird.js';
+import { supabaseProjectUrl } from './supabase-url.js';
 
 const REFERENCE_ID_PATTERN = /^[A-Za-z0-9_-]{4,128}$/;
 
@@ -12,7 +13,7 @@ export function sanitizeReferenceId(referenceId) {
 }
 
 export function getSupabaseAdmin() {
-    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseUrl = supabaseProjectUrl();
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!supabaseUrl || !supabaseServiceKey) return null;
     return createClient(supabaseUrl, supabaseServiceKey);

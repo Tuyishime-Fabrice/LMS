@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { supabaseProjectUrl } from './supabase-url.js';
 
 /**
  * Verify Supabase JWT from Authorization: Bearer <token>.
@@ -13,7 +14,7 @@ export async function verifyAuthUser(req) {
     const token = authHeader.slice(7).trim();
     if (!token) return null;
 
-    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseUrl = supabaseProjectUrl();
     const anonKey =
         process.env.SUPABASE_ANON_KEY ||
         process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
