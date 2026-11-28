@@ -1140,6 +1140,15 @@
     },
     "attention": {
       "title": "À traiter"
+    },
+    "summary": {
+      "inProgress": "Cours en cours",
+      "lessons": "Leçons terminées",
+      "completed": "Cours terminés"
+    },
+    "start": {
+      "title": "Cours que vous pouvez commencer",
+      "all": "Voir tous les cours"
     }
   },
   "myCourses": {

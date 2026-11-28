@@ -10,6 +10,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { fetchLmbTechPaymentStatus } from '../server/lib/lmbtech.js';
 import { sanitizeReferenceId } from '../server/lib/supabase-payments.js';
+import { supabaseProjectUrl } from '../server/lib/supabase-url.js';
 
 export default async function handler(req, res) {
     const payload = req.method === 'GET' ? req.query : req.body;
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
             return res.status(502).json({ success: false, error: 'Verification failed' });
         }
 
-        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseUrl = supabaseProjectUrl();
         const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
         if (supabaseUrl && supabaseServiceKey && verifiedStatus !== 'pending') {

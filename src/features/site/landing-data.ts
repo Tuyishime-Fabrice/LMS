@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { isMissingSchema } from "@/features/community/api";
 
 export type LandingCourse = {
   id: string;
@@ -36,15 +35,14 @@ function earlyBirdPrice(row: Record<string, unknown>): number | null {
  * programmes) is left out here but still opens from a direct link.
  */
 export async function fetchLandingCourses(): Promise<LandingCourse[]> {
-  const columns = "id, title, summary, description, thumbnail_url, category, level, duration, language, price, currency, is_free, is_featured, early_bird_price, early_bird_start, early_bird_end, teacher_id, created_at, scholarship_open, profiles ( full_name, avatar_url )";
-  const query = (select: string) => supabase.from("courses").select(select)
+  // "*" rather than a column list: summary, duration and mode exist in some projects only
+  // (added outside the migrations), and listed only once the 2026-11-27 migration has run.
+  // Naming a missing column fails the whole query; "*" returns whatever the table has.
+  const result = await supabase.from("courses").select("*, profiles ( full_name, avatar_url )")
     .eq("approval_status", "approved")
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(200);
-  // `listed` arrives with the 2026-11-27 migration; read without it before that.
-  let result = await query(`${columns}, listed`);
-  if (result.error && isMissingSchema(result.error)) result = await query(columns);
   if (result.error) throw result.error;
   const rows = (result.data || []) as unknown as (Record<string, unknown> & { profiles: { full_name: string | null; avatar_url: string | null } | null })[];
   return rows.filter((row) => row.listed !== false).map((row) => ({

@@ -30,7 +30,7 @@ export async function fetchTracks(): Promise<{ available: boolean; tracks: Track
 
   const courseIds = Array.from(new Set((items || []).map((item) => item.course_id)));
   const { data: courses } = courseIds.length
-    ? await supabase.from("courses").select("id, title, summary, description, thumbnail_url, level, duration, is_free, price, currency").in("id", courseIds)
+    ? await supabase.from("courses").select("*") // "*": summary and duration are optional columns.in("id", courseIds)
     : { data: [] as never[] };
   const courseById = new Map((courses || []).map((row) => [row.id, {
     id: row.id, title: row.title, summary: row.summary || row.description, thumbnailUrl: row.thumbnail_url, level: row.level,

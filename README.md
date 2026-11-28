@@ -27,7 +27,7 @@ npm ci --ignore-scripts
 cp .env.example .env
 ```
 
-Fill in `.env`, then start the web app and the API in two terminals:
+Fill in `.env` (at least `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`; there is no built-in project), then start the web app and the API in two terminals:
 
 ```bash
 npm run dev
