@@ -112,7 +112,7 @@ export async function fetchEnrolledCourses(studentId: string): Promise<EnrolledC
   const { data: enrollments, error } = await supabase
     .from("course_enrollments")
     .select(`id, course_id, enrolled_at, completed, cohort_name,
-             courses ( id, title, description, thumbnail_url, mode, duration, teacher_id, profiles ( full_name ) )`)
+             courses ( *, profiles ( full_name ) )`) // "*": mode and duration are optional columns
     .eq("student_id", studentId)
     .order("enrolled_at", { ascending: false });
   if (error) throw error;

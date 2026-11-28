@@ -18,6 +18,9 @@ import { JourneyCard } from "@/features/enrolment/JourneyCard";
 import { useJourneys } from "@/features/enrolment/hooks";
 import { needsAttention } from "@/features/enrolment/journey";
 import { Recommendations } from "@/features/discovery/Recommendations";
+import { useQuery } from "@tanstack/react-query";
+import { fetchLandingCourses, fetchUpcomingStarts } from "@/features/site/landing-data";
+import { CourseListingCard } from "@/features/courses/CourseListingCard";
 
 function resumeHref(course: EnrolledCourse) {
   return course.resumeLesson ? `/learn/${course.courseId}/${course.resumeLesson.id}` : `/learn/${course.courseId}`;
@@ -148,6 +151,46 @@ function UpcomingItem({ event }: { event: CalendarEvent }) {
   );
 }
 
+/** Where the learner stands, from their own enrolments: in progress, lessons done, courses done. */
+function LearningSummary({ list }: { list: EnrolledCourse[] }) {
+  const { t } = useTranslation();
+  const items = [
+    { to: "/student/my-courses", value: list.filter((course) => !course.completed).length, label: t("home.summary.inProgress", "Courses in progress") },
+    { to: "/student/my-courses", value: list.reduce((sum, course) => sum + course.completedLessons, 0), label: t("home.summary.lessons", "Lessons completed") },
+    { to: "/student/certificates", value: list.filter((course) => course.completed).length, label: t("home.summary.completed", "Courses completed") },
+  ];
+  return (
+    <dl className="mb-8 grid grid-cols-3 gap-3">
+      {items.map((item) => (
+        <Link key={item.label} to={item.to} className="surface-interactive flex flex-col-reverse px-4 py-3 sm:px-5 sm:py-4">
+          <dt className="text-xs leading-5 text-muted-foreground sm:text-sm">{item.label}</dt>
+          <dd className="tabular font-display text-2xl font-bold text-forest sm:text-3xl">{item.value}</dd>
+        </Link>
+      ))}
+    </dl>
+  );
+}
+
+/** For a learner with no enrolment yet: up to three published courses to start from (real catalogue data). */
+function StartHere() {
+  const { t } = useTranslation();
+  const courses = useQuery({ queryKey: ["landing-courses"], queryFn: fetchLandingCourses, staleTime: 5 * 60_000 });
+  const starts = useQuery({ queryKey: ["landing-starts"], queryFn: fetchUpcomingStarts, staleTime: 5 * 60_000 });
+  const picks = (courses.data || []).slice(0, 3);
+  if (courses.isLoading || !picks.length) return null;
+  return (
+    <section aria-labelledby="start-heading" className="mt-6">
+      <SectionHeader
+        title={<span id="start-heading">{t("home.start.title", "Courses you can start")}</span>}
+        action={<Link to="/courses" className="text-sm font-semibold text-primary hover:underline">{t("home.start.all", "See all courses")}</Link>}
+      />
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {picks.map((course) => <CourseListingCard key={course.id} course={course} start={starts.data?.[course.id]} />)}
+      </ul>
+    </section>
+  );
+}
+
 const StudentDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -195,6 +238,8 @@ const StudentDashboard = () => {
         </section>
       )}
 
+      {list.length > 0 && <LearningSummary list={list} />}
+
       {courses.isLoading ? (
         <SkeletonBlock className="h-64 rounded-2xl" />
       ) : courses.isError ? (
@@ -214,17 +259,21 @@ const StudentDashboard = () => {
           action={<Button asChild><Link to="/courses">{t("home.explore", "Explore courses")}</Link></Button>}
         />
       ) : (
-        <EmptyState
-          icon={BookOpen}
-          title={t("home.empty.title", "Choose your first course")}
-          description={t("home.empty.body", "Once you enrol, your next lesson will always be waiting here.")}
-          action={<Button onClick={() => navigate("/courses")}>{t("home.explore", "Explore courses")}</Button>}
-        />
+        <>
+          <EmptyState
+            icon={BookOpen}
+            title={t("home.empty.title", "Choose your first course")}
+            description={t("home.empty.body", "Once you enrol, your next lesson will always be waiting here.")}
+            action={<Button onClick={() => navigate("/courses")}>{t("home.explore", "Explore courses")}</Button>}
+          />
+          <StartHere />
+        </>
       )}
 
       <div className="mt-6 empty:hidden"><StudentInstalments /></div>
 
       <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        {(courses.isLoading || list.length > 0) && (
         <section>
           <SectionHeader
             title={t("home.courses.title", "My courses")}
@@ -236,16 +285,13 @@ const StudentDashboard = () => {
           />
           {courses.isLoading ? (
             <div className="space-y-3">{[0, 1, 2].map((i) => <SkeletonBlock key={i} className="h-[5.5rem]" />)}</div>
-          ) : list.length === 0 ? (
-            <p className="surface px-5 py-6 text-sm text-muted-foreground">
-              {t("home.courses.empty", "Courses you enrol in appear here with your progress.")}
-            </p>
           ) : (
             <ul className="space-y-3">
               {list.slice(0, 4).map((course) => <CourseRow key={course.enrollmentId} course={course} />)}
             </ul>
           )}
         </section>
+        )}
 
         <div className="space-y-8">
           <section>

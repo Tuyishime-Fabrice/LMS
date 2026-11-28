@@ -1140,6 +1140,15 @@
     },
     "attention": {
       "title": "Needs your attention"
+    },
+    "start": {
+      "all": "See all courses",
+      "title": "Courses you can start"
+    },
+    "summary": {
+      "completed": "Courses completed",
+      "inProgress": "Courses in progress",
+      "lessons": "Lessons completed"
     }
   },
   "myCourses": {
